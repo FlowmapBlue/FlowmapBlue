@@ -9,7 +9,7 @@ const examples = [
 const Intro = () =>
   <>
     <section className="intro">
-      <h1>Blue Arrow Map - Light</h1>
+      <h1>Blue Arrow Map - light</h1>
       <section>
         <p>
           This app can render a geographic flow map visualization
