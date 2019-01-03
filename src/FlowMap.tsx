@@ -78,7 +78,7 @@ const FlowMap = ({ sheetKey }: { sheetKey: string }) => {
         <LegendBox bottom={35} right={10}>
           {`Showing ${flows.length} flows. `}
           <a
-            href={`https://docs.google.com/spreadsheets/d/${sheetKey}/edit?usp=sharing`}
+            href={`https://docs.google.com/spreadsheets/d/${sheetKey}`}
             target="_blank"
             rel="noopener"
           >

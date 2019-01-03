@@ -1,5 +1,8 @@
 body { font-family: sans-serif; }
 
 .intro { padding: 10px 20px; }
+.intro h1 { font-size: 2rem; }
 
 .intro li { margin: 0.5em 0; }
+
+section { margin-bottom: 3em; line-height: 1.5em; }
