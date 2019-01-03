@@ -40,11 +40,11 @@ const Intro = () =>
       <section>
         <h2>Publish your own dataset</h2>
         <p>
-          You can visualize your own data with the app:
+          You can visualize your own dataset with the app:
         </p>
         <ol>
           <li>Create a new <a href="https://docs.google.com/spreadsheets/">Google Spreadsheet</a></li>
-          <li>Add your data to the spreadsheet.
+          <li>Add data to your spreadsheet.
             The spreadsheet must have two sheets in it named "<b>locations</b>" and "<b>flows</b>".
             The <b>locations</b> sheet must have these three columns: <b>id</b>, <b>lat</b>, <b>lon</b>.
             The <b>flows</b> sheet must have these three columns: <b>origin</b>, <b>dest</b>, <b>count</b>.
@@ -65,6 +65,15 @@ const Intro = () =>
             </a>
           </li>
         </ol>
+      </section>
+      <section>
+        <h2>Built with</h2>
+        <p>
+          <a href="https://github.com/teralytics/flowmap.gl">flowmap.gl</a>,{` `}
+          <a href="http://deck.gl">deck.gl</a>,{` `}
+          <a href="https://github.com/mapbox/mapbox-gl-js">mapbox</a>,{` `}
+          <a href="https://d3js.org/">d3</a>
+        </p>
       </section>
     </section>
 
