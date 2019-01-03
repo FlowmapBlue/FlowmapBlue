@@ -1,20 +1,30 @@
 import * as d3dsv from 'd3-dsv';
 import * as React from 'react';
 
-export const pipe = (...args: Function[]): Function => (d: any) => args.reduce((m, f) => f(m), d);
-
 const Message = ({ children }: { children: any }) => <div style={{ padding: '1em' }}>{children}</div>;
 
-const withFetchGoogleSheet = (spreadSheetKey: string, sheet: string) => (Comp: React.ComponentType<any>) => (
-  props: any,
+type State = {
+  error: boolean
+  data: { [sheet: string]: any }
+}
+
+const withFetchGoogleSheet = (sheets: string[]) => (Comp: React.ComponentType<any>) => (
+  props: { spreadSheetKey: string }
 ) => {
-  class Fetcher extends React.Component {
+  class Fetcher extends React.Component<{}, State> {
     state = {
-      error: null,
-      data: null,
+      error: false,
+      data: {},
     };
+
     componentDidMount() {
-      fetch(`https://docs.google.com/spreadsheets/d/${spreadSheetKey}/gviz/tq?tqx=out:csv&sheet=${sheet}`)
+      for (const sheet of sheets) {
+        this.fetchSheet(sheet)
+      }
+    }
+
+    fetchSheet(sheet: string) {
+      fetch(`https://docs.google.com/spreadsheets/d/${props.spreadSheetKey}/gviz/tq?tqx=out:csv&sheet=${sheet}`)
         .then(response => {
           if (!response.ok) {
             throw new Error(response.statusText)
@@ -25,19 +35,29 @@ const withFetchGoogleSheet = (spreadSheetKey: string, sheet: string) => (Comp: R
           console.log(reason);
           this.setState({ error: true });
         })
-        .then(data => data && this.setState({ data: d3dsv.csvParse(data) }));
+        .then(data => data &&
+          this.setState(state => ({
+            ...state,
+            data: {
+              ...state.data,
+              [sheet]: d3dsv.csvParse(data)
+            }
+          }))
+        );
     }
+
     render() {
       const { error } = this.state;
       if (error) {
         return <Message>
           Oops… Couldn't fetch data from{` `}
-          <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}/edit?usp=sharing`}>this spreadsheet</a>.
+          <a href={`https://docs.google.com/spreadsheets/d/${props.spreadSheetKey}`}>this spreadsheet</a>.
         </Message>;
       }
-      return <Comp {...{ ...props, [sheet]: this.state.data }} />;
+      return <Comp {...{ ...props, ...this.state.data }} />;
     }
   }
+
   return <Fetcher />;
 };
 

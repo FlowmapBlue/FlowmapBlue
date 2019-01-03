@@ -4,7 +4,7 @@ import { FlyToInterpolator, StaticMap } from 'react-map-gl'
 import FlowMapLayer, { LocationTotalsLegend } from 'flowmap.gl'
 import { colors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
-import withFetchGoogleSheet, { pipe } from './withFetchGoogleSheet'
+import withFetchSheets from './withFetchGoogleSheet'
 import LegendBox from './LegendBox'
 import * as d3ease from 'd3-ease'
 import Title from './Title';
@@ -33,9 +33,9 @@ interface Flow {
 
 
 type Props = {
-  locations: Location[]
-  flows: Flow[]
-  sheetKey: string
+  locations: Location[] | null
+  flows: Flow[] | null
+  spreadSheetKey: string
 }
 
 type ViewState = any
@@ -82,7 +82,7 @@ class FlowMap extends React.Component<Props, State> {
 
   static getDerivedStateFromProps(props: Props, state: State): State | null {
     const {locations} = props
-    if (locations !== state.locations) {
+    if (locations != null && locations !== state.locations) {
       return {
         locations,
         viewState: {
@@ -113,7 +113,7 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   render() {
-    const { flows, sheetKey } = this.props
+    const { flows, spreadSheetKey } = this.props
     const { viewState } = this.state
     return (
       <>
@@ -132,7 +132,7 @@ class FlowMap extends React.Component<Props, State> {
           <LegendBox bottom={35} right={10}>
             {`Showing ${flows.length} flows. `}
             <a
-              href={`https://docs.google.com/spreadsheets/d/${sheetKey}`}
+              href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
               target="_blank"
               rel="noopener"
             >
@@ -152,10 +152,4 @@ class FlowMap extends React.Component<Props, State> {
 }
 
 
-export default ({ sheetKey }: { sheetKey: string }) => {
-  const FlowMapWithData = pipe(
-    withFetchGoogleSheet(sheetKey,'locations'),
-    withFetchGoogleSheet(sheetKey,'flows'),
-  )(FlowMap)
-  return <FlowMapWithData sheetKey={sheetKey} />
-}
+export default withFetchSheets(['locations', 'flows'])(FlowMap as any)

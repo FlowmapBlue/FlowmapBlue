@@ -2,7 +2,8 @@
 
 This app can render a geographic flow map visualization from a spreadsheet published on Google Sheets.
 
-It can be used to visualize movements of people or goods between pairs of geographic locations (Origin-Destination data).
+It can be used to visualize numbers of movements of people or goods between pairs of geographic locations
+(Origin-Destination data).
 
 
 

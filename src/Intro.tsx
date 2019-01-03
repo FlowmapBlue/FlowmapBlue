@@ -20,7 +20,7 @@ const Intro = () =>
           {` `}<a href="https://docs.google.com/spreadsheets/">Google Sheets</a>.
         </p>
         <p>
-          It can be used to visualize movements of people or goods
+          It can be used to visualize numbers of movements of people or goods
           between pairs of geographic locations (Origin-Destination data).
         </p>
       </section>

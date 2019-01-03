@@ -12,7 +12,7 @@ export default class App extends React.Component {
           <Route
             path="/:sheetKey([a-zA-Z0-9-_]{44})"
             component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
-              <FlowMap sheetKey={match.params.sheetKey}/>
+              <FlowMap spreadSheetKey={match.params.sheetKey}/>
             }
           />
           <Route path="/" component={Intro} />
