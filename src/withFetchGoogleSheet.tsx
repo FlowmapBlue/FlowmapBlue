@@ -14,7 +14,7 @@ const withFetchGoogleSheet = (spreadSheetKey: string, sheet: string) => (Comp: R
       data: null,
     };
     componentDidMount() {
-      fetch(`/spreadsheets/d/${spreadSheetKey}/gviz/tq?tqx=out:csv&sheet=${sheet}`)
+      fetch(`https://docs.google.com/spreadsheets/d/${spreadSheetKey}/gviz/tq?tqx=out:csv&sheet=${sheet}`)
         .then(response => {
           if (!response.ok) {
             throw new Error(response.statusText)

@@ -16,7 +16,6 @@
     "d3-geo": "^1.11.3",
     "deck.gl": "^6.3.3",
     "flowmap.gl": "github:teralytics/flowmap.gl#new-examples",
-    "http-proxy-middleware": "^0.19.1",
     "luma.gl": "^6.3.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
