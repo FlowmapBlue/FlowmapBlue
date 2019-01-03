@@ -52,3 +52,19 @@ export const fitLocationsInView = (
     size,
     opts,
   );
+
+export const getInitialViewState = (bbox: [number, number, number, number]) => {
+  const { center: [longitude, latitude], zoom } =
+    viewport(
+      bbox,
+      [window.innerWidth, window.innerHeight],
+      undefined, undefined, 512
+    )
+  return {
+    longitude,
+    latitude,
+    zoom,
+    bearing: 0,
+    pitch: 0,
+  }
+}

@@ -5,6 +5,7 @@
   "dependencies": {
     "@mapbox/geo-viewport": "^0.4.0",
     "@types/d3-dsv": "^1.0.35",
+    "@types/d3-ease": "^1.0.7",
     "@types/d3-geo": "^1.10.3",
     "@types/jest": "^23.3.11",
     "@types/mapbox__geo-viewport": "^0.3.1",
@@ -13,6 +14,7 @@
     "@types/react-dom": "^16.0.11",
     "@types/react-map-gl": "^4.0.1",
     "d3-dsv": "^1.0.10",
+    "d3-ease": "^1.0.5",
     "d3-geo": "^1.11.3",
     "deck.gl": "^6.3.3",
     "flowmap.gl": "github:teralytics/flowmap.gl#new-examples",

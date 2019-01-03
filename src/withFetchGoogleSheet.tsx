@@ -35,9 +35,9 @@ const withFetchGoogleSheet = (spreadSheetKey: string, sheet: string) => (Comp: R
           <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}/edit?usp=sharing`}>this spreadsheet</a>.
         </Message>;
       }
-      if (!data) {
-        return <Message>Fetching data…</Message>;
-      }
+      // if (!data) {
+      //   return <Message>Fetching data…</Message>;
+      // }
       return <Comp {...{ ...props, [sheet]: this.state.data }} />;
     }
   }
