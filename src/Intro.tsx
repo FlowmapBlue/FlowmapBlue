@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
+import Title from './Title'
 
 const examples = [
   { key: '1zNbTBLInPOBcCwCDdoSdnnUDdOfDyStFdhPC6nJmBl8', name: 'London bicycle hire' },
@@ -10,7 +11,8 @@ const examples = [
 const Intro = () =>
   <>
     <section className="intro">
-      <h1>Blue Arrow Map - light</h1>
+      <h1><Title fontSize={39} /></h1>
+
       <section>
         <p>
           This app can render a geographic flow map visualization

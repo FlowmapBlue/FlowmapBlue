@@ -28,16 +28,13 @@ const withFetchGoogleSheet = (spreadSheetKey: string, sheet: string) => (Comp: R
         .then(data => data && this.setState({ data: d3dsv.csvParse(data) }));
     }
     render() {
-      const { data, error } = this.state;
+      const { error } = this.state;
       if (error) {
         return <Message>
           Oops… Couldn't fetch data from{` `}
           <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}/edit?usp=sharing`}>this spreadsheet</a>.
         </Message>;
       }
-      // if (!data) {
-      //   return <Message>Fetching data…</Message>;
-      // }
       return <Comp {...{ ...props, [sheet]: this.state.data }} />;
     }
   }

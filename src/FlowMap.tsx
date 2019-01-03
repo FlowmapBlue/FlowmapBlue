@@ -7,6 +7,7 @@ import { fitLocationsInView, getInitialViewState } from './fitInView'
 import withFetchGoogleSheet, { pipe } from './withFetchGoogleSheet'
 import LegendBox from './LegendBox'
 import * as d3ease from 'd3-ease'
+import Title from './Title';
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
 const CONTROLLER_OPTIONS = {
@@ -14,6 +15,8 @@ const CONTROLLER_OPTIONS = {
   dragRotate: false,
   touchRotate: false,
 }
+
+
 
 interface Location {
   id: string
@@ -140,6 +143,9 @@ class FlowMap extends React.Component<Props, State> {
             <LocationTotalsLegend colors={colors} />
           </LegendBox>
         </>}
+        <LegendBox top={10} left={10}>
+          <Title fontSize={20} />
+        </LegendBox>
       </>
     )
   }
