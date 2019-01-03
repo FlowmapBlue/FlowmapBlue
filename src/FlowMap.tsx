@@ -4,7 +4,7 @@ import { StaticMap } from 'react-map-gl'
 import FlowMapLayer, { LocationTotalsLegend } from 'flowmap.gl'
 import { colors } from './colors'
 import { fitLocationsInView } from './fitInView'
-import withFetchCsv, { pipe } from './withFetchCsv'
+import withFetchGoogleSheet, { pipe } from './withFetchGoogleSheet'
 import LegendBox from './LegendBox'
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
@@ -30,8 +30,8 @@ interface Flow {
 
 const FlowMap = ({ sheetKey }: { sheetKey: string }) => {
   const Comp = pipe(
-    withFetchCsv('locations', `https://docs.google.com/spreadsheets/d/${sheetKey}/gviz/tq?tqx=out:csv&sheet=locations`),
-    withFetchCsv('flows', `https://docs.google.com/spreadsheets/d/${sheetKey}/gviz/tq?tqx=out:csv&sheet=flows`),
+    withFetchGoogleSheet(sheetKey,'locations'),
+    withFetchGoogleSheet(sheetKey,'flows'),
   )(({ locations, flows }: {
     locations: Location[]
     flows: Flow[]

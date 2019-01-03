@@ -1,18 +1,18 @@
 # Blue Arrow Map - light
 
+Upload your data to Google Sheets to visualize as a flow map.
 
-## Examples
+[Try in action](https://blue-arrow-map-light.netlify.com/)
 
-[London bicycle hire](https://blue-arrow-map-light.netlify.com/1zNbTBLInPOBcCwCDdoSdnnUDdOfDyStFdhPC6nJmBl8)
-[NYC citibike](https://blue-arrow-map-light.netlify.com/1IQ0txD09cJ8wsQRSux5AoZfG6eIM-cx6RvVfszZ_ScE)
-[Chicago taxis](https://blue-arrow-map-light.netlify.com/1fhX98NFv5gAkkjB2YFCm50-fplFpmWVAZby3dmm9cgQ)
+## Running locally
 
-
-## Running
-
-First install dependencies:
+Install dependencies:
 
     npm install
+
+Add `.env` file to the project root with a [Mapbox access token](https://www.mapbox.com/help/define-access-token/):
+
+    REACT_APP_MapboxAccessToken=Your_Own_Mapbox_Access_Token_Goes_Here
 
 Then run:
 
