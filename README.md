@@ -1,6 +1,10 @@
 # Blue Arrow Map - light
 
-Upload your data to Google Sheets to visualize as a flow map.
+This app can render a geographic flow map visualization from a spreadsheet published on Google Sheets.
+
+It can be used to visualize movements of people or goods between pairs of geographic locations (Origin-Destination data).
+
+
 
 [Try in action](https://blue-arrow-map-light.netlify.com/)
 
