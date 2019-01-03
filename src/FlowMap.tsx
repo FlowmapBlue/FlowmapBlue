@@ -143,9 +143,9 @@ class FlowMap extends React.Component<Props, State> {
             <LocationTotalsLegend colors={colors} />
           </LegendBox>
         </>}
-        <LegendBox top={10} left={10}>
-          <Title fontSize={20} />
-        </LegendBox>
+        <div style={{ position: 'absolute', left: 15, top: 15 }}>
+          <Title fontSize={25} />
+        </div>
       </>
     )
   }
