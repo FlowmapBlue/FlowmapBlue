@@ -3,11 +3,12 @@
   command = "npm run build"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/spreadsheets/*"
+  to = "https://docs.google.com"
+  force = true
   status = 200
 
 [[redirects]]
-  from = "/spreadsheets/*"
-  to = "https://docs.google.com"
+  from = "/*"
+  to = "/index.html"
   status = 200
