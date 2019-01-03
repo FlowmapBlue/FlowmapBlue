@@ -10,9 +10,7 @@ import LegendBox from './LegendBox'
 const MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
 const CONTROLLER_OPTIONS = {
   dragRotate: false,
-  touchZoom: false,
   touchRotate: false,
-  doubleClickZoom: false,
 }
 
 interface Location {
