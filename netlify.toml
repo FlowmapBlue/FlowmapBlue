@@ -6,3 +6,8 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/spreadsheets"
+  to = "https://docs.google.com"
+  status = 200
