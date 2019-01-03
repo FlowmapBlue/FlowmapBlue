@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 
 const examples = [
   { key: '1zNbTBLInPOBcCwCDdoSdnnUDdOfDyStFdhPC6nJmBl8', name: 'London bicycle hire' },
@@ -28,9 +29,12 @@ const Intro = () =>
           {
             examples.map(({ key, name }) =>
               <li key={key}>
-                <a href={`/${key}`}>{name}</a>
+                <Link to={`/${key}`}>{name}</Link>
                 {` `}
-                (<a href={`https://docs.google.com/spreadsheets/d/${key}`}>spreadsheet</a>)
+                (<a
+                  href={`https://docs.google.com/spreadsheets/d/${key}`}
+                  target="_blank" rel="noopener"
+                >spreadsheet</a>)
               </li>
             )
           }
