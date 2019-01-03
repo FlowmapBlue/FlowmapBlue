@@ -89,12 +89,14 @@ class FlowMap extends React.Component<Props, State> {
             [
               window.innerWidth,
               window.innerHeight,
-            ],),
+            ],
+            { pad: 0.05 }
+            ),
           minPitch: 0,
           maxPitch: 0,
           bearing: 0,
           pitch: 0,
-          transitionDuration: 4000,
+          transitionDuration: 2000,
           transitionInterpolator: new FlyToInterpolator(),
           transitionEasing: d3ease.easeCubic,
         }
