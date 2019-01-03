@@ -4,8 +4,7 @@
 
 [[redirects]]
   from = "/spreadsheets/*"
-  to = "https://docs.google.com"
-  force = true
+  to = "https://docs.google.com/:splat"
   status = 200
 
 [[redirects]]
