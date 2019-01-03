@@ -1,7 +1,6 @@
 import * as React from 'react'
 
 const examples = [
-  { key: 'vfgdfgd', name: 'bug' },
   { key: '1zNbTBLInPOBcCwCDdoSdnnUDdOfDyStFdhPC6nJmBl8', name: 'London bicycle hire' },
   { key: '1IQ0txD09cJ8wsQRSux5AoZfG6eIM-cx6RvVfszZ_ScE', name: 'NYC citibike' },
   { key: '1fhX98NFv5gAkkjB2YFCm50-fplFpmWVAZby3dmm9cgQ', name: 'Chicago taxis' },
