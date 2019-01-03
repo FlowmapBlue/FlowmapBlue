@@ -8,6 +8,12 @@ import withFetchCsv, { pipe } from './withFetchCsv'
 import LegendBox from './LegendBox'
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
+const CONTROLLER_OPTIONS = {
+  dragRotate: false,
+  touchZoom: false,
+  touchRotate: false,
+  doubleClickZoom: false,
+}
 
 interface Location {
   id: string
@@ -31,15 +37,24 @@ const FlowMap = ({ sheetKey }: { sheetKey: string }) => {
     flows: Flow[]
   }) => {
     const getLocationCentroid = (location: Location): [number, number] => [+location.lon, +location.lat]
-    const initialViewState = fitLocationsInView(locations, getLocationCentroid, [
-      window.innerWidth,
-      window.innerHeight,
-    ])
+    const initialViewState = {
+      ...fitLocationsInView(
+        locations,
+        getLocationCentroid,
+        [
+          window.innerWidth,
+          window.innerHeight,
+        ],),
+      minPitch: 0,
+      maxPitch: 0,
+      bearing: 0,
+      pitch: 0,
+    }
     return (
       <>
         <DeckGL
           style={{ mixBlendMode: 'multiply' }}
-          controller={true}
+          controller={CONTROLLER_OPTIONS}
           initialViewState={initialViewState}
           layers={[
             new FlowMapLayer({
