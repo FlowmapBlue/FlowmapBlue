@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import * as React from 'react'
 import {StaticMap} from 'react-map-gl'
 import DeckGL from 'deck.gl'
 import FlowMapLayer from 'flowmap.gl'
@@ -7,7 +7,7 @@ import geoViewport from '@mapbox/geo-viewport'
 const MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
 
 const getInitialViewport = () => {
-  const bbox = [5.956453645364537, 45.818, 10.492, 47.808]
+  const bbox: [number, number, number, number] = [5.956453645364537, 45.818, 10.492, 47.808]
   const { center: [longitude, latitude], zoom } =
     geoViewport.viewport(
       bbox,
@@ -34,7 +34,7 @@ const colors = {
 
 
 
-export default class App extends Component {
+export default class App extends React.Component {
   state = {
     locations: null,
     flows: null,
@@ -56,6 +56,7 @@ export default class App extends Component {
     if (locations && flows) {
       layers.push(
         new FlowMapLayer({
+          id: 'flowmap',
           colors,
           locations,
           flows,
@@ -78,7 +79,10 @@ export default class App extends Component {
         controller={true}
         layers={layers}
       >
-        <StaticMap mapboxApiAccessToken={MAPBOX_TOKEN} />
+        <StaticMap
+          width="100%"
+          height="100%"
+          mapboxApiAccessToken={MAPBOX_TOKEN} />
       </DeckGL>
     )
   }
