@@ -4,6 +4,9 @@ Upload your data to Google Sheets to visualize as a flow map.
 
 [Try in action](https://blue-arrow-map-light.netlify.com/)
 
+[![image](https://user-images.githubusercontent.com/351828/50651937-31146d00-0f85-11e9-88b2-b18ec6e4553f.png)](https://blue-arrow-map-light.netlify.com/1zNbTBLInPOBcCwCDdoSdnnUDdOfDyStFdhPC6nJmBl8)
+
+
 ## Running locally
 
 Install dependencies:
