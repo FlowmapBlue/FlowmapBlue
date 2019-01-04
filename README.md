@@ -1,4 +1,4 @@
-# flowmap.blue - light
+# flowmap.blue
 
 This app can render a geographic flow map visualization from a spreadsheet published on Google Sheets.
 
