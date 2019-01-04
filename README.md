@@ -1,4 +1,4 @@
-# BlueArrowMap - light
+# flowmap.blue - light
 
 This app can render a geographic flow map visualization from a spreadsheet published on Google Sheets.
 
@@ -7,9 +7,9 @@ It can be used to visualize numbers of movements of people or goods between pair
 
 
 
-[Try in action](https://blue-arrow-map-light.netlify.com/)
+[Try in action](http://flowmap.blue/)
 
-[![image](https://user-images.githubusercontent.com/351828/50651937-31146d00-0f85-11e9-88b2-b18ec6e4553f.png)](https://blue-arrow-map-light.netlify.com/1zNbTBLInPOBcCwCDdoSdnnUDdOfDyStFdhPC6nJmBl8)
+[![image](https://user-images.githubusercontent.com/351828/50651937-31146d00-0f85-11e9-88b2-b18ec6e4553f.png)](http://flowmap.blue/1zNbTBLInPOBcCwCDdoSdnnUDdOfDyStFdhPC6nJmBl8)
 
 
 ## Running locally

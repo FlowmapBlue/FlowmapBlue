@@ -15,7 +15,7 @@ const Title = ({ fontSize = 20 }: Props) => {
       textShadow: `1px -1px 1px ${shadow}, 1px 1px 1px ${shadow}, -1px -1px 1px ${shadow}, -1px 1px 1px ${shadow}`,
       color: '#fff',
     }}>
-      BlueArrowMap
+      flowmap.blue
     </div>
   </Link>
 }

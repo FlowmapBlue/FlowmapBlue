@@ -66,8 +66,8 @@ const Intro = () =>
             </li>
           <li>Copy the key of your spreadsheet from its URL. It comes right after docs.google.com/spreadsheets/d/</li>
           <li>Open{` `}
-            <a href="https://blue-arrow-map-light.netlify.com/YOUR_GOOGLE_SPREADSHEET_KEY">
-              https://blue-arrow-map-light.netlify.com/YOUR_GOOGLE_SPREADSHEET_KEY
+            <a href="http://flowmap.blue/YOUR_GOOGLE_SPREADSHEET_KEY">
+              https://flowmap.blue/YOUR_GOOGLE_SPREADSHEET_KEY
             </a>
           </li>
         </ol>
@@ -83,7 +83,7 @@ const Intro = () =>
       </section>
     </section>
 
-    <a href="https://github.com/ilyabo/blue-arrow-map-light">
+    <a href="https://github.com/ilyabo/flowmap.blue">
       <img
         style={{
           position: 'absolute', top: 0, right: 0, border: 0,
