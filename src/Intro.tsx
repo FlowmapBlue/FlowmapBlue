@@ -11,7 +11,7 @@ const examples = [
 const Intro = () =>
   <>
     <section className="intro">
-      <h1><Title fontSize={39} /></h1>
+      <h1><Title fontSize={35} /></h1>
 
       <section>
         <p>

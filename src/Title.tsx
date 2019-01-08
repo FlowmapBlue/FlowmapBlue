@@ -18,7 +18,12 @@ const Title = ({ fontSize = 20 }: Props) => {
       display: 'flex',
       alignItems: 'center',
     }}>
-      <img src={logo} height={fontSize * 1.2} style={{ marginRight: fontSize / 5 }}/>
+      <img
+        alt="flowmap.blue logo"
+        src={logo}
+        height={fontSize * 1.3}
+        style={{ marginRight: fontSize / 5 }}
+      />
       flowmap.blue
     </div>
   </Link>
