@@ -1,7 +1,7 @@
 import DeckGL, { MapController } from 'deck.gl'
 import * as React from 'react'
-import { FlyToInterpolator, StaticMap } from 'react-map-gl'
-import FlowMapLayer, { LocationTotalsLegend } from 'flowmap.gl'
+import { FlyToInterpolator, StaticMap, ViewStateChangeInfo } from 'react-map-gl'
+import FlowMapLayer, { FlowLayerPickingInfo, LocationTotalsLegend, PickingType } from 'flowmap.gl'
 import { colors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
 import withFetchSheets from './withFetchGoogleSheet'
@@ -40,19 +40,41 @@ type Props = {
 
 type ViewState = any
 
+enum HighlightType {
+  LOCATION = 'location',
+  FLOW = 'flow',
+}
+
+interface LocationHighlight {
+  type: HighlightType.LOCATION;
+  locationId: string;
+}
+
+interface FlowHighlight {
+  type: HighlightType.FLOW;
+  flow: Flow;
+}
+
+type Highlight = LocationHighlight | FlowHighlight;
+
 type State = {
   viewState: ViewState
   locations: Location[] | null
+  highlight?: Highlight;
+  selectedLocationIds?: string[];
 }
 
-const getLocationCentroid = (location: Location): [number, number] => [+location.lon, +location.lat]
 
+const getFlowMagnitude = (flow: Flow) => +flow.count
+const getFlowOriginId = (flow: Flow) => flow.origin
+const getFlowDestId = (flow: Flow) => flow.dest
+const getLocationId = (loc: Location) => loc.id
+const getLocationCentroid = (location: Location): [number, number] => [+location.lon, +location.lat]
 
 const initialViewState = getInitialViewState([ -180, -70, 180, 70 ]);
 
 class FlowMap extends React.Component<Props, State> {
-
-  state = {
+  readonly state: State = {
     viewState: initialViewState,
     locations: null,
   }
@@ -68,12 +90,14 @@ class FlowMap extends React.Component<Props, State> {
           locations,
           flows,
           getLocationCentroid,
-          getFlowMagnitude: (flow: Flow) => +flow.count,
-          getFlowOriginId: (flow: Flow) => flow.origin,
-          getFlowDestId: (flow: Flow) => flow.dest,
-          getLocationId: (loc: Location) => loc.id,
+          getFlowMagnitude,
+          getFlowOriginId,
+          getFlowDestId,
+          getLocationId,
           varyFlowColorByMagnitude: true,
           showTotals: true,
+          onHover: this.handleFlowMapHover,
+          onClick: this.handleFlowMapClick,
         }),
       )
     }
@@ -108,9 +132,67 @@ class FlowMap extends React.Component<Props, State> {
     return null
   }
 
-  handleViewStateChange = ({ viewState }: { viewState: ViewState }) => {
+  handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
     this.setState({ viewState })
   }
+
+
+  private highlight(highlight: Highlight | undefined) {
+    this.setState({ highlight });
+  }
+
+  private handleFlowMapHover = ({ type, object }: FlowLayerPickingInfo) => {
+    switch (type) {
+      case PickingType.FLOW: {
+        if (!object) {
+          this.highlight(undefined);
+        } else {
+          this.highlight({
+            type: HighlightType.FLOW,
+            flow: object,
+          });
+        }
+        break;
+      }
+      case PickingType.LOCATION: {
+        if (!object) {
+          this.highlight(undefined);
+        } else {
+          this.highlight({
+            type: HighlightType.LOCATION,
+            locationId: getLocationId!(object),
+          });
+        }
+        break;
+      }
+      case PickingType.LOCATION_AREA: {
+        this.highlight(undefined);
+        break;
+      }
+    }
+  };
+
+  private handleFlowMapClick = ({ type, object }: FlowLayerPickingInfo) => {
+    switch (type) {
+      case PickingType.LOCATION:
+      // fall through
+      case PickingType.LOCATION_AREA: {
+        if (object) {
+          this.setState(state => ({
+            ...state,
+            selectedLocationIds: [getLocationId!(object)],
+          }));
+        }
+        break;
+      }
+    }
+  };
+
+  private handleKeyDown = (evt: Event) => {
+    if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
+      this.setState({ selectedLocationIds: undefined });
+    }
+  };
 
   render() {
     const { flows, spreadSheetKey } = this.props
@@ -129,8 +211,7 @@ class FlowMap extends React.Component<Props, State> {
         />
         {flows &&
         <>
-          <LegendBox bottom={35} right={10}>
-            {`Showing ${flows.length} flows. `}
+          <LegendBox bottom={22} right={0}>
             <a
               href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
               target="_blank"
@@ -139,7 +220,8 @@ class FlowMap extends React.Component<Props, State> {
               Data source
             </a>
           </LegendBox>
-          <LegendBox bottom={35} left={10}>
+          <LegendBox bottom={35} left={0}>
+            <div style={{ textAlign: 'center', marginBottom: 7 }}><b>Location totals</b></div>
             <LocationTotalsLegend colors={colors} />
           </LegendBox>
         </>}

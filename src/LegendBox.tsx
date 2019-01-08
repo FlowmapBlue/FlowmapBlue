@@ -11,10 +11,9 @@ export interface LegendBoxProps {
 const styles = {
   outer: {
     position: 'absolute' as 'absolute',
-    background: '#fff',
+    background: 'rgba(255, 255, 255, 0.6)',
     padding: 10,
     borderRadius: 4,
-    border: '1px solid #ccc',
     fontFamily: 'sans-serif',
     fontSize: 11,
   },
