@@ -81,6 +81,7 @@ class FlowMap extends React.Component<Props, State> {
 
   getLayers() {
     const { locations, flows } = this.props
+    const { highlight, selectedLocationIds } = this.state;
     const layers = []
     if (locations && flows) {
       layers.push(
@@ -96,6 +97,9 @@ class FlowMap extends React.Component<Props, State> {
           getLocationId,
           varyFlowColorByMagnitude: true,
           showTotals: true,
+          selectedLocationIds,
+          highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
+          highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
           onHover: this.handleFlowMapHover,
           onClick: this.handleFlowMapClick,
         }),
@@ -132,10 +136,17 @@ class FlowMap extends React.Component<Props, State> {
     return null
   }
 
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown)
+  }
+
   handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
     this.setState({ viewState })
   }
-
 
   private highlight(highlight: Highlight | undefined) {
     this.setState({ highlight });
@@ -190,9 +201,12 @@ class FlowMap extends React.Component<Props, State> {
 
   private handleKeyDown = (evt: Event) => {
     if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
-      this.setState({ selectedLocationIds: undefined });
+      this.setState({
+        selectedLocationIds: undefined,
+        highlight: undefined,
+      })
     }
-  };
+  }
 
   render() {
     const { flows, spreadSheetKey } = this.props
