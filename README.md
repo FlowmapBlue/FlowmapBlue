@@ -9,7 +9,7 @@ It can be used to visualize numbers of movements of people or goods between pair
 
 [Try in action](http://flowmap.blue/)
 
-[![image](https://user-images.githubusercontent.com/351828/50651937-31146d00-0f85-11e9-88b2-b18ec6e4553f.png)](http://flowmap.blue/1zNbTBLInPOBcCwCDdoSdnnUDdOfDyStFdhPC6nJmBl8)
+[![image](https://user-images.githubusercontent.com/351828/50837559-36dec980-135c-11e9-81f1-a7629cdb5766.png)](http://flowmap.blue/1zNbTBLInPOBcCwCDdoSdnnUDdOfDyStFdhPC6nJmBl8)
 
 
 ## Running locally
