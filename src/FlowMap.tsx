@@ -189,12 +189,21 @@ class FlowMap extends React.Component<Props, State> {
       // fall through
       case PickingType.LOCATION_AREA: {
         if (object) {
-          this.setState(state => ({
-            ...state,
-            selectedLocationIds: [getLocationId!(object)],
-          }));
+          this.setState(state => {
+            const { selectedLocationIds } = state
+            const locationId = getLocationId!(object)
+            return {
+              ...state,
+              ...(selectedLocationIds && selectedLocationIds.indexOf(locationId) >= 0 ? {
+                selectedLocationIds: undefined,
+                highlight: undefined,
+              }: {
+                selectedLocationIds: [locationId],
+              })
+            }
+          })
         }
-        break;
+        break
       }
     }
   };
