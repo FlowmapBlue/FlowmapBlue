@@ -6,3 +6,8 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "https://blue-arrow-map-light.netlify.com/*"
+  to = "https://flowmap.blue/"
+  status = 301
