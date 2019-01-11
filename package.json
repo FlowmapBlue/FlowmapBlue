@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/core": "^10.0.6",
+    "@emotion/styled": "^10.0.6",
     "@mapbox/geo-viewport": "^0.4.0",
     "@types/d3-dsv": "^1.0.35",
     "@types/d3-ease": "^1.0.7",
+    "@types/d3-format": "^1.3.0",
     "@types/d3-geo": "^1.10.3",
     "@types/jest": "^23.3.11",
     "@types/mapbox__geo-viewport": "^0.3.1",
@@ -14,8 +17,10 @@
     "@types/react-dom": "^16.0.11",
     "@types/react-map-gl": "^4.0.1",
     "@types/react-router-dom": "^4.3.1",
+    "@types/viewport-mercator-project": "^5.2.1",
     "d3-dsv": "^1.0.10",
     "d3-ease": "^1.0.5",
+    "d3-format": "^1.3.2",
     "d3-geo": "^1.11.3",
     "deck.gl": "^6.3.3",
     "flowmap.gl": "github:teralytics/flowmap.gl#improve-highlighting",
@@ -23,9 +28,11 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-map-gl": "^4.0.6",
+    "react-popper": "^1.3.2",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.3",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.2",
+    "viewport-mercator-project": "^6.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

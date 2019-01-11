@@ -81,6 +81,14 @@ const Intro = () =>
           <a href="https://d3js.org/">d3</a>
         </p>
       </section>
+      <section>
+        <h2>Credits</h2>
+        <p>
+          Developed by
+          <a href="https://ilya.boyandin.me">Ilya Boyandin</a> at {` `}
+          <a href="https://www.teralytics.net">Teralytics</a>.
+        </p>
+      </section>
     </section>
 
     <a href="https://github.com/ilyabo/flowmap.blue">

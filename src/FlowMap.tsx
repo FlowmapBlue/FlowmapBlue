@@ -1,13 +1,21 @@
 import DeckGL, { MapController } from 'deck.gl'
 import * as React from 'react'
-import { FlyToInterpolator, StaticMap, ViewStateChangeInfo } from 'react-map-gl'
-import FlowMapLayer, { FlowLayerPickingInfo, LocationTotalsLegend, PickingType } from 'flowmap.gl'
+import { FlyToInterpolator, StaticMap, ViewportProps, ViewState, ViewStateChangeInfo } from 'react-map-gl'
+import FlowMapLayer, {
+  FlowLayerPickingInfo,
+  LocationTotalsLegend,
+  PickingType
+} from 'flowmap.gl'
+import WebMercatorViewport from 'viewport-mercator-project'
 import { colors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
 import withFetchSheets from './withFetchGoogleSheet'
 import LegendBox from './LegendBox'
 import * as d3ease from 'd3-ease'
 import Title from './Title';
+import { findDOMNode } from 'react-dom';
+import { FlowTooltipContent, LocationTooltipContent } from './TooltipContent';
+import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
 const CONTROLLER_OPTIONS = {
@@ -16,16 +24,14 @@ const CONTROLLER_OPTIONS = {
   touchRotate: false,
 }
 
-
-
-interface Location {
+export interface Location {
   id: string
   lon: string
   lat: string
   name: string
 }
 
-interface Flow {
+export interface Flow {
   origin: string
   dest: string
   count: string
@@ -37,8 +43,6 @@ type Props = {
   flows: Flow[] | null
   spreadSheetKey: string
 }
-
-type ViewState = any
 
 enum HighlightType {
   LOCATION = 'location',
@@ -58,14 +62,15 @@ interface FlowHighlight {
 type Highlight = LocationHighlight | FlowHighlight;
 
 type State = {
-  viewState: ViewState
+  viewState: ViewState | ViewportProps
   locations: Location[] | null
-  highlight?: Highlight;
-  selectedLocationIds?: string[];
+  tooltip?: TooltipProps
+  highlight?: Highlight
+  selectedLocationIds?: string[]
 }
 
 
-const getFlowMagnitude = (flow: Flow) => +flow.count
+export const getFlowMagnitude = (flow: Flow) => +flow.count
 const getFlowOriginId = (flow: Flow) => flow.origin
 const getFlowDestId = (flow: Flow) => flow.dest
 const getLocationId = (loc: Location) => loc.id
@@ -79,13 +84,15 @@ class FlowMap extends React.Component<Props, State> {
     locations: null,
   }
 
+  private flowMapLayer: FlowMapLayer | undefined = undefined;
+
   getLayers() {
     const { locations, flows } = this.props
     const { highlight, selectedLocationIds } = this.state;
     const layers = []
     if (locations && flows) {
       layers.push(
-        new FlowMapLayer({
+        this.flowMapLayer = new FlowMapLayer({
           id: 'flow-map-layer',
           colors,
           locations,
@@ -100,8 +107,8 @@ class FlowMap extends React.Component<Props, State> {
           selectedLocationIds,
           highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
           highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
-          onHover: this.handleFlowMapHover,
-          onClick: this.handleFlowMapClick,
+          onHover: this.handleHover,
+          onClick: this.handleClick,
         }),
       )
     }
@@ -109,7 +116,7 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State): State | null {
-    const {locations} = props
+    const { locations } = props
     if (locations != null && locations !== state.locations) {
       return {
         locations,
@@ -136,6 +143,8 @@ class FlowMap extends React.Component<Props, State> {
     return null
   }
 
+  getMercator = () => new WebMercatorViewport(this.state.viewState as ViewportProps)
+
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown)
   }
@@ -144,46 +153,122 @@ class FlowMap extends React.Component<Props, State> {
     document.removeEventListener('keydown', this.handleKeyDown)
   }
 
+  hideTooltip = () => {
+    this.setState({
+      tooltip: undefined
+    })
+  }
+
+  showFlowTooltip = (pos: [number, number], flow: Flow) => {
+    const [x, y] = pos
+    const { flowMapLayer } = this
+    if (!flowMapLayer) return
+    // TODO: add it to PickingInfo in flowmap.gl
+    const getLocationById = flowMapLayer.state.selectors.getLocationByIdGetter(flowMapLayer.props)
+    const origin = getLocationById(flow.origin)
+    const dest = getLocationById(flow.dest)
+    const r = 5
+    this.showTooltip(
+      {
+        left: x - r,
+        top: y - r,
+        width: r * 2,
+        height: r * 2,
+      },
+      <FlowTooltipContent
+        flow={flow}
+        origin={origin}
+        dest={dest}
+      />
+    )
+  }
+
+  showLocationTooltip = (location: Location) => {
+    const [x, y] = this.getMercator().project(getLocationCentroid(location))
+    const { flowMapLayer } = this
+    if (!flowMapLayer) return
+      // TODO: add the circle bounds to PickingInfo in flowmap.gl
+    const getRadius = flowMapLayer.state.selectors.getLocationCircleRadiusGetter(flowMapLayer.props)
+    const r = getRadius({ location, type: 'inner' }) + 5
+    this.showTooltip(
+      {
+        left: x - r,
+        top: y - r,
+        width: r * 2,
+        height: r * 2,
+      },
+      <LocationTooltipContent location={location} />
+    )
+  }
+
+  showTooltip = (bounds: TargetBounds, content: React.ReactNode) => {
+    const container = findDOMNode(this) as Element
+    if (!container) return
+    const { top, left } = container.getBoundingClientRect()
+    this.setState({
+      tooltip: {
+        target: {
+          ...bounds,
+          left: left + bounds.left,
+          top: top + bounds.top,
+        },
+        placement: 'top',
+        content,
+      }
+    })
+  }
+
   handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
-    this.setState({ viewState })
+    this.setState({
+      viewState,
+      tooltip: undefined,
+      highlight: undefined,
+    })
   }
 
   private highlight(highlight: Highlight | undefined) {
     this.setState({ highlight });
   }
 
-  private handleFlowMapHover = ({ type, object }: FlowLayerPickingInfo) => {
+  private handleHover = ({ type, object, x, y }: FlowLayerPickingInfo) => {
     switch (type) {
       case PickingType.FLOW: {
-        if (!object) {
-          this.highlight(undefined);
-        } else {
+        if (object) {
           this.highlight({
             type: HighlightType.FLOW,
             flow: object,
-          });
+          })
+          this.showFlowTooltip(
+            [x, y],
+            object as Flow
+          )
+        } else {
+          this.highlight(undefined);
+          this.hideTooltip()
         }
-        break;
+        break
       }
       case PickingType.LOCATION: {
-        if (!object) {
-          this.highlight(undefined);
-        } else {
+        if (object) {
           this.highlight({
             type: HighlightType.LOCATION,
             locationId: getLocationId!(object),
-          });
+          })
+          this.showLocationTooltip(object as Location)
+        } else {
+          this.highlight(undefined);
+          this.hideTooltip()
         }
-        break;
+        break
       }
-      case PickingType.LOCATION_AREA: {
-        this.highlight(undefined);
-        break;
+      default: {
+        this.highlight(undefined)
+        this.hideTooltip()
       }
     }
   };
 
-  private handleFlowMapClick = ({ type, object }: FlowLayerPickingInfo) => {
+  private handleClick = ({ type, object }: FlowLayerPickingInfo) => {
     switch (type) {
       case PickingType.LOCATION:
       // fall through
@@ -199,7 +284,8 @@ class FlowMap extends React.Component<Props, State> {
                 highlight: undefined,
               }: {
                 selectedLocationIds: [locationId],
-              })
+              }),
+              tooltip: undefined,
             }
           })
         }
@@ -213,13 +299,14 @@ class FlowMap extends React.Component<Props, State> {
       this.setState({
         selectedLocationIds: undefined,
         highlight: undefined,
+        tooltip: undefined,
       })
     }
   }
 
   render() {
     const { flows, spreadSheetKey } = this.props
-    const { viewState } = this.state
+    const { viewState, tooltip } = this.state
     return (
       <>
         <DeckGL
@@ -251,6 +338,7 @@ class FlowMap extends React.Component<Props, State> {
         <div style={{ position: 'absolute', left: 15, top: 15 }}>
           <Title fontSize={25} />
         </div>
+        {tooltip && <Tooltip {...tooltip} />}
       </>
     )
   }
