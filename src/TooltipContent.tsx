@@ -47,11 +47,11 @@ export const LocationTooltipContent = ({ location }: { location: Location }) => 
     <Outer width={130}>
       <Title>{location.name || location.id}</Title>
       <Row>
-        <Label>Incoming</Label>
+        <Label>Incoming trips</Label>
         <Value>{formatCount(properties.totalIn)}</Value>
       </Row>
       <Row>
-        <Label>Outgoing</Label>
+        <Label>Outgoing trips</Label>
         <Value>{formatCount(properties.totalOut)}</Value>
       </Row>
       <Row>
