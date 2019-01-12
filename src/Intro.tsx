@@ -24,7 +24,7 @@ const Intro = () =>
         <p>
           This app can render a geographic flow map visualization
           from a spreadsheet published on
-          {` `}<a href="https://docs.google.com/spreadsheets/">Google Sheets</a>.
+          {` `}<a href="https://docs.google.com/spreadsheets/" target="_blank" rel="noopener">Google Sheets</a>.
         </p>
         <p>
           It can be used to visualize numbers of movements of people or goods
@@ -56,7 +56,7 @@ const Intro = () =>
           You can visualize your own dataset with the app:
         </p>
         <ol>
-          <li>Create a new <a href="https://docs.google.com/spreadsheets/">Google Spreadsheet</a></li>
+          <li>Create a new <a href="https://docs.google.com/spreadsheets/" target="_blank" rel="noopener">Google Spreadsheet</a></li>
           <li>Add data to your spreadsheet.
             The spreadsheet must have two sheets in it named "<b>locations</b>" and "<b>flows</b>".
             The <b>locations</b> sheet must have these three columns: <b>id</b>, <b>lat</b>, <b>lon</b>.
@@ -73,7 +73,7 @@ const Intro = () =>
             {/*</li>*/}
           <li>Copy the key of your spreadsheet from its URL. It comes right after docs.google.com/spreadsheets/d/</li>
           <li>Open{` `}
-            <a href="http://flowmap.blue/YOUR_SPREADSHEET_KEY">
+            <a href="http://flowmap.blue/YOUR_SPREADSHEET_KEY" target="_blank" rel="noopener">
               https://flowmap.blue/YOUR_SPREADSHEET_KEY
             </a>
           </li>
@@ -83,20 +83,20 @@ const Intro = () =>
         <h2>Need help?</h2>
         <p>
           <a href="https://github.com/ilyabo/flowmap.blue/issues" target="_blank" rel="noopener">Submit an issue</a>{` or `}
-          <a href="mailto:ilya@boyandin.me?subject=flowmap.blue">ask me</a>.
+          <a href="mailto:ilya@boyandin.me?subject=flowmap.blue">write me an email</a>.
         </p>
       </section>
       <section>
         <h2>Credits</h2>
         <p>
           Developed by {` `}
-          <a href="https://ilya.boyandin.me">Ilya Boyandin</a>  {` using `}
-          <a href="https://github.com/teralytics/flowmap.gl">flowmap.gl</a>,{` `}
-          <a href="http://deck.gl">deck.gl</a>,{` `}
-          <a href="https://github.com/mapbox/mapbox-gl-js">mapbox</a>,{` `}
-          <a href="https://d3js.org/">d3</a>
-          {` and with the kind support from `}
-          <a href="https://www.teralytics.net">Teralytics</a>.
+          <a href="https://ilya.boyandin.me" target="_blank" rel="noopener">Ilya Boyandin</a>  {` using `}
+          <a href="https://github.com/teralytics/flowmap.gl" target="_blank" rel="noopener">flowmap.gl</a>,{` `}
+          <a href="http://deck.gl" target="_blank" rel="noopener">deck.gl</a>,{` `}
+          <a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">mapbox</a>,{` `}
+          <a href="https://d3js.org/" target="_blank" rel="noopener">d3</a>
+          {` with the kind support from `}
+          <a href="https://www.teralytics.net" target="_blank" rel="noopener">Teralytics</a>.
         </p>
       </section>
     </section>

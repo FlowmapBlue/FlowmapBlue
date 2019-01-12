@@ -414,7 +414,7 @@ class FlowMap extends React.Component<Props, State> {
             {Array.from(unknownLocations).sort().join(', ')}
           </WarningBox>
         }
-        <TitleBox top={55} left={0}>
+        <TitleBox top={60} left={0}>
           <Column spacing={10}>
             {title &&
             <div>

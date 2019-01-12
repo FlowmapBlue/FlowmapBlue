@@ -17,6 +17,7 @@ const LogoImage = styled.img(({ size }: { size: number }) => `
 
 const SHADOW_COLOR = ColorScheme.primary
 const LogoText = styled.div(({ fontSize }: { fontSize: number }) => ({
+  // fontFamily: "'Titillium Web', sans-serif",
   fontSize,
   color: '#fff',
   fontWeight: 'bold',
@@ -25,11 +26,9 @@ const LogoText = styled.div(({ fontSize }: { fontSize: number }) => ({
     1px 1px 1px ${SHADOW_COLOR}, 
     -1px -1px 1px ${SHADOW_COLOR}, 
     -1px 1px 1px ${SHADOW_COLOR}`,
-  position: 'relative',
-  top: Math.floor(fontSize * 0.1),
 }))
 
-const Logo = ({ fontSize = 28 }: Props) => {
+const Logo = ({ fontSize = 25 }: Props) => {
   return <Link to="/" style={{ textDecoration: 'none' }}>
     <Row spacing={fontSize / 5}>
       <LogoImage
