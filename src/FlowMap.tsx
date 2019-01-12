@@ -7,10 +7,11 @@ import FlowMapLayer, {
   PickingType
 } from 'flowmap.gl'
 import WebMercatorViewport from 'viewport-mercator-project'
+import { createSelector } from 'reselect'
 import { colors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
 import withFetchSheets from './withFetchGoogleSheet'
-import LegendBox from './LegendBox'
+import LegendBox, { WarningBox, LegendTitle, WarningTitle } from './LegendBox'
 import * as d3ease from 'd3-ease'
 import Title from './Title';
 import { findDOMNode } from 'react-dom';
@@ -63,7 +64,7 @@ type Highlight = LocationHighlight | FlowHighlight;
 
 type State = {
   viewState: ViewState | ViewportProps
-  locations: Location[] | null
+  lastLocations: Location[] | undefined
   tooltip?: TooltipProps
   highlight?: Highlight
   selectedLocationIds?: string[]
@@ -78,17 +79,55 @@ const getLocationCentroid = (location: Location): [number, number] => [+location
 
 const initialViewState = getInitialViewState([ -180, -70, 180, 70 ]);
 
+
 class FlowMap extends React.Component<Props, State> {
   readonly state: State = {
     viewState: initialViewState,
-    locations: null,
+    lastLocations: undefined,
   }
 
   private flowMapLayer: FlowMapLayer | undefined = undefined;
 
+  getFlows = (props: Props) => props.flows
+  getLocations = (props: Props) => props.locations
+
+  getKnownLocationIds = createSelector(
+    this.getLocations,
+    locations => locations ? new Set(locations.map(getLocationId)) : undefined
+  )
+
+  getFlowsForKnownLocations = createSelector(
+    this.getFlows,
+    this.getKnownLocationIds,
+    (flows, ids) => {
+      if (!ids || !flows) return undefined
+      return flows.filter(flow =>
+        ids.has(getFlowOriginId(flow)) &&
+        ids.has(getFlowDestId(flow))
+      )
+    }
+  )
+
+  getUnknownLocations = createSelector(
+    this.getKnownLocationIds,
+    this.getFlows,
+    this.getFlowsForKnownLocations,
+    (ids, flows, flowsForKnownLocations) => {
+      if (!ids || !flows || !flowsForKnownLocations) return undefined
+      if (flows.length === flowsForKnownLocations.length) return undefined
+      const missing = new Set()
+      for (const flow of flows) {
+        if (!ids.has(getFlowOriginId(flow))) missing.add(getFlowOriginId(flow))
+        if (!ids.has(getFlowDestId(flow))) missing.add(getFlowDestId(flow))
+      }
+      return missing
+    }
+  )
+
   getLayers() {
-    const { locations, flows } = this.props
+    const { locations } = this.props
     const { highlight, selectedLocationIds } = this.state;
+    const flows = this.getFlowsForKnownLocations(this.props)
     const layers = []
     if (locations && flows) {
       layers.push(
@@ -115,11 +154,11 @@ class FlowMap extends React.Component<Props, State> {
     return layers
   }
 
-  static getDerivedStateFromProps(props: Props, state: State): State | null {
+  static getDerivedStateFromProps(props: Props, state: State): Partial<State> | null {
     const { locations } = props
-    if (locations != null && locations !== state.locations) {
+    if (locations != null && locations !== state.lastLocations) {
       return {
-        locations,
+        lastLocations: locations,
         viewState: {
           ...fitLocationsInView(
             locations,
@@ -140,6 +179,7 @@ class FlowMap extends React.Component<Props, State> {
         }
       }
     }
+
     return null
   }
 
@@ -305,8 +345,11 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   render() {
-    const { flows, spreadSheetKey } = this.props
+    const { spreadSheetKey } = this.props
     const { viewState, tooltip } = this.state
+    const unknownLocations = this.getUnknownLocations(this.props);
+    const flows = this.getFlowsForKnownLocations(this.props)
+    const allFlows = this.props.flows;
     return (
       <>
         <DeckGL
@@ -331,10 +374,19 @@ class FlowMap extends React.Component<Props, State> {
             </a>
           </LegendBox>
           <LegendBox bottom={35} left={0}>
-            <div style={{ textAlign: 'center', marginBottom: 7 }}><b>Location totals</b></div>
+            <LegendTitle>Location totals</LegendTitle>
             <LocationTotalsLegend colors={colors} />
           </LegendBox>
         </>}
+        {unknownLocations && flows && allFlows &&
+          <WarningBox top={10} right={10}>
+            <WarningTitle>Warning</WarningTitle>
+            {`${allFlows.length - flows.length} flows were omitted which
+            referred to the following missing locations:`}
+            <br/><br/>
+            {Array.from(unknownLocations).sort().join(', ')}
+          </WarningBox>
+        }
         <div style={{ position: 'absolute', left: 15, top: 15 }}>
           <Title fontSize={25} />
         </div>
