@@ -63,7 +63,7 @@ const Intro = () =>
         <ol>
           <li>Open <a href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA" target="_blank" rel="noopener">this spreadsheet</a> and
             make a copy of it (File / Make a copy…)</li>
-          <li>Add data to the spreadsheet.
+          <li>Add data to the new spreadsheet.
             The spreadsheet has three sheets in it named "<b>properties</b>", "<b>locations</b>" and "<b>flows</b>".
             The <b>properties</b> sheet must have the name and a description for your dataset.
             The <b>locations</b> sheet must have these three columns: <b>id</b>, <b>lat</b>, <b>lon</b>.
