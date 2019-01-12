@@ -1,9 +1,25 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import App from './App'
+import { Global, css } from '@emotion/core'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
-import './styles.css'
 import checkWebglSupport from './checkWebglSupport';
+import { ColorScheme } from './colors';
 
-ReactDOM.render(<App supportsWebGl={checkWebglSupport()} />, document.getElementById('root'))
+const globalStyles = css`
+@import url('https://fonts.googleapis.com/css?family=PT+Sans:400,700');
+
+html, body { font-family: 'PT Sans', sans-serif; }
+a, a:visited { color: ${ColorScheme.primary}; }
+
+section { margin-bottom: 3em; line-height: 1.5em; }
+#no-token-warning { bottom: 30px; top: unset !important; left: 10px !important; }
+`
+ReactDOM.render(
+  <>
+    <Global styles={globalStyles} />
+    <App supportsWebGl={checkWebglSupport()} />
+  </>,
+  document.getElementById('root')
+)

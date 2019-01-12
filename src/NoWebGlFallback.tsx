@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Title from './Title';
+import Logo from './Logo';
 
 export default () =>
   <div style={{
@@ -11,7 +11,7 @@ export default () =>
     justifyContent: 'center',
     flexDirection: 'column',
   }}>
-    <Title fontSize={30}/>
+    <Logo fontSize={30}/>
     <div style={{ marginTop: 20 }}>
       Sorry, but your browser doesn't seem to support WebGL which is required for this app.
     </div>

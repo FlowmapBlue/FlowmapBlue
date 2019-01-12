@@ -11,18 +11,32 @@ import { createSelector } from 'reselect'
 import { colors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
 import withFetchSheets from './withFetchGoogleSheet'
-import LegendBox, { WarningBox, LegendTitle, WarningTitle } from './LegendBox'
+import { LegendBox, WarningBox, LegendTitle, WarningTitle, Box, Title, Absolute, Column, TitleBox } from './Boxes'
 import * as d3ease from 'd3-ease'
-import Title from './Title';
+import Logo from './Logo';
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
+import { Link } from 'react-router-dom';
 
-const MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
+const DEFAULT_MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
 const CONTROLLER_OPTIONS = {
   type: MapController,
   dragRotate: false,
   touchRotate: false,
+}
+
+export interface ConfigProp {
+  property: string
+  value: string
+}
+
+enum ConfigPropName {
+  TITLE = 'title',
+  DESCRIPTION = 'description',
+  SOURCE_NAME = 'source.name',
+  SOURCE_URL = 'source.url',
+  MAPBOX_ACCESS_TOKEN = 'mapbox.accessToken',
 }
 
 export interface Location {
@@ -40,6 +54,7 @@ export interface Flow {
 
 
 type Props = {
+  properties: ConfigProp[] | null
   locations: Location[] | null
   flows: Flow[] | null
   spreadSheetKey: string
@@ -70,7 +85,6 @@ type State = {
   selectedLocationIds?: string[]
 }
 
-
 export const getFlowMagnitude = (flow: Flow) => +flow.count
 const getFlowOriginId = (flow: Flow) => flow.origin
 const getFlowDestId = (flow: Flow) => flow.dest
@@ -90,6 +104,13 @@ class FlowMap extends React.Component<Props, State> {
 
   getFlows = (props: Props) => props.flows
   getLocations = (props: Props) => props.locations
+
+  getConfigPropValue = (name: ConfigPropName) => {
+    const { properties } = this.props
+    if (!properties) return undefined
+    const found = properties.find(prop => prop.property === name)
+    return found ? found.value : undefined
+  }
 
   getKnownLocationIds = createSelector(
     this.getLocations,
@@ -345,11 +366,23 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   render() {
-    const { spreadSheetKey } = this.props
+    const { properties, spreadSheetKey } = this.props
+    // if (!properties) {
+    //   // we need to wait to get mapboxAccessToken
+    //   return <Absolute top={10} left={10}>Loading…</Absolute>
+    // }
     const { viewState, tooltip } = this.state
     const unknownLocations = this.getUnknownLocations(this.props);
     const flows = this.getFlowsForKnownLocations(this.props)
-    const allFlows = this.props.flows;
+    const allFlows = this.props.flows
+    const title = this.getConfigPropValue(ConfigPropName.TITLE)
+    const description = this.getConfigPropValue(ConfigPropName.DESCRIPTION)
+    const sourceUrl = this.getConfigPropValue(ConfigPropName.SOURCE_URL);
+    const sourceName = this.getConfigPropValue(ConfigPropName.SOURCE_NAME);
+    const mapboxAccessToken =
+      properties &&
+      (this.getConfigPropValue(ConfigPropName.MAPBOX_ACCESS_TOKEN) || DEFAULT_MAPBOX_TOKEN)
+
     return (
       <>
         <DeckGL
@@ -359,21 +392,15 @@ class FlowMap extends React.Component<Props, State> {
           onViewStateChange={this.handleViewStateChange}
           layers={this.getLayers()}
           children={({ width, height, viewState }: any) => (
-            <StaticMap mapboxApiAccessToken={MAPBOX_TOKEN} width={width} height={height} viewState={viewState} />
+            mapboxAccessToken && <StaticMap
+              mapboxApiAccessToken={mapboxAccessToken}
+              width={width} height={height} viewState={viewState}
+            />
           )}
         />
         {flows &&
         <>
-          <LegendBox bottom={22} right={0}>
-            <a
-              href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
-              target="_blank"
-              rel="noopener"
-            >
-              Data source
-            </a>
-          </LegendBox>
-          <LegendBox bottom={35} left={0}>
+          <LegendBox bottom={28} right={10}>
             <LegendTitle>Location totals</LegendTitle>
             <LocationTotalsLegend colors={colors} />
           </LegendBox>
@@ -387,9 +414,33 @@ class FlowMap extends React.Component<Props, State> {
             {Array.from(unknownLocations).sort().join(', ')}
           </WarningBox>
         }
-        <div style={{ position: 'absolute', left: 15, top: 15 }}>
-          <Title fontSize={25} />
-        </div>
+        <TitleBox top={55} left={0}>
+          <Column spacing={10}>
+            {title &&
+            <div>
+              <Title>{title}</Title>
+              {description}
+            </div>
+            }
+            {sourceName && sourceUrl &&
+            <div>
+              {'Original data source: '}
+              <>
+                <a href={sourceUrl} target="_blank" rel="noopener">{sourceName}</a>
+              </>
+            </div>}
+            <div>
+              {'Data behind this map is in '}
+              <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
+                 target="_blank"
+                 rel="noopener"
+              >this spreadsheet</a>. You can <Link to="/">publish your own</Link> too.
+            </div>
+          </Column>
+        </TitleBox>
+        <Absolute top={10} left={10}>
+          <Logo />
+        </Absolute>
         {tooltip && <Tooltip {...tooltip} />}
       </>
     )
@@ -397,4 +448,4 @@ class FlowMap extends React.Component<Props, State> {
 }
 
 
-export default withFetchSheets(['locations', 'flows'])(FlowMap as any)
+export default withFetchSheets(['properties', 'locations', 'flows'])(FlowMap as any)

@@ -1,8 +1,12 @@
 import { Colors } from 'flowmap.gl';
 
+export enum ColorScheme {
+  primary = '#137CBD',
+}
+
 export const colors: Colors = {
   flows: {
-    max: '#137CBD',
+    max: ColorScheme.primary,
   },
   locationAreas: {
     outline: 'rgba(92,112,128,0.5)',
