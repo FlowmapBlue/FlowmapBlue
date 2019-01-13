@@ -8,9 +8,10 @@ export interface AbsoluteProps {
   bottom?: number
 }
 
-export const Column = styled.div(({ spacing = 0 }: { spacing?: number }) => `
+export const Column = styled.div(({ spacing = 0, padding = 0 }: { spacing?: number, padding?: number }) => `
   display: flex;
   flex-direction: column;
+  padding: ${padding}px;
   & > * + * { margin-top: ${spacing}px; }
 `)
 
@@ -31,10 +32,10 @@ export const Absolute = styled.div<AbsoluteProps>(({ top, left, right, bottom }:
 
 export const Box = styled(Absolute)`
   background: rgba(255, 255, 255, 0.9);
-  padding: 12px;
+  // padding: 12px;
   border-radius: 4px;
   font-size: 11px;
-  box-shadow: 2px 2px 4px #ccc; 
+  box-shadow: 0 0 4px #aaa; 
 `
 
 export const LegendBox = styled(Box)`
@@ -42,10 +43,10 @@ export const LegendBox = styled(Box)`
 `
 
 export const TitleBox = styled(Box)`
-  max-width: 260px;
-  padding: 15px 15px 15px 20px;
   line-height: 1.3;
   font-size: 13px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 `
 
 export const Title = styled.div`
@@ -57,7 +58,6 @@ export const Title = styled.div`
 export const LegendTitle = styled.div`
   font-weight: bold;
   font-size: 12px;
-  margin-bottom: 7px;
 `
 
 export const WarningTitle = styled(LegendTitle)`
@@ -65,6 +65,7 @@ export const WarningTitle = styled(LegendTitle)`
 `
 
 export const WarningBox = styled(LegendBox)`
+  padding: 12px;
   background: rgba(255, 210, 200, 0.9);
   max-width: 200px;
 `

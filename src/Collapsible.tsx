@@ -1,0 +1,112 @@
+import * as React from 'react'
+import styled from '@emotion/styled';
+
+export enum Direction {
+  LEFT, RIGHT
+}
+
+export interface Props {
+  width: number
+  initialCollapsed?: boolean
+  direction: Direction
+}
+
+export interface State {
+  collapsed: boolean
+}
+
+const Outer = styled.div`
+  display: flex;
+  justify-items: center;
+  flex-direction: row;
+`
+
+const Body = styled.div(({ direction, collapsed, width }: { direction: Direction, collapsed: boolean, width: number }) => `
+  order: ${direction === Direction.LEFT ? 2 : 1};
+  overflow: hidden;
+  max-width: ${collapsed ? 0 : `${width}px`};
+  transition: max-width 0.15s ease-out;  
+`)
+
+const Content = styled.div(({ direction, width }: { direction: Direction, width: number }) => `
+  width: ${width}px;
+`)
+
+const Rotate = styled.div(({ degrees }: { degrees: number }) => `
+  transform-origin: center;
+  transform: rotate(${degrees}deg);
+  transition: transform 0.15s ease-out;  
+`)
+
+const Button = styled.button(({ collapsed, direction }: { collapsed: boolean, direction: Direction }) => `
+  display: flex;
+  order: ${direction === Direction.LEFT ? 1 : 2};  
+  border: none;
+  cursor: pointer;
+  outline: none;
+  font-size: 22px;
+  background-color: #fff;
+  color: #ccc;
+  border-radius: ${collapsed ? 4 : 0}px;
+  transition: background-color 0.25s, border-radius 0.15s;  
+  &:hover {
+    background-color: #eee;
+  }
+`)
+
+export default class Collapsible extends React.Component<Props, State> {
+  static defaultProps = {
+    initialCollapsed: false
+  }
+
+  state: State = {
+    collapsed: this.props.initialCollapsed != null ?
+      this.props.initialCollapsed : Collapsible.defaultProps.initialCollapsed,
+  }
+
+  bodyRef = React.createRef<HTMLDivElement>()
+
+  handleClick = () => {
+    this.setState((state: State) => ({
+      collapsed: !state.collapsed,
+    }))
+  }
+
+  getArrow = () => {
+    const { direction } = this.props
+    const { collapsed } = this.state
+    switch (direction) {
+      case Direction.LEFT:
+        return <Rotate degrees={collapsed ? 180 : 360}>{'<'}</Rotate>
+      case Direction.RIGHT:
+        return <Rotate degrees={collapsed ? 180 : 360}>{'>'}</Rotate>
+    }
+  }
+
+  render() {
+    const { width, direction, children } = this.props
+    const { collapsed } = this.state
+    return (
+      <Outer>
+        <Body
+          ref={this.bodyRef}
+          width={width}
+          direction={direction}
+          collapsed={collapsed}
+        >
+          <Content
+            width={width}
+            direction={direction}
+          >
+          {children}
+          </Content>
+        </Body>
+        <Button
+          collapsed={collapsed}
+          direction={direction}
+          onClick={this.handleClick}
+        > {this.getArrow()}</Button>
+      </Outer>
+    )
+  }
+}

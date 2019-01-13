@@ -1,23 +1,20 @@
 import DeckGL, { MapController } from 'deck.gl'
 import * as React from 'react'
 import { FlyToInterpolator, StaticMap, ViewportProps, ViewState, ViewStateChangeInfo } from 'react-map-gl'
-import FlowMapLayer, {
-  FlowLayerPickingInfo,
-  LocationTotalsLegend,
-  PickingType
-} from 'flowmap.gl'
+import FlowMapLayer, { FlowLayerPickingInfo, LocationTotalsLegend, PickingType } from 'flowmap.gl'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector } from 'reselect'
 import { colors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
 import withFetchSheets from './withFetchGoogleSheet'
-import { LegendBox, WarningBox, LegendTitle, WarningTitle, Box, Title, Absolute, Column, TitleBox } from './Boxes'
+import { Absolute, Column, LegendBox, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
 import * as d3ease from 'd3-ease'
 import Logo from './Logo';
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
+import Collapsible, { Direction } from './Collapsible';
 
 const DEFAULT_MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
 const CONTROLLER_OPTIONS = {
@@ -400,9 +397,16 @@ class FlowMap extends React.Component<Props, State> {
         />
         {flows &&
         <>
-          <LegendBox bottom={28} right={10}>
-            <LegendTitle>Location totals</LegendTitle>
-            <LocationTotalsLegend colors={colors} />
+          <LegendBox bottom={28} right={0}>
+            <Collapsible
+              width={160}
+              direction={Direction.RIGHT}
+            >
+              <Column spacing={10} padding={12}>
+                <LegendTitle>Location totals</LegendTitle>
+                <LocationTotalsLegend colors={colors} />
+              </Column>
+            </Collapsible>
           </LegendBox>
         </>}
         {unknownLocations && flows && allFlows &&
@@ -415,28 +419,33 @@ class FlowMap extends React.Component<Props, State> {
           </WarningBox>
         }
         <TitleBox top={60} left={0}>
-          <Column spacing={10}>
-            {title &&
-            <div>
-              <Title>{title}</Title>
-              {description}
-            </div>
-            }
-            {sourceName && sourceUrl &&
-            <div>
-              {'Original data source: '}
-              <>
-                <a href={sourceUrl} target="_blank" rel="noopener">{sourceName}</a>
-              </>
-            </div>}
-            <div>
-              {'Data behind this map is in '}
-              <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
-                 target="_blank"
-                 rel="noopener"
-              >this spreadsheet</a>. You can <Link to="/">publish your own</Link> too.
-            </div>
-          </Column>
+          <Collapsible
+            width={300}
+            direction={Direction.LEFT}
+          >
+            <Column spacing={10} padding={12}>
+              {title &&
+              <div>
+                <Title>{title}</Title>
+                {description}
+              </div>
+              }
+              {sourceName && sourceUrl &&
+              <div>
+                {'Original data source: '}
+                <>
+                  <a href={sourceUrl} target="_blank" rel="noopener">{sourceName}</a>
+                </>
+              </div>}
+              <div>
+                {'Data behind this map is in '}
+                <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
+                   target="_blank"
+                   rel="noopener"
+                >this spreadsheet</a>. You can <Link to="/">publish your own</Link> too.
+              </div>
+            </Column>
+          </Collapsible>
         </TitleBox>
         <Absolute top={10} left={10}>
           <Logo />
