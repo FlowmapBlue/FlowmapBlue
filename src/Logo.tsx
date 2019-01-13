@@ -32,7 +32,7 @@ const Logo = ({ fontSize = 25 }: Props) => {
   return <Link to="/" style={{ textDecoration: 'none' }}>
     <Row spacing={fontSize / 5}>
       <LogoImage
-        size={fontSize * 1.3}
+        size={fontSize * 1.5}
         alt="flowmap.blue logo"
         src={logo}
       />

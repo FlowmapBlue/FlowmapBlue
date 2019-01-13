@@ -7,7 +7,7 @@ import { createSelector } from 'reselect'
 import { colors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
 import withFetchSheets from './withFetchGoogleSheet'
-import { Absolute, Column, LegendBox, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
+import { Absolute, Box, Column, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
 import * as d3ease from 'd3-ease'
 import Logo from './Logo';
 import { findDOMNode } from 'react-dom';
@@ -397,7 +397,7 @@ class FlowMap extends React.Component<Props, State> {
         />
         {flows &&
         <>
-          <LegendBox bottom={28} right={0}>
+          <Box bottom={28} right={0}>
             <Collapsible
               width={160}
               direction={Direction.RIGHT}
@@ -407,7 +407,7 @@ class FlowMap extends React.Component<Props, State> {
                 <LocationTotalsLegend colors={colors} />
               </Column>
             </Collapsible>
-          </LegendBox>
+          </Box>
         </>}
         {unknownLocations && flows && allFlows &&
           <WarningBox top={10} right={10}>

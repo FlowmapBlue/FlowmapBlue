@@ -38,10 +38,6 @@ export const Box = styled(Absolute)`
   box-shadow: 0 0 4px #aaa; 
 `
 
-export const LegendBox = styled(Box)`
-  text-align: center;
-`
-
 export const TitleBox = styled(Box)`
   line-height: 1.3;
   font-size: 13px;
@@ -64,7 +60,7 @@ export const WarningTitle = styled(LegendTitle)`
   text-align: left;
 `
 
-export const WarningBox = styled(LegendBox)`
+export const WarningBox = styled(Box)`
   padding: 12px;
   background: rgba(255, 210, 200, 0.9);
   max-width: 200px;

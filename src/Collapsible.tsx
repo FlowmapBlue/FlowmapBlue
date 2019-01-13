@@ -43,6 +43,7 @@ const Button = styled.button(({ collapsed, direction }: { collapsed: boolean, di
   order: ${direction === Direction.LEFT ? 1 : 2};  
   border: none;
   cursor: pointer;
+  align-items: center;
   outline: none;
   font-size: 22px;
   background-color: #fff;

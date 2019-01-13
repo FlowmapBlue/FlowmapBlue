@@ -4,9 +4,9 @@ import Logo from './Logo'
 import styled from '@emotion/styled';
 
 const examples = [
-  { key: '1Z6dVVFFrdooHIs8xnJ_O7eM5bhS5KscCi7G_k0jUNDI', name: 'London bicycle hire' },
-  { key: '1IQ0txD09cJ8wsQRSux5AoZfG6eIM-cx6RvVfszZ_ScE', name: 'NYC citibike' },
-  { key: '1fhX98NFv5gAkkjB2YFCm50-fplFpmWVAZby3dmm9cgQ', name: 'Chicago taxis' },
+  { key: '1Z6dVVFFrdooHIs8xnJ_O7eM5bhS5KscCi7G_k0jUNDI', name: 'London bicycle hires in 2017' },
+  { key: '1bT6Ftttwl-GxCXg8QccATVFwNwc7SO4ZwwiPRFJMdgQ', name: 'New York Citi Bike in 2017' },
+  // { key: '1fhX98NFv5gAkkjB2YFCm50-fplFpmWVAZby3dmm9cgQ', name: 'Chicago taxis' },
   { key: '1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA', name: 'Template for publishing' },
 ]
 
