@@ -1,7 +1,8 @@
 import * as d3dsv from 'd3-dsv';
 import * as React from 'react';
+import styled from '@emotion/styled';
 
-const Message = ({ children }: { children: any }) => <div style={{ padding: '1em' }}>{children}</div>;
+export const Message = styled.div`padding: 1em;`
 
 type State = {
   error: boolean

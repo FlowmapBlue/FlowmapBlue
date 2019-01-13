@@ -6,7 +6,7 @@ import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector } from 'reselect'
 import { colors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
-import withFetchSheets from './withFetchGoogleSheet'
+import withFetchSheets, { Message } from './withFetchGoogleSheet'
 import { Absolute, Box, Column, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
 import * as d3ease from 'd3-ease'
 import Logo from './Logo';
@@ -80,6 +80,7 @@ type State = {
   tooltip?: TooltipProps
   highlight?: Highlight
   selectedLocationIds?: string[]
+  error?: string
 }
 
 export const getFlowMagnitude = (flow: Flow) => +flow.count
@@ -95,6 +96,7 @@ class FlowMap extends React.Component<Props, State> {
   readonly state: State = {
     viewState: initialViewState,
     lastLocations: undefined,
+    error: undefined,
   }
 
   private flowMapLayer: FlowMapLayer | undefined = undefined;
@@ -175,18 +177,25 @@ class FlowMap extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State): Partial<State> | null {
     const { locations } = props
     if (locations != null && locations !== state.lastLocations) {
+      const viewState = fitLocationsInView(
+        locations,
+        getLocationCentroid,
+        [
+          window.innerWidth,
+          window.innerHeight,
+        ],
+        { pad: 0.05 }
+      )
+      if (!viewState.zoom) {
+        return {
+          error: `The geo bounding box couldn't be calculated. 
+          Please, make sure that all the locations have valid coordinates in the spreadsheet.`
+        }
+      }
       return {
         lastLocations: locations,
         viewState: {
-          ...fitLocationsInView(
-            locations,
-            getLocationCentroid,
-            [
-              window.innerWidth,
-              window.innerHeight,
-            ],
-            { pad: 0.05 }
-            ),
+          ...viewState,
           minPitch: 0,
           maxPitch: 0,
           bearing: 0,
@@ -362,13 +371,20 @@ class FlowMap extends React.Component<Props, State> {
     }
   }
 
+  static getDerivedStateFromError(error: any) {
+    return { error: error.toString() }
+  }
+
   render() {
     const { properties, spreadSheetKey } = this.props
     // if (!properties) {
     //   // we need to wait to get mapboxAccessToken
     //   return <Absolute top={10} left={10}>Loading…</Absolute>
     // }
-    const { viewState, tooltip } = this.state
+    const { viewState, tooltip, error } = this.state
+    if (error)  {
+      return <Message>Oops… There is a problem. <br/>{error}</Message>
+    }
     const unknownLocations = this.getUnknownLocations(this.props);
     const flows = this.getFlowsForKnownLocations(this.props)
     const allFlows = this.props.flows
@@ -415,7 +431,7 @@ class FlowMap extends React.Component<Props, State> {
             {`${allFlows.length - flows.length} flows were omitted which
             referred to the following missing locations:`}
             <br/><br/>
-            {Array.from(unknownLocations).sort().join(', ')}
+            {Array.from(unknownLocations).sort().map(id => `"${id}"`).join(', ')}
           </WarningBox>
         }
         <TitleBox top={60} left={0}>
