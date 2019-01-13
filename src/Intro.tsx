@@ -64,17 +64,17 @@ const Intro = () =>
           <li>Open <a href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA" target="_blank" rel="noopener">this spreadsheet</a> and
             make a copy of it (File / Make a copy…)</li>
           <li>Add data to the new spreadsheet.
-            The spreadsheet has three sheets in it named "<b>properties</b>", "<b>locations</b>" and "<b>flows</b>".
-            The <b>properties</b> sheet must have the name and a description for your dataset.
-            The <b>locations</b> sheet must have these three columns: <b>id</b>, <b>lat</b>, <b>lon</b>.
-            The <b>flows</b> sheet must have these three columns: <b>origin</b>, <b>dest</b>, <b>count</b>.
-            The values in the <b>origin</b> and <b>dest</b> columns must reference the <b>id</b> values
-            in the locations sheet.
+            The spreadsheet has three sheets in it.
+            They are named "<b>properties</b>", "<b>locations</b>" and "<b>flows</b>".
+            The <b>properties</b> sheet has the title and the description for your dataset and a few other configuration parameters.
+            The <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the optional <b>name</b>.
+            The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
+            The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
             Make sure <b>not to enable number formatting</b> for the numeric columns or
             they won't be treated correctly.
           </li>
-          <li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>
-          <li>Share the spreadsheet by going to "File" / "Share with others", clicking "Advanced", then
+          {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
+          <li>Share the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and then
             choosing "Anyone with the link can view".
             </li>
           <li>Copy the key of your spreadsheet from its URL. It comes right after docs.google.com/spreadsheets/d/</li>
