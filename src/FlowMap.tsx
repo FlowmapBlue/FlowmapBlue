@@ -200,9 +200,9 @@ class FlowMap extends React.Component<Props, State> {
           maxPitch: 0,
           bearing: 0,
           pitch: 0,
-          transitionDuration: 2000,
-          transitionInterpolator: new FlyToInterpolator(),
-          transitionEasing: d3ease.easeCubic,
+          // transitionDuration: 2000,
+          // transitionInterpolator: new FlyToInterpolator(),
+          // transitionEasing: d3ease.easeCubic,
         }
       }
     }
