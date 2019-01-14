@@ -8,8 +8,6 @@ import checkWebglSupport from './checkWebglSupport';
 import { ColorScheme } from './colors';
 
 const globalStyles = css`
-@import url('https://fonts.googleapis.com/css?family=Sarabun:400,700');
-
 html, body { font-family: 'Sarabun', sans-serif; }
 a, a:visited { color: ${ColorScheme.primary}; }
 
