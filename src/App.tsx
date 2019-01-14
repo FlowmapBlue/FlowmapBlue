@@ -9,7 +9,7 @@ type Props = {
   supportsWebGl: boolean
 }
 
-const NoScroll = styled.div`
+export const NoScrollContainer = styled.div`
   position: absolute;
   top: 0; left: 0;
   width: 100%;
@@ -27,12 +27,12 @@ export default class App extends React.Component<Props> {
           <Route
             path="/:sheetKey([a-zA-Z0-9-_]{44})"
             component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
-              <NoScroll>{
+              <NoScrollContainer>{
                 supportsWebGl ?
                   <FlowMap spreadSheetKey={match.params.sheetKey}/>
                   :
                   <NoWebGlFallback/>
-              }</NoScroll>
+              }</NoScrollContainer>
             }
           />
           <Route path="/" component={Intro} />

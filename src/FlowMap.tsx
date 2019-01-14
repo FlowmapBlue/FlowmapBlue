@@ -8,13 +8,13 @@ import { colors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
 import withFetchSheets, { Message } from './withFetchGoogleSheet'
 import { Absolute, Box, Column, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
-import * as d3ease from 'd3-ease'
 import Logo from './Logo';
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
+import { NoScrollContainer } from './App';
 
 const DEFAULT_MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
 const CONTROLLER_OPTIONS = {
@@ -91,7 +91,6 @@ const getLocationCentroid = (location: Location): [number, number] => [+location
 
 const initialViewState = getInitialViewState([ -180, -70, 180, 70 ]);
 
-
 class FlowMap extends React.Component<Props, State> {
   readonly state: State = {
     viewState: initialViewState,
@@ -99,7 +98,7 @@ class FlowMap extends React.Component<Props, State> {
     error: undefined,
   }
 
-  private flowMapLayer: FlowMapLayer | undefined = undefined;
+  private flowMapLayer: FlowMapLayer | undefined = undefined
 
   getFlows = (props: Props) => props.flows
   getLocations = (props: Props) => props.locations
@@ -200,9 +199,9 @@ class FlowMap extends React.Component<Props, State> {
           maxPitch: 0,
           bearing: 0,
           pitch: 0,
-          transitionDuration: 2000,
-          transitionInterpolator: new FlyToInterpolator(),
-          transitionEasing: d3ease.easeCubic,
+          // transitionDuration: 2000,
+          // transitionInterpolator: new FlyToInterpolator(),
+          // transitionEasing: d3ease.easeCubic,
         }
       }
     }
@@ -210,7 +209,21 @@ class FlowMap extends React.Component<Props, State> {
     return null
   }
 
-  getMercator = () => new WebMercatorViewport(this.state.viewState as ViewportProps)
+  getContainerClientRect = () => {
+    const container = findDOMNode(this) as Element
+    if (!container) return undefined
+    return container.getBoundingClientRect()
+  }
+
+  getMercator = () => {
+    const containerBounds = this.getContainerClientRect()
+    if (!containerBounds) return undefined
+    const { width, height } = containerBounds
+    return new WebMercatorViewport({
+      ...this.state.viewState,
+      width, height,
+    })
+  }
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown)
@@ -251,7 +264,9 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   showLocationTooltip = (location: Location) => {
-    const [x, y] = this.getMercator().project(getLocationCentroid(location))
+    const mercator = this.getMercator()
+    if (!mercator) return
+    const [x, y] = mercator.project(getLocationCentroid(location))
     const { flowMapLayer } = this
     if (!flowMapLayer) return
       // TODO: add the circle bounds to PickingInfo in flowmap.gl
@@ -269,9 +284,9 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   showTooltip = (bounds: TargetBounds, content: React.ReactNode) => {
-    const container = findDOMNode(this) as Element
-    if (!container) return
-    const { top, left } = container.getBoundingClientRect()
+    const containerBounds = this.getContainerClientRect()
+    if (!containerBounds) return
+    const { top, left } = containerBounds
     this.setState({
       tooltip: {
         target: {
@@ -397,7 +412,7 @@ class FlowMap extends React.Component<Props, State> {
       (this.getConfigPropValue(ConfigPropName.MAPBOX_ACCESS_TOKEN) || DEFAULT_MAPBOX_TOKEN)
 
     return (
-      <>
+      <NoScrollContainer>
         <DeckGL
           style={{ mixBlendMode: 'multiply' }}
           controller={CONTROLLER_OPTIONS}
@@ -467,7 +482,7 @@ class FlowMap extends React.Component<Props, State> {
           <Logo />
         </Absolute>
         {tooltip && <Tooltip {...tooltip} />}
-      </>
+      </NoScrollContainer>
     )
   }
 }
