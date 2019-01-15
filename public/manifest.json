@@ -3,13 +3,38 @@
   "name": "flowmap.blue",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    }
+      "src": "favicon256.png",
+      "sizes": "256",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon128.png",
+      "sizes": "128",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon64.png",
+      "sizes": "64",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon32.png",
+      "sizes": "32",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon24.png",
+      "sizes": "24",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon16.png",
+      "sizes": "16",
+      "type": "image/png"
+    },
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#137CBD",
   "background_color": "#ffffff"
 }
