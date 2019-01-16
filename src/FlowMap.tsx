@@ -4,7 +4,7 @@ import { FlyToInterpolator, StaticMap, ViewportProps, ViewState, ViewStateChange
 import FlowMapLayer, { FlowLayerPickingInfo, LocationTotalsLegend, PickingType } from 'flowmap.gl'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector } from 'reselect'
-import { colors } from './colors'
+import { colors, diffColors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
 import withFetchSheets, { Message } from './withFetchGoogleSheet'
 import { Absolute, Box, Column, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
@@ -115,6 +115,16 @@ class FlowMap extends React.Component<Props, State> {
     locations => locations ? new Set(locations.map(getLocationId)) : undefined
   )
 
+  getColors = createSelector(
+    this.getFlows,
+    flows => {
+      if (flows && flows.find(f => getFlowMagnitude(f) < 0)) {
+        return diffColors
+      }
+      return colors
+    }
+  )
+
   getFlowsForKnownLocations = createSelector(
     this.getFlows,
     this.getKnownLocationIds,
@@ -152,7 +162,7 @@ class FlowMap extends React.Component<Props, State> {
       layers.push(
         this.flowMapLayer = new FlowMapLayer({
           id: 'flow-map-layer',
-          colors,
+          colors: this.getColors(this.props),
           locations,
           flows,
           getLocationCentroid,
