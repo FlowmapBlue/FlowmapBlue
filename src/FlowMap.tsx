@@ -12,11 +12,12 @@ import { FlowTooltipContent, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
-import { NoScrollContainer } from './App';
 import { Config, ConfigProp, ConfigPropName, Flow, Location } from './types';
 import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
 import Message from './Message';
+import LoadingSpinner from './LoadingSpinner';
 import { PromiseState } from 'react-refetch';
+import NoScrollContainer from './NoScrollContainer';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -380,7 +381,7 @@ class FlowMap extends React.Component<Props, State> {
       return <Message>Oops… There is a problem. <br/>{error}</Message>
     }
     if (locationsFetch.pending || locationsFetch.refreshing) {
-      return null
+      return <LoadingSpinner />
     }
     if (locationsFetch.rejected || flowsFetch.rejected) {
       return <Message>

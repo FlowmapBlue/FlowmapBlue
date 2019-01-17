@@ -4,8 +4,11 @@ import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
 import { PromiseState } from 'react-refetch';
 import { Config, ConfigProp, ConfigPropName } from './types';
 import { Absolute } from './Boxes';
+import LoadingSpinner from './LoadingSpinner';
 import Logo from './Logo';
 import { Helmet } from 'react-helmet';
+import styled from '@emotion/styled';
+import NoScrollContainer from './NoScrollContainer';
 
 interface Props {
   spreadSheetKey: string
@@ -24,14 +27,22 @@ const DEFAULT_CONFIG: Config = {
   [ConfigPropName.DESCRIPTION]: undefined,
 }
 
+const Outer = styled(NoScrollContainer)`
+  background: #fff;
+`
+
+
 const MapView = ({ spreadSheetKey, configFetch }: PropsWithData) => {
   return (
-    <>
-      {!configFetch.pending && !configFetch.refreshing &&
-      <FlowMap
-        spreadSheetKey={spreadSheetKey}
-        config={configFetch.fulfilled ? configFetch.value : DEFAULT_CONFIG}
-      />}
+    <Outer>
+      {configFetch.pending || configFetch.refreshing ?
+        <LoadingSpinner/>
+        :
+        <FlowMap
+          spreadSheetKey={spreadSheetKey}
+          config={configFetch.fulfilled ? configFetch.value : DEFAULT_CONFIG}
+        />
+      }
       <Absolute top={10} left={10}>
         <Logo />
       </Absolute>
@@ -40,7 +51,7 @@ const MapView = ({ spreadSheetKey, configFetch }: PropsWithData) => {
         <title>{`${configFetch.value[ConfigPropName.TITLE]} - flowmap.blue`}</title>
       </Helmet>
       }
-    </>
+    </Outer>
   )
 }
 
