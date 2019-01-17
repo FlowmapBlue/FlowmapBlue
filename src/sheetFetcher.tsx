@@ -2,6 +2,12 @@ import { connect } from 'react-refetch'
 
 const sheetFetcher = connect.defaults({
 
+  fetch: ((input: RequestInfo, init: RequestInit) => {
+    const req = new Request(input, init)
+    req.headers.set('Content-Type', 'text/plain') // to avoid slow CORS pre-flight requests
+    return fetch(req)
+  }) as any,
+
   handleResponse: function (response) {
     if (response.headers.get('content-length') === '0' || response.status === 204) {
       return
