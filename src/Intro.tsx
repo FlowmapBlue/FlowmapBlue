@@ -88,7 +88,8 @@ const Intro = () =>
       <section>
         <h2>Need help?</h2>
         <p>
-          <a href="https://github.com/ilyabo/flowmap.blue/issues" target="_blank" rel="noopener">Submit an issue</a>{` or `}
+          <a href="https://spectrum.chat/flowmap-blue/general" target="_blank" rel="noopener">Ask a question</a>{`, `}
+          <a href="https://github.com/ilyabo/flowmap.blue/issues" target="_blank" rel="noopener">submit an issue</a>{` or `}
           <a href="mailto:ilya@boyandin.me?subject=flowmap.blue">write me an email</a>.
         </p>
       </section>
