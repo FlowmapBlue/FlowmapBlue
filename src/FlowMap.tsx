@@ -6,54 +6,29 @@ import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector } from 'reselect'
 import { colors, diffColors } from './colors'
 import { fitLocationsInView, getInitialViewState } from './fitInView'
-import withFetchSheets, { Message } from './withFetchGoogleSheet'
-import { Absolute, Box, Column, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
-import Logo from './Logo';
+import { Box, Column, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
 import { NoScrollContainer } from './App';
+import { Config, ConfigProp, ConfigPropName, Flow, Location } from './types';
+import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
+import Message from './Message';
+import { PromiseState } from 'react-refetch';
 
-const DEFAULT_MAPBOX_TOKEN = process.env.REACT_APP_MapboxAccessToken
 const CONTROLLER_OPTIONS = {
   type: MapController,
   dragRotate: false,
   touchRotate: false,
 }
 
-export interface ConfigProp {
-  property: string
-  value: string
-}
-
-enum ConfigPropName {
-  TITLE = 'title',
-  DESCRIPTION = 'description',
-  SOURCE_NAME = 'source.name',
-  SOURCE_URL = 'source.url',
-  MAPBOX_ACCESS_TOKEN = 'mapbox.accessToken',
-}
-
-export interface Location {
-  id: string
-  lon: string
-  lat: string
-  name: string
-}
-
-export interface Flow {
-  origin: string
-  dest: string
-  count: string
-}
-
 
 type Props = {
-  properties: ConfigProp[] | null
-  locations: Location[] | null
-  flows: Flow[] | null
+  config: Config
+  locationsFetch: PromiseState<Location[]>,
+  flowsFetch: PromiseState<Flow[]>,
   spreadSheetKey: string
 }
 
@@ -100,15 +75,8 @@ class FlowMap extends React.Component<Props, State> {
 
   private flowMapLayer: FlowMapLayer | undefined = undefined
 
-  getFlows = (props: Props) => props.flows
-  getLocations = (props: Props) => props.locations
-
-  getConfigPropValue = (name: ConfigPropName) => {
-    const { properties } = this.props
-    if (!properties) return undefined
-    const found = properties.find(prop => prop.property === name)
-    return found ? found.value : undefined
-  }
+  getFlows = (props: Props) => props.flowsFetch.value
+  getLocations = (props: Props) => props.locationsFetch.value
 
   getKnownLocationIds = createSelector(
     this.getLocations,
@@ -154,7 +122,7 @@ class FlowMap extends React.Component<Props, State> {
   )
 
   getLayers() {
-    const { locations } = this.props
+    const locations = this.getLocations(this.props)
     const { highlight, selectedLocationIds } = this.state;
     const flows = this.getFlowsForKnownLocations(this.props)
     const layers = []
@@ -184,7 +152,7 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   static getDerivedStateFromProps(props: Props, state: State): Partial<State> | null {
-    const { locations } = props
+    const locations = props.locationsFetch.value
     if (locations != null && locations !== state.lastLocations) {
       const viewState = fitLocationsInView(
         locations,
@@ -401,25 +369,30 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   render() {
-    const { properties, spreadSheetKey } = this.props
-    // if (!properties) {
-    //   // we need to wait to get mapboxAccessToken
-    //   return <Absolute top={10} left={10}>Loading…</Absolute>
-    // }
+    const {
+      config,
+      spreadSheetKey,
+      locationsFetch,
+      flowsFetch,
+    } = this.props
     const { viewState, tooltip, error } = this.state
     if (error)  {
       return <Message>Oops… There is a problem. <br/>{error}</Message>
     }
+    if (locationsFetch.rejected || flowsFetch.rejected) {
+      return <Message>
+        Oops… Couldn't fetch data from{` `}
+        <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.
+      </Message>;
+    }
     const unknownLocations = this.getUnknownLocations(this.props);
     const flows = this.getFlowsForKnownLocations(this.props)
-    const allFlows = this.props.flows
-    const title = this.getConfigPropValue(ConfigPropName.TITLE)
-    const description = this.getConfigPropValue(ConfigPropName.DESCRIPTION)
-    const sourceUrl = this.getConfigPropValue(ConfigPropName.SOURCE_URL);
-    const sourceName = this.getConfigPropValue(ConfigPropName.SOURCE_NAME);
-    const mapboxAccessToken =
-      properties &&
-      (this.getConfigPropValue(ConfigPropName.MAPBOX_ACCESS_TOKEN) || DEFAULT_MAPBOX_TOKEN)
+    const allFlows = this.getFlows(this.props)
+    const title = config[ConfigPropName.TITLE]
+    const description = config[ConfigPropName.DESCRIPTION]
+    const sourceUrl = config[ConfigPropName.SOURCE_URL]
+    const sourceName = config[ConfigPropName.SOURCE_NAME]
+    const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
 
     return (
       <NoScrollContainer>
@@ -488,9 +461,6 @@ class FlowMap extends React.Component<Props, State> {
             </Column>
           </Collapsible>
         </TitleBox>
-        <Absolute top={10} left={10}>
-          <Logo />
-        </Absolute>
         {tooltip && <Tooltip {...tooltip} />}
       </NoScrollContainer>
     )
@@ -498,4 +468,11 @@ class FlowMap extends React.Component<Props, State> {
 }
 
 
-export default withFetchSheets(['properties', 'locations', 'flows'])(FlowMap as any)
+export default sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
+  locationsFetch: {
+    url: makeSheetQueryUrl(spreadSheetKey, 'locations', 'SELECT A,B,C,D'),
+  },
+  flowsFetch: {
+    url: makeSheetQueryUrl(spreadSheetKey, 'flows', 'SELECT A,B,C'),
+  },
+}))(FlowMap as any)

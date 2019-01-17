@@ -4,6 +4,7 @@ import FlowMap from './FlowMap'
 import Intro from './Intro'
 import NoWebGlFallback from './NoWebGlFallback'
 import styled from '@emotion/styled'
+import MapView from './MapView';
 
 type Props = {
   supportsWebGl: boolean
@@ -29,7 +30,9 @@ export default class App extends React.Component<Props> {
             component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
               <NoScrollContainer>{
                 supportsWebGl ?
-                  <FlowMap spreadSheetKey={match.params.sheetKey}/>
+                  <MapView
+                    spreadSheetKey={match.params.sheetKey}
+                  />
                   :
                   <NoWebGlFallback/>
               }</NoScrollContainer>

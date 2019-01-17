@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { getFlowMagnitude, Location } from './FlowMap'
+import { getFlowMagnitude } from './FlowMap'
+import { Location } from './types'
 import styled from '@emotion/styled'
 import * as d3Format from 'd3-format'
 import { Flow } from 'flowmap.gl';
