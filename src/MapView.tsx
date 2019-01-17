@@ -5,6 +5,7 @@ import { PromiseState } from 'react-refetch';
 import { Config, ConfigProp, ConfigPropName } from './types';
 import { Absolute } from './Boxes';
 import Logo from './Logo';
+import { Helmet } from 'react-helmet';
 
 interface Props {
   spreadSheetKey: string
@@ -34,6 +35,11 @@ const MapView = ({ spreadSheetKey, configFetch }: PropsWithData) => {
       <Absolute top={10} left={10}>
         <Logo />
       </Absolute>
+      {configFetch.fulfilled && configFetch.value[ConfigPropName.TITLE] &&
+      <Helmet>
+        <title>{`${configFetch.value[ConfigPropName.TITLE]} - flowmap.blue`}</title>
+      </Helmet>
+      }
     </>
   )
 }
