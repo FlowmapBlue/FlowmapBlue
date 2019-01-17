@@ -379,6 +379,9 @@ class FlowMap extends React.Component<Props, State> {
     if (error)  {
       return <Message>Oops… There is a problem. <br/>{error}</Message>
     }
+    if (locationsFetch.pending || locationsFetch.refreshing) {
+      return null
+    }
     if (locationsFetch.rejected || flowsFetch.rejected) {
       return <Message>
         Oops… Couldn't fetch data from{` `}
