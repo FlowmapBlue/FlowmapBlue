@@ -18,6 +18,7 @@ import Message from './Message';
 import LoadingSpinner from './LoadingSpinner';
 import { PromiseState } from 'react-refetch';
 import NoScrollContainer from './NoScrollContainer';
+import styled from '@emotion/styled';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -66,6 +67,12 @@ const getLocationId = (loc: Location) => loc.id
 const getLocationCentroid = (location: Location): [number, number] => [+location.lon, +location.lat]
 
 const initialViewState = getInitialViewState([ -180, -70, 180, 70 ]);
+
+
+const Outer = styled(NoScrollContainer)`
+  background: #f5f5f5;
+`
+
 
 class FlowMap extends React.Component<Props, State> {
   readonly state: State = {
@@ -399,7 +406,7 @@ class FlowMap extends React.Component<Props, State> {
     const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
 
     return (
-      <NoScrollContainer>
+      <Outer>
         <DeckGL
           style={{ mixBlendMode: 'multiply' }}
           controller={CONTROLLER_OPTIONS}
@@ -466,7 +473,10 @@ class FlowMap extends React.Component<Props, State> {
           </Collapsible>
         </TitleBox>
         {tooltip && <Tooltip {...tooltip} />}
-      </NoScrollContainer>
+        {(flowsFetch.pending || flowsFetch.refreshing) &&
+          <LoadingSpinner/>
+        }
+      </Outer>
     )
   }
 }

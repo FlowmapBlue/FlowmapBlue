@@ -27,14 +27,11 @@ const DEFAULT_CONFIG: Config = {
   [ConfigPropName.DESCRIPTION]: undefined,
 }
 
-const Outer = styled(NoScrollContainer)`
-  background: #fff;
-`
 
 
 const MapView = ({ spreadSheetKey, configFetch }: PropsWithData) => {
   return (
-    <Outer>
+    <NoScrollContainer>
       {configFetch.pending || configFetch.refreshing ?
         <LoadingSpinner/>
         :
@@ -51,7 +48,7 @@ const MapView = ({ spreadSheetKey, configFetch }: PropsWithData) => {
         <title>{`${configFetch.value[ConfigPropName.TITLE]} - flowmap.blue`}</title>
       </Helmet>
       }
-    </Outer>
+    </NoScrollContainer>
   )
 }
 
