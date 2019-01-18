@@ -258,6 +258,7 @@ class FlowMap extends React.Component<Props, State> {
       // TODO: add the circle bounds to PickingInfo in flowmap.gl
     const getRadius = flowMapLayer.state.selectors.getLocationCircleRadiusGetter(flowMapLayer.props)
     const r = getRadius({ location, type: 'outer' }) + 5
+    const { selectedLocationIds } = this.state
     this.showTooltip(
       {
         left: x - r,
@@ -265,7 +266,10 @@ class FlowMap extends React.Component<Props, State> {
         width: r * 2,
         height: r * 2,
       },
-      <LocationTooltipContent location={location} />
+      <LocationTooltipContent
+        location={location}
+        isSelected={selectedLocationIds != null && selectedLocationIds.indexOf(location.id) >= 0}
+      />
     )
   }
 

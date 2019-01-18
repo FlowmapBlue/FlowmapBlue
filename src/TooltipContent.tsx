@@ -20,6 +20,13 @@ const Title = styled.div`
   margin-bottom: 5px;
 `
 
+const Comment = styled.div`
+  font-size: 9px;
+  opacity: 0.3;
+  margin-top: 0.75em;  
+  text-align: center;
+`
+
 const Row = styled.div`
   display: flex;
   flex-direction: row;
@@ -41,7 +48,7 @@ const Value = styled.div`
 
 const formatCount = d3Format.format(',.0f')
 
-export const LocationTooltipContent = ({ location }: { location: Location }) => {
+export const LocationTooltipContent = ({ location, isSelected }: { location: Location, isSelected: boolean }) => {
   const { properties } = location as any;
 
   return (
@@ -59,6 +66,7 @@ export const LocationTooltipContent = ({ location }: { location: Location }) => 
         <Label>Start and end here</Label>
         <Value>{formatCount(properties.totalWithin)}</Value>
       </Row>
+      <Comment>{`Click to ${isSelected ? 'unselect' : 'select'} this location`}</Comment>
     </Outer>
   )
 }
