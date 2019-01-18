@@ -70,8 +70,8 @@ const Intro = () =>
             The <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the optional <b>name</b>.
             The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
             The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
-            Make sure <b>not to enable number formatting</b> for the numeric columns or
-            they won't be treated correctly.
+            {/*Make sure <b>not to enable number formatting</b> for the numeric columns or*/}
+            {/*they won't be treated correctly.*/}
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
           <li>Share the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and then
