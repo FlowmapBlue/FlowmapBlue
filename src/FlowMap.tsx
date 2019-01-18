@@ -1,7 +1,7 @@
 import DeckGL, { MapController } from 'deck.gl'
 import * as React from 'react'
 import { FlyToInterpolator, StaticMap, ViewportProps, ViewState, ViewStateChangeInfo } from 'react-map-gl'
-import FlowMapLayer, { FlowLayerPickingInfo, LocationTotalsLegend, PickingType } from 'flowmap.gl'
+import FlowMapLayer, { FlowLayerPickingInfo, LocationCircleType, LocationTotalsLegend, PickingType } from 'flowmap.gl'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector } from 'reselect'
 import { colors, diffColors } from './colors'
@@ -257,7 +257,7 @@ class FlowMap extends React.Component<Props, State> {
     if (!flowMapLayer) return
       // TODO: add the circle bounds to PickingInfo in flowmap.gl
     const getRadius = flowMapLayer.state.selectors.getLocationCircleRadiusGetter(flowMapLayer.props)
-    const r = getRadius({ location, type: 'inner' }) + 5
+    const r = getRadius({ location, type: 'outer' }) + 5
     this.showTooltip(
       {
         left: x - r,
