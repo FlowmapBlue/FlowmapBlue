@@ -3,7 +3,7 @@ import { getFlowMagnitude } from './FlowMap'
 import { Location } from './types'
 import styled from '@emotion/styled'
 import * as d3Format from 'd3-format'
-import { Flow } from 'flowmap.gl';
+import { Flow, LocationPickingInfo } from '@flowmap.gl/core';
 
 const Outer = styled.div(({ width }: { width: number}) => `
   font-size: 10px;
@@ -48,23 +48,25 @@ const Value = styled.div`
 
 const formatCount = d3Format.format(',.0f')
 
-export const LocationTooltipContent = ({ location, isSelected }: { location: Location, isSelected: boolean }) => {
-  const { properties } = location as any;
+export const LocationTooltipContent =
+  ({ locationInfo, isSelected }: { locationInfo: LocationPickingInfo, isSelected: boolean }) => {
+
+  const { object: location, totalIn, totalOut, totalWithin } = locationInfo;
 
   return (
     <Outer width={130}>
       <Title>{location.name || location.id}</Title>
       <Row>
         <Label>Incoming trips</Label>
-        <Value>{formatCount(properties.totalIn)}</Value>
+        <Value>{formatCount(totalIn)}</Value>
       </Row>
       <Row>
         <Label>Outgoing trips</Label>
-        <Value>{formatCount(properties.totalOut)}</Value>
+        <Value>{formatCount(totalOut)}</Value>
       </Row>
       <Row>
         <Label>Start and end here</Label>
-        <Value>{formatCount(properties.totalWithin)}</Value>
+        <Value>{formatCount(totalWithin)}</Value>
       </Row>
       <Comment>{`Click to ${isSelected ? 'unselect' : 'select'} this location`}</Comment>
     </Outer>

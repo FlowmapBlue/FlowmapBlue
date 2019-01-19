@@ -1,4 +1,4 @@
-import { Colors, DiffColors } from 'flowmap.gl';
+import { Colors, DiffColors } from '@flowmap.gl/core';
 
 export enum ColorScheme {
   primary = '#137CBD',
@@ -7,10 +7,6 @@ export enum ColorScheme {
 export const colors: Colors = {
   flows: {
     max: ColorScheme.primary,
-  },
-  locationAreas: {
-    outline: 'rgba(92,112,128,0.5)',
-    normal: 'rgba(187,187,187,0.5)',
   },
 };
 
@@ -32,5 +28,5 @@ export const diffColors: DiffColors = {
     outline: 'rgba(92,112,128,0.5)',
     normal: 'rgba(220,220,220,0.5)',
   },
-  borderColor: 'rgb(230,233,237)',
+  outlineColor: 'rgb(230,233,237)',
 };

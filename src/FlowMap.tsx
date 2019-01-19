@@ -1,7 +1,14 @@
 import DeckGL, { MapController } from 'deck.gl'
 import * as React from 'react'
 import { FlyToInterpolator, StaticMap, ViewportProps, ViewState, ViewStateChangeInfo } from 'react-map-gl'
-import FlowMapLayer, { FlowLayerPickingInfo, LocationCircleType, LocationTotalsLegend, PickingType } from 'flowmap.gl'
+import FlowMapLayer, {
+  FlowLayerPickingInfo,
+  FlowPickingInfo,
+  LocationCircleType,
+  LocationPickingInfo,
+  PickingType
+} from '@flowmap.gl/core'
+import { LocationTotalsLegend } from '@flowmap.gl/react'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector } from 'reselect'
 import { colors, diffColors } from './colors'
@@ -91,10 +98,20 @@ class FlowMap extends React.Component<Props, State> {
     locations => locations ? new Set(locations.map(getLocationId)) : undefined
   )
 
-  getColors = createSelector(
+  getDiffMode = createSelector(
     this.getFlows,
     flows => {
       if (flows && flows.find(f => getFlowMagnitude(f) < 0)) {
+        return true
+      }
+      return false
+    }
+  )
+
+  getColors = createSelector(
+    this.getDiffMode,
+    diffMode => {
+      if (diffMode) {
         return diffColors
       }
       return colors
@@ -138,9 +155,11 @@ class FlowMap extends React.Component<Props, State> {
       layers.push(
         this.flowMapLayer = new FlowMapLayer({
           id: 'flow-map-layer',
+          diffMode: this.getDiffMode(this.props),
           colors: this.getColors(this.props),
           locations,
           flows,
+          showOnlyTopFlows: 10000,
           getLocationCentroid,
           getFlowMagnitude,
           getFlowOriginId,
@@ -225,14 +244,10 @@ class FlowMap extends React.Component<Props, State> {
     })
   }
 
-  showFlowTooltip = (pos: [number, number], flow: Flow) => {
+  showFlowTooltip = (pos: [number, number], info: FlowPickingInfo) => {
     const [x, y] = pos
     const { flowMapLayer } = this
     if (!flowMapLayer) return
-    // TODO: add it to PickingInfo in flowmap.gl
-    const getLocationById = flowMapLayer.state.selectors.getLocationByIdGetter(flowMapLayer.props)
-    const origin = getLocationById(flow.origin)
-    const dest = getLocationById(flow.dest)
     const r = 5
     this.showTooltip(
       {
@@ -242,22 +257,21 @@ class FlowMap extends React.Component<Props, State> {
         height: r * 2,
       },
       <FlowTooltipContent
-        flow={flow}
-        origin={origin}
-        dest={dest}
+        flow={info.object}
+        origin={info.origin}
+        dest={(info as any).dest}
       />
     )
   }
 
-  showLocationTooltip = (location: Location) => {
+  showLocationTooltip = (info: LocationPickingInfo) => {
+    const { object: location, circleRadius } = info
     const mercator = this.getMercator()
     if (!mercator) return
     const [x, y] = mercator.project(getLocationCentroid(location))
     const { flowMapLayer } = this
     if (!flowMapLayer) return
-      // TODO: add the circle bounds to PickingInfo in flowmap.gl
-    const getRadius = flowMapLayer.state.selectors.getLocationCircleRadiusGetter(flowMapLayer.props)
-    const r = getRadius({ location, type: 'outer' }) + 5
+    const r = circleRadius + 5
     const { selectedLocationIds } = this.state
     this.showTooltip(
       {
@@ -267,7 +281,7 @@ class FlowMap extends React.Component<Props, State> {
         height: r * 2,
       },
       <LocationTooltipContent
-        location={location}
+        locationInfo={info}
         isSelected={selectedLocationIds != null && selectedLocationIds.indexOf(location.id) >= 0}
       />
     )
@@ -302,7 +316,8 @@ class FlowMap extends React.Component<Props, State> {
     this.setState({ highlight });
   }
 
-  private handleHover = ({ type, object, x, y }: FlowLayerPickingInfo) => {
+  private handleHover = (info: FlowLayerPickingInfo) => {
+    const { type, object, x, y } = info
     switch (type) {
       case PickingType.FLOW: {
         if (object) {
@@ -312,7 +327,7 @@ class FlowMap extends React.Component<Props, State> {
           })
           this.showFlowTooltip(
             [x, y],
-            object as Flow
+            info as FlowPickingInfo
           )
         } else {
           this.highlight(undefined);
@@ -326,7 +341,7 @@ class FlowMap extends React.Component<Props, State> {
             type: HighlightType.LOCATION,
             locationId: getLocationId!(object),
           })
-          this.showLocationTooltip(object as Location)
+          this.showLocationTooltip(info as LocationPickingInfo)
         } else {
           this.highlight(undefined);
           this.hideTooltip()
@@ -408,6 +423,7 @@ class FlowMap extends React.Component<Props, State> {
     const sourceUrl = config[ConfigPropName.SOURCE_URL]
     const sourceName = config[ConfigPropName.SOURCE_NAME]
     const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
+    const diffMode = this.getDiffMode(this.props)
 
     return (
       <Outer>
@@ -433,7 +449,7 @@ class FlowMap extends React.Component<Props, State> {
             >
               <Column spacing={10} padding={12}>
                 <LegendTitle>Location totals</LegendTitle>
-                <LocationTotalsLegend colors={colors} />
+                <LocationTotalsLegend diff={diffMode} colors={colors} />
               </Column>
             </Collapsible>
           </Box>
