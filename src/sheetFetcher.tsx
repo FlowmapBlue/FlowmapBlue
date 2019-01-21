@@ -85,7 +85,7 @@ function getSheetDataAsArray(data: SheetData) {
     for (let i = 0; i < numCols; i++) {
       try {
         const colName = colNames[i]
-        obj[colName] = row.c[i].v
+        obj[colName] = row.c && row.c[i] && row.c[i].v
       } catch (err) {
         console.warn(`Couldn't parse row ${i} from sheet`)
       }
