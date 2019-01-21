@@ -38,7 +38,7 @@ class MapView extends React.Component<PropsWithData> {
         hitType: 'event',
         eventAction: 'load',
         eventCategory: 'Flowmap',
-        eventLabel: configFetch.value[ConfigPropName.TITLE],
+        // eventLabel: configFetch.value[ConfigPropName.TITLE],
       })
     }
   }
