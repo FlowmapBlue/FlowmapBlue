@@ -130,6 +130,20 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
+  getLocationsWithFlows = createSelector(
+    this.getFlowsForKnownLocations,
+    this.getLocations,
+    (flows, locations) => {
+      if (!locations || !flows) return locations;
+      const withFlows = new Set();
+      for (const flow of flows) {
+        withFlows.add(getFlowOriginId(flow));
+        withFlows.add(getFlowDestId(flow));
+      }
+      return locations.filter((location: Location) => withFlows.has(getLocationId(location)));
+    }
+  )
+
   getUnknownLocations = createSelector(
     this.getKnownLocationIds,
     this.getFlows,
@@ -147,9 +161,9 @@ class FlowMap extends React.Component<Props, State> {
   )
 
   getLayers() {
-    const locations = this.getLocations(this.props)
     const { highlight, selectedLocationIds } = this.state;
     const flows = this.getFlowsForKnownLocations(this.props)
+    const locations = this.getLocationsWithFlows(this.props)
     const layers = []
     if (locations && flows) {
       layers.push(
