@@ -27,45 +27,28 @@ const DEFAULT_CONFIG: Config = {
   [ConfigPropName.DESCRIPTION]: undefined,
 }
 
-class MapView extends React.Component<PropsWithData> {
 
-  componentDidMount(): void {
-    const { configFetch } = this.props
-    // @ts-ignore
-    const { ga } = window
-    if (typeof ga === 'function') {
-      ga('send', {
-        hitType: 'event',
-        eventAction: 'load',
-        eventCategory: 'Flowmap',
-        // eventLabel: configFetch.value[ConfigPropName.TITLE],
-      })
-    }
-  }
-
-  render() {
-    const { spreadSheetKey, configFetch } = this.props
-    return (
-      <NoScrollContainer>
-        {configFetch.pending || configFetch.refreshing ?
-          <LoadingSpinner/>
-          :
-          <FlowMap
-            spreadSheetKey={spreadSheetKey}
-            config={configFetch.fulfilled ? configFetch.value : DEFAULT_CONFIG}
-          />
-        }
-        <Absolute top={10} left={10}>
-          <Logo />
-        </Absolute>
-        {configFetch.fulfilled && configFetch.value[ConfigPropName.TITLE] &&
-        <Helmet>
-          <title>{`${configFetch.value[ConfigPropName.TITLE]} - flowmap.blue`}</title>
-        </Helmet>
-        }
-      </NoScrollContainer>
-    )
-  }
+const MapView = ({ spreadSheetKey, configFetch }: PropsWithData) => {
+  return (
+    <NoScrollContainer>
+      {configFetch.pending || configFetch.refreshing ?
+        <LoadingSpinner/>
+        :
+        <FlowMap
+          spreadSheetKey={spreadSheetKey}
+          config={configFetch.fulfilled ? configFetch.value : DEFAULT_CONFIG}
+        />
+      }
+      <Absolute top={10} left={10}>
+        <Logo />
+      </Absolute>
+      {configFetch.fulfilled && configFetch.value[ConfigPropName.TITLE] &&
+      <Helmet>
+        <title>{`${configFetch.value[ConfigPropName.TITLE]} - flowmap.blue`}</title>
+      </Helmet>
+      }
+    </NoScrollContainer>
+  )
 }
 
 export default sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
@@ -78,6 +61,17 @@ export default sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
           value[prop.property] = prop.value
         }
       }
+
+       // @ts-ignore
+       const { ga } = window
+       if (typeof ga === 'function') {
+         ga('send', {
+           hitType: 'event',
+           eventAction: 'load',
+           eventCategory: 'Config spreadsheet',
+           eventLabel: value[ConfigPropName.TITLE],
+         })
+       }
       return { value }
     },
   } as any
