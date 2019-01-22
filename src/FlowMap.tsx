@@ -370,15 +370,16 @@ class FlowMap extends React.Component<Props, State> {
     }
   };
 
-  private handleClick = ({ type, object }: FlowLayerPickingInfo) => {
-    switch (type) {
+  private handleClick = (info: FlowLayerPickingInfo) => {
+    switch (info.type) {
       case PickingType.LOCATION:
       // fall through
       case PickingType.LOCATION_AREA: {
+        const { object } = info
         if (object) {
           this.setState(state => {
             const { selectedLocationIds } = state
-            const locationId = getLocationId!(object)
+            const locationId = getLocationId(object)
             return {
               ...state,
               ...(selectedLocationIds && selectedLocationIds.indexOf(locationId) >= 0 ? {
@@ -390,6 +391,11 @@ class FlowMap extends React.Component<Props, State> {
               tooltip: undefined,
             }
           })
+          sendEvent(
+            this.props.spreadSheetKey,
+            `Select location "${object.name}" in "${this.props.config.title}"`,
+            `Select location "${object.name}" in "${this.props.config.title}"`,
+          )
         }
         break
       }
@@ -522,7 +528,7 @@ export default sheetFetcher<any>(({ spreadSheetKey, config }: Props) => ({
     url: makeSheetQueryUrl(spreadSheetKey, 'locations', 'SELECT A,B,C,D'),
     then: (locations: Location[]) => {
       sendEvent(
-        'load locations',
+        spreadSheetKey,
         `Load locations for "${config.title}"`,
         `Loaded ${locations && locations.length} locations for "${config.title}"`,
         locations && locations.length
@@ -534,7 +540,7 @@ export default sheetFetcher<any>(({ spreadSheetKey, config }: Props) => ({
     url: makeSheetQueryUrl(spreadSheetKey, 'flows', 'SELECT A,B,C'),
     then: (flows: Flow[]) => {
       sendEvent(
-        `load flows`,
+        spreadSheetKey,
         `Load flows for "${config.title}"`,
         `Loaded ${flows && flows.length} flows for "${config.title}"`,
         flows && flows.length

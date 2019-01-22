@@ -63,7 +63,7 @@ export default sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
         }
       }
       sendEvent(
-        'load',
+        spreadSheetKey,
         `Load config for "${value[ConfigPropName.TITLE] || 'Untitled'}"`,
         value[ConfigPropName.TITLE] || 'Untitled'
       )
