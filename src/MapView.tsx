@@ -62,7 +62,11 @@ export default sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
           value[prop.property] = prop.value
         }
       }
-      sendEvent('load','Load config', value[ConfigPropName.TITLE] || 'Untitled')
+      sendEvent(
+        'load',
+        `Load config for "${value[ConfigPropName.TITLE] || 'Untitled'}"`,
+        value[ConfigPropName.TITLE] || 'Untitled'
+      )
       return { value }
     },
   } as any
