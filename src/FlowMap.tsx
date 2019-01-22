@@ -392,8 +392,8 @@ class FlowMap extends React.Component<Props, State> {
             }
           })
           sendEvent(
-            this.props.spreadSheetKey,
-            `Select location "${object.name}" in "${this.props.config.title}"`,
+            `${this.props.spreadSheetKey} "${this.props.config.title}"`,
+            `Select location`,
             `Select location "${object.name}" in "${this.props.config.title}"`,
           )
         }
@@ -526,26 +526,8 @@ class FlowMap extends React.Component<Props, State> {
 export default sheetFetcher<any>(({ spreadSheetKey, config }: Props) => ({
   locationsFetch: {
     url: makeSheetQueryUrl(spreadSheetKey, 'locations', 'SELECT A,B,C,D'),
-    then: (locations: Location[]) => {
-      sendEvent(
-        spreadSheetKey,
-        `Load locations for "${config.title}"`,
-        `Loaded ${locations && locations.length} locations for "${config.title}"`,
-        locations && locations.length
-      )
-      return { value: locations }
-    },
-  } as any,
+  },
   flowsFetch: {
     url: makeSheetQueryUrl(spreadSheetKey, 'flows', 'SELECT A,B,C'),
-    then: (flows: Flow[]) => {
-      sendEvent(
-        spreadSheetKey,
-        `Load flows for "${config.title}"`,
-        `Loaded ${flows && flows.length} flows for "${config.title}"`,
-        flows && flows.length
-      )
-      return { value: flows }
-    },
-  } as any,
+  },
 }))(FlowMap as any)
