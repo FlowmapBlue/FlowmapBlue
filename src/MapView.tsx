@@ -9,6 +9,7 @@ import Logo from './Logo';
 import { Helmet } from 'react-helmet';
 import styled from '@emotion/styled';
 import NoScrollContainer from './NoScrollContainer';
+import sendEvent from './ga';
 
 interface Props {
   spreadSheetKey: string
@@ -61,17 +62,7 @@ export default sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
           value[prop.property] = prop.value
         }
       }
-
-       // @ts-ignore
-       const { ga } = window
-       if (typeof ga === 'function') {
-         ga('send', {
-           hitType: 'event',
-           eventAction: 'load',
-           eventCategory: 'Config spreadsheet',
-           eventLabel: value[ConfigPropName.TITLE],
-         })
-       }
+      sendEvent('load','Load config', value[ConfigPropName.TITLE] || 'Untitled')
       return { value }
     },
   } as any

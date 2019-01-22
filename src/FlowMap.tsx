@@ -26,6 +26,7 @@ import LoadingSpinner from './LoadingSpinner';
 import { PromiseState } from 'react-refetch';
 import NoScrollContainer from './NoScrollContainer';
 import styled from '@emotion/styled';
+import sendEvent from './ga';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -520,34 +521,14 @@ export default sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
   locationsFetch: {
     url: makeSheetQueryUrl(spreadSheetKey, 'locations', 'SELECT A,B,C,D'),
     then: (locations: Location[]) => {
-      // @ts-ignore
-      const { ga } = window
-      if (typeof ga === 'function') {
-        ga('send', {
-          hitType: 'event',
-          eventAction: 'load',
-          eventCategory: 'Load locations',
-          eventLabel: `Loaded ${locations && locations.length} locations`,
-          eventValue: locations && locations.length,
-        })
-      }
+      sendEvent('load', 'Load locations', `Loaded ${locations && locations.length} locations`, locations && locations.length)
       return { value: locations }
     },
   } as any,
   flowsFetch: {
     url: makeSheetQueryUrl(spreadSheetKey, 'flows', 'SELECT A,B,C'),
     then: (flows: Flow[]) => {
-      // @ts-ignore
-      const { ga } = window
-      if (typeof ga === 'function') {
-        ga('send', {
-          hitType: 'event',
-          eventAction: 'load',
-          eventCategory: 'Load flows',
-          eventLabel: `Loaded ${flows && flows.length} flows`,
-          eventValue: flows && flows.length,
-        })
-      }
+      sendEvent('load', 'Load flows', `Loaded ${flows && flows.length} flows`, flows && flows.length)
       return { value: flows }
     },
   } as any,
