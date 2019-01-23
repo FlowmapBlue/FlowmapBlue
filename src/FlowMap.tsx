@@ -1,25 +1,29 @@
 import DeckGL, { MapController } from 'deck.gl'
 import * as React from 'react'
-import { FlyToInterpolator, StaticMap, ViewportProps, ViewState, ViewStateChangeInfo } from 'react-map-gl'
+import {
+  NavigationControl,
+  StaticMap,
+  ViewportProps,
+  ViewState,
+  ViewStateChangeInfo
+} from 'react-map-gl'
 import FlowMapLayer, {
   FlowLayerPickingInfo,
   FlowPickingInfo,
-  LocationCircleType,
   LocationPickingInfo,
   PickingType
 } from '@flowmap.gl/core'
-import { LocationTotalsLegend } from '@flowmap.gl/react'
+import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector } from 'reselect'
 import { colors, diffColors } from './colors'
-import { fitLocationsInView, getInitialViewState } from './fitInView'
 import { Box, Column, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
-import { Config, ConfigProp, ConfigPropName, Flow, Location } from './types';
+import { Config, ConfigPropName, Flow, Location } from './types';
 import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
 import Message from './Message';
 import LoadingSpinner from './LoadingSpinner';
@@ -27,6 +31,7 @@ import { PromiseState } from 'react-refetch';
 import NoScrollContainer from './NoScrollContainer';
 import styled from '@emotion/styled';
 import sendEvent from './ga';
+import { viewport } from '@mapbox/geo-viewport';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -74,11 +79,33 @@ const getFlowDestId = (flow: Flow) => flow.dest
 const getLocationId = (loc: Location) => loc.id
 const getLocationCentroid = (location: Location): [number, number] => [+location.lon, +location.lat]
 
+const getInitialViewState = (bbox: [number, number, number, number]) => {
+  const { center: [longitude, latitude], zoom } =
+    viewport(
+      bbox,
+      [window.innerWidth, window.innerHeight],
+      undefined, undefined, 512
+    )
+  return {
+    longitude,
+    latitude,
+    zoom,
+    bearing: 0,
+    pitch: 0,
+  }
+}
+
 const initialViewState = getInitialViewState([ -180, -70, 180, 70 ]);
 
 
 const Outer = styled(NoScrollContainer)`
   background: #f5f5f5;
+`
+const ZoomControls = styled(NavigationControl)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
 `
 
 
@@ -196,7 +223,7 @@ class FlowMap extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State): Partial<State> | null {
     const locations = props.locationsFetch.value
     if (locations != null && locations !== state.lastLocations) {
-      const viewState = fitLocationsInView(
+      const viewState = getViewStateForLocations(
         locations,
         getLocationCentroid,
         [
@@ -320,6 +347,10 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
+    this.handleNavigation(viewState)
+  }
+
+  handleNavigation = (viewState: ViewState) => {
     this.setState({
       viewState,
       tooltip: undefined,
@@ -458,7 +489,12 @@ class FlowMap extends React.Component<Props, State> {
             mapboxAccessToken && <StaticMap
               mapboxApiAccessToken={mapboxAccessToken}
               width={width} height={height} viewState={viewState}
-            />
+            >
+               <ZoomControls
+                 showCompass={false}
+                 onViewportChange={this.handleNavigation}
+               />
+            </StaticMap>
           )}
         />
         {flows &&
