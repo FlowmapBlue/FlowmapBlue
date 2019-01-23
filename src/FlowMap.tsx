@@ -39,6 +39,8 @@ const CONTROLLER_OPTIONS = {
   touchRotate: false,
 }
 
+const MAX_ZOOM_LEVELS = 4
+const MIN_ZOOM_LEVELS = 0.5
 
 type Props = {
   config: Config
@@ -71,6 +73,8 @@ type State = {
   highlight?: Highlight
   selectedLocationIds?: string[]
   error?: string
+  maxZoom: number | undefined,
+  minZoom: number | undefined,
 }
 
 export const getFlowMagnitude = (flow: Flow) => +flow.count
@@ -114,6 +118,8 @@ class FlowMap extends React.Component<Props, State> {
     viewState: initialViewState,
     lastLocations: undefined,
     error: undefined,
+    maxZoom: undefined,
+    minZoom: undefined,
   }
 
   private flowMapLayer: FlowMapLayer | undefined = undefined
@@ -240,6 +246,8 @@ class FlowMap extends React.Component<Props, State> {
       }
       return {
         lastLocations: locations,
+        maxZoom: viewState.zoom + MAX_ZOOM_LEVELS,
+        minZoom: viewState.zoom - MIN_ZOOM_LEVELS,
         viewState: {
           ...viewState,
           minPitch: 0,
@@ -351,8 +359,15 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   handleNavigation = (viewState: ViewState) => {
+    const { maxZoom, minZoom } = this.state
+    let zoom = viewState.zoom
+    if (maxZoom && zoom > maxZoom) return
+    if (minZoom && zoom < minZoom) return
     this.setState({
-      viewState,
+      viewState: {
+        ...viewState,
+        zoom,
+      },
       tooltip: undefined,
       highlight: undefined,
     })
