@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 
 const examples = [
   { key: '1Z6dVVFFrdooHIs8xnJ_O7eM5bhS5KscCi7G_k0jUNDI', name: 'London bicycle hires in 2017' },
-  { key: '1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA', name: 'New York Citi Bike trips in 2018' },
+  { key: '1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA', name: '17 million New York Citi Bike trips in 2018' },
   { key: '1rhsLubo_ZCjoBhP7PbX16nm-WUPvtHRguEFXhLJu1Jk', name: 'Relocations in the Netherlands in 2017' },
   { key: '1fhX98NFv5gAkkjB2YFCm50-fplFpmWVAZby3dmm9cgQ', name: 'Chicago taxis' },
   { key: '1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA', name: 'Template for publishing' },
@@ -71,8 +71,6 @@ const Intro = () =>
             The <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the optional <b>name</b>.
             The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
             The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
-            {/*Make sure <b>not to enable number formatting</b> for the numeric columns or*/}
-            {/*they won't be treated correctly.*/}
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
           <li>Share the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and then
@@ -83,6 +81,8 @@ const Intro = () =>
             <a href="http://flowmap.blue/YOUR_SPREADSHEET_KEY" target="_blank" rel="noopener">
               https://flowmap.blue/YOUR_SPREADSHEET_KEY
             </a>
+          </li>
+          <li><a href="https://spectrum.chat/flowmap-blue/published-flow-maps" target="_blank" rel="noopener">Share it with others</a>
           </li>
         </ol>
       </section>
