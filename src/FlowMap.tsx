@@ -39,7 +39,7 @@ const CONTROLLER_OPTIONS = {
   touchRotate: false,
 }
 
-const MAX_ZOOM_LEVELS = 4
+const MAX_ZOOM_LEVELS = 5
 const MIN_ZOOM_LEVELS = 0.5
 
 type Props = {
