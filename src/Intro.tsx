@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import Logo from './Logo'
+import MapboxLogo from './images/mapbox-logo-black.svg'
+import TLLogo from './images/TL-Horizontal-Black.svg'
 import styled from '@emotion/styled';
 
 const examples = [
@@ -16,6 +18,32 @@ const Outer = styled.div`
   & h1 { font-size: 2rem; }
   & li { margin: 0.5em 0; }
 `
+
+
+const Support = styled.p`
+  display: flex;
+  justify-items: center;
+  flex-wrap: wrap;
+  & > *+* {
+    margin-left: .5em; 
+  }
+`
+
+const LogoLink = styled.a`
+  position: relative;
+  top: 2px;
+  opacity: 1;
+  transition: opacity 0.2s;
+  &:hover {
+    opacity: 0.6;
+  }
+`
+
+const SupportLogo = ({ src, href }: { src: string, href: string }) =>
+  <LogoLink href={href} target="_blank" rel="noopener">
+    <img src={src} height={22} />
+  </LogoLink>
+
 
 const Intro = () =>
   <Outer>
@@ -97,15 +125,18 @@ const Intro = () =>
       <section>
         <h2>Credits</h2>
         <p>
-          Developed by {` `}
-          <a href="https://ilya.boyandin.me" target="_blank" rel="noopener">Ilya Boyandin</a>  {` using `}
+          Developed by <a href="https://ilya.boyandin.me" target="_blank" rel="noopener">Ilya Boyandin</a> using {` `}
           <a href="https://github.com/teralytics/flowmap.gl" target="_blank" rel="noopener">flowmap.gl</a>,{` `}
           <a href="http://deck.gl" target="_blank" rel="noopener">deck.gl</a>,{` `}
           <a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">mapbox</a>,{` `}
-          <a href="https://d3js.org/" target="_blank" rel="noopener">d3</a>
-          {` with the kind support from `}
-          <a href="https://www.teralytics.net" target="_blank" rel="noopener">Teralytics</a>.
+          <a href="https://d3js.org/" target="_blank" rel="noopener">d3</a>.
         </p>
+        <Support>
+          <span>With kind support from</span>
+          <SupportLogo href="https://www.teralytics.net" src={TLLogo}/>
+          <span>and</span>
+          <SupportLogo href="https://www.mapbox.com" src={MapboxLogo}/>
+        </Support>
       </section>
     </section>
 
@@ -118,6 +149,7 @@ const Intro = () =>
         alt="Fork me on GitHub" />
     </a>
   </Outer>
+
 
 
 export default Intro
