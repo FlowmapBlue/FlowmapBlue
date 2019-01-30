@@ -4,6 +4,7 @@ import Logo from './Logo'
 import MapboxLogo from './images/mapbox-logo-black.svg'
 import TLLogo from './images/TL-Horizontal-Black.svg'
 import styled from '@emotion/styled';
+import ReadMore from './ReadMore';
 
 const examples = [
   { key: '1Z6dVVFFrdooHIs8xnJ_O7eM5bhS5KscCi7G_k0jUNDI', name: 'London bicycle hires in 2017' },
@@ -29,7 +30,7 @@ const Support = styled.p`
   }
 `
 
-const LogoLink = styled.a`
+const SupportLogoLink = styled.a`
   position: relative;
   top: 2px;
   opacity: 1;
@@ -40,9 +41,11 @@ const LogoLink = styled.a`
 `
 
 const SupportLogo = ({ src, href }: { src: string, href: string }) =>
-  <LogoLink href={href} target="_blank" rel="noopener">
+  <SupportLogoLink href={href} target="_blank" rel="noopener">
     <img src={src} height={22} />
-  </LogoLink>
+  </SupportLogoLink>
+
+
 
 
 const Intro = () =>
@@ -92,13 +95,14 @@ const Intro = () =>
         <ol>
           <li>Open <a href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA" target="_blank" rel="noopener">this spreadsheet</a> and
             make a copy of it (File / Make a copy…)</li>
-          <li>Add data to the new spreadsheet.
-            The spreadsheet has three sheets in it.
-            They are named "<b>properties</b>", "<b>locations</b>" and "<b>flows</b>".
-            The <b>properties</b> sheet has the title and the description for your dataset and a few other configuration parameters.
-            The <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the optional <b>name</b>.
-            The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
-            The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
+          <li>Add data to the new spreadsheet. <ReadMore>
+              The spreadsheet has three sheets in it.
+              They are named "<b>properties</b>", "<b>locations</b>" and "<b>flows</b>".
+              The <b>properties</b> sheet has the title and the description for your dataset and a few other configuration parameters.
+              The <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the optional <b>name</b>.
+              The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
+              The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
+            </ReadMore>
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
           <li>Share the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and then
@@ -107,7 +111,7 @@ const Intro = () =>
           <li>Copy the key of your spreadsheet from its URL. It comes right after docs.google.com/spreadsheets/d/</li>
           <li>Open{` `}
             <a href="http://flowmap.blue/YOUR_SPREADSHEET_KEY" target="_blank" rel="noopener">
-              https://flowmap.blue/YOUR_SPREADSHEET_KEY
+              flowmap.blue/YOUR_SPREADSHEET_KEY
             </a>
           </li>
           <li><a href="https://spectrum.chat/flowmap-blue/published-flow-maps" target="_blank" rel="noopener">Share it with others</a>
