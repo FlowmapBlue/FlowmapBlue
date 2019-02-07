@@ -10,6 +10,13 @@ export const colors: Colors = {
   },
 };
 
+export const animatedColors: Colors = {
+  flows: {
+    max: ColorScheme.primary,
+    min: '#fff',
+  },
+};
+
 const complementary = '#f52020'
 const baseDiffColor = '#17a5be'
 

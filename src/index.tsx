@@ -5,8 +5,9 @@ import { Global, css } from '@emotion/core'
 import * as Sentry from '@sentry/browser'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
-import checkWebglSupport from './checkWebglSupport';
-import { ColorScheme } from './colors';
+import '@blueprintjs/core/lib/css/blueprint.css'
+import checkWebglSupport from './checkWebglSupport'
+import { ColorScheme } from './colors'
 
 const globalStyles = css`
 html, body { font-family: 'Sarabun', sans-serif; }

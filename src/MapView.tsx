@@ -36,6 +36,7 @@ const MapView = ({ spreadSheetKey, configFetch }: PropsWithData) => {
         <LoadingSpinner/>
         :
         <FlowMap
+          animate={true}
           spreadSheetKey={spreadSheetKey}
           config={configFetch.fulfilled ? configFetch.value : DEFAULT_CONFIG}
         />

@@ -13,10 +13,11 @@ import FlowMapLayer, {
   LocationPickingInfo,
   PickingType
 } from '@flowmap.gl/core'
+import { Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import WebMercatorViewport from 'viewport-mercator-project'
-import { createSelector } from 'reselect'
-import { colors, diffColors } from './colors'
+import { createSelector, ParametricSelector } from 'reselect'
+import { animatedColors, colors, diffColors } from './colors'
 import { Box, Column, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, LocationTooltipContent } from './TooltipContent';
@@ -32,6 +33,7 @@ import NoScrollContainer from './NoScrollContainer';
 import styled from '@emotion/styled';
 import sendEvent from './ga';
 import { viewport } from '@mapbox/geo-viewport';
+import { SyntheticEvent } from 'react';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -73,8 +75,10 @@ type State = {
   highlight?: Highlight
   selectedLocationIds?: string[]
   error?: string
-  maxZoom: number | undefined,
-  minZoom: number | undefined,
+  maxZoom: number | undefined
+  minZoom: number | undefined
+  time: number
+  animate: boolean
 }
 
 export const getFlowMagnitude = (flow: Flow) => +flow.count
@@ -111,7 +115,12 @@ const ZoomControls = styled(NavigationControl)`
   right: 10px;
   z-index: 10;
 `
+const StyledSwitch = styled(Switch)`
+  margin-bottom: 0;
+  align-self: flex-start;
+`
 
+type Selector<T> = ParametricSelector<State, Props, T>
 
 class FlowMap extends React.Component<Props, State> {
   readonly state: State = {
@@ -120,19 +129,21 @@ class FlowMap extends React.Component<Props, State> {
     error: undefined,
     maxZoom: undefined,
     minZoom: undefined,
+    time: 0,
+    animate: false,
   }
 
   private flowMapLayer: FlowMapLayer | undefined = undefined
 
-  getFlows = (props: Props) => props.flowsFetch.value
-  getLocations = (props: Props) => props.locationsFetch.value
+  getFlows = (state: State, props: Props) => props.flowsFetch.value
+  getLocations = (state: State, props: Props) => props.locationsFetch.value
 
-  getKnownLocationIds = createSelector(
+  getKnownLocationIds: Selector<Set<string> | undefined> = createSelector(
     this.getLocations,
     locations => locations ? new Set(locations.map(getLocationId)) : undefined
   )
 
-  getDiffMode = createSelector(
+  getDiffMode: Selector<boolean> = createSelector(
     this.getFlows,
     flows => {
       if (flows && flows.find(f => getFlowMagnitude(f) < 0)) {
@@ -142,17 +153,23 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
+  getAnimate: Selector<boolean> = (state: State, props: Props) => state.animate
+
   getColors = createSelector(
     this.getDiffMode,
-    diffMode => {
+    this.getAnimate,
+    (diffMode, animate) => {
       if (diffMode) {
         return diffColors
+      }
+      if (animate) {
+        return animatedColors
       }
       return colors
     }
   )
 
-  getFlowsForKnownLocations = createSelector(
+  getFlowsForKnownLocations: Selector<Flow[] | undefined> = createSelector(
     this.getFlows,
     this.getKnownLocationIds,
     (flows, ids) => {
@@ -164,7 +181,7 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
-  getLocationsWithFlows = createSelector(
+  getLocationsWithFlows: Selector<Location[] | undefined> = createSelector(
     this.getFlowsForKnownLocations,
     this.getLocations,
     (flows, locations) => {
@@ -178,7 +195,7 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
-  getUnknownLocations = createSelector(
+  getUnknownLocations: Selector<Set<string> | undefined> = createSelector(
     this.getKnownLocationIds,
     this.getFlows,
     this.getFlowsForKnownLocations,
@@ -195,16 +212,18 @@ class FlowMap extends React.Component<Props, State> {
   )
 
   getLayers() {
-    const { highlight, selectedLocationIds } = this.state;
-    const flows = this.getFlowsForKnownLocations(this.props)
-    const locations = this.getLocationsWithFlows(this.props)
+    const { highlight, selectedLocationIds, animate, time  } = this.state;
+    const flows = this.getFlowsForKnownLocations(this.state, this.props)
+    const locations = this.getLocationsWithFlows(this.state, this.props)
     const layers = []
     if (locations && flows) {
       layers.push(
         this.flowMapLayer = new FlowMapLayer({
-          id: 'flow-map-layer',
-          diffMode: this.getDiffMode(this.props),
-          colors: this.getColors(this.props),
+          id: `flow-map-${animate ? 'animated' : 'arrows'}`,
+          animate,
+          animationCurrentTime: time,
+          diffMode: this.getDiffMode(this.state, this.props),
+          colors: this.getColors(this.state, this.props),
           locations,
           flows,
           showOnlyTopFlows: 10000,
@@ -282,6 +301,41 @@ class FlowMap extends React.Component<Props, State> {
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown)
+    const { animate } = this.state;
+    if (animate) {
+      this.animate();
+    }
+  }
+
+  private animationFrame: number = -1;
+
+  handleToggleAnimation = (evt: SyntheticEvent) => {
+    const animate = (evt.target as HTMLInputElement).checked
+    if (animate) {
+      this.animate()
+    } else {
+      this.stopAnimation()
+    }
+    this.setState({ animate })
+  }
+
+  private animate = () => {
+    const loopLength = 1800
+    const animationSpeed = 30
+    const timestamp = Date.now() / 1000
+    const loopTime = loopLength / animationSpeed
+
+    this.setState({
+      time: ((timestamp % loopTime) / loopTime) * loopLength,
+    })
+    this.animationFrame = window.requestAnimationFrame(this.animate)
+  }
+
+  private stopAnimation() {
+    if (this.animationFrame > 0) {
+      window.cancelAnimationFrame(this.animationFrame)
+      this.animationFrame = -1
+    }
   }
 
   componentWillUnmount() {
@@ -482,15 +536,15 @@ class FlowMap extends React.Component<Props, State> {
         <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.
       </Message>;
     }
-    const unknownLocations = this.getUnknownLocations(this.props);
-    const flows = this.getFlowsForKnownLocations(this.props)
-    const allFlows = this.getFlows(this.props)
+    const unknownLocations = this.getUnknownLocations(this.state, this.props);
+    const flows = this.getFlowsForKnownLocations(this.state, this.props)
+    const allFlows = this.getFlows(this.state, this.props)
     const title = config[ConfigPropName.TITLE]
     const description = config[ConfigPropName.DESCRIPTION]
     const sourceUrl = config[ConfigPropName.SOURCE_URL]
     const sourceName = config[ConfigPropName.SOURCE_NAME]
     const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
-    const diffMode = this.getDiffMode(this.props)
+    const diffMode = this.getDiffMode(this.state, this.props)
 
     return (
       <Outer>
@@ -521,7 +575,10 @@ class FlowMap extends React.Component<Props, State> {
             >
               <Column spacing={10} padding={12}>
                 <LegendTitle>Location totals</LegendTitle>
-                <LocationTotalsLegend diff={diffMode} colors={colors} />
+                <LocationTotalsLegend
+                  diff={diffMode}
+                  colors={this.getColors(this.state, this.props)}
+                />
               </Column>
             </Collapsible>
           </Box>
@@ -561,6 +618,11 @@ class FlowMap extends React.Component<Props, State> {
                    rel="noopener"
                 >this spreadsheet</a>. You can <Link to="/">publish your own</Link> too.
               </div>
+              <StyledSwitch
+                checked={this.state.animate}
+                label="Animate flows"
+                onChange={this.handleToggleAnimation}
+              />
             </Column>
           </Collapsible>
         </TitleBox>
