@@ -5,8 +5,8 @@
   "dependencies": {
     "@emotion/core": "^10.0.6",
     "@emotion/styled": "^10.0.6",
-    "@flowmap.gl/core": "^5.0.3",
-    "@flowmap.gl/react": "^5.0.3",
+    "@flowmap.gl/core": "^5.1.0",
+    "@flowmap.gl/react": "^5.1.0",
     "@mapbox/geo-viewport": "^0.4.0",
     "@sentry/browser": "^4.5.3",
     "@types/d3-color": "^1.2.1",
