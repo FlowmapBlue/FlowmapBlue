@@ -13,14 +13,14 @@ import FlowMapLayer, {
   LocationPickingInfo,
   PickingType
 } from '@flowmap.gl/core'
-import { Switch } from '@blueprintjs/core'
+import { Intent, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector, ParametricSelector } from 'reselect'
 import { animatedColors, colors, diffColors } from './colors'
-import { Box, Column, LegendTitle, Title, TitleBox, WarningBox, WarningTitle } from './Boxes'
+import { Box, Column, LegendTitle, Title, TitleBox, ToastContent } from './Boxes'
 import { findDOMNode } from 'react-dom';
-import { FlowTooltipContent, LocationTooltipContent } from './TooltipContent';
+import { FlowTooltipContent, LocationTooltipContent, formatCount } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
@@ -34,6 +34,9 @@ import styled from '@emotion/styled';
 import sendEvent from './ga';
 import { viewport } from '@mapbox/geo-viewport';
 import { SyntheticEvent } from 'react';
+import { AppToaster } from './toaster';
+import { IconNames } from '@blueprintjs/icons';
+import * as d3Format from 'd3-format';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -307,6 +310,37 @@ class FlowMap extends React.Component<Props, State> {
     }
   }
 
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const { flowsFetch } = this.props
+    if (flowsFetch.value !== prevProps.flowsFetch.value) {
+      const unknownLocations = this.getUnknownLocations(this.state, this.props);
+      if (unknownLocations) {
+        const allFlows = this.getFlows(this.state, this.props)
+        const flows = this.getFlowsForKnownLocations(this.state, this.props)
+        const Locations = styled.div`
+          font-size: 10px;
+          padding: 10px;          
+        `
+        if (flows && allFlows)  {
+          AppToaster.show({
+            intent: Intent.DANGER,
+            icon: IconNames.WARNING_SIGN,
+            timeout: 0,
+            message:
+            <ToastContent>
+              The following locations couldn't be found in the locations sheet:
+              <Locations>
+                {Array.from(unknownLocations).sort().map(id => `${id}`).join(', ')}
+              </Locations>
+              {formatCount(allFlows.length - flows.length)} flows were omitted.
+            </ToastContent>
+          })
+        }
+
+      }
+    }
+  }
+
   private animationFrame: number = -1;
 
   handleToggleAnimation = (evt: SyntheticEvent) => {
@@ -536,9 +570,7 @@ class FlowMap extends React.Component<Props, State> {
         <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.
       </Message>;
     }
-    const unknownLocations = this.getUnknownLocations(this.state, this.props);
     const flows = this.getFlowsForKnownLocations(this.state, this.props)
-    const allFlows = this.getFlows(this.state, this.props)
     const title = config[ConfigPropName.TITLE]
     const description = config[ConfigPropName.DESCRIPTION]
     const sourceUrl = config[ConfigPropName.SOURCE_URL]
@@ -583,15 +615,6 @@ class FlowMap extends React.Component<Props, State> {
             </Collapsible>
           </Box>
         </>}
-        {unknownLocations && flows && allFlows &&
-          <WarningBox top={10} right={10}>
-            <WarningTitle>Warning</WarningTitle>
-            {`${allFlows.length - flows.length} flows were omitted which
-            referred to the following missing locations:`}
-            <br/><br/>
-            {Array.from(unknownLocations).sort().map(id => `"${id}"`).join(', ')}
-          </WarningBox>
-        }
         <TitleBox top={60} left={0}>
           <Collapsible
             width={300}

@@ -53,15 +53,9 @@ export const Title = styled.div`
 
 export const LegendTitle = styled.div`
   font-weight: bold;
+  font-size: 13px;
+`
+
+export const ToastContent = styled.div`
   font-size: 12px;
-`
-
-export const WarningTitle = styled(LegendTitle)`
-  text-align: left;
-`
-
-export const WarningBox = styled(Box)`
-  padding: 12px;
-  background: rgba(255, 210, 200, 0.9);
-  max-width: 200px;
 `

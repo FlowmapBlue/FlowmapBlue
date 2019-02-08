@@ -46,7 +46,7 @@ const Value = styled.div`
   justify-content: flex-end;
 `
 
-const formatCount = d3Format.format(',.0f')
+export const formatCount = d3Format.format(',.0f')
 
 export const LocationTooltipContent =
   ({ locationInfo, isSelected }: { locationInfo: LocationPickingInfo, isSelected: boolean }) => {
