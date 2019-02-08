@@ -25,18 +25,16 @@ const Support = styled.p`
   display: flex;
   justify-items: center;
   flex-wrap: wrap;
-  & > *+* {
-    margin-left: .5em; 
-  }
 `
 
 const SupportLogoLink = styled.a`
   position: relative;
-  top: 2px;
-  opacity: 1;
+  top: 0.25em;
   transition: opacity 0.2s;
+  opacity: 0.6;
+  margin: 0 22px;
   &:hover {
-    opacity: 0.6;
+    opacity: 1;
   }
 `
 

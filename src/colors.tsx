@@ -1,4 +1,5 @@
-import { Colors, DiffColors } from '@flowmap.gl/core';
+import { Colors, DiffColors } from '@flowmap.gl/core'
+import { hcl } from 'd3-color'
 
 export enum ColorScheme {
   primary = '#137CBD',
@@ -8,11 +9,15 @@ export const colors: Colors = {
   flows: {
     max: ColorScheme.primary,
   },
+  locationCircles: {
+    outgoing: hcl(ColorScheme.primary).brighter(2).toString(),
+  },
 };
 
 export const animatedColors: Colors = {
+  ...colors,
   flows: {
-    max: ColorScheme.primary,
+    ...colors.flows,
     min: '#fff',
   },
 };
