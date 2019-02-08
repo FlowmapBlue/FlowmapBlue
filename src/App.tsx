@@ -1,10 +1,15 @@
 import * as React from 'react'
-import { BrowserRouter, Route, Switch, RouteComponentProps } from 'react-router-dom'
+import { Router, Route, Switch, RouteComponentProps } from 'react-router-dom'
+import createBrowserHistory from 'history/createBrowserHistory'
 import Intro from './Intro'
 import * as Sentry from '@sentry/browser'
 import MapView from './MapView';
 import NoScrollContainer from './NoScrollContainer';
 import Fallback from './Fallback';
+import { AppToaster } from './toaster';
+
+const history = createBrowserHistory()
+history.listen(location => AppToaster.clear())
 
 type Props = {
   supportsWebGl: boolean,
@@ -36,7 +41,7 @@ export default class App extends React.Component<Props, State> {
     if (this.state.error) {
       // render fallback UI
       return (
-        <BrowserRouter>
+        <Router history={history}>
           <Fallback>
             <>
               Oops… Sorry, but something went wrong.
@@ -45,12 +50,12 @@ export default class App extends React.Component<Props, State> {
               </p>
             </>
           </Fallback>
-        </BrowserRouter>
+        </Router>
       )
     } else {
       const { supportsWebGl } = this.props
       return (
-        <BrowserRouter>
+        <Router history={history}>
           <Switch>
             <Route
               path="/:sheetKey([a-zA-Z0-9-_]{44})"
@@ -69,7 +74,7 @@ export default class App extends React.Component<Props, State> {
             />
             <Route path="/" component={Intro} />
           </Switch>
-        </BrowserRouter>
+        </Router>
       )
     }
   }

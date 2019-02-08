@@ -328,7 +328,7 @@ class FlowMap extends React.Component<Props, State> {
             timeout: 0,
             message:
             <ToastContent>
-              The following locations couldn't be found in the locations sheet:
+              Locations with the following IDs couldn't be found in the locations sheet:
               <Locations>
                 {Array.from(unknownLocations).sort().map(id => `${id}`).join(', ')}
               </Locations>
