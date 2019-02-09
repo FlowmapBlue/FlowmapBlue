@@ -36,7 +36,7 @@ import { viewport } from '@mapbox/geo-viewport';
 import { SyntheticEvent } from 'react';
 import { AppToaster } from './toaster';
 import { IconNames } from '@blueprintjs/icons';
-import * as d3Format from 'd3-format';
+import LocationsSearchBox from './LocationSearchBox';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -570,6 +570,7 @@ class FlowMap extends React.Component<Props, State> {
         <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.
       </Message>;
     }
+    const locations = this.getLocations(this.state, this.props)
     const flows = this.getFlowsForKnownLocations(this.state, this.props)
     const title = config[ConfigPropName.TITLE]
     const description = config[ConfigPropName.DESCRIPTION]
@@ -598,6 +599,15 @@ class FlowMap extends React.Component<Props, State> {
             </StaticMap>
           )}
         />
+        {locations &&
+          <Box top={10} right={50}>
+            <LocationsSearchBox
+              locations={locations}
+              selectedLocations={undefined}
+              onSelectionChanged={console.log}
+            />
+          </Box>
+        }
         {flows &&
         <>
           <Box bottom={28} right={0}>
