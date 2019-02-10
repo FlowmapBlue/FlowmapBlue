@@ -36,7 +36,6 @@ import { viewport } from '@mapbox/geo-viewport';
 import { SyntheticEvent } from 'react';
 import { AppToaster } from './toaster';
 import { IconNames } from '@blueprintjs/icons';
-import * as d3Format from 'd3-format';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,

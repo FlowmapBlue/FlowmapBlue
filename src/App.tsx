@@ -3,10 +3,14 @@ import { Router, Route, Switch, RouteComponentProps } from 'react-router-dom'
 import createBrowserHistory from 'history/createBrowserHistory'
 import Intro from './Intro'
 import * as Sentry from '@sentry/browser'
-import MapView from './MapView';
 import NoScrollContainer from './NoScrollContainer';
 import Fallback from './Fallback';
 import { AppToaster } from './toaster';
+import { Suspense } from 'react';
+import LoadingSpinner from './LoadingSpinner';
+
+const MapView = React.lazy(() => import('./MapView'))
+
 
 const history = createBrowserHistory()
 history.listen(location => AppToaster.clear())
@@ -62,9 +66,11 @@ export default class App extends React.Component<Props, State> {
               component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
                 <NoScrollContainer>{
                   supportsWebGl ?
-                    <MapView
-                      spreadSheetKey={match.params.sheetKey}
-                    />
+                    <Suspense fallback={<LoadingSpinner/>}>
+                      <MapView
+                        spreadSheetKey={match.params.sheetKey}
+                      />
+                    </Suspense>
                     :
                     <Fallback>
                       Sorry, but your browser doesn't seem to support WebGL which is required for this app.
