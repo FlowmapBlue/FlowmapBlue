@@ -43,7 +43,10 @@ const SupportLogo = ({ src, href }: { src: string, href: string }) =>
     <img src={src} height={22} />
   </SupportLogoLink>
 
-
+const NoWrap = styled.span`
+  display: flex;
+  flex-wrap: nowrap;
+`
 
 
 const Intro = () =>
@@ -135,9 +138,11 @@ const Intro = () =>
         </p>
         <Support>
           <span>With kind support from</span>
-          <SupportLogo href="https://www.teralytics.net" src={TLLogo}/>
-          <span>and</span>
-          <SupportLogo href="https://www.mapbox.com" src={MapboxLogo}/>
+          <NoWrap>
+            <SupportLogo href="https://www.teralytics.net" src={TLLogo}/>
+            <span>and</span>
+            <SupportLogo href="https://www.mapbox.com" src={MapboxLogo}/>
+          </NoWrap>
         </Support>
       </section>
     </section>
