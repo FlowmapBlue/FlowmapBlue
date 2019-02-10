@@ -60,26 +60,26 @@ export default class App extends React.Component<Props, State> {
       const { supportsWebGl } = this.props
       return (
         <Router history={history}>
-          <Switch>
-            <Route
-              path="/:sheetKey([a-zA-Z0-9-_]{44})"
-              component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
-                <NoScrollContainer>{
-                  supportsWebGl ?
-                    <Suspense fallback={<LoadingSpinner/>}>
+          <Suspense fallback={<LoadingSpinner/>}>
+            <Switch>
+              <Route
+                path="/:sheetKey([a-zA-Z0-9-_]{44})"
+                component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
+                  <NoScrollContainer>{
+                    supportsWebGl ?
                       <MapView
                         spreadSheetKey={match.params.sheetKey}
                       />
-                    </Suspense>
-                    :
-                    <Fallback>
-                      Sorry, but your browser doesn't seem to support WebGL which is required for this app.
-                    </Fallback>
-                }</NoScrollContainer>
-              }
-            />
-            <Route path="/" component={Intro} />
-          </Switch>
+                      :
+                      <Fallback>
+                        Sorry, but your browser doesn't seem to support WebGL which is required for this app.
+                      </Fallback>
+                  }</NoScrollContainer>
+                }
+              />
+              <Route path="/" component={Intro} />
+            </Switch>
+          </Suspense>
         </Router>
       )
     }
