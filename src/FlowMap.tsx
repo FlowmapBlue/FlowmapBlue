@@ -250,7 +250,7 @@ class FlowMap extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State): Partial<State> | null {
     const locations = props.locationsFetch.value
     if (locations != null && locations !== state.lastLocations) {
-      const viewState = getViewStateForLocations(
+      let viewState = getViewStateForLocations(
         locations,
         getLocationCentroid,
         [
@@ -259,16 +259,23 @@ class FlowMap extends React.Component<Props, State> {
         ],
         { pad: 0.05 }
       )
+      // if (!viewState.zoom) {
+      //   return {
+      //     error: `The geo bounding box couldn't be calculated.
+      //     Please, make sure that all the locations have valid coordinates in the spreadsheet.`
+      //   }
+      // }
       if (!viewState.zoom) {
-        return {
-          error: `The geo bounding box couldn't be calculated. 
-          Please, make sure that all the locations have valid coordinates in the spreadsheet.`
+        viewState = {
+          zoom: 1,
+          latitude: 0,
+          longitude: 0,
         }
       }
       return {
         lastLocations: locations,
-        maxZoom: viewState.zoom + MAX_ZOOM_LEVELS,
-        minZoom: viewState.zoom - MIN_ZOOM_LEVELS,
+        // maxZoom: viewState.zoom + MAX_ZOOM_LEVELS,
+        // minZoom: viewState.zoom - MIN_ZOOM_LEVELS,
         viewState: {
           ...viewState,
           minPitch: 0,
