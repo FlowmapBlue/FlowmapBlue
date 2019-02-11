@@ -202,8 +202,8 @@ class FlowMap extends React.Component<Props, State> {
     this.getFlows,
     this.getFlowsForKnownLocations,
     (ids, flows, flowsForKnownLocations) => {
-      if (!ids || !flows || !flowsForKnownLocations) return undefined
-      if (flows.length === flowsForKnownLocations.length) return undefined
+      if (!ids || !flows) return undefined
+      if (flowsForKnownLocations && flows.length === flowsForKnownLocations.length) return undefined
       const missing = new Set()
       for (const flow of flows) {
         if (!ids.has(getFlowOriginId(flow))) missing.add(getFlowOriginId(flow))
@@ -317,8 +317,10 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const { flowsFetch } = this.props
-    if (flowsFetch.value !== prevProps.flowsFetch.value) {
+    const { flowsFetch, locationsFetch } = this.props
+    if (flowsFetch.value !== prevProps.flowsFetch.value ||
+      locationsFetch.value !== prevProps.locationsFetch.value
+    ) {
       const unknownLocations = this.getUnknownLocations(this.state, this.props);
       if (unknownLocations) {
         const allFlows = this.getFlows(this.state, this.props)
@@ -328,6 +330,8 @@ class FlowMap extends React.Component<Props, State> {
           padding: 10px;          
         `
         if (flows && allFlows)  {
+          const ids = Array.from(unknownLocations).sort();
+          const MAX_NUM_IDS = 100;
           AppToaster.show({
             intent: Intent.DANGER,
             icon: IconNames.WARNING_SIGN,
@@ -336,7 +340,10 @@ class FlowMap extends React.Component<Props, State> {
             <ToastContent>
               Locations with the following IDs couldn't be found in the locations sheet:
               <Locations>
-                {Array.from(unknownLocations).sort().map(id => `${id}`).join(', ')}
+                {(ids.length > MAX_NUM_IDS ?
+                  ids.slice(0, MAX_NUM_IDS) : ids).map(id => `${id}`).join(', ')
+                }
+                {ids.length > MAX_NUM_IDS && `… and ${ids.length - MAX_NUM_IDS} others`}
               </Locations>
               {formatCount(allFlows.length - flows.length)} flows were omitted.
             </ToastContent>
