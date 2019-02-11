@@ -463,7 +463,7 @@ class FlowMap extends React.Component<Props, State> {
         zoom,
       },
       tooltip: undefined,
-      highlight: undefined,
+      // highlight: undefined,
     })
   }
 
