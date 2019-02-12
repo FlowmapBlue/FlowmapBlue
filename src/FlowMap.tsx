@@ -36,6 +36,7 @@ import { viewport } from '@mapbox/geo-viewport';
 import { SyntheticEvent } from 'react';
 import { AppToaster } from './toaster';
 import { IconNames } from '@blueprintjs/icons';
+import debounce from 'lodash.debounce';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -491,8 +492,10 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   private highlight(highlight: Highlight | undefined) {
-    this.setState({ highlight });
+    this.setState({ highlight })
+    this.highlightDebounced.cancel()
   }
+  private highlightDebounced = debounce(this.highlight, 100)
 
   private handleHover = (info: FlowLayerPickingInfo) => {
     const { type, object, x, y } = info
@@ -515,7 +518,7 @@ class FlowMap extends React.Component<Props, State> {
       }
       case PickingType.LOCATION: {
         if (object) {
-          this.highlight({
+          this.highlightDebounced({
             type: HighlightType.LOCATION,
             locationId: getLocationId!(object),
           })
