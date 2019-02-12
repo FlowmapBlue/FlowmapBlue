@@ -256,21 +256,7 @@ class FlowMap extends React.Component<Props, State> {
       if (bbox) {
         const bounds: number[] = bbox.split(',').map(d => +d)
         if (bounds.length === 4) {
-          const {
-            center: [longitude, latitude],
-            zoom,
-          } = viewport(bounds as [number, number, number, number], [
-              window.innerWidth,
-              window.innerHeight,
-            ], undefined, undefined, 512, true
-          )
-          viewState = {
-            longitude,
-            latitude,
-            zoom,
-            bearing: 0,
-            pitch: 0,
-          }
+          viewState = getInitialViewState(bounds as [number, number, number, number])
         }
       }
 
@@ -350,32 +336,35 @@ class FlowMap extends React.Component<Props, State> {
     ) {
       const unknownLocations = this.getUnknownLocations(this.state, this.props);
       if (unknownLocations) {
-        const allFlows = this.getFlows(this.state, this.props)
-        const flows = this.getFlowsForKnownLocations(this.state, this.props)
-        const Locations = styled.div`
-          font-size: 10px;
-          padding: 10px;          
-        `
-        if (flows && allFlows)  {
-          const ids = Array.from(unknownLocations).sort();
-          const MAX_NUM_IDS = 100;
-          AppToaster.show({
-            intent: Intent.DANGER,
-            icon: IconNames.WARNING_SIGN,
-            timeout: 0,
-            message:
-            <ToastContent>
-              Locations with the following IDs couldn't be found in the locations sheet:
-              <Locations>
-                {(ids.length > MAX_NUM_IDS ?
-                  ids.slice(0, MAX_NUM_IDS) : ids).map(id => `${id}`).join(', ')
-                }
-                {ids.length > MAX_NUM_IDS && `… and ${ids.length - MAX_NUM_IDS} others`}
-              </Locations>
-              {formatCount(allFlows.length - flows.length)} flows were omitted.
-            </ToastContent>
-          })
+        if (this.props.config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
+          const allFlows = this.getFlows(this.state, this.props)
+          const flows = this.getFlowsForKnownLocations(this.state, this.props)
+          const Locations = styled.div`
+            font-size: 10px;
+            padding: 10px;          
+          `
+          if (flows && allFlows)  {
+            const ids = Array.from(unknownLocations).sort();
+            const MAX_NUM_IDS = 100;
+            AppToaster.show({
+              intent: Intent.DANGER,
+              icon: IconNames.WARNING_SIGN,
+              timeout: 0,
+              message:
+              <ToastContent>
+                Locations with the following IDs couldn't be found in the locations sheet:
+                <Locations>
+                  {(ids.length > MAX_NUM_IDS ?
+                    ids.slice(0, MAX_NUM_IDS) : ids).map(id => `${id}`).join(', ')
+                  }
+                  {ids.length > MAX_NUM_IDS && `… and ${ids.length - MAX_NUM_IDS} others`}
+                </Locations>
+                {formatCount(allFlows.length - flows.length)} flows were omitted.
+              </ToastContent>
+            })
+          }
         }
+
 
       }
     }
