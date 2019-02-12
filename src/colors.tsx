@@ -12,6 +12,7 @@ export const colors: Colors = {
   locationCircles: {
     outgoing: hcl(ColorScheme.primary).brighter(2).toString(),
   },
+  outlineColor: 'rgba(255, 255, 255, 0.5)',
 };
 
 export const animatedColors: Colors = {
