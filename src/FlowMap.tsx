@@ -250,15 +250,42 @@ class FlowMap extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State): Partial<State> | null {
     const locations = props.locationsFetch.value
     if (locations != null && locations !== state.lastLocations) {
-      let viewState = getViewStateForLocations(
-        locations,
-        getLocationCentroid,
-        [
-          window.innerWidth,
-          window.innerHeight,
-        ],
-        { pad: 0.05 }
-      )
+      let viewState
+
+      const bbox = props.config[ConfigPropName.MAP_BBOX]
+      if (bbox) {
+        const bounds: number[] = bbox.split(',').map(d => +d)
+        if (bounds.length === 4) {
+          const {
+            center: [longitude, latitude],
+            zoom,
+          } = viewport(bounds as [number, number, number, number], [
+              window.innerWidth,
+              window.innerHeight,
+            ], undefined, undefined, 512, true
+          )
+          viewState = {
+            longitude,
+            latitude,
+            zoom,
+            bearing: 0,
+            pitch: 0,
+          }
+        }
+      }
+
+      if (!viewState) {
+        viewState = getViewStateForLocations(
+          locations,
+          getLocationCentroid,
+          [
+            window.innerWidth,
+            window.innerHeight,
+          ],
+          { pad: 0.05 }
+        )
+      }
+
       // if (!viewState.zoom) {
       //   return {
       //     error: `The geo bounding box couldn't be calculated.

@@ -3,6 +3,7 @@ export enum ConfigPropName {
   DESCRIPTION = 'description',
   SOURCE_NAME = 'source.name',
   SOURCE_URL = 'source.url',
+  MAP_BBOX = 'map.bbox',
   MAPBOX_ACCESS_TOKEN = 'mapbox.accessToken',
 }
 

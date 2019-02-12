@@ -26,6 +26,7 @@ const DEFAULT_CONFIG: Config = {
   [ConfigPropName.SOURCE_NAME]: undefined,
   [ConfigPropName.SOURCE_URL]: undefined,
   [ConfigPropName.DESCRIPTION]: undefined,
+  [ConfigPropName.MAP_BBOX]: undefined,
 }
 
 
