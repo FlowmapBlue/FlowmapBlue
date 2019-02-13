@@ -95,7 +95,7 @@ const getInitialViewState = (bbox: [number, number, number, number]) => {
     viewport(
       bbox,
       [window.innerWidth, window.innerHeight],
-      undefined, undefined, 512
+      undefined, undefined, 512, true
     )
   return {
     longitude,
