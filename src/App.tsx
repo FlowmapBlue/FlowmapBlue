@@ -8,6 +8,7 @@ import Fallback from './Fallback';
 import { AppToaster } from './toaster';
 import { Suspense } from 'react';
 import LoadingSpinner from './LoadingSpinner';
+import { SPREADSHEET_KEY_RE } from './constants';
 
 const MapView = React.lazy(() => import('./MapView'))
 
@@ -63,7 +64,7 @@ export default class App extends React.Component<Props, State> {
           <Suspense fallback={<LoadingSpinner/>}>
             <Switch>
               <Route
-                path="/:sheetKey([a-zA-Z0-9-_]{44})"
+                path={`/:sheetKey(${SPREADSHEET_KEY_RE})`}
                 component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
                   <NoScrollContainer>{
                     supportsWebGl ?

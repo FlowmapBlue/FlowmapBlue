@@ -6,6 +6,7 @@ import TLLogo from './images/TL-Horizontal-Black.svg'
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
 import examples from './examples.json';
+import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
 
 const Outer = styled.div`
   padding: 10px 20px;
@@ -102,14 +103,7 @@ const Intro = () =>
           <li>Share the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and then
             choosing "Anyone with the link can view".
             </li>
-          <li>Copy the key of your spreadsheet from its URL. It comes right after docs.google.com/spreadsheets/d/</li>
-          <li>Open{` `}
-            <a href="http://flowmap.blue/YOUR_SPREADSHEET_KEY" target="_blank" rel="noopener">
-              flowmap.blue/YOUR_SPREADSHEET_KEY
-            </a>
-          </li>
-          <li><a href="https://spectrum.chat/flowmap-blue/published-flow-maps" target="_blank" rel="noopener">Share it with others</a>
-          </li>
+          <SpreadsheetKeyExtractor />
         </ol>
       </section>
       <section>
