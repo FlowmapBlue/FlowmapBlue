@@ -56,7 +56,7 @@ export default class SpreadsheetKeyExtractor extends React.Component<{}, State> 
     const items = [
       <li key="input">
         <p>
-        Paste here the link to your spreadsheet:
+        Copy the link to your spreadsheet and paste it here:
         </p>
         <StyledInputGroup
           inputRef={ref => this.ref = ref}
@@ -73,7 +73,7 @@ export default class SpreadsheetKeyExtractor extends React.Component<{}, State> 
     if (spreadsheetKey) {
       items.push(
         <li key="link">
-          Follow this link:{` `}
+          Open{` `}
           <a href={`/${spreadsheetKey}`} target="_blank" rel="noopener">
             {`${document.location.protocol}//${document.location.host}/${spreadsheetKey}`}
           </a>
