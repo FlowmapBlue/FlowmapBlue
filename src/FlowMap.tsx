@@ -36,6 +36,7 @@ import { viewport } from '@mapbox/geo-viewport';
 import { SyntheticEvent } from 'react';
 import { AppToaster } from './toaster';
 import { IconNames } from '@blueprintjs/icons';
+import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
 
 const CONTROLLER_OPTIONS = {
@@ -95,7 +96,7 @@ const getInitialViewState = (bbox: [number, number, number, number]) => {
     viewport(
       bbox,
       [window.innerWidth, window.innerHeight],
-      undefined, undefined, 512
+      undefined, undefined, 512, true
     )
   return {
     longitude,
@@ -203,8 +204,8 @@ class FlowMap extends React.Component<Props, State> {
     this.getFlows,
     this.getFlowsForKnownLocations,
     (ids, flows, flowsForKnownLocations) => {
-      if (!ids || !flows || !flowsForKnownLocations) return undefined
-      if (flows.length === flowsForKnownLocations.length) return undefined
+      if (!ids || !flows) return undefined
+      if (flowsForKnownLocations && flows.length === flowsForKnownLocations.length) return undefined
       const missing = new Set()
       for (const flow of flows) {
         if (!ids.has(getFlowOriginId(flow))) missing.add(getFlowOriginId(flow))
@@ -251,25 +252,45 @@ class FlowMap extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State): Partial<State> | null {
     const locations = props.locationsFetch.value
     if (locations != null && locations !== state.lastLocations) {
-      const viewState = getViewStateForLocations(
-        locations,
-        getLocationCentroid,
-        [
-          window.innerWidth,
-          window.innerHeight,
-        ],
-        { pad: 0.05 }
-      )
+      let viewState
+
+      const bbox = props.config[ConfigPropName.MAP_BBOX]
+      if (bbox) {
+        const bounds: number[] = bbox.split(',').map(d => +d)
+        if (bounds.length === 4) {
+          viewState = getInitialViewState(bounds as [number, number, number, number])
+        }
+      }
+
+      if (!viewState) {
+        viewState = getViewStateForLocations(
+          locations,
+          getLocationCentroid,
+          [
+            window.innerWidth,
+            window.innerHeight,
+          ],
+          { pad: 0.05 }
+        )
+      }
+
+      // if (!viewState.zoom) {
+      //   return {
+      //     error: `The geo bounding box couldn't be calculated.
+      //     Please, make sure that all the locations have valid coordinates in the spreadsheet.`
+      //   }
+      // }
       if (!viewState.zoom) {
-        return {
-          error: `The geo bounding box couldn't be calculated. 
-          Please, make sure that all the locations have valid coordinates in the spreadsheet.`
+        viewState = {
+          zoom: 1,
+          latitude: 0,
+          longitude: 0,
         }
       }
       return {
         lastLocations: locations,
-        maxZoom: viewState.zoom + MAX_ZOOM_LEVELS,
-        minZoom: viewState.zoom - MIN_ZOOM_LEVELS,
+        // maxZoom: viewState.zoom + MAX_ZOOM_LEVELS,
+        // minZoom: viewState.zoom - MIN_ZOOM_LEVELS,
         viewState: {
           ...viewState,
           minPitch: 0,
@@ -311,31 +332,41 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const { flowsFetch } = this.props
-    if (flowsFetch.value !== prevProps.flowsFetch.value) {
+    const { flowsFetch, locationsFetch } = this.props
+    if (flowsFetch.value !== prevProps.flowsFetch.value ||
+      locationsFetch.value !== prevProps.locationsFetch.value
+    ) {
       const unknownLocations = this.getUnknownLocations(this.state, this.props);
       if (unknownLocations) {
-        const allFlows = this.getFlows(this.state, this.props)
-        const flows = this.getFlowsForKnownLocations(this.state, this.props)
-        const Locations = styled.div`
-          font-size: 10px;
-          padding: 10px;          
-        `
-        if (flows && allFlows)  {
-          AppToaster.show({
-            intent: Intent.DANGER,
-            icon: IconNames.WARNING_SIGN,
-            timeout: 0,
-            message:
-            <ToastContent>
-              Locations with the following IDs couldn't be found in the locations sheet:
-              <Locations>
-                {Array.from(unknownLocations).sort().map(id => `${id}`).join(', ')}
-              </Locations>
-              {formatCount(allFlows.length - flows.length)} flows were omitted.
-            </ToastContent>
-          })
+        if (this.props.config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
+          const allFlows = this.getFlows(this.state, this.props)
+          const flows = this.getFlowsForKnownLocations(this.state, this.props)
+          const Locations = styled.div`
+            font-size: 10px;
+            padding: 10px;          
+          `
+          if (flows && allFlows)  {
+            const ids = Array.from(unknownLocations).sort();
+            const MAX_NUM_IDS = 100;
+            AppToaster.show({
+              intent: Intent.DANGER,
+              icon: IconNames.WARNING_SIGN,
+              timeout: 0,
+              message:
+              <ToastContent>
+                Locations with the following IDs couldn't be found in the locations sheet:
+                <Locations>
+                  {(ids.length > MAX_NUM_IDS ?
+                    ids.slice(0, MAX_NUM_IDS) : ids).map(id => `${id}`).join(', ')
+                  }
+                  {ids.length > MAX_NUM_IDS && `… and ${ids.length - MAX_NUM_IDS} others`}
+                </Locations>
+                {formatCount(allFlows.length - flows.length)} flows were omitted.
+              </ToastContent>
+            })
+          }
         }
+
 
       }
     }
@@ -457,13 +488,15 @@ class FlowMap extends React.Component<Props, State> {
         zoom,
       },
       tooltip: undefined,
-      highlight: undefined,
+      // highlight: undefined,
     })
   }
 
   private highlight(highlight: Highlight | undefined) {
-    this.setState({ highlight });
+    this.setState({ highlight })
+    this.highlightDebounced.cancel()
   }
+  private highlightDebounced = debounce(this.highlight, 100)
 
   private handleHover = (info: FlowLayerPickingInfo) => {
     const { type, object, x, y } = info
@@ -486,7 +519,7 @@ class FlowMap extends React.Component<Props, State> {
       }
       case PickingType.LOCATION: {
         if (object) {
-          this.highlight({
+          this.highlightDebounced({
             type: HighlightType.LOCATION,
             locationId: getLocationId!(object),
           })
@@ -676,4 +709,4 @@ export default sheetFetcher<any>(({ spreadSheetKey, config }: Props) => ({
   flowsFetch: {
     url: makeSheetQueryUrl(spreadSheetKey, 'flows', 'SELECT A,B,C'),
   },
-}))(FlowMap as any)
+}))(FlowMap as any);

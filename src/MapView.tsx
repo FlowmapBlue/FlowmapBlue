@@ -7,7 +7,6 @@ import { Absolute } from './Boxes';
 import LoadingSpinner from './LoadingSpinner';
 import Logo from './Logo';
 import { Helmet } from 'react-helmet';
-import styled from '@emotion/styled';
 import NoScrollContainer from './NoScrollContainer';
 import sendEvent from './ga';
 
@@ -26,6 +25,8 @@ const DEFAULT_CONFIG: Config = {
   [ConfigPropName.SOURCE_NAME]: undefined,
   [ConfigPropName.SOURCE_URL]: undefined,
   [ConfigPropName.DESCRIPTION]: undefined,
+  [ConfigPropName.MAP_BBOX]: undefined,
+  [ConfigPropName.IGNORE_ERRORS]: undefined,
 }
 
 

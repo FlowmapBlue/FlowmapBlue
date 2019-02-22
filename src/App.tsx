@@ -3,10 +3,15 @@ import { Router, Route, Switch, RouteComponentProps } from 'react-router-dom'
 import createBrowserHistory from 'history/createBrowserHistory'
 import Intro from './Intro'
 import * as Sentry from '@sentry/browser'
-import MapView from './MapView';
 import NoScrollContainer from './NoScrollContainer';
 import Fallback from './Fallback';
 import { AppToaster } from './toaster';
+import { Suspense } from 'react';
+import LoadingSpinner from './LoadingSpinner';
+import { SPREADSHEET_KEY_RE } from './constants';
+
+const MapView = React.lazy(() => import('./MapView'))
+
 
 const history = createBrowserHistory()
 history.listen(location => AppToaster.clear())
@@ -56,24 +61,26 @@ export default class App extends React.Component<Props, State> {
       const { supportsWebGl } = this.props
       return (
         <Router history={history}>
-          <Switch>
-            <Route
-              path="/:sheetKey([a-zA-Z0-9-_]{44})"
-              component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
-                <NoScrollContainer>{
-                  supportsWebGl ?
-                    <MapView
-                      spreadSheetKey={match.params.sheetKey}
-                    />
-                    :
-                    <Fallback>
-                      Sorry, but your browser doesn't seem to support WebGL which is required for this app.
-                    </Fallback>
-                }</NoScrollContainer>
-              }
-            />
-            <Route path="/" component={Intro} />
-          </Switch>
+          <Suspense fallback={<LoadingSpinner/>}>
+            <Switch>
+              <Route
+                path={`/:sheetKey(${SPREADSHEET_KEY_RE})`}
+                component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
+                  <NoScrollContainer>{
+                    supportsWebGl ?
+                      <MapView
+                        spreadSheetKey={match.params.sheetKey}
+                      />
+                      :
+                      <Fallback>
+                        Sorry, but your browser doesn't seem to support WebGL which is required for this app.
+                      </Fallback>
+                  }</NoScrollContainer>
+                }
+              />
+              <Route path="/" component={Intro} />
+            </Switch>
+          </Suspense>
         </Router>
       )
     }

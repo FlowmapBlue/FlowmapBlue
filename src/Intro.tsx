@@ -5,14 +5,8 @@ import MapboxLogo from './images/mapbox-logo-black.svg'
 import TLLogo from './images/TL-Horizontal-Black.svg'
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
-
-const examples = [
-  { key: '1Z6dVVFFrdooHIs8xnJ_O7eM5bhS5KscCi7G_k0jUNDI', name: 'London bicycle hires in 2017' },
-  { key: '1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA', name: '17 million New York Citi Bike trips in 2018' },
-  { key: '1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc', name: 'Commuters in the Netherlands in 2016' },
-  { key: '1fhX98NFv5gAkkjB2YFCm50-fplFpmWVAZby3dmm9cgQ', name: 'Chicago taxis' },
-  { key: '1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA', name: 'Template for publishing' },
-]
+import examples from './examples.json';
+import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
 
 const Outer = styled.div`
   padding: 10px 20px;
@@ -43,7 +37,10 @@ const SupportLogo = ({ src, href }: { src: string, href: string }) =>
     <img src={src} height={22} />
   </SupportLogoLink>
 
-
+const NoWrap = styled.span`
+  display: flex;
+  flex-wrap: nowrap;
+`
 
 
 const Intro = () =>
@@ -106,14 +103,7 @@ const Intro = () =>
           <li>Share the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and then
             choosing "Anyone with the link can view".
             </li>
-          <li>Copy the key of your spreadsheet from its URL. It comes right after docs.google.com/spreadsheets/d/</li>
-          <li>Open{` `}
-            <a href="http://flowmap.blue/YOUR_SPREADSHEET_KEY" target="_blank" rel="noopener">
-              flowmap.blue/YOUR_SPREADSHEET_KEY
-            </a>
-          </li>
-          <li><a href="https://spectrum.chat/flowmap-blue/published-flow-maps" target="_blank" rel="noopener">Share it with others</a>
-          </li>
+          <SpreadsheetKeyExtractor />
         </ol>
       </section>
       <section>
@@ -135,9 +125,11 @@ const Intro = () =>
         </p>
         <Support>
           <span>With kind support from</span>
-          <SupportLogo href="https://www.teralytics.net" src={TLLogo}/>
-          <span>and</span>
-          <SupportLogo href="https://www.mapbox.com" src={MapboxLogo}/>
+          <NoWrap>
+            <SupportLogo href="https://www.teralytics.net" src={TLLogo}/>
+            <span>and</span>
+            <SupportLogo href="https://www.mapbox.com" src={MapboxLogo}/>
+          </NoWrap>
         </Support>
       </section>
     </section>
