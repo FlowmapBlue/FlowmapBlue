@@ -24,7 +24,7 @@ import { FlowTooltipContent, LocationTooltipContent, formatCount } from './Toolt
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
-import { Config, ConfigPropName, Flow, Location } from './types';
+import { Config, ConfigPropName, Flow, FlowDirection, Location, LocationSelection } from './types';
 import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
 import Message from './Message';
 import LoadingSpinner from './LoadingSpinner';
@@ -77,7 +77,7 @@ type State = {
   lastLocations: Location[] | undefined
   tooltip?: TooltipProps
   highlight?: Highlight
-  selectedLocationIds?: string[]
+  selectedLocations: LocationSelection[] | undefined,
   error?: string
   maxZoom: number | undefined
   minZoom: number | undefined
@@ -130,6 +130,7 @@ class FlowMap extends React.Component<Props, State> {
   readonly state: State = {
     viewState: initialViewState,
     lastLocations: undefined,
+    selectedLocations: undefined,
     error: undefined,
     maxZoom: undefined,
     minZoom: undefined,
@@ -216,7 +217,7 @@ class FlowMap extends React.Component<Props, State> {
   )
 
   getLayers() {
-    const { highlight, selectedLocationIds, animate, time  } = this.state;
+    const { highlight, selectedLocations, animate, time  } = this.state;
     const flows = this.getFlowsForKnownLocations(this.state, this.props)
     const locations = this.getLocationsWithFlows(this.state, this.props)
     const layers = []
@@ -238,7 +239,7 @@ class FlowMap extends React.Component<Props, State> {
           getLocationId,
           varyFlowColorByMagnitude: true,
           showTotals: true,
-          selectedLocationIds,
+          selectedLocationIds: selectedLocations ? selectedLocations.map(s => s.id) : undefined,
           highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
           highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
           onHover: this.handleHover,
@@ -441,7 +442,7 @@ class FlowMap extends React.Component<Props, State> {
     const { flowMapLayer } = this
     if (!flowMapLayer) return
     const r = circleRadius + 5
-    const { selectedLocationIds } = this.state
+    const { selectedLocations } = this.state
     this.showTooltip(
       {
         left: x - r,
@@ -451,7 +452,9 @@ class FlowMap extends React.Component<Props, State> {
       },
       <LocationTooltipContent
         locationInfo={info}
-        isSelected={selectedLocationIds != null && selectedLocationIds.indexOf(location.id) >= 0}
+        isSelected={
+          selectedLocations && selectedLocations.find(s => s.id === location.id) ? true : false
+        }
       />
     )
   }
@@ -545,16 +548,24 @@ class FlowMap extends React.Component<Props, State> {
         const { object } = info
         if (object) {
           this.setState(state => {
-            const { selectedLocationIds } = state
+            const { selectedLocations } = state
             const locationId = getLocationId(object)
+            let nextSelectedLocations
+            if (selectedLocations) {
+              const idx = selectedLocations.findIndex(s => s.id === locationId);
+              if (idx >= 0) {
+                nextSelectedLocations = selectedLocations.slice().splice(idx, 1)
+                if (nextSelectedLocations.length === 0) nextSelectedLocations = undefined
+              } else {
+                nextSelectedLocations = [...selectedLocations, { id: locationId, direction: FlowDirection.BOTH }]
+              }
+            } else {
+              nextSelectedLocations = [{ id: locationId, direction: FlowDirection.BOTH }]
+            }
+
             return {
               ...state,
-              ...(selectedLocationIds && selectedLocationIds.indexOf(locationId) >= 0 ? {
-                selectedLocationIds: undefined,
-                highlight: undefined,
-              }: {
-                selectedLocationIds: [locationId],
-              }),
+              selectedLocations: nextSelectedLocations,
               tooltip: undefined,
             }
           })
@@ -569,10 +580,16 @@ class FlowMap extends React.Component<Props, State> {
     }
   };
 
+  private handleSelectLocation = (selectedLocations: LocationSelection[] | undefined) => {
+    this.setState({
+      selectedLocations,
+    })
+  }
+
   private handleKeyDown = (evt: Event) => {
     if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
       this.setState({
-        selectedLocationIds: undefined,
+        selectedLocations: undefined,
         highlight: undefined,
         tooltip: undefined,
       })
@@ -636,8 +653,8 @@ class FlowMap extends React.Component<Props, State> {
           <Box top={10} right={50}>
             <LocationsSearchBox
               locations={locations}
-              selectedLocations={undefined}
-              onSelectionChanged={console.log}
+              selectedLocations={this.state.selectedLocations}
+              onSelectionChanged={this.handleSelectLocation}
             />
           </Box>
         }

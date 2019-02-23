@@ -18,6 +18,7 @@ export interface Props {
 
 const LocationTag = styled.div({
   display: 'flex',
+  fontSize: 10,
   alignItems: 'center',
   '& > * + *': {
     marginLeft: 5,
@@ -109,16 +110,22 @@ class LocationsSearchBox extends React.PureComponent<Props> {
     if (!selection) {
       return null
     }
+    // return (
+    //   <FlowDirectionDropdown
+    //     selected={selection.direction}
+    //     onChange={(dir: FlowDirection) => this.handleFlowDirectionChanged(location, dir)}
+    //   >
+    //     <LocationTag>
+    //       <FlowDirectionIcon width={11} height={8} dir={selection.direction} />
+    //       <TextOverflowEllipsis>{location.name}</TextOverflowEllipsis>
+    //     </LocationTag>
+    //   </FlowDirectionDropdown>
+    // )
     return (
-      <FlowDirectionDropdown
-        selected={selection.direction}
-        onChange={(dir: FlowDirection) => this.handleFlowDirectionChanged(location, dir)}
-      >
-        <LocationTag>
-          <FlowDirectionIcon width={11} height={8} dir={selection.direction} />
-          <TextOverflowEllipsis>{location.name}</TextOverflowEllipsis>
-        </LocationTag>
-      </FlowDirectionDropdown>
+      <LocationTag>
+        <FlowDirectionIcon width={11} height={8} dir={selection.direction} />
+        <TextOverflowEllipsis>{location.name}</TextOverflowEllipsis>
+      </LocationTag>
     )
   }
 

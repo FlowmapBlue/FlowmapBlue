@@ -49,7 +49,7 @@ function filterItems<Item>(items: Item[], query: string, itemPredicate: ItemPred
 
 const Outer = styled.div`
   .bp3-popover-target {
-    width: 10rem;
+    width: 15rem;
   }
 `
 
@@ -93,10 +93,10 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
           itemRenderer={itemRenderer}
           tagRenderer={tagRenderer}
           noResults={NoResultsItem}
-          resetOnSelect={true}
           popoverProps={popoverProps}
           tagInputProps={tagInputProps}
           onItemSelect={onSelected}
+          resetOnSelect={true}
           openOnKeyDown={true}
           onQueryChange={this.handleQueryChange}
         />
