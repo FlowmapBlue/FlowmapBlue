@@ -607,6 +607,8 @@ class FlowMap extends React.Component<Props, State> {
     const description = config[ConfigPropName.DESCRIPTION]
     const sourceUrl = config[ConfigPropName.SOURCE_URL]
     const sourceName = config[ConfigPropName.SOURCE_NAME]
+    const authorUrl = config[ConfigPropName.AUTHOR_URL]
+    const authorName = config[ConfigPropName.AUTHOR_NAME]
     const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
     const diffMode = this.getDiffMode(this.state, this.props)
 
@@ -659,6 +661,11 @@ class FlowMap extends React.Component<Props, State> {
                 {description}
               </div>
               }
+              {(
+                authorUrl ?
+                  <div>Created by: <a href={authorUrl} target="_blank" rel="noopener">{authorName || 'Author'}</a></div>
+                : authorName ? <div>Created by: {authorName}</div> : null
+              )}
               {sourceName && sourceUrl &&
               <div>
                 {'Original data source: '}

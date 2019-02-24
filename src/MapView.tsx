@@ -22,6 +22,8 @@ type PropsWithData = Props & {
 const DEFAULT_CONFIG: Config = {
   [ConfigPropName.MAPBOX_ACCESS_TOKEN]: process.env.REACT_APP_MapboxAccessToken,
   [ConfigPropName.TITLE]: undefined,
+  [ConfigPropName.AUTHOR_NAME]: undefined,
+  [ConfigPropName.AUTHOR_URL]: undefined,
   [ConfigPropName.SOURCE_NAME]: undefined,
   [ConfigPropName.SOURCE_URL]: undefined,
   [ConfigPropName.DESCRIPTION]: undefined,

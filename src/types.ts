@@ -1,6 +1,8 @@
 export enum ConfigPropName {
   TITLE = 'title',
   DESCRIPTION = 'description',
+  AUTHOR_NAME = 'createdBy.name',
+  AUTHOR_URL = 'createdBy.url',
   SOURCE_NAME = 'source.name',
   SOURCE_URL = 'source.url',
   MAP_BBOX = 'map.bbox',
