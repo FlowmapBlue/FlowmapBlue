@@ -598,8 +598,13 @@ class FlowMap extends React.Component<Props, State> {
     }
     if (locationsFetch.rejected || flowsFetch.rejected) {
       return <Message>
+        <p>
         Oops… Couldn't fetch data from{` `}
-        <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.
+        <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.{` `}
+        </p>
+        <p>
+        Make sure you have shared the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and then choosing "Anyone with the link can view".
+        </p>
       </Message>;
     }
     const flows = this.getFlowsForKnownLocations(this.state, this.props)
