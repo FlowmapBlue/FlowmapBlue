@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Logo from './Logo'
 import MapboxLogo from './images/mapbox-logo-black.svg'
 import TLLogo from './images/TL-Horizontal-Black.svg'
+import ExampleFlowmapImage from './images/swiss-cantons-relocations.jpg'
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
 import examples from './examples.json';
@@ -58,7 +59,19 @@ const Intro = () =>
           It can be used to visualize numbers of movements of people or goods
           between pairs of geographic locations (Origin-Destination data).
         </p>
+        <a
+          href={"https://flowmap.blue/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8"}
+          target="_blank" rel="noopener"
+        >
+          <img
+          src={ExampleFlowmapImage}
+          alt={"Example flow map"}
+          width="100%"
+          style={{ maxWidth: 500 }}
+        />
+        </a>
       </section>
+
 
       <section>
         <h2>Examples</h2>
