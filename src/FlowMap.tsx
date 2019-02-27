@@ -603,7 +603,7 @@ class FlowMap extends React.Component<Props, State> {
         <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.{` `}
         </p>
         <p>
-        Make sure you have shared the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and then choosing "Anyone with the link can view".
+        If you are the owner of this spreadsheet, make sure you have shared it by going to "File" / "Share with others", clicking "Advanced", and then choosing "Anyone with the link can view".
         </p>
       </Message>;
     }
