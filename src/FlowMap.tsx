@@ -198,6 +198,20 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
+  getInvalidLocationIds: Selector<string[] | undefined> = createSelector(
+    this.getLocations,
+    (locations) => {
+      if (!locations) return undefined
+      const invalid = []
+      for (const location of locations) {
+        if (!(-90 <= +location.lat && +location.lat <= 90) || !(-180 <= +location.lon && +location.lon <= 180)) {
+          invalid.push(location.id)
+        }
+      }
+      return invalid.length > 0 ? invalid : undefined
+    }
+  )
+
   getUnknownLocations: Selector<Set<string> | undefined> = createSelector(
     this.getKnownLocationIds,
     this.getFlows,
@@ -332,6 +346,34 @@ class FlowMap extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     const { flowsFetch, locationsFetch } = this.props
+    const Locations = styled.div`
+      font-size: 10px;
+      padding: 10px;          
+    `
+    const MAX_NUM_IDS = 100;
+    if (locationsFetch.value !== prevProps.locationsFetch.value) {
+      const invalidLocations = this.getInvalidLocationIds(this.state, this.props);
+      if (invalidLocations) {
+        if (this.props.config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
+          AppToaster.show({
+            intent: Intent.DANGER,
+            icon: IconNames.WARNING_SIGN,
+            timeout: 0,
+            message:
+              <ToastContent>
+                Locations with the following IDs have invalid coordinates:
+                <Locations>
+                  {(invalidLocations.length > MAX_NUM_IDS ?
+                    invalidLocations.slice(0, MAX_NUM_IDS) : invalidLocations).map(id => `${id}`).join(', ')
+                  }
+                  {invalidLocations.length > MAX_NUM_IDS && `… and ${invalidLocations.length - MAX_NUM_IDS} others`}
+                </Locations>
+                Make sure you named the columns "lat" and "lon" and didn't confuse latitudes and longitudes.
+              </ToastContent>
+          })
+        }
+      }
+    }
     if (flowsFetch.value !== prevProps.flowsFetch.value ||
       locationsFetch.value !== prevProps.locationsFetch.value
     ) {
@@ -340,13 +382,8 @@ class FlowMap extends React.Component<Props, State> {
         if (this.props.config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
           const allFlows = this.getFlows(this.state, this.props)
           const flows = this.getFlowsForKnownLocations(this.state, this.props)
-          const Locations = styled.div`
-            font-size: 10px;
-            padding: 10px;          
-          `
           if (flows && allFlows)  {
             const ids = Array.from(unknownLocations).sort();
-            const MAX_NUM_IDS = 100;
             AppToaster.show({
               intent: Intent.DANGER,
               icon: IconNames.WARNING_SIGN,
