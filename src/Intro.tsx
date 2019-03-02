@@ -128,6 +128,15 @@ const Intro = () =>
         </p>
       </section>
       <section>
+        <h2>Privacy Notice</h2>
+        <p>
+          flowmap.blue does not store any of the data the users upload to Google Sheets.
+        </p>
+        <p>
+          This website uses cookies to collect anonymous usage statistics via Google Analytics.
+        </p>
+      </section>
+      <section>
         <h2>Credits</h2>
         <p>
           Developed by <a href="https://ilya.boyandin.me" target="_blank" rel="noopener">Ilya Boyandin</a> using {` `}
@@ -146,15 +155,6 @@ const Intro = () =>
         </Support>
       </section>
     </section>
-
-    <a href="https://github.com/ilyabo/flowmap.blue">
-      <img
-        style={{
-          position: 'absolute', top: 0, right: 0, border: 0,
-        }}
-        src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
-        alt="Fork me on GitHub" />
-    </a>
   </Outer>
 
 
