@@ -48,8 +48,14 @@ const Value = styled.div`
 
 export const formatCount = d3Format.format(',.0f')
 
+interface Props {
+  locationInfo: LocationPickingInfo
+  isSelected: boolean
+  isSelectionEmpty: boolean
+}
+
 export const LocationTooltipContent =
-  ({ locationInfo, isSelected }: { locationInfo: LocationPickingInfo, isSelected: boolean }) => {
+  ({ locationInfo, isSelected, isSelectionEmpty }: Props) => {
 
   const { object: location, totalIn, totalOut, totalWithin } = locationInfo;
 
@@ -68,7 +74,14 @@ export const LocationTooltipContent =
         <Label>Start and end here</Label>
         <Value>{formatCount(totalWithin)}</Value>
       </Row>
-      <Comment>{`Click to ${isSelected ? 'unselect' : 'select'} this location`}</Comment>
+      <Comment>
+        {isSelected ?
+        `Click to remove from selection` :
+        isSelectionEmpty ?
+        `Click to select this location`
+        : `Shift+click to add to selection`
+        }
+      </Comment>
     </Outer>
   )
 }
