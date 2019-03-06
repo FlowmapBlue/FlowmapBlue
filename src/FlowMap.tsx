@@ -257,7 +257,7 @@ class FlowMap extends React.Component<Props, State> {
           highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
           highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
           onHover: this.handleHover,
-          onClick: this.handleClick,
+          onClick: this.handleClick as any,
         }),
       )
     }
@@ -489,6 +489,7 @@ class FlowMap extends React.Component<Props, State> {
       },
       <LocationTooltipContent
         locationInfo={info}
+        isSelectionEmpty={!selectedLocations}
         isSelected={
           selectedLocations && selectedLocations.find(s => s.id === location.id) ? true : false
         }
@@ -577,7 +578,7 @@ class FlowMap extends React.Component<Props, State> {
     }
   };
 
-  private handleClick = (info: FlowLayerPickingInfo) => {
+  private handleClick = (info: FlowLayerPickingInfo, event: { srcEvent: MouseEvent }) => {
     switch (info.type) {
       case PickingType.LOCATION:
       // fall through
@@ -589,12 +590,17 @@ class FlowMap extends React.Component<Props, State> {
             const locationId = getLocationId(object)
             let nextSelectedLocations
             if (selectedLocations) {
-              const idx = selectedLocations.findIndex(s => s.id === locationId);
+              const idx = selectedLocations.findIndex(s => s.id === locationId)
               if (idx >= 0) {
-                nextSelectedLocations = selectedLocations.slice().splice(idx, 1)
+                nextSelectedLocations = selectedLocations.slice()
+                nextSelectedLocations.splice(idx, 1)
                 if (nextSelectedLocations.length === 0) nextSelectedLocations = undefined
               } else {
-                nextSelectedLocations = [...selectedLocations, { id: locationId, direction: FlowDirection.BOTH }]
+                if (event.srcEvent.shiftKey) {
+                  nextSelectedLocations = [...selectedLocations, { id: locationId, direction: FlowDirection.BOTH }]
+                } else {
+                  nextSelectedLocations = [{ id: locationId, direction: FlowDirection.BOTH }]
+                }
               }
             } else {
               nextSelectedLocations = [{ id: locationId, direction: FlowDirection.BOTH }]

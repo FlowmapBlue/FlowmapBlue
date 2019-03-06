@@ -26,6 +26,9 @@ const LogoText = styled.div(({ fontSize }: { fontSize: number }) => ({
     1px 1px 1px ${SHADOW_COLOR}, 
     -1px -1px 1px ${SHADOW_COLOR}, 
     -1px 1px 1px ${SHADOW_COLOR}`,
+  '@media (max-width: 525px)': {
+    display: 'none',
+  },
 }))
 
 const Logo = ({ fontSize = 25 }: Props) => {

@@ -123,7 +123,7 @@ class LocationsSearchBox extends React.PureComponent<Props> {
     // )
     return (
       <LocationTag>
-        <FlowDirectionIcon width={11} height={8} dir={selection.direction} />
+        {/*<FlowDirectionIcon width={11} height={8} dir={selection.direction} />*/}
         <TextOverflowEllipsis>{location.name}</TextOverflowEllipsis>
       </LocationTag>
     )
@@ -142,18 +142,18 @@ class LocationsSearchBox extends React.PureComponent<Props> {
 
   private handleSelectionCleared = () => this.props.onSelectionChanged(undefined)
 
-  private handleFlowDirectionChanged = (location: Location, direction: FlowDirection) => {
-    const { selectedLocations, onSelectionChanged } = this.props
-    if (selectedLocations) {
-      const locationId = location.id
-      const index = selectedLocations.findIndex(z => z.id === locationId)
-      if (index >= 0) {
-        const next = selectedLocations.slice()
-        next[index] = { id: locationId, direction }
-        onSelectionChanged(next)
-      }
-    }
-  }
+  // private handleFlowDirectionChanged = (location: Location, direction: FlowDirection) => {
+  //   const { selectedLocations, onSelectionChanged } = this.props
+  //   if (selectedLocations) {
+  //     const locationId = location.id
+  //     const index = selectedLocations.findIndex(z => z.id === locationId)
+  //     if (index >= 0) {
+  //       const next = selectedLocations.slice()
+  //       next[index] = { id: locationId, direction }
+  //       onSelectionChanged(next)
+  //     }
+  //   }
+  // }
 
   private handleLocationSelected = (location: Location) => {
     const { selectedLocations, onSelectionChanged } = this.props
@@ -174,9 +174,11 @@ class LocationsSearchBox extends React.PureComponent<Props> {
       const { id } = location
       const idx = selectedLocations.findIndex(z => z.id === id)
       if (idx >= 0) {
+        const next = selectedLocations.slice();
+        next.splice(idx, 1);
         onSelectionChanged(
           selectedLocations.length === 1 ?
-            undefined : selectedLocations.slice().splice(idx, 1)
+            undefined : next
         )
       }
     }
