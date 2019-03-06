@@ -75,7 +75,7 @@ function getSheetDataAsArray(data: SheetData) {
   if (!data.table.cols.find(col => col.label != null && col.label.length > 0)) {
     // header row was not properly recognized
     rows = data.table.rows.slice(1)
-    colNames = data.table.rows[0].c.map(({ v }) => `${v}`)
+    colNames = data.table.rows[0].c.map(({ v }) => `${v}`.trim())
   } else {
     rows = data.table.rows
     colNames = data.table.cols.map(({ label }) => label)
@@ -84,7 +84,7 @@ function getSheetDataAsArray(data: SheetData) {
     const obj: { [key: string]: string | number } = {}
     for (let i = 0; i < numCols; i++) {
       try {
-        const colName = colNames[i]
+        const colName = `${colNames[i]}`.trim()
         obj[colName] = row.c && row.c[i] && row.c[i].v
       } catch (err) {
         console.warn(`Couldn't parse row ${i} from sheet`)
