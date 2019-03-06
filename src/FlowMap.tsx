@@ -200,6 +200,20 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
+  getInvalidLocationIds: Selector<string[] | undefined> = createSelector(
+    this.getLocations,
+    (locations) => {
+      if (!locations) return undefined
+      const invalid = []
+      for (const location of locations) {
+        if (!(-90 <= +location.lat && +location.lat <= 90) || !(-180 <= +location.lon && +location.lon <= 180)) {
+          invalid.push(location.id)
+        }
+      }
+      return invalid.length > 0 ? invalid : undefined
+    }
+  )
+
   getUnknownLocations: Selector<Set<string> | undefined> = createSelector(
     this.getKnownLocationIds,
     this.getFlows,
@@ -334,6 +348,34 @@ class FlowMap extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     const { flowsFetch, locationsFetch } = this.props
+    const Locations = styled.div`
+      font-size: 10px;
+      padding: 10px;          
+    `
+    const MAX_NUM_IDS = 100;
+    if (locationsFetch.value !== prevProps.locationsFetch.value) {
+      const invalidLocations = this.getInvalidLocationIds(this.state, this.props);
+      if (invalidLocations) {
+        if (this.props.config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
+          AppToaster.show({
+            intent: Intent.DANGER,
+            icon: IconNames.WARNING_SIGN,
+            timeout: 0,
+            message:
+              <ToastContent>
+                Locations with the following IDs have invalid coordinates:
+                <Locations>
+                  {(invalidLocations.length > MAX_NUM_IDS ?
+                    invalidLocations.slice(0, MAX_NUM_IDS) : invalidLocations).map(id => `${id}`).join(', ')
+                  }
+                  {invalidLocations.length > MAX_NUM_IDS && `… and ${invalidLocations.length - MAX_NUM_IDS} others`}
+                </Locations>
+                Make sure you named the columns "lat" and "lon" and didn't confuse latitudes and longitudes.
+              </ToastContent>
+          })
+        }
+      }
+    }
     if (flowsFetch.value !== prevProps.flowsFetch.value ||
       locationsFetch.value !== prevProps.locationsFetch.value
     ) {
@@ -342,13 +384,8 @@ class FlowMap extends React.Component<Props, State> {
         if (this.props.config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
           const allFlows = this.getFlows(this.state, this.props)
           const flows = this.getFlowsForKnownLocations(this.state, this.props)
-          const Locations = styled.div`
-            font-size: 10px;
-            padding: 10px;          
-          `
           if (flows && allFlows)  {
             const ids = Array.from(unknownLocations).sort();
-            const MAX_NUM_IDS = 100;
             AppToaster.show({
               intent: Intent.DANGER,
               icon: IconNames.WARNING_SIGN,
@@ -616,8 +653,13 @@ class FlowMap extends React.Component<Props, State> {
     }
     if (locationsFetch.rejected || flowsFetch.rejected) {
       return <Message>
+        <p>
         Oops… Couldn't fetch data from{` `}
-        <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.
+        <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.{` `}
+        </p>
+        <p>
+        If you are the owner of this spreadsheet, make sure you have shared it by going to "File" / "Share with others", clicking "Advanced", and then choosing "Anyone with the link can view".
+        </p>
       </Message>;
     }
     const locations = this.getLocations(this.state, this.props)
@@ -626,6 +668,8 @@ class FlowMap extends React.Component<Props, State> {
     const description = config[ConfigPropName.DESCRIPTION]
     const sourceUrl = config[ConfigPropName.SOURCE_URL]
     const sourceName = config[ConfigPropName.SOURCE_NAME]
+    const authorUrl = config[ConfigPropName.AUTHOR_URL]
+    const authorName = config[ConfigPropName.AUTHOR_NAME]
     const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
     const diffMode = this.getDiffMode(this.state, this.props)
 
@@ -687,6 +731,11 @@ class FlowMap extends React.Component<Props, State> {
                 {description}
               </div>
               }
+              {(
+                authorUrl ?
+                  <div>Created by: <a href={authorUrl} target="_blank" rel="noopener">{authorName || 'Author'}</a></div>
+                : authorName ? <div>Created by: {authorName}</div> : null
+              )}
               {sourceName && sourceUrl &&
               <div>
                 {'Original data source: '}

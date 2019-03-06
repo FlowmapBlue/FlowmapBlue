@@ -49,6 +49,11 @@ function getJson(text: string) {
   }
 }
 
+type CellValue = {
+  v: string | number,
+  f: string,
+}
+
 type SheetData = {
   version: string,
   status: string,
@@ -59,9 +64,7 @@ type SheetData = {
       type: string,
     }[],
     rows: {
-      c: {
-        v: string | number,
-      }[]
+      c: CellValue[]
     }[],
   }
 };
@@ -75,17 +78,20 @@ function getSheetDataAsArray(data: SheetData) {
   if (!data.table.cols.find(col => col.label != null && col.label.length > 0)) {
     // header row was not properly recognized
     rows = data.table.rows.slice(1)
-    colNames = data.table.rows[0].c.map(({ v }) => `${v}`)
+    colNames = data.table.rows[0].c.map(({ v, f }) => `${v != null ? v : f}`.trim())
   } else {
     rows = data.table.rows
-    colNames = data.table.cols.map(({ label }) => label)
+    colNames = data.table.cols.map(({ label }) => `${label}`.trim())
   }
   return rows.map(row => {
     const obj: { [key: string]: string | number } = {}
     for (let i = 0; i < numCols; i++) {
       try {
-        const colName = colNames[i]
-        obj[colName] = row.c && row.c[i] && row.c[i].v
+        const colName = `${colNames[i]}`.trim()
+        if (row.c && row.c[i]) {
+          const val = row.c[i]
+          obj[colName] = `${val.v != null ? val.v : val.f}`.trim()
+        }
       } catch (err) {
         console.warn(`Couldn't parse row ${i} from sheet`)
       }

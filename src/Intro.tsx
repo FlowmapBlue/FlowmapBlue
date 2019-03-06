@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Logo from './Logo'
 import MapboxLogo from './images/mapbox-logo-black.svg'
 import TLLogo from './images/TL-Horizontal-Black.svg'
+import ExampleFlowmapImage from './images/swiss-cantons-relocations.jpg'
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
 import examples from './examples.json';
@@ -58,7 +59,19 @@ const Intro = () =>
           It can be used to visualize numbers of movements of people or goods
           between pairs of geographic locations (Origin-Destination data).
         </p>
+        <a
+          href={"https://flowmap.blue/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8"}
+          target="_blank" rel="noopener"
+        >
+          <img
+          src={ExampleFlowmapImage}
+          alt={"Example flow map"}
+          width="100%"
+          style={{ maxWidth: 500 }}
+        />
+        </a>
       </section>
+
 
       <section>
         <h2>Examples</h2>
@@ -109,9 +122,19 @@ const Intro = () =>
       <section>
         <h2>Need help?</h2>
         <p>
-          <a href="https://spectrum.chat/flowmap-blue/general" target="_blank" rel="noopener">Ask a question</a>{`, `}
-          <a href="https://github.com/ilyabo/flowmap.blue/issues" target="_blank" rel="noopener">submit an issue</a>{` or `}
+          <a href="https://spectrum.chat/flowmap-blue/general" target="_blank" rel="noopener">Ask a question in the forum</a>
+          {` or `}
           <a href="mailto:ilya@boyandin.me?subject=flowmap.blue">write me an email</a>.
+        </p>
+      </section>
+      <section>
+        <h2>Privacy Notice</h2>
+        <p>
+          flowmap.blue does not store any of the data the users upload to Google Sheets.
+        </p>
+        <p>
+          This website uses cookies to collect anonymous usage statistics via Google Analytics and
+          tracks errors via Sentry.
         </p>
       </section>
       <section>
@@ -133,15 +156,6 @@ const Intro = () =>
         </Support>
       </section>
     </section>
-
-    <a href="https://github.com/ilyabo/flowmap.blue">
-      <img
-        style={{
-          position: 'absolute', top: 0, right: 0, border: 0,
-        }}
-        src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"
-        alt="Fork me on GitHub" />
-    </a>
   </Outer>
 
 
