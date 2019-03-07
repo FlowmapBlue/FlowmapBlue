@@ -26,13 +26,15 @@ export interface Location {
   name: string
 }
 
-export interface LocationCluster {
-  id: string
-  lon: number
-  lat: number
-  name: string
+export interface LocationCluster extends Location {
   leaves: Location[]
 }
+
+export function isLocationCluster(l: Location): l is LocationCluster {
+  const { leaves } = l as LocationCluster;
+  return leaves != undefined;
+}
+
 
 export interface Flow {
   origin: string

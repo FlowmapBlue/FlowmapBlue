@@ -28,7 +28,7 @@ import {
   Config,
   ConfigPropName,
   Flow,
-  FlowDirection,
+  FlowDirection, isLocationCluster,
   Location,
   LocationCluster,
   LocationSelection
@@ -47,6 +47,7 @@ import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
 import Supercluster, { ClusterFeature, PointFeature } from 'supercluster';
+import { nest } from 'd3-collection';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -301,11 +302,53 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
+  getLocationClusterIdGetter: Selector<((locationId: string) => string) | undefined> = createSelector(
+    this.getClusteredLocations,
+    (locations) => {
+      const toClusterId: { [id: string]: string } = {}
+      if (!locations) return undefined
+      for (const l of locations) {
+        if (isLocationCluster(l)) {
+          for (const leaf of l.leaves) {
+            toClusterId[leaf.id] = l.id
+          }
+        }
+      }
+      return (id: string) => toClusterId[id] || id
+    }
+  )
+
+  getClusteredFlows: Selector<Flow[] | undefined> = createSelector(
+    this.getLocationClusterIdGetter,
+    this.getFlowsForKnownLocations,
+    (getLocationClusterId, flows) => {
+      if (!flows || !getLocationClusterId) return undefined
+      const entries = nest<Flow, Flow>()
+        .key(f => `${getLocationClusterId(getFlowOriginId(f))}:->:${getLocationClusterId(getFlowDestId(f))}`)
+        .rollup((flows) => ({
+          origin: getLocationClusterId(getFlowOriginId(flows[0])),
+          dest: getLocationClusterId(getFlowDestId(flows[0])),
+          count: flows.reduce(((m, f) => m + f.count), 0),
+        }))
+        .entries(flows)
+
+      const result: Flow[] = []
+      for (const e of entries) {
+        if (e.value) {
+          result.push(e.value)
+        }
+      }
+      return result
+    }
+  )
+
 
   getLayers() {
     const { highlight, selectedLocations, animate, time  } = this.state;
-    const flows = this.getFlowsForKnownLocations(this.state, this.props)
-    const locations = this.getLocationsWithFlows(this.state, this.props)
+    const flows = this.getClusteredFlows(this.state, this.props)
+    const locations = this.getClusteredLocations(this.state, this.props)
+    console.log(locations, flows)
+
     const layers = []
     if (locations && flows) {
       layers.push(
@@ -716,7 +759,6 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   render() {
-    console.log(this.getClusteredLocations(this.state, this.props))
     const {
       config,
       spreadSheetKey,
