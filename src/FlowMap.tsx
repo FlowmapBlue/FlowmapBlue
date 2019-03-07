@@ -348,7 +348,7 @@ class FlowMap extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     const { flowsFetch, locationsFetch } = this.props
-    const Locations = styled.div`
+    const LocationsBlock = styled.div`
       font-size: 10px;
       padding: 10px;          
     `
@@ -364,12 +364,12 @@ class FlowMap extends React.Component<Props, State> {
             message:
               <ToastContent>
                 Locations with the following IDs have invalid coordinates:
-                <Locations>
+                <LocationsBlock>
                   {(invalidLocations.length > MAX_NUM_IDS ?
                     invalidLocations.slice(0, MAX_NUM_IDS) : invalidLocations).map(id => `${id}`).join(', ')
                   }
                   {invalidLocations.length > MAX_NUM_IDS && `… and ${invalidLocations.length - MAX_NUM_IDS} others`}
-                </Locations>
+                </LocationsBlock>
                 Make sure you named the columns "lat" and "lon" and didn't confuse latitudes and longitudes.
               </ToastContent>
           })
@@ -393,13 +393,16 @@ class FlowMap extends React.Component<Props, State> {
               message:
               <ToastContent>
                 Locations with the following IDs couldn't be found in the locations sheet:
-                <Locations>
+                <LocationsBlock>
                   {(ids.length > MAX_NUM_IDS ?
                     ids.slice(0, MAX_NUM_IDS) : ids).map(id => `${id}`).join(', ')
                   }
                   {ids.length > MAX_NUM_IDS && `… and ${ids.length - MAX_NUM_IDS} others`}
-                </Locations>
+                </LocationsBlock>
                 {formatCount(allFlows.length - flows.length)} flows were omitted.
+                {flows.length === 0 &&
+                <div style={{ marginTop: '1em'}}>Make sure the header row in the flows sheet is correct.
+                  There must be columns named origin, dest, and count.</div>}
               </ToastContent>
             })
           }
