@@ -24,7 +24,15 @@ import { FlowTooltipContent, LocationTooltipContent, formatCount } from './Toolt
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
-import { Config, ConfigPropName, Flow, FlowDirection, Location, LocationSelection } from './types';
+import {
+  Config,
+  ConfigPropName,
+  Flow,
+  FlowDirection,
+  Location,
+  LocationCluster,
+  LocationSelection
+} from './types';
 import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
 import Message from './Message';
 import LoadingSpinner from './LoadingSpinner';
@@ -38,6 +46,7 @@ import { AppToaster } from './toaster';
 import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
+import Supercluster, { ClusterFeature, PointFeature } from 'supercluster';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -85,11 +94,11 @@ type State = {
   animate: boolean
 }
 
-export const getFlowMagnitude = (flow: Flow) => +flow.count
+export const getFlowMagnitude = (flow: Flow) => flow.count
 const getFlowOriginId = (flow: Flow) => flow.origin
 const getFlowDestId = (flow: Flow) => flow.dest
 const getLocationId = (loc: Location) => loc.id
-const getLocationCentroid = (location: Location): [number, number] => [+location.lon, +location.lat]
+const getLocationCentroid = (location: Location): [number, number] => [location.lon, location.lat]
 
 const getInitialViewState = (bbox: [number, number, number, number]) => {
   const { center: [longitude, latitude], zoom } =
@@ -142,6 +151,12 @@ class FlowMap extends React.Component<Props, State> {
 
   getFlows = (state: State, props: Props) => props.flowsFetch.value
   getLocations = (state: State, props: Props) => props.locationsFetch.value
+  getViewState = (state: State, props: Props) => state.viewState
+
+  getIntegerZoom: Selector<number> = createSelector(
+    this.getViewState,
+    viewState => Math.floor(viewState.zoom),
+  )
 
   getKnownLocationIds: Selector<Set<string> | undefined> = createSelector(
     this.getLocations,
@@ -206,7 +221,7 @@ class FlowMap extends React.Component<Props, State> {
       if (!locations) return undefined
       const invalid = []
       for (const location of locations) {
-        if (!(-90 <= +location.lat && +location.lat <= 90) || !(-180 <= +location.lon && +location.lon <= 180)) {
+        if (!(-90 <= location.lat && location.lat <= 90) || !(-180 <= location.lon && location.lon <= 180)) {
           invalid.push(location.id)
         }
       }
@@ -229,6 +244,63 @@ class FlowMap extends React.Component<Props, State> {
       return missing
     }
   )
+
+  getSupercluster: Selector<Supercluster | undefined> = createSelector(
+    this.getLocationsWithFlows,
+    locations => {
+      if (!locations) return undefined
+      const index = new Supercluster({
+        radius: 40,
+        maxZoom: 16,
+      })
+      index.load(locations.map(location => ({
+        type: 'Feature' as 'Feature',
+        properties: {
+          location,
+        },
+        geometry: {
+          type: 'Point' as 'Point',
+          coordinates: [location.lon, location.lat],
+        },
+      })))
+      return index
+    }
+  )
+
+  getClusters: Selector<Array<ClusterFeature<any> | PointFeature<any>> | undefined> = createSelector(
+    this.getIntegerZoom,
+    this.getSupercluster,
+    (zoom: number, index: Supercluster | undefined) => {
+      if (!index) return undefined
+      return index.getClusters([-180, -90, 180, 90], zoom)
+    }
+  )
+
+  getClusteredLocations: Selector<Array<LocationCluster | Location> | undefined> = createSelector(
+    this.getClusters,
+    this.getSupercluster,
+    (clusters, index) => {
+      if (!clusters || !index) return undefined
+      const result: Array<LocationCluster | Location> = []
+      for (const c of clusters) {
+        const { properties } = c
+        if (properties.cluster) {
+          const id = properties.cluster_id
+          result.push({
+            id: `cluster::${id}`,
+            name: `Cluster ${id}`,
+            lon: c.geometry.coordinates[0],
+            lat: c.geometry.coordinates[1],
+            leaves: index.getLeaves(id).map(l => l.properties.location),
+          })
+        } else {
+          result.push(c.properties.location)
+        }
+      }
+      return result
+    }
+  )
+
 
   getLayers() {
     const { highlight, selectedLocations, animate, time  } = this.state;
@@ -644,6 +716,7 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   render() {
+    console.log(this.getClusteredLocations(this.state, this.props))
     const {
       config,
       spreadSheetKey,
@@ -777,8 +850,18 @@ class FlowMap extends React.Component<Props, State> {
 export default sheetFetcher<any>(({ spreadSheetKey, config }: Props) => ({
   locationsFetch: {
     url: makeSheetQueryUrl(spreadSheetKey, 'locations', 'SELECT A,B,C,D'),
-  },
+    then: (rows: any[]) => ({
+      value: rows.map(({ id, name, lon, lat }: any) => ({
+        id, name, lon: +lon, lat: +lat,
+      } as Location))
+    })
+  } as any,
   flowsFetch: {
     url: makeSheetQueryUrl(spreadSheetKey, 'flows', 'SELECT A,B,C'),
-  },
+    then: (rows: any[]) => ({
+      value: rows.map(({ origin, dest, count }: any) => ({
+        origin, dest, count: +count,
+      } as Flow))
+    })
+  } as any,
 }))(FlowMap as any);

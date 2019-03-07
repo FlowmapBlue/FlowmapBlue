@@ -21,15 +21,23 @@ export type Config = {
 
 export interface Location {
   id: string
-  lon: string
-  lat: string
+  lon: number
+  lat: number
   name: string
+}
+
+export interface LocationCluster {
+  id: string
+  lon: number
+  lat: number
+  name: string
+  leaves: Location[]
 }
 
 export interface Flow {
   origin: string
   dest: string
-  count: string
+  count: number
 }
 
 export interface LocationSelection {
