@@ -47,7 +47,7 @@ const NoWrap = styled.span`
 const Intro = () =>
   <Outer>
     <section className="intro">
-      <h1><Logo fontSize={35} /></h1>
+      <h1><Logo fontSize={35} collapseWidth={300} /></h1>
 
       <section>
         <p>

@@ -7,6 +7,7 @@ import { Row } from './Boxes';
 
 type Props = {
   fontSize?: number
+  collapseWidth?: number
 }
 
 
@@ -16,7 +17,9 @@ const LogoImage = styled.img(({ size }: { size: number }) => `
 `)
 
 const SHADOW_COLOR = ColorScheme.primary
-const LogoText = styled.div(({ fontSize }: { fontSize: number }) => ({
+const LogoText = styled.div((
+  { fontSize, collapseWidth }: Props
+) => ({
   // fontFamily: "'Titillium Web', sans-serif",
   fontSize,
   color: '#fff',
@@ -26,12 +29,12 @@ const LogoText = styled.div(({ fontSize }: { fontSize: number }) => ({
     1px 1px 1px ${SHADOW_COLOR}, 
     -1px -1px 1px ${SHADOW_COLOR}, 
     -1px 1px 1px ${SHADOW_COLOR}`,
-  '@media (max-width: 525px)': {
+  [`@media (max-width: ${collapseWidth}px)`]: {
     display: 'none',
   },
 }))
 
-const Logo = ({ fontSize = 25 }: Props) => {
+const Logo = ({ fontSize = 25, collapseWidth = 525 }: Props) => {
   return <Link to="/" style={{ textDecoration: 'none' }}>
     <Row spacing={fontSize / 5}>
       <LogoImage
@@ -40,6 +43,7 @@ const Logo = ({ fontSize = 25 }: Props) => {
         src={logo}
       />
       <LogoText
+        collapseWidth={collapseWidth}
         fontSize={fontSize}
       >
         flowmap.blue
