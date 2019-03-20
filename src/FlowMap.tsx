@@ -29,8 +29,7 @@ import {
   ConfigPropName,
   Flow,
   FlowDirection, isLocationCluster,
-  Location,
-  LocationCluster,
+  Location, LocationCluster,
   LocationSelection
 } from './types';
 import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
@@ -46,7 +45,7 @@ import { AppToaster } from './toaster';
 import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
-import Supercluster, { ClusterFeature, PointFeature } from 'supercluster';
+import Supercluster, { ClusterFeature, ClusterProperties, PointFeature } from 'supercluster';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -56,6 +55,8 @@ const CONTROLLER_OPTIONS = {
 
 const MAX_ZOOM_LEVELS = 5
 const MIN_ZOOM_LEVELS = 0.5
+const MIN_CLUSTER_ZOOM = 3
+const MAX_CLUSTER_ZOOM = 12
 
 type Props = {
   config: Config
@@ -251,7 +252,7 @@ class FlowMap extends React.Component<Props, State> {
       if (!locations) return undefined
       const index = new Supercluster({
         radius: 40,
-        maxZoom: 16,
+        maxZoom: MAX_CLUSTER_ZOOM,
       })
       index.load(locations.map(location => ({
         type: 'Feature' as 'Feature',
@@ -267,114 +268,142 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
-  getClusters: Selector<Array<ClusterFeature<any> | PointFeature<any>> | undefined> = createSelector(
-    this.getIntegerZoom,
+  getClusteredLocationsByZoomGetter: Selector<((zoom: number) => Array<LocationCluster | Location>) | undefined>
+    = createSelector(
     this.getSupercluster,
-    (zoom: number, index: Supercluster | undefined) => {
-      if (!index) return undefined
-      return index.getClusters([-180, -90, 180, 90], zoom)
-    }
-  )
-
-  getClusteredLocations: Selector<Array<LocationCluster | Location> | undefined> = createSelector(
-    this.getClusters,
-    this.getSupercluster,
-    (clusters, index) => {
-      if (!clusters || !index) return undefined
-      const result: Array<LocationCluster | Location> = []
-      for (const c of clusters) {
-        const { properties } = c
-        if (properties.cluster) {
-          const id = properties.cluster_id
-          const leaves = index.getLeaves(id, Number.MAX_VALUE);
-          result.push({
-            id: `cluster::${id}`,
-            name: `Group of ${leaves.length} locations`,
-            lon: c.geometry.coordinates[0],
-            lat: c.geometry.coordinates[1],
-            leaves: leaves.map(l => l.properties.location),
-          })
-        } else {
-          result.push(c.properties.location)
-        }
+    (index) => {
+      if (!index) {
+       return undefined
       }
-      return result
+      const byZoom = new Map()
+      for (let zoom = MIN_CLUSTER_ZOOM; zoom <= MAX_CLUSTER_ZOOM; zoom++) {
+        const clusters = index.getClusters([-180, -90, 180, 90], zoom)
+
+        const result: Array<LocationCluster | Location> = []
+        for (const c of clusters) {
+          const { properties } = c
+          if (properties.cluster) {
+            const id = properties.cluster_id
+            result.push({
+              id: `cluster::${id}`,
+              originalClusterId: id,
+              name: `Group of ${formatCount(properties.point_count)} locations`,
+              lon: c.geometry.coordinates[0],
+              lat: c.geometry.coordinates[1],
+            })
+          } else {
+            result.push(c.properties.location)
+          }
+        }
+        byZoom.set(zoom, result)
+      }
+      return (zoom: number) => byZoom.get(zoom)
     }
   )
 
-  getLocationClusterIdGetter: Selector<((locationId: string) => string) | undefined> = createSelector(
-    this.getClusteredLocations,
-    (locations) => {
-      const toClusterId: { [id: string]: string } = {}
-      if (!locations) return undefined
-      for (const l of locations) {
-        if (isLocationCluster(l)) {
-          for (const leaf of l.leaves) {
-            toClusterId[leaf.id] = l.id
+  getLocationClusterIdGetter: Selector<((zoom: number, locationId: string) => string) | undefined> = createSelector(
+    this.getClusteredLocationsByZoomGetter,
+    this.getSupercluster,
+    (getLocationsByZoom, index) => {
+      const toClusterId: { [zoom: string]: { [id: string]: string }} = {}
+      if (!getLocationsByZoom || !index) return undefined
+      for (let zoom = MIN_CLUSTER_ZOOM; zoom <= MAX_CLUSTER_ZOOM; zoom++) {
+        toClusterId[zoom] = {}
+        const locations = getLocationsByZoom(zoom)
+        if (locations) {
+          for (const location of locations) {
+            if (isLocationCluster(location)) {
+              const clusterId = getLocationId(location)
+              for (const leaf of index.getLeaves(location.originalClusterId, Number.MAX_SAFE_INTEGER)) {
+                const locationId = getLocationId(leaf.properties.location);
+                if (locationId) {
+                  toClusterId[zoom][locationId] = clusterId
+                }
+              }
+            } else {
+              const locationId = getLocationId(location)
+              toClusterId[zoom][locationId] = locationId
+            }
           }
         }
       }
-      return (id: string) => toClusterId[id] || id
+      return (zoom: number, id: string) => toClusterId[zoom][id] || id
     }
   )
 
-  getClusteredFlows: Selector<Flow[] | undefined> = createSelector(
+  getClusteredFlowsByZoomGetter: Selector<((zoom: number) => Flow[]) | undefined> = createSelector(
     this.getLocationClusterIdGetter,
     this.getFlowsForKnownLocations,
     (getLocationClusterId, flows) => {
-      if (!flows || !getLocationClusterId) return undefined
-
-      const flowsByOD: { [key:string]: Flow } = {}
-      for (const f of flows) {
-        const originId = getLocationClusterId(getFlowOriginId(f));
-        const destId = getLocationClusterId(getFlowDestId(f));
-        const key = `${originId}:->:${destId}`
-        if (!flowsByOD[key]) {
-          flowsByOD[key] = {
-            origin: originId,
-            dest: destId,
-            count: 0,
-          }
-        }
-        flowsByOD[key].count += f.count
+      if (!flows || !getLocationClusterId) {
+        return undefined
       }
 
-      return Object.values(flowsByOD)
+      const byZoom = new Map();
+      for (let zoom = MIN_CLUSTER_ZOOM; zoom <= MAX_CLUSTER_ZOOM; zoom++) {
+        const flowsByOD: { [key:string]: Flow } = {}
+        for (const f of flows) {
+          const originId = getLocationClusterId(zoom, getFlowOriginId(f));
+          const destId = getLocationClusterId(zoom, getFlowDestId(f));
+          const key = `${originId}:->:${destId}`
+          if (!flowsByOD[key]) {
+            flowsByOD[key] = {
+              origin: originId,
+              dest: destId,
+              count: 0,
+            }
+          }
+          flowsByOD[key].count += f.count
+        }
+
+        byZoom.set(zoom, Object.values(flowsByOD));
+      }
+      return (zoom: number) => byZoom.get(zoom)
     }
   )
 
 
   getLayers() {
-    const { highlight, selectedLocations, animate, time  } = this.state;
-    const flows = this.getClusteredFlows(this.state, this.props)
-    const locations = this.getClusteredLocations(this.state, this.props)
+    // TODO: create a separate flowmap layer for every zoom and set visible=true for the current zoom
+    const { highlight, selectedLocations, animate, time } = this.state
+
+    const clusterZoom = Math.max(MIN_CLUSTER_ZOOM, Math.min(Math.floor(this.state.viewState.zoom), MAX_CLUSTER_ZOOM))
+
+    const getClusteredLocationsByZoom = this.getClusteredLocationsByZoomGetter(this.state, this.props);
+    const getClusteredFlowsByZoom = this.getClusteredFlowsByZoomGetter(this.state, this.props);
 
     const layers = []
-    if (locations && flows) {
-      layers.push(
-        this.flowMapLayer = new FlowMapLayer({
-          id: `flow-map-${animate ? 'animated' : 'arrows'}`,
-          animate,
-          animationCurrentTime: time,
-          diffMode: this.getDiffMode(this.state, this.props),
-          colors: this.getColors(this.state, this.props),
-          locations,
-          flows,
-          showOnlyTopFlows: 10000,
-          getLocationCentroid,
-          getFlowMagnitude,
-          getFlowOriginId,
-          getFlowDestId,
-          getLocationId,
-          varyFlowColorByMagnitude: true,
-          showTotals: true,
-          selectedLocationIds: selectedLocations ? selectedLocations.map(s => s.id) : undefined,
-          highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
-          highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
-          onHover: this.handleHover,
-          onClick: this.handleClick as any,
-        }),
-      )
+    if (getClusteredLocationsByZoom && getClusteredFlowsByZoom) {
+      // for (let zoom = MIN_CLUSTER_ZOOM; zoom <= MAX_CLUSTER_ZOOM; zoom++) {
+      for (let zoom = clusterZoom; zoom <= clusterZoom; zoom++) {
+        const flows = getClusteredFlowsByZoom(clusterZoom)
+        const locations = getClusteredLocationsByZoom(clusterZoom)
+        layers.push(
+          this.flowMapLayer = new FlowMapLayer({
+            id: `flow-map-${animate ? 'animated' : 'arrows'}-${zoom}`,
+            animate,
+            animationCurrentTime: time,
+            diffMode: this.getDiffMode(this.state, this.props),
+            colors: this.getColors(this.state, this.props),
+            locations,
+            flows,
+            showOnlyTopFlows: 10000,
+            getLocationCentroid,
+            getFlowMagnitude,
+            getFlowOriginId,
+            getFlowDestId,
+            getLocationId,
+            varyFlowColorByMagnitude: true,
+            showTotals: true,
+            selectedLocationIds: selectedLocations ? selectedLocations.map(s => s.id) : undefined,
+            highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
+            highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
+            onHover: this.handleHover,
+            onClick: this.handleClick as any,
+            visible: zoom === clusterZoom,
+          } as any),
+        )
+      }
     }
     return layers
   }

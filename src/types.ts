@@ -27,12 +27,12 @@ export interface Location {
 }
 
 export interface LocationCluster extends Location {
-  leaves: Location[]
+  originalClusterId: number
 }
 
 export function isLocationCluster(l: Location): l is LocationCluster {
-  const { leaves } = l as LocationCluster;
-  return leaves != undefined;
+  const { originalClusterId } = l as LocationCluster;
+  return originalClusterId != undefined;
 }
 
 
