@@ -91,7 +91,8 @@ type State = {
   maxZoom: number | undefined
   minZoom: number | undefined
   time: number
-  animate: boolean
+  enableAnimation: boolean
+  enableClustering: boolean
 }
 
 export const getFlowMagnitude = (flow: Flow) => flow.count
@@ -144,10 +145,9 @@ class FlowMap extends React.Component<Props, State> {
     maxZoom: undefined,
     minZoom: undefined,
     time: 0,
-    animate: false,
+    enableAnimation: false,
+    enableClustering: true,
   }
-
-  private flowMapLayer: FlowMapLayer | undefined = undefined
 
   getFlows = (state: State, props: Props) => props.flowsFetch.value
   getLocations = (state: State, props: Props) => props.locationsFetch.value
@@ -173,7 +173,7 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
-  getAnimate: Selector<boolean> = (state: State, props: Props) => state.animate
+  getAnimate: Selector<boolean> = (state: State, props: Props) => state.enableAnimation
 
   getColors = createSelector(
     this.getDiffMode,
@@ -390,44 +390,57 @@ class FlowMap extends React.Component<Props, State> {
   )
 
 
+  getFlowMapLayer(id: string, locations: Location[], flows: Flow[], visible: boolean) {
+    const { highlight, selectedLocations, enableAnimation, time } = this.state
+    return new FlowMapLayer({
+      id,
+      enableAnimation: enableAnimation,
+      animationCurrentTime: time,
+      diffMode: this.getDiffMode(this.state, this.props),
+      colors: this.getColors(this.state, this.props),
+      locations,
+      flows,
+      showOnlyTopFlows: 10000,
+      getLocationCentroid,
+      getFlowMagnitude,
+      getFlowOriginId,
+      getFlowDestId,
+      getLocationId,
+      varyFlowColorByMagnitude: true,
+      showTotals: true,
+      selectedLocationIds: selectedLocations ? selectedLocations.map(s => s.id) : undefined,
+      highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
+      highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
+      onHover: this.handleHover,
+      onClick: this.handleClick as any,
+      visible,
+    } as any)
+  }
+
   getLayers() {
-    const { highlight, selectedLocations, animate, time } = this.state
-
-    const getClusteredLocationsByZoom = this.getClusteredLocationsByZoomGetter(this.state, this.props)
-    const getClusteredFlowsByZoom = this.getClusteredFlowsByZoomGetter(this.state, this.props)
-
+    const { enableClustering, enableAnimation } = this.state
     const layers = []
-    const clusterZoom = this.getClusteredZoom(this.state, this.props)
-    if (clusterZoom && getClusteredLocationsByZoom && getClusteredFlowsByZoom) {
-      for (let zoom = clusterZoom; zoom <= clusterZoom; zoom++) {
-        const flows = getClusteredFlowsByZoom(clusterZoom)
-        const locations = getClusteredLocationsByZoom(clusterZoom)
-        layers.push(
-          this.flowMapLayer = new FlowMapLayer({
-            id: `flow-map-${animate ? 'animated' : 'arrows'}-${zoom}`,
-            animate,
-            animationCurrentTime: time,
-            diffMode: this.getDiffMode(this.state, this.props),
-            colors: this.getColors(this.state, this.props),
-            locations,
-            flows,
-            showOnlyTopFlows: 10000,
-            getLocationCentroid,
-            getFlowMagnitude,
-            getFlowOriginId,
-            getFlowDestId,
-            getLocationId,
-            varyFlowColorByMagnitude: true,
-            showTotals: true,
-            selectedLocationIds: selectedLocations ? selectedLocations.map(s => s.id) : undefined,
-            highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
-            highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
-            onHover: this.handleHover,
-            onClick: this.handleClick as any,
-            visible: zoom === clusterZoom,
-          } as any),
-        )
+    if (enableClustering) {
+      const getClusteredLocationsByZoom = this.getClusteredLocationsByZoomGetter(this.state, this.props)
+      const getClusteredFlowsByZoom = this.getClusteredFlowsByZoomGetter(this.state, this.props)
+      const clusterZoom = this.getClusteredZoom(this.state, this.props)
+      if (clusterZoom && getClusteredLocationsByZoom && getClusteredFlowsByZoom) {
+        for (let zoom = clusterZoom; zoom <= clusterZoom; zoom++) {
+          layers.push(this.getFlowMapLayer(
+            `flow-map-${enableAnimation ? 'animated' : 'arrows'}-${zoom}`,
+            getClusteredLocationsByZoom(clusterZoom),
+            getClusteredFlowsByZoom(clusterZoom),
+            zoom === clusterZoom,
+          ))
+        }
       }
+    } else {
+      layers.push(this.getFlowMapLayer(
+        `flow-map-${enableAnimation ? 'animated' : 'arrows'}`,
+        this.getLocations(this.state, this.props),
+        this.getFlows(this.state, this.props),
+        true,
+      ))
     }
     return layers
   }
@@ -508,8 +521,8 @@ class FlowMap extends React.Component<Props, State> {
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown)
-    const { animate } = this.state;
-    if (animate) {
+    const { enableAnimation } = this.state;
+    if (enableAnimation) {
       this.animate();
     }
   }
@@ -578,16 +591,21 @@ class FlowMap extends React.Component<Props, State> {
     }
   }
 
+  handleToggleClustering = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked
+    this.setState({ enableClustering: value })
+  }
+
   private animationFrame: number = -1;
 
   handleToggleAnimation = (evt: SyntheticEvent) => {
-    const animate = (evt.target as HTMLInputElement).checked
-    if (animate) {
+    const value = (evt.target as HTMLInputElement).checked
+    if (value) {
       this.animate()
     } else {
       this.stopAnimation()
     }
-    this.setState({ animate })
+    this.setState({ enableAnimation: value })
   }
 
   private animate = () => {
@@ -621,8 +639,6 @@ class FlowMap extends React.Component<Props, State> {
 
   showFlowTooltip = (pos: [number, number], info: FlowPickingInfo) => {
     const [x, y] = pos
-    const { flowMapLayer } = this
-    if (!flowMapLayer) return
     const r = 5
     this.showTooltip(
       {
@@ -644,8 +660,6 @@ class FlowMap extends React.Component<Props, State> {
     const mercator = this.getMercator()
     if (!mercator) return
     const [x, y] = mercator.project(getLocationCentroid(location))
-    const { flowMapLayer } = this
-    if (!flowMapLayer) return
     const r = circleRadius + 5
     const { selectedLocations } = this.state
     this.showTooltip(
@@ -925,7 +939,12 @@ class FlowMap extends React.Component<Props, State> {
                 >this spreadsheet</a>. You can <Link to="/">publish your own</Link> too.
               </div>
               <StyledSwitch
-                checked={this.state.animate}
+                checked={this.state.enableClustering}
+                label="Cluster on zoom"
+                onChange={this.handleToggleClustering}
+              />
+              <StyledSwitch
+                checked={this.state.enableAnimation}
                 label="Animate flows"
                 onChange={this.handleToggleAnimation}
               />
