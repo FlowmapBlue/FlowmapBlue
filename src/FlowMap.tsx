@@ -451,10 +451,10 @@ class FlowMap extends React.Component<Props, State> {
 
   getExpandedSelection() {
     const { clusteringEnabled, selectedLocations } = this.state
-    return selectedLocations
-    // if (!selectedLocations) {
-    //   return undefined
-    // }
+    if (!selectedLocations) {
+      return undefined
+    }
+    return selectedLocations.map(loc => loc.id)
     // const getLocationsOrClustersById = this.getLocationsOrClustersByIdGetter(this.state, this.props)
     // if (!getLocationsOrClustersById) {
     //   return selectedLocations
