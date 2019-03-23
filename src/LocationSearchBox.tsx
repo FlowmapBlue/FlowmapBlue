@@ -90,7 +90,7 @@ class LocationsSearchBox extends React.PureComponent<Props> {
     const { selected, unselected } = this.getLocationsBySelectionStatus(this.getSortedLocations(locations), selectedLocations)
     return (
       <SearchBox<Location>
-        placeholder="Search for locations…"
+        placeholder="Search for locations… (Hit space to see all)"
         items={unselected}
         selectedItems={selected}
         maxItems={100}
