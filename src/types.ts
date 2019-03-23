@@ -29,12 +29,12 @@ export interface Location {
 export interface LocationCluster extends Location {
   parentId: string | undefined
   zoom: number
-  children: string[]
+  children: (Location | LocationCluster)[]
 }
 
 export interface ClusterTreeEntry {
   items: (Location | LocationCluster)[]
-  leavesToClusters: Map<string, string>
+  leavesToClusters: Map<string, (Location | LocationCluster)> | undefined
 }
 export type ClusterTree = Map</*zoom:*/number, ClusterTreeEntry>
 

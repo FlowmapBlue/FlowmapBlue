@@ -273,25 +273,30 @@ class FlowMap extends React.Component<Props, State> {
       const maxZoom = numbersOfClusters.indexOf(numbersOfClusters[numbersOfClusters.length - 1])
 
       const itemsByZoom = new Map()
-      for (let zoom = minZoom; zoom <= maxZoom; zoom++) {
+      let childClustersById: Map<string, LocationCluster>
+      for (let zoom = maxZoom; zoom >= minZoom; zoom--) {
         const tree = trees[zoom]
         let childrenByParent
         if (zoom < maxZoom) {
-          childrenByParent = nest<any, string[]>()
+          childrenByParent = nest<any, (Location | LocationCluster)[]>()
             .key((point: any) => point.parentId)
             .rollup((points: any[]) =>
-              points.map((p: any) => p.id ? makeClusterId(p.id) : locations[p.index].id)
+              points.map((p: any) => p.id ?
+                childClustersById.get(makeClusterId(p.id))! :
+                locations[p.index]
+              )
             )
             .object(trees[zoom + 1].points)
         }
 
+        childClustersById = new Map()
         const items: Array<LocationCluster | Location> = []
         for (const point of tree.points) {
           const { id, x, y, index, numPoints, parentId } = point
           if (id === undefined) {
             items.push(locations[index])
           } else {
-            items.push({
+            const cluster = {
               id: makeClusterId(id),
               parentId: parentId >= 0 ? makeClusterId(parentId) : undefined,
               name: `Cluster #${id} (${formatCount(numPoints)} locations)`,
@@ -299,34 +304,36 @@ class FlowMap extends React.Component<Props, State> {
               lon: xLng(x),
               lat: yLat(y),
               children: childrenByParent ? childrenByParent[id] : undefined,
-            })
+            };
+            items.push(cluster)
+            childClustersById.set(cluster.id, cluster)
           }
         }
         itemsByZoom.set(zoom, items)
       }
 
 
-      const leavesToClusters = new Map()
+      const leavesByZoom = new Map<number, Map<string, (Location | LocationCluster)>>()
       for (let zoom = maxZoom - 1; zoom >= minZoom; zoom--) {
-        const result = new Map()
+        const result = new Map<string, (Location | LocationCluster)>()
         const items = itemsByZoom.get(zoom)
-        const nextLeavesToClusters = leavesToClusters.get(zoom + 1)
+        const nextLeavesToClusters = leavesByZoom.get(zoom + 1)!
         for (const item of items) {
           if (isLocationCluster(item)) {
-            for (const childId of item.children) {
-              if (isClusterId(childId)) {
-                for (const [leafId, clusterId] of nextLeavesToClusters.entries()) {
-                  if (clusterId === childId) {
-                    result.set(leafId, item.id)
+            for (const child of item.children) {
+              if (isClusterId(child.id)) {
+                for (const [leafId, cluster] of nextLeavesToClusters.entries()) {
+                  if (cluster.id === child.id) {
+                    result.set(leafId, item)
                   }
                 }
               } else {
-                result.set(childId, item.id)
+                result.set(child.id, item)
               }
             }
           }
         }
-        leavesToClusters.set(zoom, result)
+        leavesByZoom.set(zoom, result)
       }
 
 
@@ -334,9 +341,10 @@ class FlowMap extends React.Component<Props, State> {
       for (let zoom = minZoom; zoom <= maxZoom; zoom++) {
         clusterTree.set(zoom, {
           items: itemsByZoom.get(zoom),
-          leavesToClusters: leavesToClusters.get(zoom),
+          leavesToClusters: leavesByZoom.get(zoom),
         })
       }
+      console.log(clusterTree)
       return clusterTree
     }
   )
@@ -391,8 +399,12 @@ class FlowMap extends React.Component<Props, State> {
       for (let zoom = minMaxZoom[0]; zoom <= minMaxZoom[1]; zoom++) {
         const treeEntry = clusterTree.get(zoom);
         if (treeEntry && treeEntry.leavesToClusters) {
+          const { leavesToClusters } = treeEntry
           const flowsByOD: { [key:string]: Flow } = {}
-          const getClusterId = (id: string) => treeEntry.leavesToClusters.get(id) || id
+          const getClusterId = (id: string) => {
+            const cluster = leavesToClusters && leavesToClusters.get(id)
+            return cluster ? cluster.id : id
+          }
           for (const f of flows) {
             const originId = getClusterId(getFlowOriginId(f))
             const destId = getClusterId(getFlowDestId(f))
