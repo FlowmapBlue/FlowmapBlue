@@ -33,6 +33,8 @@ export interface LocationCluster extends Location {
 }
 
 export interface ClusterTree {
+  minZoom: number,
+  maxZoom: number,
   itemsByZoom: Map<number, (Location | LocationCluster)[]>
   leavesToClustersByZoom: Map<number, Map<string, (Location | LocationCluster)> | undefined>
   clustersById: Map<string, LocationCluster>
