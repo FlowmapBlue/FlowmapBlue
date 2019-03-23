@@ -55,8 +55,7 @@ const CONTROLLER_OPTIONS = {
 
 const MAX_ZOOM_LEVELS = 5
 const MIN_ZOOM_LEVELS = 0.5
-const MIN_CLUSTER_ZOOM = 3
-const MAX_CLUSTER_ZOOM = 12
+const MAX_CLUSTER_ZOOM = 16
 
 type Props = {
   config: Config
@@ -248,7 +247,7 @@ class FlowMap extends React.Component<Props, State> {
 
   getSupercluster: Selector<Supercluster | undefined> = createSelector(
     this.getLocationsWithFlows,
-    locations => {
+    (locations) => {
       if (!locations) return undefined
       const index = new Supercluster({
         radius: 40,
@@ -268,15 +267,32 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
-  getClusteredLocationsByZoomGetter: Selector<((zoom: number) => Array<LocationCluster | Location>) | undefined>
-    = createSelector(
+  getMinMaxClusterZoom: Selector<[number, number] | undefined> = createSelector(
     this.getSupercluster,
-    (index) => {
+    this.getLocations,
+    (index, locations) => {
       if (!index) {
        return undefined
       }
+      const trees: any[] = (index as any).trees
+      const numbersOfClusters = trees.map(d => d.points.length)
+      const minZoom = numbersOfClusters.lastIndexOf(1)
+      const maxZoom = numbersOfClusters.indexOf(locations.length)
+      return [minZoom, maxZoom] as [number, number]
+    }
+  )
+
+  getClusteredLocationsByZoomGetter: Selector<((zoom: number) => Array<LocationCluster | Location>) | undefined>
+    = createSelector(
+    this.getSupercluster,
+    this.getMinMaxClusterZoom,
+    (index, minMaxZoom) => {
+      if (!index || !minMaxZoom) {
+       return undefined
+      }
       const byZoom = new Map()
-      for (let zoom = MIN_CLUSTER_ZOOM; zoom <= MAX_CLUSTER_ZOOM; zoom++) {
+
+      for (let zoom = minMaxZoom[0]; zoom <= minMaxZoom[1]; zoom++) {
         const clusters = index.getClusters([-180, -90, 180, 90], zoom)
 
         const result: Array<LocationCluster | Location> = []
@@ -304,10 +320,11 @@ class FlowMap extends React.Component<Props, State> {
   getLocationClusterIdGetter: Selector<((zoom: number, locationId: string) => string) | undefined> = createSelector(
     this.getClusteredLocationsByZoomGetter,
     this.getSupercluster,
-    (getLocationsByZoom, index) => {
+    this.getMinMaxClusterZoom,
+    (getLocationsByZoom, index, minMaxZoom) => {
       const toClusterId: { [zoom: string]: { [id: string]: string }} = {}
-      if (!getLocationsByZoom || !index) return undefined
-      for (let zoom = MIN_CLUSTER_ZOOM; zoom <= MAX_CLUSTER_ZOOM; zoom++) {
+      if (!getLocationsByZoom || !index || !minMaxZoom) return undefined
+      for (let zoom = minMaxZoom[0]; zoom <= minMaxZoom[1]; zoom++) {
         toClusterId[zoom] = {}
         const locations = getLocationsByZoom(zoom)
         if (locations) {
@@ -334,13 +351,14 @@ class FlowMap extends React.Component<Props, State> {
   getClusteredFlowsByZoomGetter: Selector<((zoom: number) => Flow[]) | undefined> = createSelector(
     this.getLocationClusterIdGetter,
     this.getFlowsForKnownLocations,
-    (getLocationClusterId, flows) => {
-      if (!flows || !getLocationClusterId) {
+    this.getMinMaxClusterZoom,
+    (getLocationClusterId, flows, minMaxZoom) => {
+      if (!flows || !getLocationClusterId || !minMaxZoom) {
         return undefined
       }
 
       const byZoom = new Map();
-      for (let zoom = MIN_CLUSTER_ZOOM; zoom <= MAX_CLUSTER_ZOOM; zoom++) {
+      for (let zoom = minMaxZoom[0]; zoom <= minMaxZoom[1]; zoom++) {
         const flowsByOD: { [key:string]: Flow } = {}
         for (const f of flows) {
           const originId = getLocationClusterId(zoom, getFlowOriginId(f));
@@ -367,13 +385,13 @@ class FlowMap extends React.Component<Props, State> {
     // TODO: create a separate flowmap layer for every zoom and set visible=true for the current zoom
     const { highlight, selectedLocations, animate, time } = this.state
 
-    const clusterZoom = Math.max(MIN_CLUSTER_ZOOM, Math.min(Math.floor(this.state.viewState.zoom), MAX_CLUSTER_ZOOM))
-
+    const minMaxZoom = this.getMinMaxClusterZoom(this.state, this.props);
     const getClusteredLocationsByZoom = this.getClusteredLocationsByZoomGetter(this.state, this.props);
     const getClusteredFlowsByZoom = this.getClusteredFlowsByZoomGetter(this.state, this.props);
 
     const layers = []
-    if (getClusteredLocationsByZoom && getClusteredFlowsByZoom) {
+    if (minMaxZoom && getClusteredLocationsByZoom && getClusteredFlowsByZoom) {
+      const clusterZoom = Math.max(minMaxZoom[0], Math.min(Math.floor(this.state.viewState.zoom), minMaxZoom[1]))
       // for (let zoom = MIN_CLUSTER_ZOOM; zoom <= MAX_CLUSTER_ZOOM; zoom++) {
       for (let zoom = clusterZoom; zoom <= clusterZoom; zoom++) {
         const flows = getClusteredFlowsByZoom(clusterZoom)
