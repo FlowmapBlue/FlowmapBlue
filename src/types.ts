@@ -28,6 +28,7 @@ export interface Location {
 
 export interface LocationCluster extends Location {
   originalClusterId: number
+  zoom: number
 }
 
 export function isLocationCluster(l: Location): l is LocationCluster {
