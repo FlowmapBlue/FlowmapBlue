@@ -32,17 +32,16 @@ export interface LocationCluster extends Location {
   children: (Location | LocationCluster)[]
 }
 
-export interface ClusterTreeEntry {
-  items: (Location | LocationCluster)[]
-  leavesToClusters: Map<string, (Location | LocationCluster)> | undefined
+export interface ClusterTree {
+  itemsByZoom: Map<number, (Location | LocationCluster)[]>
+  leavesToClustersByZoom: Map<number, Map<string, (Location | LocationCluster)> | undefined>
+  clustersById: Map<string, LocationCluster>
 }
-export type ClusterTree = Map</*zoom:*/number, ClusterTreeEntry>
 
 export function isLocationCluster(l: Location): l is LocationCluster {
   const { zoom } = l as LocationCluster;
   return zoom !== undefined;
 }
-
 
 export interface Flow {
   origin: string
