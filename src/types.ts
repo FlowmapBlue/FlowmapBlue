@@ -27,13 +27,20 @@ export interface Location {
 }
 
 export interface LocationCluster extends Location {
-  originalClusterId: number
+  parentId: string | undefined
   zoom: number
+  children: string[]
 }
 
+export interface ClusterTreeEntry {
+  items: (Location | LocationCluster)[]
+  leavesToClusters: Map<string, string>
+}
+export type ClusterTree = Map</*zoom:*/number, ClusterTreeEntry>
+
 export function isLocationCluster(l: Location): l is LocationCluster {
-  const { originalClusterId } = l as LocationCluster;
-  return originalClusterId != undefined;
+  const { zoom } = l as LocationCluster;
+  return zoom !== undefined;
 }
 
 
