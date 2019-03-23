@@ -153,9 +153,9 @@ class FlowMap extends React.Component<Props, State> {
   getLocations = (state: State, props: Props) => props.locationsFetch.value
   getViewState = (state: State, props: Props) => state.viewState
 
-  getIntegerZoom: Selector<number> = createSelector(
+  getZoom: Selector<number> = createSelector(
     this.getViewState,
-    viewState => Math.floor(viewState.zoom),
+    viewState => viewState.zoom,
   )
 
   getKnownLocationIds: Selector<Set<string> | undefined> = createSelector(
@@ -380,19 +380,25 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
+  getClusteredZoom: Selector<number | undefined> = createSelector(
+    this.getMinMaxClusterZoom,
+    this.getZoom,
+    (minMaxZoom, zoom) => {
+      if (!minMaxZoom) return undefined;
+      return Math.max(minMaxZoom[0], Math.min(Math.floor(zoom), minMaxZoom[1]));
+    }
+  )
+
 
   getLayers() {
-    // TODO: create a separate flowmap layer for every zoom and set visible=true for the current zoom
     const { highlight, selectedLocations, animate, time } = this.state
 
-    const minMaxZoom = this.getMinMaxClusterZoom(this.state, this.props);
-    const getClusteredLocationsByZoom = this.getClusteredLocationsByZoomGetter(this.state, this.props);
-    const getClusteredFlowsByZoom = this.getClusteredFlowsByZoomGetter(this.state, this.props);
+    const getClusteredLocationsByZoom = this.getClusteredLocationsByZoomGetter(this.state, this.props)
+    const getClusteredFlowsByZoom = this.getClusteredFlowsByZoomGetter(this.state, this.props)
 
     const layers = []
-    if (minMaxZoom && getClusteredLocationsByZoom && getClusteredFlowsByZoom) {
-      const clusterZoom = Math.max(minMaxZoom[0], Math.min(Math.floor(this.state.viewState.zoom), minMaxZoom[1]))
-      // for (let zoom = MIN_CLUSTER_ZOOM; zoom <= MAX_CLUSTER_ZOOM; zoom++) {
+    const clusterZoom = this.getClusteredZoom(this.state, this.props)
+    if (clusterZoom && getClusteredLocationsByZoom && getClusteredFlowsByZoom) {
       for (let zoom = clusterZoom; zoom <= clusterZoom; zoom++) {
         const flows = getClusteredFlowsByZoom(clusterZoom)
         const locations = getClusteredLocationsByZoom(clusterZoom)
