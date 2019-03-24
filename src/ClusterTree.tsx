@@ -1,5 +1,5 @@
 import Supercluster from 'supercluster'
-import { isLocationCluster, Location, LocationCluster } from './types'
+import { Flow, getFlowDestId, getFlowOriginId, isLocationCluster, Location, LocationCluster } from './types'
 import { nest } from 'd3-collection'
 import { formatCount } from './TooltipContent'
 
@@ -16,11 +16,12 @@ export default class ClusterTree {
   readonly minZoom: number
   readonly maxZoom: number
   private readonly itemsByZoom: Map<number, Item[]>
-  private readonly leavesToClustersByZoom: Map<number, Map<string, Item> | undefined>
+  private flowsByZoom: Map<number, Flow[]>
+  // private readonly leavesToClustersByZoom: Map<number, Map<string, Item> | undefined>
   private readonly itemsById: Map<string, LocationCluster>
   private readonly minZoomByLocationId: Map<string, number>
 
-  constructor(locations: Location[]) {
+  constructor(locations: Location[], flows: Flow[]) {
     const index = new Supercluster({
       radius: 40,
       maxZoom: MAX_CLUSTER_ZOOM,
@@ -109,13 +110,48 @@ export default class ClusterTree {
       leavesToClustersByZoom.set(zoom, result)
     }
 
+    const flowsByZoom = new Map()
+    const findClusterFor = (locationId: string, zoom: number) => {
+      const cluster = leavesToClustersByZoom.get(zoom)!.get(locationId)
+      return cluster ? cluster.id : undefined
+    }
+    for (let zoom = minZoom; zoom <= maxZoom; zoom++) {
+      if (zoom < maxZoom) {
+        const flowsByOD: { [key:string]: Flow } = {}
+        for (const f of flows) {
+          const originId = getFlowOriginId(f)
+          const destId = getFlowDestId(f)
+          const originClusterId = findClusterFor(originId, zoom) || originId
+          const destClusterId = findClusterFor(destId, zoom) || destId
+          const key = `${originClusterId}:->:${destClusterId}`
+          if (!flowsByOD[key]) {
+            flowsByOD[key] = {
+              origin: originClusterId,
+              dest: destClusterId,
+              count: 0,
+            }
+          }
+          flowsByOD[key].count += f.count
+        }
+        flowsByZoom.set(zoom, Object.values(flowsByOD));
+      } else {
+        flowsByZoom.set(zoom, flows);
+      }
+    }
+
+
     this.locations = locations
     this.minZoom = minZoom
     this.maxZoom = maxZoom
     this.itemsByZoom = itemsByZoom
-    this.leavesToClustersByZoom = leavesToClustersByZoom
+    // this.leavesToClustersByZoom = leavesToClustersByZoom
+    this.flowsByZoom = flowsByZoom
     this.itemsById = itemsById
     this.minZoomByLocationId = minZoomByLocationId
+  }
+
+  getClusteredFlowsByZoom(zoom: number): Flow[] | undefined {
+    return this.flowsByZoom.get(zoom)
   }
 
   getItemsFor(zoom: number | undefined): (Item[] | undefined) {
@@ -131,14 +167,14 @@ export default class ClusterTree {
     return this.minZoomByLocationId.get(locationId)
   }
 
-  findClusterIdFor(locationId: string, zoom: number) {
-    const leavesToClusters = this.leavesToClustersByZoom.get(zoom)
-    if (leavesToClusters) {
-      const cluster = leavesToClusters.get(locationId)
-      return cluster ? cluster.id : undefined
-    }
-    return undefined
-  }
+  // findClusterIdFor(locationId: string, zoom: number) {
+  //   const leavesToClusters = this.leavesToClustersByZoom.get(zoom)
+  //   if (leavesToClusters) {
+  //     const cluster = leavesToClusters.get(locationId)
+  //     return cluster ? cluster.id : undefined
+  //   }
+  //   return undefined
+  // }
 
   /**
    * Expands

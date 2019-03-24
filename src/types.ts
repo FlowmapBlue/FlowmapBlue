@@ -19,6 +19,12 @@ export type Config = {
   [prop in ConfigPropName]: string | undefined
 }
 
+export const getFlowMagnitude = (flow: Flow) => flow.count || 0
+export const getFlowOriginId = (flow: Flow) => flow.origin
+export const getFlowDestId = (flow: Flow) => flow.dest
+export const getLocationId = (loc: Location) => loc.id
+export const getLocationCentroid = (location: Location): [number, number] => [location.lon, location.lat]
+
 export interface Location {
   id: string
   lon: number
