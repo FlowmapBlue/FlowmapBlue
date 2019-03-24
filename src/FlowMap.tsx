@@ -94,7 +94,7 @@ type State = {
   clusteringEnabled: boolean
 }
 
-export const getFlowMagnitude = (flow: Flow) => flow.count
+export const getFlowMagnitude = (flow: Flow) => flow.count || 0
 const getFlowOriginId = (flow: Flow) => flow.origin
 const getFlowDestId = (flow: Flow) => flow.dest
 const getLocationId = (loc: Location) => loc.id

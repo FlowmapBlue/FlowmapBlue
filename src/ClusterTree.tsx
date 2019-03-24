@@ -39,8 +39,9 @@ export default class ClusterTree {
     const trees: any[] = (index as any).trees
     // if (trees.length === 0) return undefined
     const numbersOfClusters = trees.map(d => d.points.length)
-    const minZoom = numbersOfClusters.lastIndexOf(numbersOfClusters[0])
     const maxZoom = numbersOfClusters.indexOf(numbersOfClusters[numbersOfClusters.length - 1])
+    const minZoom = Math.min(maxZoom, numbersOfClusters.lastIndexOf(numbersOfClusters[0]))
+
 
     const itemsByZoom = new Map()
     const itemsById = new Map<string, LocationCluster>()
