@@ -18,7 +18,7 @@ import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/reac
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector, ParametricSelector } from 'reselect'
 import { animatedColors, colors, diffColors } from './colors'
-import { Box, Column, LegendTitle, Title, TitleBox, ToastContent } from './Boxes'
+import { Box, Column, LegendTitle, Title, TitleBox, ToastContent, Row } from './Boxes'
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, LocationTooltipContent, formatCount } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
@@ -935,16 +935,18 @@ class FlowMap extends React.Component<Props, State> {
                    rel="noopener"
                 >this spreadsheet</a>. You can <Link to="/">publish your own</Link> too.
               </div>
-              <StyledSwitch
-                checked={this.state.clusteringEnabled}
-                label="Cluster on zoom"
-                onChange={this.handleToggleClustering}
-              />
-              <StyledSwitch
-                checked={this.state.animationEnabled}
-                label="Animate flows"
-                onChange={this.handleToggleAnimation}
-              />
+              <Row spacing={20}>
+                <StyledSwitch
+                  checked={this.state.clusteringEnabled}
+                  label="Cluster on zoom"
+                  onChange={this.handleToggleClustering}
+                />
+                <StyledSwitch
+                  checked={this.state.animationEnabled}
+                  label="Animate flows"
+                  onChange={this.handleToggleAnimation}
+                />
+              </Row>
             </Column>
           </Collapsible>
         </TitleBox>
