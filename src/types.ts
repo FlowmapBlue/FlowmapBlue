@@ -19,17 +19,34 @@ export type Config = {
   [prop in ConfigPropName]: string | undefined
 }
 
+export const getFlowMagnitude = (flow: Flow) => flow.count || 0
+export const getFlowOriginId = (flow: Flow) => flow.origin
+export const getFlowDestId = (flow: Flow) => flow.dest
+export const getLocationId = (loc: Location) => loc.id
+export const getLocationCentroid = (location: Location): [number, number] => [location.lon, location.lat]
+
 export interface Location {
   id: string
-  lon: string
-  lat: string
+  lon: number
+  lat: number
   name: string
+}
+
+export interface LocationCluster extends Location {
+  parentId: string | undefined
+  zoom: number
+  children: (Location | LocationCluster)[]
+}
+
+export function isLocationCluster(l: Location): l is LocationCluster {
+  const { zoom } = l as LocationCluster;
+  return zoom !== undefined;
 }
 
 export interface Flow {
   origin: string
   dest: string
-  count: string
+  count: number
 }
 
 export interface LocationSelection {

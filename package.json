@@ -26,6 +26,7 @@
     "@types/react-helmet": "^5.0.8",
     "@types/react-map-gl": "^4.0.1",
     "@types/react-router-dom": "^4.3.1",
+    "@types/supercluster": "^5.0.0",
     "@types/viewport-mercator-project": "^5.2.1",
     "d3-collection": "^1.0.7",
     "d3-color": "^1.2.3",
@@ -44,6 +45,7 @@
     "react-refetch": "^2.0.3",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.5",
+    "supercluster": "github:ilyabo/supercluster",
     "typescript": "^3.2.2",
     "viewport-mercator-project": "^6.1.0"
   },

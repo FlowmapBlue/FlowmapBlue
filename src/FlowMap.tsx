@@ -18,13 +18,27 @@ import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/reac
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector, ParametricSelector } from 'reselect'
 import { animatedColors, colors, diffColors } from './colors'
-import { Box, Column, LegendTitle, Title, TitleBox, ToastContent } from './Boxes'
+import { Box, Column, LegendTitle, Title, TitleBox, ToastContent, Row } from './Boxes'
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, LocationTooltipContent, formatCount } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
-import { Config, ConfigPropName, Flow, FlowDirection, Location, LocationSelection } from './types';
+import {
+  Config,
+  ConfigPropName,
+  Flow,
+  FlowDirection,
+  getFlowDestId,
+  getFlowMagnitude,
+  getFlowOriginId,
+  getLocationCentroid,
+  getLocationId,
+  isLocationCluster,
+  Location,
+  LocationCluster,
+  LocationSelection
+} from './types';
 import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
 import Message from './Message';
 import LoadingSpinner from './LoadingSpinner';
@@ -38,6 +52,7 @@ import { AppToaster } from './toaster';
 import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
+import ClusterTree, { isClusterId, Item } from './ClusterTree';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -82,14 +97,10 @@ type State = {
   maxZoom: number | undefined
   minZoom: number | undefined
   time: number
-  animate: boolean
+  animationEnabled: boolean
+  clusteringEnabled: boolean
 }
 
-export const getFlowMagnitude = (flow: Flow) => +flow.count
-const getFlowOriginId = (flow: Flow) => flow.origin
-const getFlowDestId = (flow: Flow) => flow.dest
-const getLocationId = (loc: Location) => loc.id
-const getLocationCentroid = (location: Location): [number, number] => [+location.lon, +location.lat]
 
 const getInitialViewState = (bbox: [number, number, number, number]) => {
   const { center: [longitude, latitude], zoom } =
@@ -117,7 +128,7 @@ const ZoomControls = styled(NavigationControl)`
   position: absolute;
   top: 10px;
   right: 10px;
-  z-index: 10;
+  z-supercluster: 10;
 `
 const StyledSwitch = styled(Switch)`
   margin-bottom: 0;
@@ -135,15 +146,17 @@ class FlowMap extends React.Component<Props, State> {
     maxZoom: undefined,
     minZoom: undefined,
     time: 0,
-    animate: false,
+    animationEnabled: false,
+    clusteringEnabled: true,
   }
-
-  private flowMapLayer: FlowMapLayer | undefined = undefined
 
   getFlows = (state: State, props: Props) => props.flowsFetch.value
   getLocations = (state: State, props: Props) => props.locationsFetch.value
+  getSelectedLocations = (state: State, props: Props) => state.selectedLocations
+  getClusteringEnabled = (state: State, props: Props) => state.clusteringEnabled
+  getZoom = (state: State, props: Props) => state.viewState.zoom
 
-  getKnownLocationIds: Selector<Set<string> | undefined> = createSelector(
+  getLocationIds: Selector<Set<string> | undefined> = createSelector(
     this.getLocations,
     locations => locations ? new Set(locations.map(getLocationId)) : undefined
   )
@@ -158,7 +171,7 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
-  getAnimate: Selector<boolean> = (state: State, props: Props) => state.animate
+  getAnimate: Selector<boolean> = (state: State, props: Props) => state.animationEnabled
 
   getColors = createSelector(
     this.getDiffMode,
@@ -176,7 +189,7 @@ class FlowMap extends React.Component<Props, State> {
 
   getFlowsForKnownLocations: Selector<Flow[] | undefined> = createSelector(
     this.getFlows,
-    this.getKnownLocationIds,
+    this.getLocationIds,
     (flows, ids) => {
       if (!ids || !flows) return undefined
       return flows.filter(flow =>
@@ -186,7 +199,7 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
-  getLocationsWithFlows: Selector<Location[] | undefined> = createSelector(
+  getLocationsHavingFlows: Selector<Location[] | undefined> = createSelector(
     this.getFlowsForKnownLocations,
     this.getLocations,
     (flows, locations) => {
@@ -206,7 +219,7 @@ class FlowMap extends React.Component<Props, State> {
       if (!locations) return undefined
       const invalid = []
       for (const location of locations) {
-        if (!(-90 <= +location.lat && +location.lat <= 90) || !(-180 <= +location.lon && +location.lon <= 180)) {
+        if (!(-90 <= location.lat && location.lat <= 90) || !(-180 <= location.lon && location.lon <= 180)) {
           invalid.push(location.id)
         }
       }
@@ -215,7 +228,7 @@ class FlowMap extends React.Component<Props, State> {
   )
 
   getUnknownLocations: Selector<Set<string> | undefined> = createSelector(
-    this.getKnownLocationIds,
+    this.getLocationIds,
     this.getFlows,
     this.getFlowsForKnownLocations,
     (ids, flows, flowsForKnownLocations) => {
@@ -230,36 +243,199 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
+  getClusterTree: Selector<ClusterTree | undefined> = createSelector(
+    this.getLocationsHavingFlows,
+    this.getFlowsForKnownLocations,
+    (locations, flows) => {
+      if (!locations || !flows) return undefined
+
+      return new ClusterTree(locations, flows)
+    }
+  )
+
+  getClusterZoom: Selector<number | undefined> = createSelector(
+    this.getClusterTree,
+    this.getZoom,
+    this.getSelectedLocations,
+    (clusterTree, zoom, selectedLocations) => {
+      if (!clusterTree) return undefined
+      let minZoom = clusterTree.minZoom
+      if (selectedLocations) {
+        for (const { id } of selectedLocations) {
+          let itemZoom
+          if (isClusterId(id)) {
+            const cluster = clusterTree.findItemById(id)
+            if (cluster) itemZoom = cluster.zoom
+          } else {
+            itemZoom = clusterTree.getMinZoomForLocation(id)
+          }
+          if (itemZoom !== undefined && itemZoom > minZoom) {
+            minZoom = itemZoom
+          }
+        }
+      }
+      return Math.max(minZoom, Math.min(Math.floor(zoom), clusterTree.maxZoom));
+    }
+  )
+
+  getLocationsForSearchBox: Selector<Location[] | undefined> = createSelector(
+    this.getClusteringEnabled,
+    this.getLocationsHavingFlows,
+    this.getSelectedLocations,
+    this.getClusterZoom,
+    this.getClusterTree,
+    (clusteringEnabled, locations, selectedLocations, clusterZoom, clusterTree) => {
+      if (!locations) return undefined
+      let result = locations
+      if (clusteringEnabled) {
+        if (clusterTree) {
+          const zoomItems = clusterTree.getItemsFor(clusterZoom)
+          if (zoomItems) {
+            result = result.concat(zoomItems.filter(isLocationCluster))
+          }
+        }
+      }
+
+      if (result && clusterTree && selectedLocations) {
+        const toAppend = []
+        for (const { id } of selectedLocations) {
+          if (isClusterId(id) && !result.find(d => d.id === id)) {
+            toAppend.push(clusterTree.findItemById(id) as Location)
+          }
+        }
+        if (toAppend.length > 0) {
+          result = result.concat(toAppend)
+        }
+      }
+      return result
+    }
+  )
+
+  getExpandedSelection: Selector<Array<string> | undefined> = createSelector(
+    this.getClusteringEnabled,
+    this.getSelectedLocations,
+    this.getClusterZoom,
+    this.getClusterTree,
+    (clusteringEnabled, selectedLocations, clusterZoom, clusterTree) => {
+      if (!selectedLocations || !clusterTree || clusterZoom === undefined) {
+        return undefined
+      }
+
+      const targetZoom = clusteringEnabled ? clusterZoom : clusterTree.maxZoom
+
+      const result: string[] = []
+      for (const loc of selectedLocations) {
+        if (isClusterId(loc.id)) {
+          const cluster = clusterTree.findItemById(loc.id)
+          if (cluster) {
+            clusterTree.addExpandedClusterIds(cluster, targetZoom, result)
+          }
+        } else {
+          result.push(loc.id)
+        }
+      }
+      return result
+    })
+
+  getHighlightForZoom() {
+    const { highlight, clusteringEnabled } = this.state
+    if (!highlight || !clusteringEnabled) {
+      return highlight
+    }
+    const clusterTree = this.getClusterTree(this.state, this.props)
+    const clusterZoom = this.getClusterZoom(this.state, this.props)
+    if (!clusterTree || clusterZoom === undefined) {
+      return undefined
+    }
+
+    const isValidForClusterZoom = (itemId: string) => {
+      if (isClusterId(itemId)) {
+        const cluster = clusterTree.findItemById(itemId)
+        if (cluster && cluster.zoom === clusterZoom) {
+          return true
+        }
+      } else {
+        const minZoom = clusterTree.getMinZoomForLocation(itemId)
+        if (minZoom === undefined || clusterZoom >= minZoom) {
+          return true
+        }
+      }
+      return false
+    }
+
+    switch (highlight.type) {
+      case HighlightType.LOCATION:
+        const { locationId } = highlight
+        return isValidForClusterZoom(locationId) ? highlight : undefined
+
+      case HighlightType.FLOW:
+        const { flow: { origin, dest } } = highlight
+        return isValidForClusterZoom(origin) && isValidForClusterZoom(dest) ? highlight : undefined
+    }
+
+    return undefined
+  }
+
+  makeFlowMapLayer(id: string, locations: Location[], flows: Flow[], visible: boolean) {
+    const { animationEnabled, time } = this.state
+    const highlight = this.getHighlightForZoom()
+
+    return new FlowMapLayer({
+      id,
+      animate: animationEnabled,
+      animationCurrentTime: time,
+      diffMode: this.getDiffMode(this.state, this.props),
+      colors: this.getColors(this.state, this.props),
+      locations,
+      flows,
+      showOnlyTopFlows: 10000,
+      getLocationCentroid,
+      getFlowMagnitude,
+      getFlowOriginId,
+      getFlowDestId,
+      getLocationId,
+      varyFlowColorByMagnitude: true,
+      showTotals: true,
+      selectedLocationIds: this.getExpandedSelection(this.state, this.props),
+      highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
+      highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
+      onHover: this.handleHover,
+      onClick: this.handleClick as any,
+      visible,
+    } as any)
+  }
+
   getLayers() {
-    const { highlight, selectedLocations, animate, time  } = this.state;
-    const flows = this.getFlowsForKnownLocations(this.state, this.props)
-    const locations = this.getLocationsWithFlows(this.state, this.props)
+    const { clusteringEnabled, animationEnabled } = this.state
     const layers = []
-    if (locations && flows) {
-      layers.push(
-        this.flowMapLayer = new FlowMapLayer({
-          id: `flow-map-${animate ? 'animated' : 'arrows'}`,
-          animate,
-          animationCurrentTime: time,
-          diffMode: this.getDiffMode(this.state, this.props),
-          colors: this.getColors(this.state, this.props),
+    if (clusteringEnabled) {
+      const clusterTree = this.getClusterTree(this.state, this.props)
+      const clusterZoom = this.getClusterZoom(this.state, this.props)
+      if (clusterZoom !== undefined && clusterTree) {
+        // for (let zoom = clusterZoom; zoom <= clusterZoom; zoom++) {
+        const flows = clusterTree.getClusteredFlowsByZoom(clusterZoom);
+        if (flows) {
+          layers.push(this.makeFlowMapLayer(
+              `flow-map-${animationEnabled ? 'animated' : 'arrows'}-${clusterZoom}`,
+              clusterTree.getItemsFor(clusterZoom)!,
+              flows,
+              // zoom === clusterZoom,
+              true
+            ))
+        }
+        // }
+      }
+    } else {
+      const locations = this.getLocationsHavingFlows(this.state, this.props);
+      const flows = this.getFlowsForKnownLocations(this.state, this.props);
+      if (locations && flows) {
+        layers.push(this.makeFlowMapLayer(
+          `flow-map-${animationEnabled ? 'animated' : 'arrows'}`,
           locations,
           flows,
-          showOnlyTopFlows: 10000,
-          getLocationCentroid,
-          getFlowMagnitude,
-          getFlowOriginId,
-          getFlowDestId,
-          getLocationId,
-          varyFlowColorByMagnitude: true,
-          showTotals: true,
-          selectedLocationIds: selectedLocations ? selectedLocations.map(s => s.id) : undefined,
-          highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
-          highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
-          onHover: this.handleHover,
-          onClick: this.handleClick as any,
-        }),
-      )
+          true,
+        ))
+      }
     }
     return layers
   }
@@ -340,8 +516,8 @@ class FlowMap extends React.Component<Props, State> {
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown)
-    const { animate } = this.state;
-    if (animate) {
+    const { animationEnabled } = this.state;
+    if (animationEnabled) {
       this.animate();
     }
   }
@@ -413,16 +589,21 @@ class FlowMap extends React.Component<Props, State> {
     }
   }
 
+  handleToggleClustering = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked
+    this.setState({ clusteringEnabled: value })
+  }
+
   private animationFrame: number = -1;
 
   handleToggleAnimation = (evt: SyntheticEvent) => {
-    const animate = (evt.target as HTMLInputElement).checked
-    if (animate) {
+    const value = (evt.target as HTMLInputElement).checked
+    if (value) {
       this.animate()
     } else {
       this.stopAnimation()
     }
-    this.setState({ animate })
+    this.setState({ animationEnabled: value })
   }
 
   private animate = () => {
@@ -456,8 +637,6 @@ class FlowMap extends React.Component<Props, State> {
 
   showFlowTooltip = (pos: [number, number], info: FlowPickingInfo) => {
     const [x, y] = pos
-    const { flowMapLayer } = this
-    if (!flowMapLayer) return
     const r = 5
     this.showTooltip(
       {
@@ -479,8 +658,6 @@ class FlowMap extends React.Component<Props, State> {
     const mercator = this.getMercator()
     if (!mercator) return
     const [x, y] = mercator.project(getLocationCentroid(location))
-    const { flowMapLayer } = this
-    if (!flowMapLayer) return
     const r = circleRadius + 5
     const { selectedLocations } = this.state
     this.showTooltip(
@@ -612,6 +789,7 @@ class FlowMap extends React.Component<Props, State> {
             return {
               ...state,
               selectedLocations: nextSelectedLocations,
+              highlight: undefined,
               tooltip: undefined,
             }
           })
@@ -629,6 +807,7 @@ class FlowMap extends React.Component<Props, State> {
   private handleSelectLocation = (selectedLocations: LocationSelection[] | undefined) => {
     this.setState({
       selectedLocations,
+      highlight: undefined,
     })
   }
 
@@ -671,7 +850,7 @@ class FlowMap extends React.Component<Props, State> {
         </p>
       </Message>;
     }
-    const locations = this.getLocations(this.state, this.props)
+    const searchBoxLocations = this.getLocationsForSearchBox(this.state, this.props)
     const flows = this.getFlowsForKnownLocations(this.state, this.props)
     const title = config[ConfigPropName.TITLE]
     const description = config[ConfigPropName.DESCRIPTION]
@@ -702,10 +881,10 @@ class FlowMap extends React.Component<Props, State> {
             </StaticMap>
           )}
         />
-        {locations &&
+        {searchBoxLocations &&
           <Box top={10} right={50}>
             <LocationsSearchBox
-              locations={locations}
+              locations={searchBoxLocations}
               selectedLocations={this.state.selectedLocations}
               onSelectionChanged={this.handleSelectLocation}
             />
@@ -759,11 +938,18 @@ class FlowMap extends React.Component<Props, State> {
                    rel="noopener"
                 >this spreadsheet</a>. You can <Link to="/">publish your own</Link> too.
               </div>
-              <StyledSwitch
-                checked={this.state.animate}
-                label="Animate flows"
-                onChange={this.handleToggleAnimation}
-              />
+              <Row spacing={20}>
+                <StyledSwitch
+                  checked={this.state.clusteringEnabled}
+                  label="Cluster on zoom"
+                  onChange={this.handleToggleClustering}
+                />
+                <StyledSwitch
+                  checked={this.state.animationEnabled}
+                  label="Animate flows"
+                  onChange={this.handleToggleAnimation}
+                />
+              </Row>
             </Column>
           </Collapsible>
         </TitleBox>
@@ -780,8 +966,20 @@ class FlowMap extends React.Component<Props, State> {
 export default sheetFetcher<any>(({ spreadSheetKey, config }: Props) => ({
   locationsFetch: {
     url: makeSheetQueryUrl(spreadSheetKey, 'locations', 'SELECT A,B,C,D'),
-  },
+    then: (rows: any[]) => ({
+      value: rows.map(({ id, name, lon, lat }: any) => ({
+        id, name, lon: +lon, lat: +lat,
+      } as Location))
+    })
+  } as any,
   flowsFetch: {
     url: makeSheetQueryUrl(spreadSheetKey, 'flows', 'SELECT A,B,C'),
-  },
+    then: (rows: any[]) => ({
+      value: rows.map(({ origin, dest, count }: any) => ({
+        origin, dest, count: +count,
+      } as Flow))
+    })
+  } as any,
 }))(FlowMap as any);
+
+
