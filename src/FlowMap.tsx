@@ -45,7 +45,7 @@ import { AppToaster } from './toaster';
 import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
-import ClusterTree, { isClusterId } from './ClusterTree';
+import ClusterTree, { isClusterId, Item } from './ClusterTree';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -313,24 +313,26 @@ class FlowMap extends React.Component<Props, State> {
 
   getLocationsForSearchBox: Selector<Location[] | undefined> = createSelector(
     this.getClusteringEnabled,
-    this.getLocations,
+    this.getLocationsHavingFlows,
     this.getSelectedLocations,
     this.getClusterZoom,
     this.getClusterTree,
     (clusteringEnabled, locations, selectedLocations, clusterZoom, clusterTree) => {
-      let result = undefined
+      if (!locations) return undefined
+      let result = locations
       if (clusteringEnabled) {
         if (clusterTree) {
-          result = clusterTree.getItemsFor(clusterZoom)
+          const zoomItems = clusterTree.getItemsFor(clusterZoom)
+          if (zoomItems) {
+            result = result.concat(zoomItems.filter(isLocationCluster))
+          }
         }
-      } else {
-        result = locations
       }
 
       if (result && clusterTree && selectedLocations) {
         const toAppend = []
         for (const { id } of selectedLocations) {
-          if (!result.find(d => d.id === id)) {
+          if (isClusterId(id) && !result.find(d => d.id === id)) {
             toAppend.push(clusterTree.findItemById(id) as Location)
           }
         }

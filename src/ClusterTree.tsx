@@ -117,7 +117,7 @@ export default class ClusterTree {
     this.minZoomByLocationId = minZoomByLocationId
   }
 
-  getItemsFor(zoom: number | undefined) {
+  getItemsFor(zoom: number | undefined): (Item[] | undefined) {
     if (zoom === undefined) return this.locations
     return this.itemsByZoom.get(zoom)
   }
