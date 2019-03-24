@@ -32,14 +32,6 @@ export interface LocationCluster extends Location {
   children: (Location | LocationCluster)[]
 }
 
-export interface ClusterTree {
-  minZoom: number,
-  maxZoom: number,
-  itemsByZoom: Map<number, (Location | LocationCluster)[]>
-  leavesToClustersByZoom: Map<number, Map<string, (Location | LocationCluster)> | undefined>
-  clustersById: Map<string, LocationCluster>
-}
-
 export function isLocationCluster(l: Location): l is LocationCluster {
   const { zoom } = l as LocationCluster;
   return zoom !== undefined;
