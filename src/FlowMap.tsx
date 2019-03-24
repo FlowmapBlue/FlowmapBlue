@@ -456,7 +456,7 @@ class FlowMap extends React.Component<Props, State> {
       }
     } else {
       const locations = this.getLocationsHavingFlows(this.state, this.props);
-      const flows = this.getFlows(this.state, this.props);
+      const flows = this.getFlowsForKnownLocations(this.state, this.props);
       if (locations && flows) {
         layers.push(this.getFlowMapLayer(
           `flow-map-${animationEnabled ? 'animated' : 'arrows'}`,
@@ -815,6 +815,7 @@ class FlowMap extends React.Component<Props, State> {
             return {
               ...state,
               selectedLocations: nextSelectedLocations,
+              highlight: undefined,
               tooltip: undefined,
             }
           })
@@ -832,6 +833,7 @@ class FlowMap extends React.Component<Props, State> {
   private handleSelectLocation = (selectedLocations: LocationSelection[] | undefined) => {
     this.setState({
       selectedLocations,
+      highlight: undefined,
     })
   }
 
