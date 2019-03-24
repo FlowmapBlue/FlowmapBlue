@@ -307,78 +307,86 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
-  getClusteredZoom: Selector<number | undefined> = createSelector(
+  getClusterZoom: Selector<number | undefined> = createSelector(
     this.getClusterTree,
     this.getZoom,
-    (clusterTree, zoom) => {
+    this.getSelectedLocations,
+    (clusterTree, zoom, selectedLocations) => {
       if (!clusterTree) return undefined
-      return Math.max(clusterTree.minZoom, Math.min(Math.floor(zoom), clusterTree.maxZoom));
+      let minZoom = clusterTree.minZoom
+      if (selectedLocations) {
+        for (const { id } of selectedLocations) {
+          let itemZoom
+          if (isClusterId(id)) {
+            const cluster = clusterTree.findItemById(id)
+            if (cluster) itemZoom = cluster.zoom
+          } else {
+            itemZoom = clusterTree.getMinZoomForLocation(id)
+          }
+          if (itemZoom !== undefined && itemZoom > minZoom) {
+            minZoom = itemZoom
+          }
+        }
+      }
+      return Math.max(minZoom, Math.min(Math.floor(zoom), clusterTree.maxZoom));
     }
   )
 
   getLocationsForSearchBox: Selector<Location[] | undefined> = createSelector(
     this.getClusteringEnabled,
     this.getLocations,
-    this.getClusteredZoom,
+    this.getSelectedLocations,
+    this.getClusterZoom,
     this.getClusterTree,
-    (clusteringEnabled, locations, clusterZoom, clusterTree) => {
+    (clusteringEnabled, locations, selectedLocations, clusterZoom, clusterTree) => {
+      let result = undefined
       if (clusteringEnabled) {
         if (clusterTree) {
-          return clusterTree.getItemsFor(clusterZoom);
+          result = clusterTree.getItemsFor(clusterZoom)
         }
-        return undefined
       } else {
-        return locations
+        result = locations
       }
+
+      if (result && clusterTree && selectedLocations) {
+        const toAppend = []
+        for (const { id } of selectedLocations) {
+          if (!result.find(d => d.id === id)) {
+            toAppend.push(clusterTree.findItemById(id) as Location)
+          }
+        }
+        if (toAppend.length > 0) {
+          result = result.concat(toAppend)
+        }
+      }
+      return result
     }
   )
-
-  expandCluster(loc: LocationCluster | Location) {
-    const { clusteringEnabled } = this.state
-    if (clusteringEnabled && isLocationCluster(loc)) {
-      const targetZoom = this.getClusteredZoom(this.state, this.props)
-      if (targetZoom !== undefined) {
-        if (loc.zoom > targetZoom) {
-          const clusterTree = this.getClusterTree(this.state, this.props)
-          if (clusterTree) {
-
-          }
-          // const cluster = clusterTree.clustersById.get(loc.id)
-        }
-      }
-    }
-    return loc
-  }
 
   getExpandedSelection: Selector<Array<string> | undefined> = createSelector(
     this.getClusteringEnabled,
     this.getSelectedLocations,
-    this.getClusteredZoom,
+    this.getClusterZoom,
     this.getClusterTree,
-    (clusteringEnabled, selectedLocations, clusteredZoom, clusterTree) => {
-      if (!selectedLocations || !clusterTree || clusteredZoom === undefined) {
+    (clusteringEnabled, selectedLocations, clusterZoom, clusterTree) => {
+      if (!selectedLocations || !clusterTree || clusterZoom === undefined) {
         return undefined
       }
 
-      const targetZoom = clusteringEnabled ? clusteredZoom : clusterTree.maxZoom
+      const targetZoom = clusteringEnabled ? clusterZoom : clusterTree.maxZoom
 
       const result: string[] = []
       for (const loc of selectedLocations) {
-        result.push(loc.id)
+        if (isClusterId(loc.id)) {
+          const cluster = clusterTree.findItemById(loc.id)
+          if (cluster) {
+            clusterTree.addExpandedClusterIds(cluster, targetZoom, result)
+          }
+        } else {
+          result.push(loc.id)
+        }
       }
       return result
-      // const getLocationsOrClustersById = this.getLocationsOrClustersByIdGetter(this.state, this.props)
-      // if (!getLocationsOrClustersById) {
-      //   return selectedLocations
-      // }
-      // for (const loc of selectedLocations) {
-      //
-      //   const ids = expandCluster(loc.id)
-      //   // if (getLocationsOrClustersById) {
-      //   // } else {
-      //     selectedLocationIds.push(loc.id)
-      //   // }
-      // }
     })
 
   getHighlightedLocationId() {
@@ -387,9 +395,9 @@ class FlowMap extends React.Component<Props, State> {
       const { locationId } = highlight
       if (isClusterId(locationId)) {
         const clusterTree = this.getClusterTree(this.state, this.props)
-        const clusterZoom = this.getClusteredZoom(this.state, this.props)
+        const clusterZoom = this.getClusterZoom(this.state, this.props)
         if (clusterTree && clusterZoom !== undefined) {
-          const cluster = clusterTree.findClusterById(locationId)
+          const cluster = clusterTree.findItemById(locationId)
           if (cluster && cluster.zoom === clusterZoom) {
             return locationId
           }
@@ -436,7 +444,7 @@ class FlowMap extends React.Component<Props, State> {
     if (clusteringEnabled) {
       const clusterTree = this.getClusterTree(this.state, this.props)
       const getClusteredFlowsByZoom = this.getClusteredFlowsByZoomGetter(this.state, this.props)
-      const clusterZoom = this.getClusteredZoom(this.state, this.props)
+      const clusterZoom = this.getClusterZoom(this.state, this.props)
       if (clusterZoom !== undefined && clusterTree && getClusteredFlowsByZoom) {
         // for (let zoom = clusterZoom; zoom <= clusterZoom; zoom++) {
           layers.push(this.getFlowMapLayer(

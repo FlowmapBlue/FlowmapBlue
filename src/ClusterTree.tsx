@@ -9,14 +9,16 @@ const CLUSTER_ID_PREFIX = 'cluster::'
 export const makeClusterId = (id: string | number) => `${CLUSTER_ID_PREFIX}${id}`
 export const isClusterId = (id: string) => id.startsWith(CLUSTER_ID_PREFIX)
 
+export type Item = Location | LocationCluster
 
 export default class ClusterTree {
   private readonly locations: Location[]
   readonly minZoom: number
   readonly maxZoom: number
-  private readonly itemsByZoom: Map<number, (Location | LocationCluster)[]>
-  private readonly leavesToClustersByZoom: Map<number, Map<string, (Location | LocationCluster)> | undefined>
-  private readonly clustersById: Map<string, LocationCluster>
+  private readonly itemsByZoom: Map<number, Item[]>
+  private readonly leavesToClustersByZoom: Map<number, Map<string, Item> | undefined>
+  private readonly itemsById: Map<string, LocationCluster>
+  private readonly minZoomByLocationId: Map<string, number>
 
   constructor(locations: Location[]) {
     const index = new Supercluster({
@@ -41,16 +43,17 @@ export default class ClusterTree {
     const maxZoom = numbersOfClusters.indexOf(numbersOfClusters[numbersOfClusters.length - 1])
 
     const itemsByZoom = new Map()
-    const clustersById = new Map<string, LocationCluster>()
+    const itemsById = new Map<string, LocationCluster>()
+    const minZoomByLocationId = new Map()
     for (let zoom = maxZoom; zoom >= minZoom; zoom--) {
       const tree = trees[zoom]
       let childrenByParent
       if (zoom < maxZoom) {
-        childrenByParent = nest<any, (Location | LocationCluster)[]>()
+        childrenByParent = nest<any, Item[]>()
           .key((point: any) => point.parentId)
           .rollup((points: any[]) =>
             points.map((p: any) => p.id ?
-              clustersById.get(makeClusterId(p.id))! :
+              itemsById.get(makeClusterId(p.id))! :
               locations[p.index]
             )
           )
@@ -61,7 +64,9 @@ export default class ClusterTree {
       for (const point of tree.points) {
         const { id, x, y, index, numPoints, parentId } = point
         if (id === undefined) {
-          items.push(locations[index])
+          const location = locations[index]
+          minZoomByLocationId.set(location.id, zoom)
+          items.push(location)
         } else {
           const cluster = {
             id: makeClusterId(id),
@@ -73,16 +78,16 @@ export default class ClusterTree {
             children: childrenByParent ? childrenByParent[id] : undefined,
           };
           items.push(cluster)
-          clustersById.set(cluster.id, cluster)
+          itemsById.set(cluster.id, cluster)
         }
       }
       itemsByZoom.set(zoom, items)
     }
 
 
-    const leavesToClustersByZoom = new Map<number, Map<string, (Location | LocationCluster)>>()
+    const leavesToClustersByZoom = new Map<number, Map<string, Item>>()
     for (let zoom = maxZoom - 1; zoom >= minZoom; zoom--) {
-      const result = new Map<string, (Location | LocationCluster)>()
+      const result = new Map<string, Item>()
       const items = itemsByZoom.get(zoom)
       const nextLeavesToClusters = leavesToClustersByZoom.get(zoom + 1)!
       for (const item of items) {
@@ -108,7 +113,8 @@ export default class ClusterTree {
     this.maxZoom = maxZoom
     this.itemsByZoom = itemsByZoom
     this.leavesToClustersByZoom = leavesToClustersByZoom
-    this.clustersById = clustersById
+    this.itemsById = itemsById
+    this.minZoomByLocationId = minZoomByLocationId
   }
 
   getItemsFor(zoom: number | undefined) {
@@ -116,8 +122,12 @@ export default class ClusterTree {
     return this.itemsByZoom.get(zoom)
   }
 
-  findClusterById(clusterId: string) {
-    return this.clustersById.get(clusterId)
+  findItemById(clusterId: string) {
+    return this.itemsById.get(clusterId)
+  }
+
+  getMinZoomForLocation(locationId: string) {
+    return this.minZoomByLocationId.get(locationId)
   }
 
   findClusterIdFor(locationId: string, zoom: number) {
@@ -129,6 +139,28 @@ export default class ClusterTree {
     return undefined
   }
 
+  /**
+   * Expands
+   * Will append to idsToAddTo!
+   */
+  addExpandedClusterIds(loc: LocationCluster | Location, targetZoom: number, idsToAddTo: string[]) {
+    if (isLocationCluster(loc)) {
+      if (targetZoom !== undefined) {
+        if (loc.zoom === targetZoom) {
+          idsToAddTo.push(loc.id)
+        } else if (targetZoom > loc.zoom) {
+          for (const child of loc.children) {
+            this.addExpandedClusterIds(child, targetZoom, idsToAddTo)
+          }
+        } else if (targetZoom < loc.zoom) {
+          // TODO
+        }
+      }
+    } else {
+      // TODO: make sure the location is for the zoom or fix the zoom to the location zoom
+      idsToAddTo.push(loc.id)
+    }
+  }
 
 }
 
