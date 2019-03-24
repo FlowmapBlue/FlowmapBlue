@@ -1,5 +1,13 @@
 import Supercluster from 'supercluster'
-import { Flow, getFlowDestId, getFlowOriginId, isLocationCluster, Location, LocationCluster } from './types'
+import {
+  Flow,
+  getFlowDestId,
+  getFlowMagnitude,
+  getFlowOriginId, getLocationId,
+  isLocationCluster,
+  Location,
+  LocationCluster
+} from './types'
 import { nest } from 'd3-collection'
 import { formatCount } from './TooltipContent'
 
@@ -26,10 +34,28 @@ export default class ClusterTree {
       radius: 40,
       maxZoom: MAX_CLUSTER_ZOOM,
     })
+
+    const locationTotals = {
+      incoming: new Map<string, number>(),
+      outgoing: new Map<string, number>(),
+    }
+    for (const flow of flows) {
+      const origin = getFlowOriginId(flow)
+      const dest = getFlowDestId(flow)
+      const count = getFlowMagnitude(flow)
+      locationTotals.incoming.set(dest, (locationTotals.incoming.get(dest) || 0) + count)
+      locationTotals.outgoing.set(origin, (locationTotals.outgoing.get(dest) || 0) + count)
+    }
+
+
     index.load(locations.map(location => ({
       type: 'Feature' as 'Feature',
       properties: {
         location,
+        weight: Math.max(
+          locationTotals.incoming.get(getLocationId(location)) || 0,
+          locationTotals.outgoing.get(getLocationId(location)) || 0,
+        ),
       },
       geometry: {
         type: 'Point' as 'Point',
@@ -42,7 +68,6 @@ export default class ClusterTree {
     const numbersOfClusters = trees.map(d => d.points.length)
     const maxZoom = numbersOfClusters.indexOf(numbersOfClusters[numbersOfClusters.length - 1])
     const minZoom = Math.min(maxZoom, numbersOfClusters.lastIndexOf(numbersOfClusters[0]))
-
 
     const itemsByZoom = new Map()
     const itemsById = new Map<string, LocationCluster>()

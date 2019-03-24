@@ -45,7 +45,7 @@
     "react-refetch": "^2.0.3",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.5",
-    "supercluster": "^6.0.1",
+    "supercluster": "github:ilyabo/supercluster",
     "typescript": "^3.2.2",
     "viewport-mercator-project": "^6.1.0"
   },
