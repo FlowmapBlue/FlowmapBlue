@@ -60,11 +60,6 @@ const CONTROLLER_OPTIONS = {
   touchRotate: false,
 }
 
-const DEFAULT_MAP_STYLE =
-  // 'mapbox://styles/ilyabo/cjtq7opq60xpi1fob4m0zbxeq';
-  // 'mapbox://styles/mapbox/light-v9';
-  'mapbox://styles/mapbox/light-v8';
-
 const MAX_ZOOM_LEVELS = 5
 const MIN_ZOOM_LEVELS = 0.5
 
@@ -864,6 +859,7 @@ class FlowMap extends React.Component<Props, State> {
     const authorUrl = config[ConfigPropName.AUTHOR_URL]
     const authorName = config[ConfigPropName.AUTHOR_NAME]
     const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
+    const mapboxMapStyle = config[ConfigPropName.MAPBOX_MAP_STYLE]
     const diffMode = this.getDiffMode(this.state, this.props)
     return (
       <Outer>
@@ -876,7 +872,7 @@ class FlowMap extends React.Component<Props, State> {
           children={({ width, height, viewState }: any) => (
             mapboxAccessToken && <StaticMap
               mapboxApiAccessToken={mapboxAccessToken}
-              mapStyle={DEFAULT_MAP_STYLE}
+              mapStyle={mapboxMapStyle}
               width={width} height={height} viewState={viewState}
             >
                {/*<ZoomControls*/}

@@ -19,6 +19,11 @@ type PropsWithData = Props & {
 }
 
 
+const DEFAULT_MAP_STYLE =
+  // 'mapbox://styles/ilyabo/cjtq7opq60xpi1fob4m0zbxeq';
+  // 'mapbox://styles/mapbox/light-v9';
+  'mapbox://styles/mapbox/light-v8';
+
 const DEFAULT_CONFIG: Config = {
   [ConfigPropName.MAPBOX_ACCESS_TOKEN]: process.env.REACT_APP_MapboxAccessToken,
   [ConfigPropName.TITLE]: undefined,
@@ -28,6 +33,7 @@ const DEFAULT_CONFIG: Config = {
   [ConfigPropName.SOURCE_URL]: undefined,
   [ConfigPropName.DESCRIPTION]: undefined,
   [ConfigPropName.MAP_BBOX]: undefined,
+  [ConfigPropName.MAPBOX_MAP_STYLE]: DEFAULT_MAP_STYLE,
   [ConfigPropName.IGNORE_ERRORS]: undefined,
 }
 
