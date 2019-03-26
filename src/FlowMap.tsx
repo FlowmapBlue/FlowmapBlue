@@ -60,6 +60,11 @@ const CONTROLLER_OPTIONS = {
   touchRotate: false,
 }
 
+const DEFAULT_MAP_STYLE =
+  // 'mapbox://styles/ilyabo/cjtq7opq60xpi1fob4m0zbxeq';
+  // 'mapbox://styles/mapbox/light-v9';
+  'mapbox://styles/mapbox/light-v8';
+
 const MAX_ZOOM_LEVELS = 5
 const MIN_ZOOM_LEVELS = 0.5
 
@@ -860,7 +865,6 @@ class FlowMap extends React.Component<Props, State> {
     const authorName = config[ConfigPropName.AUTHOR_NAME]
     const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
     const diffMode = this.getDiffMode(this.state, this.props)
-
     return (
       <Outer>
         <DeckGL
@@ -872,17 +876,18 @@ class FlowMap extends React.Component<Props, State> {
           children={({ width, height, viewState }: any) => (
             mapboxAccessToken && <StaticMap
               mapboxApiAccessToken={mapboxAccessToken}
+              mapStyle={DEFAULT_MAP_STYLE}
               width={width} height={height} viewState={viewState}
             >
-               <ZoomControls
-                 showCompass={false}
-                 onViewportChange={this.handleNavigation}
-               />
+               {/*<ZoomControls*/}
+                 {/*showCompass={false}*/}
+                 {/*onViewportChange={this.handleNavigation}*/}
+               {/*/>*/}
             </StaticMap>
           )}
         />
         {searchBoxLocations &&
-          <Box top={10} right={50}>
+          <Box top={10} right={10}>
             <LocationsSearchBox
               locations={searchBoxLocations}
               selectedLocations={this.state.selectedLocations}
