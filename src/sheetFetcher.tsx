@@ -74,23 +74,27 @@ function getSheetDataAsArray(data: SheetData) {
     return []
   }
   const numCols = data.table.cols.length
-  let rows, colNames: string[]
+  const getValue = (v: CellValue) => {
+    if (v == null || (v.v == null && v.f == null)) return undefined
+    return `${v.v != null ? v.v : v.f}`.trim()
+  }
+
+  let rows, colNames: (string | undefined)[]
   if (!data.table.cols.find(col => col.label != null && col.label.length > 0)) {
     // header row was not properly recognized
     rows = data.table.rows.slice(1)
-    colNames = data.table.rows[0].c.map(({ v, f }) => `${v != null ? v : f}`.trim())
+    colNames = data.table.rows[0].c.map(getValue)
   } else {
     rows = data.table.rows
     colNames = data.table.cols.map(({ label }) => `${label}`.trim())
   }
   return rows.map(row => {
-    const obj: { [key: string]: string | number } = {}
+    const obj: { [key: string]: string | number | undefined } = {}
     for (let i = 0; i < numCols; i++) {
       try {
         const colName = `${colNames[i]}`.trim()
         if (row.c && row.c[i]) {
-          const val = row.c[i]
-          obj[colName] = `${val.v != null ? val.v : val.f}`.trim()
+          obj[colName] = getValue(row.c[i])
         }
       } catch (err) {
         console.warn(`Couldn't parse row ${i} from sheet`)

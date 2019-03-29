@@ -534,7 +534,7 @@ class FlowMap extends React.Component<Props, State> {
       if (invalidLocations) {
         if (this.props.config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
           AppToaster.show({
-            intent: Intent.DANGER,
+            intent: Intent.WARNING,
             icon: IconNames.WARNING_SIGN,
             timeout: 0,
             message:
@@ -563,7 +563,7 @@ class FlowMap extends React.Component<Props, State> {
           if (flows && allFlows)  {
             const ids = Array.from(unknownLocations).sort();
             AppToaster.show({
-              intent: Intent.DANGER,
+              intent: Intent.WARNING,
               icon: IconNames.WARNING_SIGN,
               timeout: 0,
               message:
@@ -969,7 +969,7 @@ export default sheetFetcher<any>(({ spreadSheetKey, config }: Props) => ({
     url: makeSheetQueryUrl(spreadSheetKey, 'locations', 'SELECT A,B,C,D'),
     then: (rows: any[]) => ({
       value: rows.map(({ id, name, lon, lat }: any) => ({
-        id, name, lon: +lon, lat: +lat,
+        id: `${id}`, name, lon: +lon, lat: +lat,
       } as Location))
     })
   } as any,
