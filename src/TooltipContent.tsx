@@ -60,7 +60,7 @@ export const LocationTooltipContent =
   const { object: location, totalIn, totalOut, totalWithin } = locationInfo;
 
   return (
-    <Outer width={130}>
+    <Outer width={150}>
       <Title>{location.name || location.id}</Title>
       <Row>
         <Label>Incoming trips</Label>
@@ -71,7 +71,7 @@ export const LocationTooltipContent =
         <Value>{formatCount(totalOut)}</Value>
       </Row>
       <Row>
-        <Label>Start and end here</Label>
+        <Label>Internal & round trips</Label>
         <Value>{formatCount(totalWithin)}</Value>
       </Row>
       <Comment>
