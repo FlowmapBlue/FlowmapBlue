@@ -51,6 +51,11 @@ export const Title = styled.div`
   margin-bottom: 10px;
 `
 
+export const Description = styled.div`
+  max-height: 155px;
+  overflow: auto;
+`
+
 export const LegendTitle = styled.div`
   font-weight: bold;
   font-size: 13px;

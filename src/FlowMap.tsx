@@ -18,7 +18,7 @@ import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/reac
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector, ParametricSelector } from 'reselect'
 import { animatedColors, colors, diffColors } from './colors'
-import { Box, Column, LegendTitle, Title, TitleBox, ToastContent, Row } from './Boxes'
+import { Box, Column, LegendTitle, Title, TitleBox, ToastContent, Row, Description } from './Boxes'
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, LocationTooltipContent, formatCount } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
@@ -917,7 +917,7 @@ class FlowMap extends React.Component<Props, State> {
               {title &&
               <div>
                 <Title>{title}</Title>
-                {description}
+                <Description>{description}</Description>
               </div>
               }
               {(
