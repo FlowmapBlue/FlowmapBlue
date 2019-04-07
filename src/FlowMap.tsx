@@ -53,6 +53,7 @@ import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
 import ClusterTree, { isClusterId, Item } from './ClusterTree';
+import Away from './Away';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -922,22 +923,20 @@ class FlowMap extends React.Component<Props, State> {
               }
               {(
                 authorUrl ?
-                  <div>Created by: <a href={authorUrl} target="_blank" rel="noopener">{authorName || 'Author'}</a></div>
+                  <div>Created by: <Away href={authorUrl}>{authorName || 'Author'}</Away></div>
                 : authorName ? <div>Created by: {authorName}</div> : null
               )}
               {sourceName && sourceUrl &&
               <div>
                 {'Original data source: '}
                 <>
-                  <a href={sourceUrl} target="_blank" rel="noopener">{sourceName}</a>
+                  <Away href={sourceUrl}>{sourceName}</Away>
                 </>
               </div>}
               <div>
                 {'Data behind this map is in '}
-                <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
-                   target="_blank"
-                   rel="noopener"
-                >this spreadsheet</a>. You can <Link to="/">publish your own</Link> too.
+                <Away href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
+                >this spreadsheet</Away>. You can <Link to="/">publish your own</Link> too.
               </div>
               <Row spacing={20}>
                 <StyledSwitch

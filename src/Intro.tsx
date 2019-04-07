@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
 import examples from './examples.json';
 import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
+import Away from './Away';
 
 const Outer = styled.div`
   padding: 10px 20px;
@@ -34,7 +35,7 @@ const SupportLogoLink = styled.a`
 `
 
 const SupportLogo = ({ src, href }: { src: string, href: string }) =>
-  <SupportLogoLink href={href} target="_blank" rel="noopener">
+  <SupportLogoLink href={href} target="_blank" rel="noopener noreferrer">
     <img src={src} height={22} />
   </SupportLogoLink>
 
@@ -42,7 +43,6 @@ const NoWrap = styled.span`
   display: flex;
   flex-wrap: nowrap;
 `
-
 
 const Intro = () =>
   <Outer>
@@ -53,23 +53,20 @@ const Intro = () =>
         <p>
           This app can render a geographic flow map visualization
           from a spreadsheet published on
-          {` `}<a href="https://docs.google.com/spreadsheets/" target="_blank" rel="noopener">Google Sheets</a>.
+          {` `}<Away href="https://docs.google.com/spreadsheets/">Google Sheets</Away>.
         </p>
         <p>
           It can be used to visualize numbers of movements of people or goods
           between pairs of geographic locations (Origin-Destination data).
         </p>
-        <a
-          href={"/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8"}
-          target="_blank" rel="noopener"
-        >
+        <Away href="/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8">
           <img
-          src={ExampleFlowmapImage}
-          alt={"Example flow map"}
-          width="100%"
-          style={{ maxWidth: 500 }}
-        />
-        </a>
+            src={ExampleFlowmapImage}
+            alt={"Example flow map"}
+            width="100%"
+            style={{ maxWidth: 500 }}
+          />
+        </Away>
       </section>
 
 
@@ -81,10 +78,7 @@ const Intro = () =>
               <li key={key}>
                 <Link to={`/${key}`}>{name}</Link>
                 {` `}
-                (<a
-                  href={`https://docs.google.com/spreadsheets/d/${key}`}
-                  target="_blank" rel="noopener"
-                >spreadsheet</a>)
+                (<Away href={`https://docs.google.com/spreadsheets/d/${key}`}>spreadsheet</Away>)
               </li>
             )
           }
@@ -95,13 +89,13 @@ const Intro = () =>
         <h2>Publish your own dataset</h2>
         <p>
           To publish your own dataset with the app you need to have a Google account.{' '}
-          <a href="https://accounts.google.com/signup" target="_blank" rel="noopener">Sign up here</a> if you don't have one yet.
+          <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don't have one yet.
         </p>
         <p>
           Once you have one, follow these steps:
         </p>
         <ol>
-          <li>Open <a href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA" target="_blank" rel="noopener">this spreadsheet</a> and
+          <li>Open <Away href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA">this spreadsheet</Away> and
             make a copy of it (File / Make a copy…)</li>
           <li>Add data to the new spreadsheet. <ReadMore>
               The spreadsheet has three sheets in it.
@@ -122,13 +116,14 @@ const Intro = () =>
       <section>
         <h2>Need help?</h2>
         <p>
-          <a href="https://spectrum.chat/flowmap-blue/general" target="_blank" rel="noopener">Ask a question in the forum</a>
+          <Away href="https://spectrum.chat/flowmap-blue/general">Ask a question in the forum</Away>,{` `}
+          <Away href="https://github.com/ilyabo/flowmap.blue/issues">submit an issue</Away>
           {` or `}
           <a href="mailto:ilya@boyandin.me?subject=flowmap.blue">write me an email</a>.
         </p>
       </section>
       <section>
-        <h2>Privacy Notice</h2>
+        <h2>Privacy notice</h2>
         <p>
           flowmap.blue does not store any of the data the users upload to Google Sheets.
         </p>
@@ -138,13 +133,25 @@ const Intro = () =>
         </p>
       </section>
       <section>
+        <h2>Open source</h2>
+        <p>
+          {`The source code of flowmap.blue `}
+          <Away href="https://github.com/ilyabo/flowmap.blue">is freely available</Away>
+          {` under the  `}
+          <Away href="https://github.com/ilyabo/flowmap.blue/blob/master/LICENSE">MIT license</Away>.
+        </p>
+        <p>
+          Make sure to include a proper attribution (URL of flowmap.blue, the original author) if you use it in a different project.
+        </p>
+      </section>
+      <section>
         <h2>Credits</h2>
         <p>
-          Developed by <a href="https://ilya.boyandin.me" target="_blank" rel="noopener">Ilya Boyandin</a> using {` `}
-          <a href="https://github.com/teralytics/flowmap.gl" target="_blank" rel="noopener">flowmap.gl</a>,{` `}
-          <a href="http://deck.gl" target="_blank" rel="noopener">deck.gl</a>,{` `}
-          <a href="https://github.com/mapbox/mapbox-gl-js" target="_blank" rel="noopener">mapbox</a>,{` `}
-          <a href="https://d3js.org/" target="_blank" rel="noopener">d3</a>.
+          Developed by <Away href="https://ilya.boyandin.me">Ilya Boyandin</Away> using {` `}
+          <Away href="https://github.com/teralytics/flowmap.gl">flowmap.gl</Away>,{` `}
+          <Away href="http://deck.gl">deck.gl</Away>,{` `}
+          <Away href="https://github.com/mapbox/mapbox-gl-js">mapbox</Away>,{` `}
+          <Away href="https://d3js.org/">d3</Away>.
         </p>
         <Support>
           <span>With kind support from</span>

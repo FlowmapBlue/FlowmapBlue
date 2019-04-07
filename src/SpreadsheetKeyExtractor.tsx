@@ -3,6 +3,7 @@ import { InputGroup, Button, Intent, Tooltip } from '@blueprintjs/core'
 import { IconNames } from '@blueprintjs/icons'
 import styled from '@emotion/styled'
 import { SPREADSHEET_KEY_RE } from './constants';
+import Away from './Away';
 
 const StyledInputGroup = styled(InputGroup)`
   max-width: 50em;
@@ -74,9 +75,9 @@ export default class SpreadsheetKeyExtractor extends React.Component<{}, State> 
       items.push(
         <li key="link">
           Open{` `}
-          <a href={`/${spreadsheetKey}`} target="_blank" rel="noopener">
+          <Away href={`/${spreadsheetKey}`}>
             {`${document.location.protocol}//${document.location.host}/${spreadsheetKey}`}
-          </a>
+          </Away>
         </li>
       )
     }
