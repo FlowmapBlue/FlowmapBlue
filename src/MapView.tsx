@@ -35,6 +35,7 @@ const DEFAULT_CONFIG: Config = {
   [ConfigPropName.MAP_BBOX]: undefined,
   [ConfigPropName.MAPBOX_MAP_STYLE]: DEFAULT_MAP_STYLE,
   [ConfigPropName.IGNORE_ERRORS]: undefined,
+  [ConfigPropName.COLORS_SCHEME]: undefined,
 }
 
 

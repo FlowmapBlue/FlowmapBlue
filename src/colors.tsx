@@ -1,40 +1,87 @@
 import { Colors, DiffColors } from '@flowmap.gl/core'
 import { hcl } from 'd3-color'
+import {
+  schemeGnBu,
+  schemePuRd,
+  schemeOrRd,
+  schemePuBu,
+  schemeBuGn,
+  schemePuBuGn,
+  schemeBuPu,
+  schemeRdPu,
+  schemeYlGnBu,
+  schemeYlGn,
+  schemeYlOrBr,
+  schemeYlOrRd,
+  schemeBlues,
+  schemeGreens,
+  schemeGreys,
+  schemeOranges,
+  schemePurples,
+  schemeReds,
+} from 'd3-scale-chromatic'
+import { Config, ConfigPropName } from './types';
+
+const asScheme = (scheme: ReadonlyArray<ReadonlyArray<string>>) =>
+  scheme[scheme.length - 1] as string[]
+
+const flowColorSchemes: { [key: string]: string[] } = {
+  GnBu: asScheme(schemeGnBu),
+  PuRd: asScheme(schemePuRd),
+  Blues: asScheme(schemeBlues),
+  OrRd: asScheme(schemeOrRd),
+  PuBu: asScheme(schemePuBu),
+  Greens: asScheme(schemeGreens),
+  Greys: asScheme(schemeGreys),
+  Oranges: asScheme(schemeOranges),
+  Purples: asScheme(schemePurples),
+  Reds: asScheme(schemeReds),
+  BuGn: asScheme(schemeBuGn),
+  PuBuGn: asScheme(schemePuBuGn),
+  BuPu: asScheme(schemeBuPu),
+  RdPu: asScheme(schemeRdPu),
+  YlGnBu: asScheme(schemeYlGnBu),
+  YlGn: asScheme(schemeYlGn),
+  YlOrBr: asScheme(schemeYlOrBr),
+  YlOrRd: asScheme(schemeYlOrRd),
+}
 
 export enum ColorScheme {
   primary = '#137CBD',
 }
 
-export const colors: Colors = {
+const FLOW_MIN_COLOR = 'rgba(240,240,240,0.5)'
+
+const colors: Colors = {
   flows: {
-    max: ColorScheme.primary,
+    scheme: [FLOW_MIN_COLOR, ColorScheme.primary],
   },
-  locationCircles: {
-    outgoing: hcl(ColorScheme.primary).brighter(2).toString(),
-  },
+  // locationCircles: {
+  //   outgoing: hcl(ColorScheme.primary).brighter(2).toString(),
+  // },
   outlineColor: 'rgba(255, 255, 255, 0.5)',
+  // outlineColor: 'rgba(0, 0, 0, 0.5)',    // dark mode
 };
 
-export const animatedColors: Colors = {
+const animatedColors: Colors = {
   ...colors,
   flows: {
-    ...colors.flows,
-    min: '#fff',
+    scheme: ['#fff', ColorScheme.primary],
   },
 };
 
 const complementary = '#f52020'
 const baseDiffColor = '#17a5be'
 
-export const diffColors: DiffColors = {
+const diffColors: DiffColors = {
   negative: {
     flows: {
-      max: baseDiffColor,
+      scheme: [FLOW_MIN_COLOR, baseDiffColor],
     },
   },
   positive: {
     flows: {
-      max: complementary,
+      scheme: [FLOW_MIN_COLOR, complementary],
     },
   },
   locationAreas: {
@@ -43,3 +90,26 @@ export const diffColors: DiffColors = {
   },
   outlineColor: 'rgb(230,233,237)',
 };
+
+
+export default function getColors(
+  config: Config, diffMode: boolean, animate: boolean
+): Colors | DiffColors {
+  if (diffMode) {
+    return diffColors
+  }
+  const schemeKey = config[ConfigPropName.COLORS_SCHEME]
+  const scheme = schemeKey && flowColorSchemes[schemeKey]
+  if (scheme) {
+    return {
+      ...colors,
+      flows: {
+        scheme,
+      }
+    }
+  }
+  if (animate) {
+    return animatedColors
+  }
+  return colors
+}

@@ -17,7 +17,7 @@ import { Intent, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector, ParametricSelector } from 'reselect'
-import { animatedColors, colors, diffColors } from './colors'
+import getColors from './colors'
 import { Box, Column, LegendTitle, Title, TitleBox, ToastContent, Row, Description } from './Boxes'
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, LocationTooltipContent, formatCount } from './TooltipContent';
@@ -65,7 +65,7 @@ const MAX_ZOOM_LEVELS = 5
 const MIN_ZOOM_LEVELS = 0.5
 
 type Props = {
-  config: Config
+  config: Config,
   locationsFetch: PromiseState<Location[]>,
   flowsFetch: PromiseState<Flow[]>,
   spreadSheetKey: string
@@ -156,6 +156,7 @@ class FlowMap extends React.Component<Props, State> {
   getSelectedLocations = (state: State, props: Props) => state.selectedLocations
   getClusteringEnabled = (state: State, props: Props) => state.clusteringEnabled
   getZoom = (state: State, props: Props) => state.viewState.zoom
+  getConfig = (state: State, props: Props) => props.config
 
   getLocationIds: Selector<Set<string> | undefined> = createSelector(
     this.getLocations,
@@ -175,17 +176,10 @@ class FlowMap extends React.Component<Props, State> {
   getAnimate: Selector<boolean> = (state: State, props: Props) => state.animationEnabled
 
   getColors = createSelector(
+    this.getConfig,
     this.getDiffMode,
     this.getAnimate,
-    (diffMode, animate) => {
-      if (diffMode) {
-        return diffColors
-      }
-      if (animate) {
-        return animatedColors
-      }
-      return colors
-    }
+    getColors,
   )
 
   getFlowsForKnownLocations: Selector<Flow[] | undefined> = createSelector(
@@ -865,6 +859,7 @@ class FlowMap extends React.Component<Props, State> {
     return (
       <Outer>
         <DeckGL
+          // style={{ mixBlendMode: 'screen' }} // dark mode
           style={{ mixBlendMode: 'multiply' }}
           controller={CONTROLLER_OPTIONS}
           viewState={viewState}

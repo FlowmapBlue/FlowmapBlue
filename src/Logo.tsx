@@ -1,4 +1,4 @@
-import { colors, ColorScheme } from './colors';
+import { ColorScheme } from './colors';
 import { Link } from 'react-router-dom';
 import * as React from 'react';
 import logo from './images/logo.svg';
@@ -6,8 +6,8 @@ import styled from '@emotion/styled';
 import { Row } from './Boxes';
 
 type Props = {
-  fontSize?: number
-  collapseWidth?: number
+  fontSize?: number,
+  collapseWidth?: number,
 }
 
 

@@ -9,6 +9,7 @@ export enum ConfigPropName {
   IGNORE_ERRORS = 'ignore.errors',
   MAPBOX_ACCESS_TOKEN = 'mapbox.accessToken',
   MAPBOX_MAP_STYLE = 'mapbox.mapStyle',
+  COLORS_SCHEME = 'colors.scheme',
 }
 
 export interface ConfigProp {
