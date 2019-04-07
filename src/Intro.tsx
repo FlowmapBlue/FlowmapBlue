@@ -60,7 +60,7 @@ const Intro = () =>
           between pairs of geographic locations (Origin-Destination data).
         </p>
         <a
-          href={"https://flowmap.blue/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8"}
+          href={"/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8"}
           target="_blank" rel="noopener"
         >
           <img
