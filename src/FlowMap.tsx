@@ -628,12 +628,14 @@ class FlowMap extends React.Component<Props, State> {
     this.setState({
       tooltip: undefined
     })
+    this.showTooltipDebounced.cancel()
   }
 
   showFlowTooltip = (pos: [number, number], info: FlowPickingInfo) => {
     const [x, y] = pos
     const r = 5
-    this.showTooltip(
+    const showTooltip = this.state.tooltip ? this.showTooltip : this.showTooltipDebounced
+    showTooltip(
       {
         left: x - r,
         top: y - r,
@@ -655,7 +657,8 @@ class FlowMap extends React.Component<Props, State> {
     const [x, y] = mercator.project(getLocationCentroid(location))
     const r = circleRadius + 5
     const { selectedLocations } = this.state
-    this.showTooltip(
+    const showTooltip = this.state.tooltip ? this.showTooltip : this.showTooltipDebounced
+    showTooltip(
       {
         left: x - r,
         top: y - r,
@@ -687,7 +690,10 @@ class FlowMap extends React.Component<Props, State> {
         content,
       }
     })
+    this.showTooltipDebounced.cancel()
   }
+
+  private showTooltipDebounced = debounce(this.showTooltip, 200)
 
   handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
     this.handleNavigation(viewState)
@@ -712,7 +718,7 @@ class FlowMap extends React.Component<Props, State> {
     this.setState({ highlight })
     this.highlightDebounced.cancel()
   }
-  private highlightDebounced = debounce(this.highlight, 100)
+  private highlightDebounced = debounce(this.highlight, 200)
 
   private handleHover = (info: FlowLayerPickingInfo) => {
     const { type, object, x, y } = info
