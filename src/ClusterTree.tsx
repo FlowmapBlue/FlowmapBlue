@@ -193,25 +193,37 @@ export default class ClusterTree {
       const cluster = leavesToClustersByZoom.get(zoom)!.get(locationId)
       return cluster ? cluster.id : undefined
     }
-    for (let zoom = minZoom; zoom <= maxZoom; zoom++) {
+    const allZoomFlows: { [key:string]: Flow } = {}
+    for (let zoom = maxZoom; zoom >= minZoom; zoom--) {
       if (zoom < maxZoom) {
-        const flowsByOD: { [key:string]: Flow } = {}
+        const zoomFlows: { [key:string]: Flow } = {}
         for (const f of flows) {
           const originId = getFlowOriginId(f)
           const destId = getFlowDestId(f)
           const originClusterId = findClusterFor(originId, zoom) || originId
           const destClusterId = findClusterFor(destId, zoom) || destId
           const key = `${originClusterId}:->:${destClusterId}`
-          if (!flowsByOD[key]) {
-            flowsByOD[key] = {
-              origin: originClusterId,
-              dest: destClusterId,
-              count: 0,
+          if (allZoomFlows[key]) {
+            if (!zoomFlows[key]) {
+              // reuse flow from a different zoom level
+              zoomFlows[key] = allZoomFlows[key]
             }
+          } else {
+            if (!zoomFlows[key]) {
+              zoomFlows[key] = {
+                origin: originClusterId,
+                dest: destClusterId,
+                count: 0,
+              }
+            }
+            zoomFlows[key].count += f.count
           }
-          flowsByOD[key].count += f.count
         }
-        flowsByZoom.set(zoom, Object.values(flowsByOD));
+        for (const [key, value] of Object.entries(zoomFlows)) {
+          // save all entries from this zoom level to the global for reuse on lower zoom levels
+          allZoomFlows[key] = value
+        }
+        flowsByZoom.set(zoom, Object.values(zoomFlows));
       } else {
         flowsByZoom.set(zoom, flows);
       }
