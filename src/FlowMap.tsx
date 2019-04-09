@@ -52,7 +52,7 @@ import { AppToaster } from './toaster';
 import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
-import ClusterTree, { isClusterId, Item } from './ClusterTree';
+import ClusterTree, { ClusteredFlowsByZoom, getLocationWeightGetter, isClusterId } from './ClusterTree';
 import Away from './Away';
 
 const CONTROLLER_OPTIONS = {
@@ -244,7 +244,16 @@ class FlowMap extends React.Component<Props, State> {
     (locations, flows) => {
       if (!locations || !flows) return undefined
 
-      return new ClusterTree(locations, flows)
+      return new ClusterTree(locations, getLocationWeightGetter(flows))
+    }
+  )
+
+  getClusteredFlows: Selector<ClusteredFlowsByZoom | undefined> = createSelector(
+    this.getClusterTree,
+    this.getFlowsForKnownLocations,
+    (clusterTree, flows) => {
+      if (!clusterTree || !flows) return undefined
+      return clusterTree.clusterFlows(flows)
     }
   )
 
@@ -323,7 +332,7 @@ class FlowMap extends React.Component<Props, State> {
         if (isClusterId(loc.id)) {
           const cluster = clusterTree.findItemById(loc.id)
           if (cluster) {
-            clusterTree.addExpandedClusterIds(cluster, targetZoom, result)
+            clusterTree.pushExpandedClusterIds(cluster, targetZoom, result)
           }
         } else {
           result.push(loc.id)
@@ -405,10 +414,11 @@ class FlowMap extends React.Component<Props, State> {
     const layers = []
     if (clusteringEnabled) {
       const clusterTree = this.getClusterTree(this.state, this.props)
+      const clusteredFlows = this.getClusteredFlows(this.state, this.props)
       const clusterZoom = this.getClusterZoom(this.state, this.props)
-      if (clusterZoom !== undefined && clusterTree) {
+      if (clusterZoom !== undefined && clusterTree && clusteredFlows) {
         // for (let zoom = clusterZoom; zoom <= clusterZoom; zoom++) {
-        const flows = clusterTree.getClusteredFlowsByZoom(clusterZoom);
+        const flows = clusteredFlows.get(clusterZoom)
         if (flows) {
           layers.push(this.makeFlowMapLayer(
               `flow-map-${animationEnabled ? 'animated' : 'arrows'}-${clusterZoom}`,
