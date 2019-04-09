@@ -21,8 +21,8 @@ type PropsWithData = Props & {
 
 const DEFAULT_MAP_STYLE =
   // 'mapbox://styles/ilyabo/cjtq7opq60xpi1fob4m0zbxeq';
-  // 'mapbox://styles/mapbox/light-v9';
-  'mapbox://styles/mapbox/light-v8';
+  // 'mapbox://styles/mapbox/light-v8';
+  'mapbox://styles/mapbox/light-v10';
 
 const DEFAULT_CONFIG: Config = {
   [ConfigPropName.MAPBOX_ACCESS_TOKEN]: process.env.REACT_APP_MapboxAccessToken,
