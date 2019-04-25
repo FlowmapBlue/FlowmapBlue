@@ -55,7 +55,7 @@ const Intro = () =>
           {` `}<Away href="https://docs.google.com/spreadsheets/">Google Sheets</Away>.
         </p>
         <p>
-          Flow maps are used to visualize numbers of movements of people or goods between pairs of geographic locations (Origin-Destination data or OD-data):
+          Flow maps are used to visualize numbers of movements between pairs of geographic locations (Origin-Destination data or OD-data):
         </p>
         <Away href="/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8">
           <img
