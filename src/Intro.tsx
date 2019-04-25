@@ -106,8 +106,8 @@ const Intro = () =>
       <section>
         <h2>Publish your own dataset</h2>
         <p>
-          To publish your own dataset with the app you need to have a Google account.{' '}
-          <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don't have one yet.
+          You need to have a Google account.{' '}
+          <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don't.
         </p>
         <p>
           Once you have one, follow these steps:
