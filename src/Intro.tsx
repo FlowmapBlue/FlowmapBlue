@@ -9,11 +9,24 @@ import ReadMore from './ReadMore';
 import examples from './examples.json';
 import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
 import Away from './Away';
+import { Row } from './Boxes';
 
 const Outer = styled.div`
   padding: 10px 20px;
   & h1 { font-size: 2rem; }
   & li { margin: 0.5em 0; }
+  margin: auto;
+  max-width: 1500px;
+`
+
+const RowWithImage = styled(Row)`
+  align-items: start;
+  @media (max-width: 900px) {
+    flex-wrap: wrap-reverse;
+  }
+  @media (min-width: 900px) {
+    & > * + * { margin-left: 20px; }
+  }
 `
 
 
@@ -46,42 +59,49 @@ const NoWrap = styled.span`
 
 const Intro = () =>
   <Outer>
-    <section className="intro">
-      <h1><Logo fontSize={35} collapseWidth={300} /></h1>
 
-      <section>
-        <p>
-          Create interactive geographic flow maps from data published in
-          {` `}<Away href="https://docs.google.com/spreadsheets/">Google Sheets</Away>.
-        </p>
-        <p>
-          Flow maps are used to visualize numbers of movements between pairs of geographic locations (Origin-Destination data or OD-data):
-        </p>
-        <Away href="/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8">
-          <img
-            src={ExampleFlowmapImage}
-            alt={"Example flow map"}
-            width="100%"
-            style={{ maxWidth: 500 }}
-          />
-        </Away>
-      </section>
+    <h1><Logo fontSize={35} collapseWidth={300} /></h1>
+    <section>
+      <RowWithImage>
+        <div>
+          <section>
+            <p>
+              Create interactive geographic flow maps from data published in
+              {` `}<Away href="https://docs.google.com/spreadsheets/">Google Sheets</Away>.
+            </p>
+            <p>
+              Flow maps are used to visualize numbers of movements between pairs of geographic locations (Origin-Destination data or OD-data).
+            </p>
+          </section>
 
 
-      <section>
-        <h2>Examples</h2>
-        <ul>
-          {
-            examples.map(({ key, name }) =>
-              <li key={key}>
-                <Link to={`/${key}`}>{name}</Link>
-                {` `}
-                (<Away href={`https://docs.google.com/spreadsheets/d/${key}`}>spreadsheet</Away>)
-              </li>
-            )
-          }
-        </ul>
-      </section>
+          <section>
+            <h2>Examples</h2>
+            <ul>
+              {
+                examples.map(({ key, name }) =>
+                  <li key={key}>
+                    <Link to={`/${key}`}>{name}</Link>
+                    {/*{` `}*/}
+                    {/*(<Away href={`https://docs.google.com/spreadsheets/d/${key}`}>spreadsheet</Away>)*/}
+                  </li>
+                )
+              }
+            </ul>
+          </section>
+
+        </div>
+        <div style={{ display: 'flex', }}>
+          <Away href="/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8">
+            <img
+              src={ExampleFlowmapImage}
+              alt={"Example flow map"}
+              width="100%"
+              style={{ minWidth: 300, maxWidth: 700, marginBottom: '1em', border: '1px solid #ccc', }}
+            />
+          </Away>
+        </div>
+      </RowWithImage>
 
       <section>
         <h2>Publish your own dataset</h2>
@@ -96,18 +116,18 @@ const Intro = () =>
           <li>Open <Away href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA">this spreadsheet</Away> and
             make a copy of it (File / Make a copy…)</li>
           <li>Add data to the new spreadsheet. <ReadMore>
-              The spreadsheet has three sheets in it.
-              They are named "<b>properties</b>", "<b>locations</b>" and "<b>flows</b>".
-              The <b>properties</b> sheet has the title and the description for your dataset and a few other configuration parameters.
-              The <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the optional <b>name</b>.
-              The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
-              The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
-            </ReadMore>
+            The spreadsheet has three sheets in it.
+            They are named "<b>properties</b>", "<b>locations</b>" and "<b>flows</b>".
+            The <b>properties</b> sheet has the title and the description for your dataset and a few other configuration parameters.
+            The <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the optional <b>name</b>.
+            The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
+            The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
+          </ReadMore>
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
           <li>Share the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and then
             choosing "Anyone with the link can view".
-            </li>
+          </li>
           <SpreadsheetKeyExtractor />
         </ol>
       </section>
