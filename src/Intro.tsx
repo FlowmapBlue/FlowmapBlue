@@ -132,7 +132,7 @@ const Intro = () =>
           we collect anonymous usage statistics via Google Analytics and track errors via Sentry.
         </p>
         <p>
-          We will not share the URLs of your flow maps and spreadsheets with any other third parties
+          We treat your data as private by default and will not share the URLs of your flow maps and spreadsheets with any other third parties
           without your explicit consent.
         </p>
       </section>
