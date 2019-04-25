@@ -9,8 +9,9 @@ It can be used to visualize numbers of movements of people or goods between pair
 
 [Try in action](http://flowmap.blue/)
 
-[![flowmap.blue](https://user-images.githubusercontent.com/351828/51086743-a8e35400-174a-11e9-9826-a2a7484d7b6d.jpg)
-](http://flowmap.blue/1zNbTBLInPOBcCwCDdoSdnnUDdOfDyStFdhPC6nJmBl8)
+
+[![flowmap.blue](https://user-images.githubusercontent.com/351828/56728822-fd3b9e00-6753-11e9-8dba-d3f3ecbb7e4d.png)
+](https://flowmap.blue/1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc)
 
 
 ## Running locally
