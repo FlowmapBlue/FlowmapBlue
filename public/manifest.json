@@ -31,7 +31,7 @@
       "src": "favicon16.png",
       "sizes": "16",
       "type": "image/png"
-    },
+    }
   ],
   "start_url": ".",
   "display": "standalone",

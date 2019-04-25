@@ -128,8 +128,12 @@ const Intro = () =>
           flowmap.blue does not store any of the data the users upload to Google Sheets.
         </p>
         <p>
-          This website uses cookies to collect anonymous usage statistics via Google Analytics and
-          tracks errors via Sentry.
+          To make sure that flowmap.blue can be constantly improved
+          we collect anonymous usage statistics via Google Analytics and track errors via Sentry.
+        </p>
+        <p>
+          We will not share the URLs of your flow maps and spreadsheets with any other third parties
+          without your explicit consent.
         </p>
       </section>
       <section>
