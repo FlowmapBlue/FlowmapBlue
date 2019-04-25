@@ -51,13 +51,11 @@ const Intro = () =>
 
       <section>
         <p>
-          This app can render a geographic flow map visualization
-          from a spreadsheet published on
+          Create interactive geographic flow maps from data published in
           {` `}<Away href="https://docs.google.com/spreadsheets/">Google Sheets</Away>.
         </p>
         <p>
-          It can be used to visualize numbers of movements of people or goods
-          between pairs of geographic locations (Origin-Destination data).
+          Flow maps are used to visualize numbers of movements of people or goods between pairs of geographic locations (Origin-Destination data or OD-data):
         </p>
         <Away href="/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8">
           <img
