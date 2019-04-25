@@ -63,14 +63,14 @@ const Intro = () =>
     <h1><Logo fontSize={35} collapseWidth={300} /></h1>
     <section>
       <RowWithImage>
-        <div>
+        <div style={{ flexGrow: 1 }}>
           <section>
             <p>
               Create interactive geographic flow maps from data published in
               {` `}<Away href="https://docs.google.com/spreadsheets/">Google Sheets</Away>.
             </p>
             <p>
-              Flow maps are used to visualize numbers of movements between pairs of geographic locations (Origin-Destination data or OD-data).
+              Visualize numbers of movements between geographic locations (Origin-Destination or OD-data).
             </p>
           </section>
 
@@ -97,7 +97,7 @@ const Intro = () =>
               src={ExampleFlowmapImage}
               alt={"Example flow map"}
               width="100%"
-              style={{ minWidth: 300, maxWidth: 700, marginBottom: '1em', border: '1px solid #ccc', }}
+              style={{ marginBottom: '1em', border: '1px solid #ccc', minWidth: 300, maxWidth: 600  }}
             />
           </Away>
         </div>
