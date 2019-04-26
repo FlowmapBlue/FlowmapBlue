@@ -193,39 +193,42 @@ export default class ClusterTree {
       const cluster = leavesToClustersByZoom.get(zoom)!.get(locationId)
       return cluster ? cluster.id : undefined
     }
-    const allZoomFlows: { [key:string]: Flow } = {}
+    const allZoomFlowsCache = new Map<string, Flow>()
     for (let zoom = maxZoom; zoom >= minZoom; zoom--) {
       if (zoom < maxZoom) {
-        const zoomFlows: { [key:string]: Flow } = {}
+        const zoomFlows = new Map<string, Flow>()
         for (const f of flows) {
           const originId = getFlowOriginId(f)
           const destId = getFlowDestId(f)
           const originClusterId = findClusterFor(originId, zoom) || originId
           const destClusterId = findClusterFor(destId, zoom) || destId
           const key = `${originClusterId}:->:${destClusterId}`
-          if (allZoomFlows[key]) {
-            if (!zoomFlows[key]) {
+          const cachedFlow = allZoomFlowsCache.get(key)
+          if (cachedFlow) {
+            if (!zoomFlows.get(key)) {
               // reuse flow from a different zoom level
-              zoomFlows[key] = allZoomFlows[key]
+              zoomFlows.set(key, cachedFlow)
             }
           } else {
-            if (!zoomFlows[key]) {
-              zoomFlows[key] = {
+            let aggregateFlow = zoomFlows.get(key)
+            if (!aggregateFlow) {
+              aggregateFlow = {
                 origin: originClusterId,
                 dest: destClusterId,
                 count: 0,
               }
+              zoomFlows.set(key, aggregateFlow)
             }
-            zoomFlows[key].count += f.count
+            aggregateFlow.count += f.count
           }
         }
-        for (const [key, value] of Object.entries(zoomFlows)) {
+        for (const [key, value] of zoomFlows.entries()) {
           // save all entries from this zoom level to the global for reuse on lower zoom levels
-          allZoomFlows[key] = value
+          allZoomFlowsCache.set(key, value)
         }
-        flowsByZoom.set(zoom, Object.values(zoomFlows));
+        flowsByZoom.set(zoom, Array.from(zoomFlows.values()))
       } else {
-        flowsByZoom.set(zoom, flows);
+        flowsByZoom.set(zoom, flows)
       }
     }
     return flowsByZoom
