@@ -106,11 +106,11 @@ const Intro = () =>
       <section>
         <h2>Publish your own dataset</h2>
         <p>
-          You need to have a Google account.{' '}
+          To publish a dataset you need to have a Google account.{' '}
           <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don't.
         </p>
         <p>
-          Once you have one, follow these steps:
+          Follow these steps:
         </p>
         <ol>
           <li>Open <Away href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA">this spreadsheet</Away> and
@@ -146,12 +146,12 @@ const Intro = () =>
           flowmap.blue does not store any of the data the users upload to Google Sheets.
         </p>
         <p>
-          To make sure that flowmap.blue can be constantly improved
-          we collect anonymous usage statistics via Google Analytics and track errors via Sentry.
+          For improving flowmap.blue we need to understand how it is used.
+          We collect anonymous usage statistics via Google Analytics and track errors via Sentry.
         </p>
         <p>
-          We treat your data as private by default and will not share the URLs of your flow maps and spreadsheets with any other third parties
-          without your explicit consent.
+          We treat your data as private by default and will not share the URLs of your flow maps
+          and spreadsheets online or with third parties without your explicit consent.
         </p>
       </section>
       <section>
