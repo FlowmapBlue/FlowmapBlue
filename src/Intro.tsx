@@ -143,14 +143,16 @@ const Intro = () =>
         <h2>Privacy notice</h2>
         <p>
           flowmap.blue does not store any of the data the users upload to Google Sheets.
+          The data from the spreadsheets is loaded directly to the clients' browsers
+          using <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization API</Away>.
         </p>
         <p>
-          For improving flowmap.blue we need to understand how it is used.
+          For improving flowmap.blue it helps to understand how it is used.
           We collect anonymous usage statistics via Google Analytics and track errors via Sentry.
         </p>
         <p>
-          We treat your data as private by default and will not share the URLs of your flow maps
-          and spreadsheets online or with third parties without your explicit consent.
+          We treat your data as private and will not disclose the URLs of your flow maps
+          and spreadsheets without your explicit consent.
         </p>
       </section>
       <section>
