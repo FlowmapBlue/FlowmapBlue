@@ -147,12 +147,11 @@ const Intro = () =>
           using <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization API</Away>.
         </p>
         <p>
-          For improving flowmap.blue it helps to understand how it is used and when it fails.
-          We collect anonymous usage statistics via Google Analytics and track errors via Sentry.
+          We will not disclose the URLs of your flow maps and spreadsheets without your explicit consent.
         </p>
         <p>
-          We treat your data as private and will not disclose the URLs of your flow maps
-          and spreadsheets without your explicit consent.
+          For improving flowmap.blue we need to know how it is used and when it fails.
+          We collect anonymous usage statistics via Google Analytics and track errors via Sentry.
         </p>
       </section>
       <section>
