@@ -655,7 +655,7 @@ class FlowMap extends React.Component<Props, State> {
       <FlowTooltipContent
         flow={info.object}
         origin={info.origin}
-        dest={(info as any).dest}
+        dest={info.dest}
       />
     )
   }
