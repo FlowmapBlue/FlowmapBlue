@@ -1,4 +1,5 @@
-import DeckGL, { MapController } from 'deck.gl'
+import { DeckGL } from '@deck.gl/react'
+import { MapController } from '@deck.gl/core'
 import * as React from 'react'
 import {
   NavigationControl,
