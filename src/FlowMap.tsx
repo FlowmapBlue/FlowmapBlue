@@ -2,7 +2,7 @@ import { DeckGL } from '@deck.gl/react'
 import { MapController } from '@deck.gl/core'
 import * as React from 'react'
 import {
-  NavigationControl,
+  // NavigationControl,
   StaticMap,
   ViewportProps,
   ViewState,
@@ -16,6 +16,7 @@ import FlowMapLayer, {
 } from '@flowmap.gl/core'
 import { Intent, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
+import * as Cluster from '@flowmap.gl/cluster'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector, ParametricSelector } from 'reselect'
 import getColors from './colors'
@@ -35,9 +36,7 @@ import {
   getFlowOriginId,
   getLocationCentroid,
   getLocationId,
-  isLocationCluster,
   Location,
-  LocationCluster,
   LocationSelection
 } from './types';
 import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
@@ -53,7 +52,6 @@ import { AppToaster } from './toaster';
 import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
-import ClusterTree, { ClusteredFlowsByZoom, getLocationWeightGetter, isClusterId } from './ClusterTree';
 import Away from './Away';
 
 const CONTROLLER_OPTIONS = {
@@ -62,8 +60,8 @@ const CONTROLLER_OPTIONS = {
   touchRotate: false,
 }
 
-const MAX_ZOOM_LEVELS = 5
-const MIN_ZOOM_LEVELS = 0.5
+// const MAX_ZOOM_LEVELS = 5
+// const MIN_ZOOM_LEVELS = 0.5
 
 type Props = {
   config: Config,
@@ -120,18 +118,18 @@ const getInitialViewState = (bbox: [number, number, number, number]) => {
   }
 }
 
-const initialViewState = getInitialViewState([ -180, -70, 180, 70 ]);
+const initialViewState = getInitialViewState([ -180, -70, 180, 70 ])
 
 
 const Outer = styled(NoScrollContainer)`
   background: #f5f5f5;
 `
-const ZoomControls = styled(NavigationControl)`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-supercluster: 10;
-`
+// const ZoomControls = styled(NavigationControl)`
+//   position: absolute;
+//   top: 10px;
+//   right: 10px;
+//   z-supercluster: 10;
+// `
 const StyledSwitch = styled(Switch)`
   margin-bottom: 0;
   align-self: flex-start;
@@ -239,73 +237,83 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
-  getClusterTree: Selector<ClusterTree | undefined> = createSelector(
+  getClusterIndex: Selector<Cluster.ClusterIndex | undefined> = createSelector(
     this.getLocationsHavingFlows,
     this.getFlowsForKnownLocations,
     (locations, flows) => {
       if (!locations || !flows) return undefined
 
-      return new ClusterTree(locations, getLocationWeightGetter(flows))
-    }
-  )
-
-  getClusteredFlows: Selector<ClusteredFlowsByZoom | undefined> = createSelector(
-    this.getClusterTree,
-    this.getFlowsForKnownLocations,
-    (clusterTree, flows) => {
-      if (!clusterTree || !flows) return undefined
-      return clusterTree.clusterFlows(flows)
+      return Cluster.buildIndex(Cluster.clusterLocations(
+        locations,
+        { getLocationId, getLocationCentroid },
+        Cluster.makeLocationWeightGetter(
+          flows,
+          { getFlowOriginId, getFlowDestId, getFlowMagnitude }
+        ),
+      ));
     }
   )
 
   getClusterZoom: Selector<number | undefined> = createSelector(
-    this.getClusterTree,
+    this.getClusterIndex,
     this.getZoom,
     this.getSelectedLocations,
-    (clusterTree, zoom, selectedLocations) => {
-      if (!clusterTree) return undefined
-      let minZoom = clusterTree.minZoom
+    (clusterIndex, zoom, selectedLocations) => {
+      if (!clusterIndex) return undefined
+      let minZoom = clusterIndex.availableZoomLevels[0]
+      const maxZoom = clusterIndex.availableZoomLevels[clusterIndex.availableZoomLevels.length - 1]
       if (selectedLocations) {
         for (const { id } of selectedLocations) {
           let itemZoom
-          if (isClusterId(id)) {
-            const cluster = clusterTree.findItemById(id)
+          const cluster = clusterIndex.getClusterById(id)
+          if (cluster) {
             if (cluster) itemZoom = cluster.zoom
           } else {
-            itemZoom = clusterTree.getMinZoomForLocation(id)
+            itemZoom = clusterIndex.getMinZoomForLocation(id)
           }
           if (itemZoom !== undefined && itemZoom > minZoom) {
             minZoom = itemZoom
           }
         }
       }
-      return Math.max(minZoom, Math.min(Math.floor(zoom), clusterTree.maxZoom));
+      return Math.max(minZoom, Math.min(Math.floor(zoom), maxZoom));
     }
   )
 
-  getLocationsForSearchBox: Selector<Location[] | undefined> = createSelector(
+  getAggregatedFlows: Selector<Flow[] | undefined> = createSelector(
+    this.getClusterIndex,
+    this.getFlowsForKnownLocations,
+    this.getClusterZoom,
+    (clusterTree, flows, clusterZoom) => {
+      if (!clusterTree || !flows || !clusterZoom) return undefined
+      return clusterTree.aggregateFlows(flows, clusterZoom, { getFlowOriginId, getFlowDestId, getFlowMagnitude })
+    }
+  )
+
+  getLocationsForSearchBox: Selector<(Location | Cluster.Cluster)[] | undefined> = createSelector(
     this.getClusteringEnabled,
     this.getLocationsHavingFlows,
     this.getSelectedLocations,
     this.getClusterZoom,
-    this.getClusterTree,
-    (clusteringEnabled, locations, selectedLocations, clusterZoom, clusterTree) => {
+    this.getClusterIndex,
+    (clusteringEnabled, locations, selectedLocations, clusterZoom, clusterIndex) => {
       if (!locations) return undefined
-      let result = locations
+      let result: (Location | Cluster.Cluster)[] = locations
       if (clusteringEnabled) {
-        if (clusterTree) {
-          const zoomItems = clusterTree.getItemsFor(clusterZoom)
+        if (clusterIndex) {
+          const zoomItems = clusterIndex.getClusterNodesFor(clusterZoom)
           if (zoomItems) {
-            result = result.concat(zoomItems.filter(isLocationCluster))
+            result = result.concat(zoomItems.filter(Cluster.isCluster))
           }
         }
       }
 
-      if (result && clusterTree && selectedLocations) {
+      if (result && clusterIndex && selectedLocations) {
         const toAppend = []
         for (const { id } of selectedLocations) {
-          if (isClusterId(id) && !result.find(d => d.id === id)) {
-            toAppend.push(clusterTree.findItemById(id) as Location)
+          const cluster = clusterIndex.getClusterById(id)
+          if (cluster && !result.find(d => d.id === id)) {
+            toAppend.push(cluster)
           }
         }
         if (toAppend.length > 0) {
@@ -316,30 +324,40 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
+  getMaxClusterZoom: Selector<number | undefined> = createSelector(
+    this.getClusterIndex,
+    clusterIndex => {
+      if (!clusterIndex) return undefined
+      return Math.max.apply(null, clusterIndex.availableZoomLevels)
+    }
+  )
+
   getExpandedSelection: Selector<Array<string> | undefined> = createSelector(
     this.getClusteringEnabled,
     this.getSelectedLocations,
     this.getClusterZoom,
-    this.getClusterTree,
-    (clusteringEnabled, selectedLocations, clusterZoom, clusterTree) => {
-      if (!selectedLocations || !clusterTree || clusterZoom === undefined) {
+    this.getClusterIndex,
+    this.getMaxClusterZoom,
+    (clusteringEnabled, selectedLocations, clusterZoom, clusterIndex, maxClusterZoom) => {
+      if (!selectedLocations || !clusterIndex || clusterZoom === undefined) {
         return undefined
       }
 
-      const targetZoom = clusteringEnabled ? clusterZoom : clusterTree.maxZoom
+      const targetZoom = clusteringEnabled ? clusterZoom : maxClusterZoom
 
-      const result: string[] = []
+      const result = new Set<string>()
       for (const loc of selectedLocations) {
-        if (isClusterId(loc.id)) {
-          const cluster = clusterTree.findItemById(loc.id)
-          if (cluster) {
-            clusterTree.pushExpandedClusterIds(cluster, targetZoom, result)
+        const cluster = clusterIndex.getClusterById(loc.id)
+        if (cluster) {
+          const expanded = clusterIndex.expandCluster(cluster, targetZoom)
+          for (const id of expanded) {
+            result.add(id)
           }
         } else {
-          result.push(loc.id)
+          result.add(loc.id)
         }
       }
-      return result
+      return Array.from(result)
     })
 
   getHighlightForZoom() {
@@ -347,18 +365,16 @@ class FlowMap extends React.Component<Props, State> {
     if (!highlight || !clusteringEnabled) {
       return highlight
     }
-    const clusterTree = this.getClusterTree(this.state, this.props)
+    const clusterTree = this.getClusterIndex(this.state, this.props)
     const clusterZoom = this.getClusterZoom(this.state, this.props)
     if (!clusterTree || clusterZoom === undefined) {
       return undefined
     }
 
     const isValidForClusterZoom = (itemId: string) => {
-      if (isClusterId(itemId)) {
-        const cluster = clusterTree.findItemById(itemId)
-        if (cluster && cluster.zoom === clusterZoom) {
-          return true
-        }
+      const cluster = clusterTree.getClusterById(itemId)
+      if (cluster && cluster.zoom === clusterZoom) {
+        return true
       } else {
         const minZoom = clusterTree.getMinZoomForLocation(itemId)
         if (minZoom === undefined || clusterZoom >= minZoom) {
@@ -375,13 +391,15 @@ class FlowMap extends React.Component<Props, State> {
 
       case HighlightType.FLOW:
         const { flow: { origin, dest } } = highlight
-        return isValidForClusterZoom(origin) && isValidForClusterZoom(dest) ? highlight : undefined
+        const flowHighlight = isValidForClusterZoom(origin) && isValidForClusterZoom(dest) ? highlight : undefined;
+        console.log(flowHighlight)
+        return flowHighlight
     }
 
     return undefined
   }
 
-  makeFlowMapLayer(id: string, locations: Location[], flows: Flow[], visible: boolean) {
+  makeFlowMapLayer(id: string, locations: (Location | Cluster.ClusterNode)[], flows: Flow[], visible: boolean) {
     const { animationEnabled, time } = this.state
     const highlight = this.getHighlightForZoom()
 
@@ -414,22 +432,20 @@ class FlowMap extends React.Component<Props, State> {
     const { clusteringEnabled, animationEnabled } = this.state
     const layers = []
     if (clusteringEnabled) {
-      const clusterTree = this.getClusterTree(this.state, this.props)
-      const clusteredFlows = this.getClusteredFlows(this.state, this.props)
+      const clusterIndex = this.getClusterIndex(this.state, this.props)
+      const flows = this.getAggregatedFlows(this.state, this.props)
       const clusterZoom = this.getClusterZoom(this.state, this.props)
-      if (clusterZoom !== undefined && clusterTree && clusteredFlows) {
-        // for (let zoom = clusterZoom; zoom <= clusterZoom; zoom++) {
-        const flows = clusteredFlows.get(clusterZoom)
+      if (/*clusterZoom !== undefined && */ clusterIndex && flows) {
+      //   const flows = flows.get(clusterZoom)
         if (flows) {
           layers.push(this.makeFlowMapLayer(
               `flow-map-${animationEnabled ? 'animated' : 'arrows'}-${clusterZoom}`,
-              clusterTree.getItemsFor(clusterZoom)!,
+              clusterIndex.getClusterNodesFor(clusterZoom)!,
               flows,
               // zoom === clusterZoom,
               true
             ))
         }
-        // }
       }
     } else {
       const locations = this.getLocationsHavingFlows(this.state, this.props);

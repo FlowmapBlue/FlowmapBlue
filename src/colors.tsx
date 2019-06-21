@@ -1,5 +1,4 @@
 import { Colors, DiffColors } from '@flowmap.gl/core'
-import { hcl } from 'd3-color'
 import {
   schemeGnBu,
   schemePuRd,
