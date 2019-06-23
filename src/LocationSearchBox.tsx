@@ -1,4 +1,4 @@
-import { Classes, Intent, MenuItem } from '@blueprintjs/core'
+import { Intent, MenuItem } from '@blueprintjs/core'
 import { ItemPredicate, ItemRenderer } from '@blueprintjs/select'
 import { nest } from 'd3-collection'
 import React from 'react'
