@@ -76,8 +76,11 @@ function getLocationsBySelectionStatus(
   }
 }
 
-const TextOverflowEllipsis = styled.span(Classes.TEXT_OVERFLOW_ELLIPSIS, {
-  maxWidth: 100,
+const TextOverflowEllipsis = styled.span({
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  maxWidth: 180,
 })
 
 class LocationsSearchBox extends React.PureComponent<Props> {
