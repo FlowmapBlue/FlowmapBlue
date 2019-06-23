@@ -55,9 +55,10 @@ const colors: Colors = {
   flows: {
     scheme: [FLOW_MIN_COLOR, ColorScheme.primary],
   },
-  // locationCircles: {
-  //   outgoing: hcl(ColorScheme.primary).brighter(2).toString(),
-  // },
+  locationCircles: {
+    // outgoing: hcl(ColorScheme.primary).brighter(2).toString(),
+    outgoing: '#fff',
+  },
   outlineColor: 'rgba(255, 255, 255, 0.5)',
   // outlineColor: 'rgba(0, 0, 0, 0.5)',    // dark mode
 };
