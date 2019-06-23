@@ -250,6 +250,11 @@ class FlowMap extends React.Component<Props, State> {
           flows,
           { getFlowOriginId, getFlowDestId, getFlowMagnitude }
         ),
+        {
+          makeClusterName: (id: number, numPoints: number) => {
+            return `Cluster #${id} of ${numPoints} locations`
+          },
+        }
       ));
     }
   )
@@ -373,8 +378,8 @@ class FlowMap extends React.Component<Props, State> {
 
     const isValidForClusterZoom = (itemId: string) => {
       const cluster = clusterTree.getClusterById(itemId)
-      if (cluster && cluster.zoom === clusterZoom) {
-        return true
+      if (cluster) {
+        return cluster.zoom === clusterZoom
       } else {
         const minZoom = clusterTree.getMinZoomForLocation(itemId)
         if (minZoom === undefined || clusterZoom >= minZoom) {
@@ -391,9 +396,10 @@ class FlowMap extends React.Component<Props, State> {
 
       case HighlightType.FLOW:
         const { flow: { origin, dest } } = highlight
-        const flowHighlight = isValidForClusterZoom(origin) && isValidForClusterZoom(dest) ? highlight : undefined;
-        console.log(flowHighlight)
-        return flowHighlight
+        if (isValidForClusterZoom(origin) && isValidForClusterZoom(dest)) {
+          return highlight
+        }
+        return undefined
     }
 
     return undefined
