@@ -53,6 +53,8 @@ import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
 import Away from './Away';
+import { isCluster } from '@flowmap.gl/cluster';
+import { nest } from 'd3-collection';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -243,19 +245,45 @@ class FlowMap extends React.Component<Props, State> {
     (locations, flows) => {
       if (!locations || !flows) return undefined
 
-      return Cluster.buildIndex(Cluster.clusterLocations(
+      const getLocationWeight = Cluster.makeLocationWeightGetter(
+        flows,
+        { getFlowOriginId, getFlowDestId, getFlowMagnitude }
+      );
+      const clusterLevels = Cluster.clusterLocations(
         locations,
         { getLocationId, getLocationCentroid },
-        Cluster.makeLocationWeightGetter(
-          flows,
-          { getFlowOriginId, getFlowDestId, getFlowMagnitude }
-        ),
-        {
-          makeClusterName: (id: number, numPoints: number) => {
-            return `Cluster #${id} of ${numPoints} locations`
-          },
+        getLocationWeight,
+      );
+      const clusterIndex = Cluster.buildIndex(clusterLevels);
+
+      const locationsById = nest<Location, Location>()
+        .key((d: Location) => d.id)
+        .rollup(([d]) => d)
+        .object(locations)
+
+      // Adding meaningful names
+      const getName = (id: string) => {
+        const loc = locationsById[id]
+        if (loc) return loc.name
+        return `#${id}`
+      }
+      for (const level of clusterLevels) {
+        for (const node of level.nodes) {
+          // Here mutating the nodes (adding names)
+          if (isCluster(node)) {
+            const leaves = clusterIndex.expandCluster(node);
+            const topId = leaves.reduce((m: string | undefined, d: string) =>
+              (!m || getLocationWeight(d) > getLocationWeight(m) ? d : m)
+            )
+            const otherId = leaves.length === 2 && leaves.find(id => id !== topId)
+            node.name = `"${getName(topId)}" and ${otherId ? `"${getName(otherId)}"` : `${leaves.length - 1} others`}`
+          } else {
+            (node as any).name = getName(node.id)
+          }
         }
-      ));
+      }
+
+      return clusterIndex
     }
   )
 
