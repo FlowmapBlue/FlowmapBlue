@@ -49,7 +49,7 @@ const SupportLogoLink = styled.a`
 
 const SupportLogo = ({ src, href }: { src: string, href: string }) =>
   <SupportLogoLink href={href} target="_blank" rel="noopener noreferrer">
-    <img src={src} height={22} />
+    <img alt="support logo" src={src} height={22} />
   </SupportLogoLink>
 
 const NoWrap = styled.span`

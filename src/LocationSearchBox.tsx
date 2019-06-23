@@ -3,16 +3,15 @@ import { ItemPredicate, ItemRenderer } from '@blueprintjs/select'
 import { nest } from 'd3-collection'
 import React from 'react'
 import { defaultMemoize } from 'reselect'
-import FlowDirectionDropdown from './FlowDirectionDropdown'
-import FlowDirectionIcon from './FlowDirectionIcon'
 import { matchesSearchQuery } from './matchesSearchQuery'
 import SearchBox from './SearchBox'
 import { LocationSelection, Location, FlowDirection } from './types'
 import styled from '@emotion/styled'
+import { Cluster } from '@flowmap.gl/cluster'
 
 export interface Props {
   selectedLocations: LocationSelection[] | undefined
-  locations: Location[]
+  locations: (Location | Cluster)[]
   onSelectionChanged: (selectedLocations: LocationSelection[] | undefined) => void
 }
 
@@ -25,12 +24,12 @@ const LocationTag = styled.div({
   },
 })
 
-const itemPredicate: ItemPredicate<Location> = (query, location) => {
+const itemPredicate: ItemPredicate<Location | Cluster> = (query, location) => {
   const { id, name } = location
   return matchesSearchQuery(query, `${id} ${name}`)
 }
 
-function sortLocations(locations: Location[]): Location[] {
+function sortLocations(locations: (Location | Cluster)[]): (Location | Cluster)[] {
   return locations.sort((a, b) => {
     const aname = a.name || a.id
     const bname = b.name || b.id
@@ -51,12 +50,12 @@ function getSelectedLocationsById(selectedLocations: LocationSelection[] | undef
 }
 
 interface LocationsBySelectionStatus {
-  selected: Location[] | undefined
-  unselected: Location[]
+  selected: (Location | Cluster)[] | undefined
+  unselected: (Location | Cluster)[]
 }
 
 function getLocationsBySelectionStatus(
-  locations: Location[],
+  locations: (Location | Cluster)[],
   selectedLocations: LocationSelection[] | undefined,
 ): LocationsBySelectionStatus {
   const selectedByID = getSelectedLocationsById(selectedLocations)
@@ -67,7 +66,7 @@ function getLocationsBySelectionStatus(
     }
   }
 
-  const { selected, unselected } = nest<Location, LocationsBySelectionStatus>()
+  const { selected, unselected } = nest<Location | Cluster, LocationsBySelectionStatus>()
     .key(location => selectedByID[location.id] ? 'selected' : 'unselected')
     .object(locations)
 
@@ -77,8 +76,11 @@ function getLocationsBySelectionStatus(
   }
 }
 
-const TextOverflowEllipsis = styled.span(Classes.TEXT_OVERFLOW_ELLIPSIS, {
-  maxWidth: 100,
+const TextOverflowEllipsis = styled.span({
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  maxWidth: 180,
 })
 
 class LocationsSearchBox extends React.PureComponent<Props> {
@@ -89,7 +91,7 @@ class LocationsSearchBox extends React.PureComponent<Props> {
     const { locations, selectedLocations } = this.props
     const { selected, unselected } = this.getLocationsBySelectionStatus(this.getSortedLocations(locations), selectedLocations)
     return (
-      <SearchBox<Location>
+      <SearchBox<Location | Cluster>
         placeholder="Search for locations…"
         items={unselected}
         selectedItems={selected}
@@ -104,7 +106,7 @@ class LocationsSearchBox extends React.PureComponent<Props> {
     )
   }
 
-  private tagRenderer = (location: Location) => {
+  private tagRenderer = (location: Location | Cluster) => {
     const { selectedLocations } = this.props
     const selection = selectedLocations && selectedLocations.find(z => z.id === location.id)
     if (!selection) {
@@ -129,11 +131,11 @@ class LocationsSearchBox extends React.PureComponent<Props> {
     )
   }
 
-  private itemRenderer: ItemRenderer<Location> = (item, { handleClick, modifiers }) => {
+  private itemRenderer: ItemRenderer<Location | Cluster> = (item, { handleClick, modifiers }) => {
     if (!modifiers.matchesPredicate) {
       return null
     }
-    const { id, name } = (item as Location)
+    const { id, name } = (item as Location | Cluster)
     const { selectedLocations } = this.props
     const isSelected = selectedLocations && selectedLocations.find(d => d.id === id)
     const intent = isSelected ? Intent.PRIMARY : Intent.NONE
@@ -155,7 +157,7 @@ class LocationsSearchBox extends React.PureComponent<Props> {
   //   }
   // }
 
-  private handleLocationSelected = (location: Location) => {
+  private handleLocationSelected = (location: Location | Cluster) => {
     const { selectedLocations, onSelectionChanged } = this.props
     const { id } = location
     const locationSelection = { id, direction: FlowDirection.BOTH }
@@ -168,7 +170,7 @@ class LocationsSearchBox extends React.PureComponent<Props> {
     }
   }
 
-  private handleLocationRemoved = (location: Location) => {
+  private handleLocationRemoved = (location: Location | Cluster) => {
     const { selectedLocations, onSelectionChanged } = this.props
     if (selectedLocations) {
       const { id } = location

@@ -9,6 +9,7 @@ import { AppToaster } from './toaster';
 import { Suspense } from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import { SPREADSHEET_KEY_RE } from './constants';
+import { ColorScheme } from './colors';
 
 const MapView = React.lazy(() => import('./MapView'))
 
@@ -51,7 +52,17 @@ export default class App extends React.Component<Props, State> {
             <>
               Oops… Sorry, but something went wrong.
               <p>
-                <a href="#" onClick={Sentry.showReportDialog}>Click to report feedback</a>
+                <button
+                  style={{
+                    border: 'none',
+                    color: ColorScheme.primary,
+                    padding: 0,
+                    fontSize: 15,
+                    marginTop: '1em',
+                    textDecoration: 'underline',
+                  }}
+                  onClick={Sentry.showReportDialog}>Click to report feedback
+                </button>
               </p>
             </>
           </Fallback>

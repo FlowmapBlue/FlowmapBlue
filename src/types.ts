@@ -1,3 +1,5 @@
+import * as Cluster from '@flowmap.gl/cluster'
+
 export enum ConfigPropName {
   TITLE = 'title',
   DESCRIPTION = 'description',
@@ -25,7 +27,9 @@ export const getFlowMagnitude = (flow: Flow) => flow.count || 0
 export const getFlowOriginId = (flow: Flow) => flow.origin
 export const getFlowDestId = (flow: Flow) => flow.dest
 export const getLocationId = (loc: Location) => loc.id
-export const getLocationCentroid = (location: Location): [number, number] => [location.lon, location.lat]
+
+export const getLocationCentroid = (location: Location | Cluster.Cluster): [number, number] =>
+  isLocationCluster(location) ? location.centroid : [location.lon, location.lat]
 
 export interface Location {
   id: string
@@ -34,14 +38,8 @@ export interface Location {
   name: string
 }
 
-export interface LocationCluster extends Location {
-  parentId: string | undefined
-  zoom: number
-  children: (Location | LocationCluster)[]
-}
-
-export function isLocationCluster(l: Location): l is LocationCluster {
-  const { zoom } = l as LocationCluster;
+export function isLocationCluster(l: Location | Cluster.Cluster): l is Cluster.Cluster {
+  const { zoom } = l as Cluster.Cluster;
   return zoom !== undefined;
 }
 

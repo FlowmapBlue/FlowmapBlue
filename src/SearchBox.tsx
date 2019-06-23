@@ -1,4 +1,4 @@
-import { Button, Classes, IPopoverProps, MenuItem } from '@blueprintjs/core';
+import { Button, IPopoverProps, MenuItem } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { ItemPredicate, ItemRenderer, MultiSelect } from '@blueprintjs/select';
 import React from 'react';
