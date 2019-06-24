@@ -147,7 +147,7 @@ const Intro = () =>
           using <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization API</Away>.
         </p>
         <p>
-          We will not disclose the URLs of your flow maps and spreadsheets without your explicit consent.
+          We will not be disclosing the URLs of your flow maps and spreadsheets without your explicit consent.
         </p>
         <p>
           For improving flowmap.blue we need to know how it is used and when it fails.
