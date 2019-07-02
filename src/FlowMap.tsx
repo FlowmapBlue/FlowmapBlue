@@ -318,7 +318,7 @@ class FlowMap extends React.Component<Props, State> {
     this.getFlowsForKnownLocations,
     this.getClusterZoom,
     (clusterTree, flows, clusterZoom) => {
-      if (!clusterTree || !flows || !clusterZoom) return undefined
+      if (!clusterTree || !flows || clusterZoom == null) return undefined
       return clusterTree.aggregateFlows(flows, clusterZoom, { getFlowOriginId, getFlowDestId, getFlowMagnitude })
     }
   )
