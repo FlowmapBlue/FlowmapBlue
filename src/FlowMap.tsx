@@ -253,6 +253,9 @@ class FlowMap extends React.Component<Props, State> {
         locations,
         { getLocationId, getLocationCentroid },
         getLocationWeight,
+        {
+          maxZoom: 18,
+        }
       );
       const clusterIndex = Cluster.buildIndex(clusterLevels);
 
