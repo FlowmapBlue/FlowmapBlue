@@ -155,7 +155,7 @@ const Intro = () =>
           are not disclosing them without getting an explicit consent.
         </p>
         <p>
-          For improving flowmap.blue we need to know how it is used and when it fails.
+          For continuing to improve flowmap.blue we need to know how it is used and when it fails.
           We collect anonymous usage statistics via Google Analytics and track errors via Sentry.
           The use of Google Analytics involves setting cookies in the users' browsers
           for detecting recurring visits and working sessions.
