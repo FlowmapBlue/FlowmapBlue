@@ -12,6 +12,9 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import checkWebglSupport from './checkWebglSupport'
 import { ColorScheme } from './colors'
+import { AppToaster } from './toaster';
+import { Button, Intent } from '@blueprintjs/core';
+import { IconNames } from '@blueprintjs/icons';
 
 const globalStyles = css`
 html, body { 
@@ -37,3 +40,31 @@ ReactDOM.render(
   </>,
   document.getElementById('root')
 )
+
+if (window.localStorage &&
+  window.localStorage.getItem('privacyPolicyAccepted') !== 'true') {
+  AppToaster.show({
+    intent: Intent.PRIMARY,
+    icon: IconNames.INFO_SIGN,
+    timeout: 0,
+    message:
+    <div style={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column' }}>
+      <div style={{ fontSize: 14, }}>
+        For improving flowmap.blue we need to know how it is used and when it fails.
+        We use cookies to collect anonymous usage statistics and track errors on the website.
+        If you continue using Flowmap.blue, we assume that you agree with that.
+        For more information, please refer to our <a href="/#privacy">Privacy notice</a>.
+      </div>
+      <div>
+        <Button
+          intent={Intent.PRIMARY}
+          onClick={() => {
+            window.localStorage.setItem('privacyPolicyAccepted', 'true')
+            AppToaster.dismiss('privacy')
+          }}
+        >Yes, I agree
+        </Button>
+      </div>
+    </div>
+  }, 'privacy')
+}
