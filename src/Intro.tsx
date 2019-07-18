@@ -66,10 +66,13 @@ const Intro = () =>
         <div style={{ flexGrow: 1 }}>
           <section>
             <p>
-              Create interactive geographic flow maps from data published in Google Sheets.
+              Create geographic flow maps from data published in Google Sheets.
             </p>
             <p>
-              Visualize numbers of movements between geographic locations (Origin-Destination or OD-data).
+              Visualize numbers of movements between locations (origin-destination data).
+            </p>
+            <p>
+              Explore the data interactively.
             </p>
           </section>
 
