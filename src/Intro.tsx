@@ -147,14 +147,15 @@ const Intro = () =>
           using <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization API</Away>.
         </p>
         <p>
+          We treat the URLs of the flow maps and spreadsheets published by
+          the users as private and
+          are not disclosing them without getting an explicit consent.
+        </p>
+        <p>
           For improving flowmap.blue we need to know how it is used and when it fails.
           We collect anonymous usage statistics via Google Analytics and track errors via Sentry.
           The use of Google Analytics involves setting cookies in the users' browsers
           for detecting recurring visits and working sessions.
-        </p>
-        <p>
-          We are not disclosing the URLs of the flow maps and spreadsheets the users
-          publish using flowmap.blue without their explicit consent.
         </p>
       </section>
       <section>
