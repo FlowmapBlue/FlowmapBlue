@@ -52,7 +52,7 @@ if (window.localStorage &&
       <div style={{ fontSize: 14, }}>
         For improving flowmap.blue we need to know how it is used and when it fails.
         We use cookies to collect anonymous usage statistics and track errors on the website.
-        If you continue using Flowmap.blue, we assume that you agree with that.
+        If you continue using flowmap.blue, we assume that you agree with that.
         For more information, please refer to our <a href="/#privacy">Privacy notice</a>.
       </div>
       <div>
