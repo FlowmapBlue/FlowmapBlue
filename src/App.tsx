@@ -5,7 +5,7 @@ import Intro from './Intro'
 import * as Sentry from '@sentry/browser'
 import NoScrollContainer from './NoScrollContainer';
 import Fallback from './Fallback';
-import { AppToaster } from './toaster';
+import { AppToaster } from './AppToaster';
 import { Suspense } from 'react';
 import LoadingSpinner from './LoadingSpinner';
 import { SPREADSHEET_KEY_RE } from './constants';

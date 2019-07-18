@@ -12,12 +12,12 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import checkWebglSupport from './checkWebglSupport'
 import { ColorScheme } from './colors'
-import { AppToaster } from './toaster';
+import { AppToaster } from './AppToaster';
 import { Button, Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 
 const globalStyles = css`
-html, body { 
+html, body, button { 
   font-family: 'Sarabun', sans-serif; 
   font-size: 13pt;
 }

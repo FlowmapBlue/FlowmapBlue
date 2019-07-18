@@ -48,7 +48,7 @@ import styled from '@emotion/styled';
 import sendEvent from './ga';
 import { viewport } from '@mapbox/geo-viewport';
 import { SyntheticEvent } from 'react';
-import { AppToaster } from './toaster';
+import { AppToaster } from './AppToaster';
 import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
