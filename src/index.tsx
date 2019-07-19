@@ -41,30 +41,36 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
-if (window.localStorage &&
-  window.localStorage.getItem('privacyPolicyAccepted') !== 'true') {
-  AppToaster.show({
-    intent: Intent.PRIMARY,
-    icon: IconNames.INFO_SIGN,
-    timeout: 0,
-    message:
-    <div style={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column' }}>
-      <div style={{ fontSize: 14, }}>
-        For continuing to improve flowmap.blue we need to know how it is used.
-        We use cookies to collect anonymous usage statistics on the website.
-        If you use flowmap.blue, we assume that you agree with that.
-        For more information, please refer to our <a href="/#privacy">Privacy notice</a>.
+try {
+  if (window.localStorage &&
+    window.localStorage.getItem('privacyPolicyAccepted') !== 'true') {
+    AppToaster.show({
+      intent: Intent.PRIMARY,
+      icon: IconNames.INFO_SIGN,
+      timeout: 0,
+      message:
+      <div style={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column' }}>
+        <div style={{ fontSize: 14, }}>
+          For continuing to improve flowmap.blue we need to know how it is used.
+          We use cookies to collect anonymous usage statistics on the website.
+          If you use flowmap.blue, we assume that you agree with that.
+          For more information, please refer to our <a href="/#privacy">Privacy notice</a>.
+        </div>
+        <div style={{ marginTop: 10 }}>
+          <Button
+            intent={Intent.PRIMARY}
+            onClick={() => {
+              window.localStorage.setItem('privacyPolicyAccepted', 'true')
+              AppToaster.dismiss('privacy')
+            }}
+          >Yes, I agree
+          </Button>
+        </div>
       </div>
-      <div style={{ marginTop: 10 }}>
-        <Button
-          intent={Intent.PRIMARY}
-          onClick={() => {
-            window.localStorage.setItem('privacyPolicyAccepted', 'true')
-            AppToaster.dismiss('privacy')
-          }}
-        >Yes, I agree
-        </Button>
-      </div>
-    </div>
-  }, 'privacy')
+    }, 'privacy')
+  }
+} catch (err) {
+  // a SecurityError will be thrown if "Block third-party cookies and site data"
+  // is enabled in the browser settings
+  console.error(err)
 }
