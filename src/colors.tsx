@@ -72,12 +72,12 @@ const animatedColors: Colors = {
   flows: {
     scheme:
       range(0,1.1, 0.1)
-      .map(
-        scaleSequentialPow(
-          interpolateHcl('rgb(255,255,255)', ColorScheme.primary)
-      )
-      .exponent(2)
-    )
+        .map(
+          scaleSequentialPow(
+            interpolateHcl('#fff', ColorScheme.primary)
+          )
+          .exponent(1.5)
+        )
   },
 };
 
