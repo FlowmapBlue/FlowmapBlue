@@ -151,7 +151,7 @@ const Intro = () =>
         </p>
         <p>
           We treat the data and the URLs of the spreadsheets and flow maps published by
-          the users as private and are not disclosing them without getting an explicit consent.
+          the users as private and are not disclosing them without getting an explicit consent from the authors.
         </p>
         <p>
           For continuing to improve flowmap.blue we need to know how it is used and when it fails.
