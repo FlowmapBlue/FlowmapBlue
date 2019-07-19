@@ -50,12 +50,12 @@ if (window.localStorage &&
     message:
     <div style={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column' }}>
       <div style={{ fontSize: 14, }}>
-        For continuing to improve flowmap.blue we need to know how it is used and when it fails.
-        We use cookies to collect anonymous usage statistics and track errors on the website.
-        If you want to use flowmap.blue, we assume that you agree with that.
+        For continuing to improve flowmap.blue we need to know how it is used.
+        We use cookies to collect anonymous usage statistics on the website.
+        If you use flowmap.blue, we assume that you agree with that.
         For more information, please refer to our <a href="/#privacy">Privacy notice</a>.
       </div>
-      <div>
+      <div style={{ marginTop: 10 }}>
         <Button
           intent={Intent.PRIMARY}
           onClick={() => {
