@@ -16,7 +16,7 @@
     "@luma.gl/constants": "^7.0.1",
     "@luma.gl/core": "^7.0.1",
     "@mapbox/geo-viewport": "^0.4.0",
-    "@sentry/browser": "^4.5.3",
+    "@sentry/browser": "^5.5.0",
     "@types/d3-collection": "^1.0.7",
     "@types/d3-color": "^1.2.1",
     "@types/d3-dsv": "^1.0.35",
