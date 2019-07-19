@@ -267,7 +267,7 @@ class FlowMap extends React.Component<Props, State> {
       // Adding meaningful names
       const getName = (id: string) => {
         const loc = locationsById[id]
-        if (loc) return loc.name
+        if (loc) return loc.name || loc.id || id
         return `#${id}`
       }
       for (const level of clusterLevels) {
