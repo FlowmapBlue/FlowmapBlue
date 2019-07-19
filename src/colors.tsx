@@ -18,7 +18,11 @@ import {
   schemeOranges,
   schemePurples,
   schemeReds,
-} from 'd3-scale-chromatic'
+} from 'd3-scale-chromatic';
+import { range } from 'd3-array';
+// @ts-ignore
+import { scaleSequentialPow } from 'd3-scale';
+import { interpolateHcl } from 'd3-interpolate';
 import { Config, ConfigPropName } from './types';
 
 const asScheme = (scheme: ReadonlyArray<ReadonlyArray<string>>) =>
@@ -66,7 +70,14 @@ const colors: Colors = {
 const animatedColors: Colors = {
   ...colors,
   flows: {
-    scheme: ['#fff', ColorScheme.primary],
+    scheme:
+      range(0,1.1, 0.1)
+      .map(
+        scaleSequentialPow(
+          interpolateHcl('rgb(255,255,255)', ColorScheme.primary)
+      )
+      .exponent(2)
+    )
   },
 };
 
