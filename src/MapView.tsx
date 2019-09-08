@@ -57,6 +57,7 @@ const MapView = ({ spreadSheetKey, configFetch }: PropsWithData) => {
       {configFetch.fulfilled && configFetch.value[ConfigPropName.TITLE] &&
       <Helmet>
         <title>{`${configFetch.value[ConfigPropName.TITLE]} - flowmap.blue`}</title>
+        <link href={`https://flowmap.blue/${spreadSheetKey}`} rel="canonical" />
       </Helmet>
       }
     </NoScrollContainer>

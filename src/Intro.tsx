@@ -10,6 +10,7 @@ import examples from './examples.json';
 import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
 import Away from './Away';
 import { Row } from './Boxes';
+import { Helmet } from 'react-helmet';
 
 const Outer = styled.div`
   padding: 10px 20px;
@@ -59,6 +60,9 @@ const NoWrap = styled.span`
 
 const Intro = () =>
   <Outer>
+    <Helmet>
+      <link href="https://flowmap.blue/" rel="canonical" />
+    </Helmet>
 
     <h1><Logo fontSize={35} collapseWidth={300} /></h1>
     <section>
