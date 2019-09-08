@@ -1,28 +1,19 @@
 import { DeckGL } from '@deck.gl/react'
 import { MapController } from '@deck.gl/core'
 import * as React from 'react'
-import {
-  // NavigationControl,
-  StaticMap,
-  ViewportProps,
-  ViewState,
-  ViewStateChangeInfo
-} from 'react-map-gl'
-import FlowMapLayer, {
-  FlowLayerPickingInfo,
-  FlowPickingInfo,
-  LocationPickingInfo,
-  PickingType
-} from '@flowmap.gl/core'
+import { SyntheticEvent } from 'react'
+import { StaticMap, ViewportProps, ViewState, ViewStateChangeInfo } from 'react-map-gl'
+import FlowMapLayer, { FlowLayerPickingInfo, FlowPickingInfo, LocationPickingInfo, PickingType } from '@flowmap.gl/core'
 import { Colors, Intent, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import * as Cluster from '@flowmap.gl/cluster'
+import { isCluster } from '@flowmap.gl/cluster'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector, ParametricSelector } from 'reselect'
 import getColors from './colors'
-import { Box, Column, LegendTitle, Title, TitleBox, ToastContent, Row, Description } from './Boxes'
+import { Box, Column, Description, LegendTitle, Row, Title, TitleBox, ToastContent } from './Boxes'
 import { findDOMNode } from 'react-dom';
-import { FlowTooltipContent, LocationTooltipContent, formatCount } from './TooltipContent';
+import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
@@ -47,15 +38,13 @@ import NoScrollContainer from './NoScrollContainer';
 import styled from '@emotion/styled';
 import sendEvent from './ga';
 import { viewport } from '@mapbox/geo-viewport';
-import { SyntheticEvent } from 'react';
 import { AppToaster } from './AppToaster';
 import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
 import Away from './Away';
-import { isCluster } from '@flowmap.gl/cluster';
 import { nest } from 'd3-collection';
-import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT } from './MapView';
+import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp } from './MapView';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -149,17 +138,23 @@ const StyledSwitch = styled(Switch)`
 type Selector<T> = ParametricSelector<State, Props, T>
 
 class FlowMap extends React.Component<Props, State> {
-  readonly state: State = {
-    viewState: initialViewState,
-    lastLocations: undefined,
-    selectedLocations: undefined,
-    error: undefined,
-    maxZoom: undefined,
-    minZoom: undefined,
-    time: 0,
-    animationEnabled: false,
-    clusteringEnabled: true,
-    darkMode: false,
+
+  readonly state: State
+
+  constructor(props: Props) {
+    super(props)
+    this.state = {
+      viewState: initialViewState,
+      lastLocations: undefined,
+      selectedLocations: undefined,
+      error: undefined,
+      maxZoom: undefined,
+      minZoom: undefined,
+      time: 0,
+      animationEnabled: false,
+      clusteringEnabled: true,
+      darkMode: parseBoolConfigProp(props.config[ConfigPropName.COLORS_DARK_MODE]),
+    }
   }
 
   getFlows = (state: State, props: Props) => props.flowsFetch.value
@@ -194,6 +189,20 @@ class FlowMap extends React.Component<Props, State> {
     this.getDarkMode,
     this.getAnimate,
     getColors,
+  )
+
+  getMapboxMapStyle = createSelector(
+    this.getConfig,
+    this.getDarkMode,
+    (config, darkMode) => {
+      const configMapStyle = config[ConfigPropName.MAPBOX_MAP_STYLE];
+      if (configMapStyle) {
+        if (!darkMode || config[ConfigPropName.COLORS_DARK_MODE]) {
+          return configMapStyle
+        }
+      }
+      return darkMode ? DEFAULT_MAP_STYLE_DARK : DEFAULT_MAP_STYLE_LIGHT
+    }
   )
 
   getFlowsForKnownLocations: Selector<Flow[] | undefined> = createSelector(
@@ -944,9 +953,7 @@ class FlowMap extends React.Component<Props, State> {
     const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
     const diffMode = this.getDiffMode(this.state, this.props)
     const darkMode = this.getDarkMode(this.state, this.props)
-    const mapboxMapStyle = config[ConfigPropName.MAPBOX_MAP_STYLE] || (
-      darkMode ? DEFAULT_MAP_STYLE_DARK : DEFAULT_MAP_STYLE_LIGHT
-    )
+    const mapboxMapStyle = this.getMapboxMapStyle(this.state, this.props)
     return (
       <Outer darkMode={darkMode}>
         <DeckGL

@@ -12,6 +12,7 @@ export enum ConfigPropName {
   MAPBOX_ACCESS_TOKEN = 'mapbox.accessToken',
   MAPBOX_MAP_STYLE = 'mapbox.mapStyle',
   COLORS_SCHEME = 'colors.scheme',
+  COLORS_DARK_MODE = 'colors.darkMode',
 }
 
 export interface ConfigProp {

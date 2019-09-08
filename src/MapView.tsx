@@ -33,6 +33,7 @@ const DEFAULT_CONFIG: Config = {
   [ConfigPropName.MAPBOX_MAP_STYLE]: undefined,
   [ConfigPropName.IGNORE_ERRORS]: undefined,
   [ConfigPropName.COLORS_SCHEME]: undefined,
+  [ConfigPropName.COLORS_DARK_MODE]: undefined,
 }
 
 
@@ -80,3 +81,12 @@ export default sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
     },
   } as any
 }))(MapView)
+
+export function parseBoolConfigProp(value: string | undefined) {
+  console.log(value)
+  if (value != null) {
+    const lower = value.toLowerCase()
+    if (lower === 'yes' || lower === 'true' || lower === '1') return true
+  }
+  return false
+}
