@@ -163,6 +163,7 @@ const Intro = () =>
             <ExampleGridHoverableLink key={key} to={`/${key}`} target="_blank">
                 <ExampleName className="name">{name}</ExampleName>
                 <ExampleImage
+                  alt={name}
                   src={`screenshots/${screenshotSizes[0]}px/${key}.jpg`}
                   srcSet={screenshotSizes.map(w => `screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
                   sizes={screenshotSizes.map((w,i) =>
