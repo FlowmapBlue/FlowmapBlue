@@ -1,5 +1,6 @@
 import * as React from 'react'
 import styled from '@emotion/styled';
+import { Colors } from '@blueprintjs/core';
 
 export enum Direction {
   LEFT, RIGHT
@@ -9,6 +10,7 @@ export interface Props {
   width: number
   initialCollapsed?: boolean
   direction: Direction
+  darkMode: boolean
 }
 
 export interface State {
@@ -38,7 +40,16 @@ const Rotate = styled.div(({ degrees }: { degrees: number }) => `
   transition: transform 0.15s ease-out;  
 `)
 
-const Button = styled.button(({ collapsed, direction }: { collapsed: boolean, direction: Direction }) => `
+const Button = styled.button((
+  {
+    collapsed,
+    direction,
+    darkMode,
+}: {
+    collapsed: boolean,
+    direction: Direction,
+    darkMode: boolean,
+  }) => `
   display: flex;
   order: ${direction === Direction.LEFT ? 1 : 2};  
   border: none;
@@ -46,12 +57,12 @@ const Button = styled.button(({ collapsed, direction }: { collapsed: boolean, di
   align-items: center;
   outline: none;
   font-size: 22px;
-  background-color: #fff;
+  background-color: ${darkMode ? Colors.DARK_GRAY4 : Colors.LIGHT_GRAY5};
   color: #ccc;
   border-radius: ${collapsed ? 4 : 0}px;
   transition: background-color 0.25s, border-radius 0.15s;  
   &:hover {
-    background-color: #eee;
+    background-color: ${darkMode ? Colors.DARK_GRAY5 : Colors.LIGHT_GRAY4};
   }
 `)
 
@@ -85,7 +96,7 @@ export default class Collapsible extends React.Component<Props, State> {
   }
 
   render() {
-    const { width, direction, children } = this.props
+    const { width, direction, darkMode, children } = this.props
     const { collapsed } = this.state
     return (
       <Outer>
@@ -103,6 +114,7 @@ export default class Collapsible extends React.Component<Props, State> {
           </Content>
         </Body>
         <Button
+          darkMode={darkMode}
           collapsed={collapsed}
           direction={direction}
           onClick={this.handleClick}

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { Colors } from '@blueprintjs/core';
 
 export interface AbsoluteProps {
   top?: number
@@ -29,13 +30,13 @@ export const Absolute = styled.div<AbsoluteProps>(({ top, left, right, bottom }:
   ${bottom != null ? `bottom: ${bottom}px;` : ''}
 `)
 
-export const Box = styled(Absolute)`
-  background: rgba(255, 255, 255, 0.9);
+export const Box = styled(Absolute)((props: { darkMode? : boolean }) => `
+  background: ${props.darkMode ? Colors.DARK_GRAY3 : `rgba(255, 255, 255, 0.9)`};
   // padding: 12px;
   border-radius: 4px;
   font-size: 11px;
   box-shadow: 0 0 4px #aaa; 
-`
+`)
 
 export const TitleBox = styled(Box)`
   line-height: 1.3;

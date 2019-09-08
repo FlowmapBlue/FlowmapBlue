@@ -14,7 +14,7 @@ import FlowMapLayer, {
   LocationPickingInfo,
   PickingType
 } from '@flowmap.gl/core'
-import { Intent, Switch } from '@blueprintjs/core'
+import { Colors, Intent, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import * as Cluster from '@flowmap.gl/cluster'
 import WebMercatorViewport from 'viewport-mercator-project'
@@ -125,9 +125,16 @@ const getInitialViewState = (bbox: [number, number, number, number]) => {
 const initialViewState = getInitialViewState([ -180, -70, 180, 70 ])
 
 
-const Outer = styled(NoScrollContainer)`
-  background: #f5f5f5;
-`
+const Outer = (props: { darkMode: boolean, children: React.ReactNode }) =>
+  <NoScrollContainer
+    className={props.darkMode ? 'bp3-dark' : undefined}
+    style={{
+      background: props.darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5
+    }}
+  >
+    {props.children}
+  </NoScrollContainer>
+
 // const ZoomControls = styled(NavigationControl)`
 //   position: absolute;
 //   top: 10px;
@@ -443,7 +450,7 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   makeFlowMapLayer(id: string, locations: (Location | Cluster.ClusterNode)[], flows: Flow[], visible: boolean) {
-    const { animationEnabled, darkMode, time } = this.state
+    const { animationEnabled, time } = this.state
     const highlight = this.getHighlightForZoom()
 
     return new FlowMapLayer({
@@ -941,7 +948,7 @@ class FlowMap extends React.Component<Props, State> {
       darkMode ? DEFAULT_MAP_STYLE_DARK : DEFAULT_MAP_STYLE_LIGHT
     )
     return (
-      <Outer>
+      <Outer darkMode={darkMode}>
         <DeckGL
           style={{ mixBlendMode: darkMode ? 'screen' : 'multiply' }}
           controller={CONTROLLER_OPTIONS}
@@ -964,7 +971,7 @@ class FlowMap extends React.Component<Props, State> {
         {flows &&
         <>
           {searchBoxLocations &&
-            <Box top={10} right={10}>
+            <Box top={10} right={10} darkMode={darkMode}>
               <LocationsSearchBox
                 locations={searchBoxLocations}
                 selectedLocations={this.state.selectedLocations}
@@ -972,8 +979,9 @@ class FlowMap extends React.Component<Props, State> {
               />
             </Box>
           }
-          <Box bottom={28} right={0}>
+          <Box bottom={28} right={0} darkMode={darkMode}>
             <Collapsible
+              darkMode={darkMode}
               width={160}
               direction={Direction.RIGHT}
             >
@@ -987,8 +995,9 @@ class FlowMap extends React.Component<Props, State> {
             </Collapsible>
           </Box>
         </>}
-        <TitleBox top={60} left={0}>
+        <TitleBox top={60} left={0} darkMode={darkMode}>
           <Collapsible
+            darkMode={darkMode}
             width={300}
             direction={Direction.LEFT}
           >
@@ -1029,8 +1038,8 @@ class FlowMap extends React.Component<Props, State> {
                 />
               </Row>
               <Row spacing={10}>
-                <Switch
-                  checked={this.state.darkMode}
+                <StyledSwitch
+                  checked={darkMode}
                   label="Dark mode"
                   onChange={this.handleToggleDarkMode}
                 />
