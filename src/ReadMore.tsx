@@ -2,6 +2,8 @@ import styled from '@emotion/styled'
 import * as React from 'react'
 
 const MoreContent = styled.div`
+  margin-top: 1em;
+  margin-bottom: 1em;
   padding: 10px;
   border-radius: 4px;
   background: #eef;

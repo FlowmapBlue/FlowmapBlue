@@ -948,17 +948,17 @@ class FlowMap extends React.Component<Props, State> {
             </StaticMap>
           )}
         />
-        {searchBoxLocations &&
-          <Box top={10} right={10}>
-            <LocationsSearchBox
-              locations={searchBoxLocations}
-              selectedLocations={this.state.selectedLocations}
-              onSelectionChanged={this.handleSelectLocation}
-            />
-          </Box>
-        }
         {flows &&
         <>
+          {searchBoxLocations &&
+            <Box top={10} right={10}>
+              <LocationsSearchBox
+                locations={searchBoxLocations}
+                selectedLocations={this.state.selectedLocations}
+                onSelectionChanged={this.handleSelectLocation}
+              />
+            </Box>
+          }
           <Box bottom={28} right={0}>
             <Collapsible
               width={160}
