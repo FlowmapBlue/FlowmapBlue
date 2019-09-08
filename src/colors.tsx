@@ -20,7 +20,7 @@ import {
   schemeReds,
 } from 'd3-scale-chromatic';
 import { range } from 'd3-array';
-import { scaleSequential } from 'd3-scale';
+import { scaleSequential, scalePow } from 'd3-scale';
 import { interpolateRgbBasis } from 'd3-interpolate';
 import { Config, ConfigPropName } from './types';
 
@@ -94,15 +94,21 @@ export default function getColors(
   if (darkMode) {
     scheme = scheme.slice().reverse()
   }
-  if (animate) {
+  // if (animate)
+  {
     // lighten or darken to prevent the "worms" effect
     const indices = range(0, Math.max(10, scheme.length))
     const N = indices.length - 1;
     const colorScale = scaleSequential(interpolateRgbBasis(scheme))
       .domain([0, N])
 
+    const amount = scalePow()
+      .exponent(animate ? 1 : 1)
+      .domain([0, N])
+      .range([1, 0])
+
     scheme = indices.map((c, i) =>
-      interpolateRgbBasis([colorScale(i), darkMode ? '#000' : '#fff'])((N - i)/N)
+      interpolateRgbBasis([colorScale(i), darkMode ? '#000' : '#fff'])(amount(i))
     )
   }
 

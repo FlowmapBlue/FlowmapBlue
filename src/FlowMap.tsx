@@ -151,7 +151,7 @@ class FlowMap extends React.Component<Props, State> {
       maxZoom: undefined,
       minZoom: undefined,
       time: 0,
-      animationEnabled: false,
+      animationEnabled: parseBoolConfigProp(props.config[ConfigPropName.ANIMATE_FLOWS]),
       clusteringEnabled: true,
       darkMode: parseBoolConfigProp(props.config[ConfigPropName.COLORS_DARK_MODE]),
     }

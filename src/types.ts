@@ -13,6 +13,7 @@ export enum ConfigPropName {
   MAPBOX_MAP_STYLE = 'mapbox.mapStyle',
   COLORS_SCHEME = 'colors.scheme',
   COLORS_DARK_MODE = 'colors.darkMode',
+  ANIMATE_FLOWS = 'animate.flows',
 }
 
 export interface ConfigProp {

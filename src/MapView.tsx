@@ -34,6 +34,7 @@ const DEFAULT_CONFIG: Config = {
   [ConfigPropName.IGNORE_ERRORS]: undefined,
   [ConfigPropName.COLORS_SCHEME]: undefined,
   [ConfigPropName.COLORS_DARK_MODE]: undefined,
+  [ConfigPropName.ANIMATE_FLOWS]: undefined,
 }
 
 

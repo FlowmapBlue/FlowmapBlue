@@ -3,11 +3,15 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const { examples, screenshotSizes } = require('../src/examples');
 const OUTPUT_PATH = path.resolve(__dirname, '../public/screenshots/');
-const APP_URL = 'http://flowmap.blue/';
+const APP_URL = 'http://localhost:3000';
 
 const ASPECT_RATIO = 800/600;
 const PAD = 500;
 const timeout = 3 * 60 * 1000;
+
+const exampleKeys =
+  process.argv.length > 2 ? process.argv.splice(2) :
+  examples.map(({ key }) => key)
 
 async function mkdirp(dirPath) {
   await new Promise((resolve, reject) => {
@@ -21,13 +25,14 @@ async function mkdirp(dirPath) {
   await page.goto(APP_URL, { waitUntil: 'networkidle2' });
   await page.waitForSelector('.bp3-toast-message');
   await page.click('.bp3-toast-message button.bp3-intent-primary');
+  page.on('pageerror', console.error);
 
   for (const size of screenshotSizes) {
     const width = size;
     const height = Math.floor(size/ASPECT_RATIO);
     await page.setViewport({ width: width + PAD * 2, height, });
-    for (const { key } of examples) {
-      const url = APP_URL + key;
+    for (const key of exampleKeys) {
+      const url = `${APP_URL}/${key}`;
       process.stdout.write('Making screenshot of '+ url + '\n');
       await page.goto(url, { waitUntil: 'networkidle0', timeout });
       await page.waitForSelector('.bp3-multi-select', { timeout });
