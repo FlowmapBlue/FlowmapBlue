@@ -55,6 +55,7 @@ import LocationsSearchBox from './LocationSearchBox';
 import Away from './Away';
 import { isCluster } from '@flowmap.gl/cluster';
 import { nest } from 'd3-collection';
+import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT } from './MapView';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -101,6 +102,7 @@ type State = {
   time: number
   animationEnabled: boolean
   clusteringEnabled: boolean
+  darkMode: boolean
 }
 
 
@@ -150,6 +152,7 @@ class FlowMap extends React.Component<Props, State> {
     time: 0,
     animationEnabled: false,
     clusteringEnabled: true,
+    darkMode: false,
   }
 
   getFlows = (state: State, props: Props) => props.flowsFetch.value
@@ -174,11 +177,14 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
+  getDarkMode: Selector<boolean> = (state: State, props: Props) => state.darkMode
+
   getAnimate: Selector<boolean> = (state: State, props: Props) => state.animationEnabled
 
   getColors = createSelector(
     this.getConfig,
     this.getDiffMode,
+    this.getDarkMode,
     this.getAnimate,
     getColors,
   )
@@ -437,7 +443,7 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   makeFlowMapLayer(id: string, locations: (Location | Cluster.ClusterNode)[], flows: Flow[], visible: boolean) {
-    const { animationEnabled, time } = this.state
+    const { animationEnabled, darkMode, time } = this.state
     const highlight = this.getHighlightForZoom()
 
     return new FlowMapLayer({
@@ -466,7 +472,7 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   getLayers() {
-    const { clusteringEnabled, animationEnabled } = this.state
+    const { clusteringEnabled, animationEnabled, darkMode } = this.state
     const layers = []
     if (clusteringEnabled) {
       const clusterIndex = this.getClusterIndex(this.state, this.props)
@@ -476,7 +482,7 @@ class FlowMap extends React.Component<Props, State> {
       //   const flows = flows.get(clusterZoom)
         if (flows) {
           layers.push(this.makeFlowMapLayer(
-              `flow-map-${animationEnabled ? 'animated' : 'arrows'}-${clusterZoom}`,
+              `flow-map-${animationEnabled ? 'animated' : 'arrows'}-${clusterZoom}-${darkMode ? 'dark' : 'light'}`,
               clusterIndex.getClusterNodesFor(clusterZoom)!,
               flows,
               // zoom === clusterZoom,
@@ -489,7 +495,7 @@ class FlowMap extends React.Component<Props, State> {
       const flows = this.getFlowsForKnownLocations(this.state, this.props);
       if (locations && flows) {
         layers.push(this.makeFlowMapLayer(
-          `flow-map-${animationEnabled ? 'animated' : 'arrows'}`,
+          `flow-map-${animationEnabled ? 'animated' : 'arrows'}-${darkMode ? 'dark' : 'light'}`,
           locations,
           flows,
           true,
@@ -651,6 +657,11 @@ class FlowMap extends React.Component<Props, State> {
   handleToggleClustering = (evt: SyntheticEvent) => {
     const value = (evt.target as HTMLInputElement).checked
     this.setState({ clusteringEnabled: value })
+  }
+
+  handleToggleDarkMode = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked
+    this.setState({ darkMode: value })
   }
 
   private animationFrame: number = -1;
@@ -924,13 +935,15 @@ class FlowMap extends React.Component<Props, State> {
     const authorUrl = config[ConfigPropName.AUTHOR_URL]
     const authorName = config[ConfigPropName.AUTHOR_NAME]
     const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
-    const mapboxMapStyle = config[ConfigPropName.MAPBOX_MAP_STYLE]
     const diffMode = this.getDiffMode(this.state, this.props)
+    const darkMode = this.getDarkMode(this.state, this.props)
+    const mapboxMapStyle = config[ConfigPropName.MAPBOX_MAP_STYLE] || (
+      darkMode ? DEFAULT_MAP_STYLE_DARK : DEFAULT_MAP_STYLE_LIGHT
+    )
     return (
       <Outer>
         <DeckGL
-          // style={{ mixBlendMode: 'screen' }} // dark mode
-          style={{ mixBlendMode: 'multiply' }}
+          style={{ mixBlendMode: darkMode ? 'screen' : 'multiply' }}
           controller={CONTROLLER_OPTIONS}
           viewState={viewState}
           onViewStateChange={this.handleViewStateChange}
@@ -1013,6 +1026,13 @@ class FlowMap extends React.Component<Props, State> {
                   checked={this.state.animationEnabled}
                   label="Animate flows"
                   onChange={this.handleToggleAnimation}
+                />
+              </Row>
+              <Row spacing={10}>
+                <Switch
+                  checked={this.state.darkMode}
+                  label="Dark mode"
+                  onChange={this.handleToggleDarkMode}
                 />
               </Row>
             </Column>

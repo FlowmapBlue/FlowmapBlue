@@ -20,9 +20,8 @@ import {
   schemeReds,
 } from 'd3-scale-chromatic';
 import { range } from 'd3-array';
-// @ts-ignore
-import { scaleSequentialPow } from 'd3-scale';
-import { interpolateHcl } from 'd3-interpolate';
+import { scaleSequential } from 'd3-scale';
+import { interpolateRgbBasis } from 'd3-interpolate';
 import { Config, ConfigPropName } from './types';
 
 const asScheme = (scheme: ReadonlyArray<ReadonlyArray<string>>) =>
@@ -55,31 +54,7 @@ export enum ColorScheme {
 
 const FLOW_MIN_COLOR = 'rgba(240,240,240,0.5)'
 
-const colors: Colors = {
-  flows: {
-    scheme: [FLOW_MIN_COLOR, ColorScheme.primary],
-  },
-  locationCircles: {
-    // outgoing: hcl(ColorScheme.primary).brighter(2).toString(),
-    outgoing: '#fff',
-  },
-  outlineColor: 'rgba(255, 255, 255, 0.5)',
-  // outlineColor: 'rgba(0, 0, 0, 0.5)',    // dark mode
-};
-
-const animatedColors: Colors = {
-  ...colors,
-  flows: {
-    scheme:
-      range(0,1.1, 0.1)
-        .map(
-          scaleSequentialPow(
-            interpolateHcl('#fff', ColorScheme.primary)
-          )
-          .exponent(1.5)
-        )
-  },
-};
+const DEFAULT_COLOR_SCHEME = [FLOW_MIN_COLOR, ColorScheme.primary];
 
 const complementary = '#f52020'
 const baseDiffColor = '#17a5be'
@@ -104,23 +79,40 @@ const diffColors: DiffColors = {
 
 
 export default function getColors(
-  config: Config, diffMode: boolean, animate: boolean
+  config: Config,
+  diffMode: boolean,
+  darkMode: boolean,
+  animate: boolean,
 ): Colors | DiffColors {
   if (diffMode) {
     return diffColors
   }
+
   const schemeKey = config[ConfigPropName.COLORS_SCHEME]
-  const scheme = schemeKey && flowColorSchemes[schemeKey]
-  if (scheme) {
-    return {
-      ...colors,
-      flows: {
-        scheme,
-      }
-    }
+  let scheme = (schemeKey && flowColorSchemes[schemeKey]) || DEFAULT_COLOR_SCHEME
+
+  if (darkMode) {
+    scheme = scheme.slice().reverse()
   }
   if (animate) {
-    return animatedColors
+    // lighten or darken to prevent the "worms" effect
+    const indices = range(0, Math.max(10, scheme.length))
+    const N = indices.length - 1;
+    const colorScale = scaleSequential(interpolateRgbBasis(scheme))
+      .domain([0, N])
+
+    scheme = indices.map((c, i) =>
+      interpolateRgbBasis([colorScale(i), darkMode ? '#000' : '#fff'])((N - i)/N)
+    )
   }
-  return colors
+
+  return {
+    flows: {
+      scheme,
+    },
+    locationCircles: {
+      outgoing: '#fff',
+    },
+    outlineColor: darkMode ? '#000' : 'rgba(255, 255, 255, 0.5)',
+  }
 }
