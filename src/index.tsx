@@ -15,7 +15,14 @@ import { ColorScheme } from './colors'
 import { AppToaster } from './AppToaster';
 import { Button, Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
+import styled from '@emotion/styled';
 
+const ButtonArea = styled.div({
+  marginTop: 10,
+  '@media (min-width: 520px)': {
+    marginTop: -10,
+  },
+})
 const globalStyles = css`
 html, body, button { 
   font-family: 'Sarabun', sans-serif; 
@@ -51,12 +58,12 @@ try {
       message:
       <div style={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column' }}>
         <div style={{ fontSize: 14, }}>
-          For continuing to improve flowmap.blue we need to know how it is used.
-          We use cookies to collect anonymous usage statistics on the website.
+          We use cookies to collect usage statistics on the website.
+          This really helps us to improve the app.
           If you use flowmap.blue, we assume that you agree with that.
           For more information, please refer to our <a href="/#privacy">Privacy notice</a>.
         </div>
-        <div style={{ marginTop: 10 }}>
+        <ButtonArea>
           <Button
             intent={Intent.PRIMARY}
             onClick={() => {
@@ -65,7 +72,7 @@ try {
             }}
           >Yes, I agree
           </Button>
-        </div>
+        </ButtonArea>
       </div>
     }, 'privacy')
   }
