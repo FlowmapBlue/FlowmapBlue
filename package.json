@@ -50,7 +50,7 @@
     "react-app-polyfill": "^1.0.1",
     "react-dom": "^16.7.0",
     "react-helmet": "^5.2.0",
-    "react-map-gl": "^5.0.3",
+    "react-map-gl": "^5.0.10",
     "react-popper": "^1.3.2",
     "react-refetch": "^2.0.3",
     "react-router-dom": "^4.3.1",
