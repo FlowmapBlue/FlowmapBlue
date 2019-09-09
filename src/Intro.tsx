@@ -108,7 +108,7 @@ const Intro = () =>
 
     <h1><Logo fontSize={35} collapseWidth={300} /></h1>
 
-    <MainExampleImageHoverableLink to="/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8" target="_blank">
+    <MainExampleImageHoverableLink to="/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8">
       <ExampleImage
         src={MainExampleImageSrc}
       />
@@ -160,7 +160,7 @@ const Intro = () =>
       <ExampleGrid>
         {
           examples.map(({ key, name }) =>
-            <ExampleGridHoverableLink key={key} to={`/${key}`} target="_blank">
+            <ExampleGridHoverableLink key={key} to={`/${key}`}>
                 <ExampleName className="name">{name}</ExampleName>
                 <ExampleImage
                   alt={name}
