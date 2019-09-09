@@ -103,7 +103,7 @@ export default function getColors(
       .domain([0, N])
 
     const amount = scalePow()
-      .exponent(animate ? 1 : 1/5)
+      .exponent(animate ? 1 : 1/2.5)
       .domain([0, N])
       .range([1, 0])
 

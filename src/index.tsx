@@ -13,7 +13,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import checkWebglSupport from './checkWebglSupport'
 import { ColorScheme } from './colors'
 import { AppToaster } from './AppToaster';
-import { Button, Intent } from '@blueprintjs/core';
+import { Button, Colors, Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
 
@@ -28,7 +28,11 @@ html, body, button {
   font-family: 'Sarabun', sans-serif; 
   font-size: 13pt;
 }
+ 
 a, a:visited { color: ${ColorScheme.primary}; }
+.bp3-dark {
+  a, a:visited { color: ${Colors.BLUE5}; }
+}
 
 section { margin-bottom: 3em; line-height: 1.5em; }
 #no-token-warning { bottom: 30px; top: unset !important; left: 10px !important; }
