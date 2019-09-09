@@ -34,6 +34,10 @@ a, a:visited { color: ${ColorScheme.primary}; }
   a, a:visited { color: ${Colors.BLUE5}; }
 }
 
+.mapboxgl-control-container {
+  a, a:visited { color: ${Colors.DARK_GRAY1}; }
+}
+
 section { margin-bottom: 3em; line-height: 1.5em; }
 #no-token-warning { bottom: 30px; top: unset !important; left: 10px !important; }
 `
