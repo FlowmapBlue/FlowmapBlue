@@ -89,6 +89,10 @@ const ExampleName = styled.div`
 const ExampleImage = styled.img`
   width: 100%;
   display: block;
+  transition: transform 0.5s;
+  &:hover {
+    transform: scale(1.2);
+  }
 `
 const MainExampleImageHoverableLink = styled(HoverableLink)`
   margin-bottom: 20px;
