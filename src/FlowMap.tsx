@@ -197,7 +197,7 @@ class FlowMap extends React.Component<Props, State> {
     (config, darkMode) => {
       const configMapStyle = config[ConfigPropName.MAPBOX_MAP_STYLE];
       if (configMapStyle) {
-        if (!darkMode || config[ConfigPropName.COLORS_DARK_MODE]) {
+        if (darkMode === parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE])) {
           return configMapStyle
         }
       }

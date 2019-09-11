@@ -84,7 +84,6 @@ export default sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
 }))(MapView)
 
 export function parseBoolConfigProp(value: string | undefined) {
-  console.log(value)
   if (value != null) {
     const lower = value.toLowerCase()
     if (lower === 'yes' || lower === 'true' || lower === '1') return true
