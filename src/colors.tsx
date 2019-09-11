@@ -137,7 +137,7 @@ export default function getColors(
       scheme,
     },
     locationCircles: {
-      outgoing: '#fff',
+      outgoing: darkMode ? '#000' : '#fff',
     },
     outlineColor: darkMode ? '#000' : 'rgba(255, 255, 255, 0.5)',
   }
