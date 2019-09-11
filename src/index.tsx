@@ -78,7 +78,7 @@ try {
               window.localStorage.setItem('privacyPolicyAccepted', 'true')
               AppToaster.dismiss('privacy')
             }}
-          >Yes, I agree
+          >Accept
           </Button>
         </ButtonArea>
       </div>
