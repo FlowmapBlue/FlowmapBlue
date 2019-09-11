@@ -82,7 +82,9 @@ const ExampleName = styled.div`
   line-height: 1.4;
   background: #fff;
   font-size: 10pt;
-  opacity: 0; 
+  opacity: 0;
+  z-index: 2; 
+  pointer-events: none;
   transition: opacity 0.25s;
   border-bottom-right-radius: 5px;
 `
