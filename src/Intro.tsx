@@ -170,7 +170,11 @@ const Intro = () =>
         </li>
         {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
         <li>Share the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and then
-          choosing "Anyone with the link can view".
+          choosing "Anyone with the link can view". <ReadMore>
+            This step is required so that flowmap.blue can access the data in your spreadsheet.
+            The spreadsheet and the flow map will stay effectively private as long as you don't send
+            their URLs to anyone and don't publish them online.
+          </ReadMore>
         </li>
         <SpreadsheetKeyExtractor />
       </ol>
