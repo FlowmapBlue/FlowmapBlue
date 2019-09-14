@@ -1,5 +1,5 @@
 {
-  "screenshotSizes": [600,800,1000,1200],
+  "screenshotSizes": [600],
   "examples": [
     { "key": "15kwLB4baXZ7jpip8q0JjgR6zDoS5Gt3gMLCTUAboQxk", "name": "Relocations between Swiss cantons in 2016" },
     { "key": "1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA", "name": "17 million New York Citi Bike trips in 2018" },

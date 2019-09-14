@@ -56,6 +56,9 @@ const ExampleGrid = styled.div`
     grid-template-columns: repeat(2, 1fr);
   }
   @media (min-width: 650px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (min-width: 800px) {
     grid-template-columns: repeat(4, 1fr);
   }
   @media (min-width: 1000px) {
@@ -105,7 +108,7 @@ const ExampleImage = styled.img`
   transform: scale(1.2);
   transition: transform 0.5s;
   &:hover {
-    transform: scale(2.5);
+    transform: scale(2);
   }
 `
 const MainExampleImageHoverableLink = styled(HoverableLink)`
@@ -185,10 +188,10 @@ const Intro = () =>
                 <ExampleName className="name">{name}</ExampleName>
                 <ExampleImage
                   alt={name}
-                  src={`screenshots/${screenshotSizes[0]}px/${key}.jpg`}
+                  src={`screenshots/${key}__${screenshotSizes[0]}px.jpg`}
                   srcSet={screenshotSizes.map(w => `screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
                   sizes={screenshotSizes.map((w,i) =>
-                    (i < screenshotSizes.length-1 ? `(max-width: ${w}px) ` : '')+ `${w}px`)
+                    (i < screenshotSizes.length-1 ? `(max-width: ${w*2}px) ` : '')+ `${w}px`)
                     .join(',')
                   }
                 />
