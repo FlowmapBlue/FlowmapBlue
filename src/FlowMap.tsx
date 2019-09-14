@@ -4,13 +4,13 @@ import * as React from 'react'
 import { SyntheticEvent } from 'react'
 import { StaticMap, ViewportProps, ViewState, ViewStateChangeInfo } from 'react-map-gl'
 import FlowMapLayer, { FlowLayerPickingInfo, FlowPickingInfo, LocationPickingInfo, PickingType } from '@flowmap.gl/core'
-import { Colors, Intent, Switch } from '@blueprintjs/core'
+import { Colors, HTMLSelect, Intent, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import * as Cluster from '@flowmap.gl/cluster'
 import { isCluster } from '@flowmap.gl/cluster'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector, ParametricSelector } from 'reselect'
-import getColors from './colors'
+import getColors, { flowColorSchemes } from './colors'
 import { Box, Column, Description, LegendTitle, Row, Title, TitleBox, ToastContent } from './Boxes'
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
@@ -92,6 +92,7 @@ type State = {
   animationEnabled: boolean
   clusteringEnabled: boolean
   darkMode: boolean
+  colorSchemeKey: string | undefined
 }
 
 
@@ -154,6 +155,7 @@ class FlowMap extends React.Component<Props, State> {
       animationEnabled: parseBoolConfigProp(props.config[ConfigPropName.ANIMATE_FLOWS]),
       clusteringEnabled: true,
       darkMode: parseBoolConfigProp(props.config[ConfigPropName.COLORS_DARK_MODE]),
+      colorSchemeKey: props.config[ConfigPropName.COLORS_SCHEME],
     }
   }
 
@@ -179,6 +181,8 @@ class FlowMap extends React.Component<Props, State> {
     }
   )
 
+  getColorSchemeKey: Selector<string | undefined> = (state: State, props: Props) => state.colorSchemeKey
+
   getDarkMode: Selector<boolean> = (state: State, props: Props) => state.darkMode
 
   getAnimate: Selector<boolean> = (state: State, props: Props) => state.animationEnabled
@@ -186,6 +190,7 @@ class FlowMap extends React.Component<Props, State> {
   getColors = createSelector(
     this.getConfig,
     this.getDiffMode,
+    this.getColorSchemeKey,
     this.getDarkMode,
     this.getAnimate,
     getColors,
@@ -488,8 +493,10 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   getLayers() {
-    const { clusteringEnabled, animationEnabled, darkMode } = this.state
+    const { clusteringEnabled, animationEnabled, darkMode, colorSchemeKey } = this.state
     const layers = []
+    const id =
+      `flow-map-${animationEnabled ? 'animated' : 'arrows'}-${colorSchemeKey}-${darkMode ? 'dark' : 'light'}`;
     if (clusteringEnabled) {
       const clusterIndex = this.getClusterIndex(this.state, this.props)
       const flows = this.getAggregatedFlows(this.state, this.props)
@@ -498,12 +505,12 @@ class FlowMap extends React.Component<Props, State> {
       //   const flows = flows.get(clusterZoom)
         if (flows) {
           layers.push(this.makeFlowMapLayer(
-              `flow-map-${animationEnabled ? 'animated' : 'arrows'}-${clusterZoom}-${darkMode ? 'dark' : 'light'}`,
-              clusterIndex.getClusterNodesFor(clusterZoom)!,
-              flows,
-              // zoom === clusterZoom,
-              true
-            ))
+            id,
+            clusterIndex.getClusterNodesFor(clusterZoom)!,
+            flows,
+            // zoom === clusterZoom,
+            true
+          ))
         }
       }
     } else {
@@ -511,7 +518,7 @@ class FlowMap extends React.Component<Props, State> {
       const flows = this.getFlowsForKnownLocations(this.state, this.props);
       if (locations && flows) {
         layers.push(this.makeFlowMapLayer(
-          `flow-map-${animationEnabled ? 'animated' : 'arrows'}-${darkMode ? 'dark' : 'light'}`,
+          id,
           locations,
           flows,
           true,
@@ -678,6 +685,11 @@ class FlowMap extends React.Component<Props, State> {
   handleToggleDarkMode = (evt: SyntheticEvent) => {
     const value = (evt.target as HTMLInputElement).checked
     this.setState({ darkMode: value })
+  }
+
+  handleChangeColorScheme = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).value
+    this.setState({ colorSchemeKey: value })
   }
 
   private animationFrame: number = -1;
@@ -1032,11 +1044,25 @@ class FlowMap extends React.Component<Props, State> {
                 <Away href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
                 >this spreadsheet</Away>. You can <Link to="/">publish your own</Link> too.
               </div>
+              <Row spacing={5}>
+                <div>Color scheme:</div>
+                <HTMLSelect
+                  style={{ fontSize: 12 }}
+                  onChange={this.handleChangeColorScheme}
+                >
+                  <option>Default</option>
+                  {Object.keys(flowColorSchemes).sort().map(scheme => (
+                    <option key={scheme}>
+                      {scheme}
+                    </option>
+                  ))}
+                </HTMLSelect>
+              </Row>
               <Row spacing={20}>
                 <StyledSwitch
-                  checked={this.state.clusteringEnabled}
-                  label="Cluster on zoom"
-                  onChange={this.handleToggleClustering}
+                  checked={darkMode}
+                  label="Dark mode"
+                  onChange={this.handleToggleDarkMode}
                 />
                 <StyledSwitch
                   checked={this.state.animationEnabled}
@@ -1046,9 +1072,9 @@ class FlowMap extends React.Component<Props, State> {
               </Row>
               <Row spacing={10}>
                 <StyledSwitch
-                  checked={darkMode}
-                  label="Dark mode"
-                  onChange={this.handleToggleDarkMode}
+                  checked={this.state.clusteringEnabled}
+                  label="Cluster on zoom"
+                  onChange={this.handleToggleClustering}
                 />
               </Row>
             </Column>

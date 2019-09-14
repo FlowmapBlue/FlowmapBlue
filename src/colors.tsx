@@ -22,12 +22,12 @@ import {
 import { range } from 'd3-array';
 import { scaleSequential, scalePow } from 'd3-scale';
 import { interpolateRgbBasis } from 'd3-interpolate';
-import { Config, ConfigPropName } from './types';
+import { Config } from './types';
 
 const asScheme = (scheme: ReadonlyArray<ReadonlyArray<string>>) =>
   scheme[scheme.length - 1] as string[]
 
-const flowColorSchemes: { [key: string]: string[] } = {
+export const flowColorSchemes: { [key: string]: string[] } = {
   GnBu: asScheme(schemeGnBu),
   PuRd: asScheme(schemePuRd),
   Blues: asScheme(schemeBlues),
@@ -101,6 +101,7 @@ const diffColors: DiffColors = {
 export default function getColors(
   config: Config,
   diffMode: boolean,
+  schemeKey: string | undefined,
   darkMode: boolean,
   animate: boolean,
 ): Colors | DiffColors {
@@ -108,7 +109,6 @@ export default function getColors(
     return diffColors
   }
 
-  const schemeKey = config[ConfigPropName.COLORS_SCHEME]
   let scheme = (schemeKey && flowColorSchemes[schemeKey]) || DEFAULT_COLOR_SCHEME
 
   if (darkMode) {
