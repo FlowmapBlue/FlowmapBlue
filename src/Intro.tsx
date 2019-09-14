@@ -55,8 +55,11 @@ const ExampleGrid = styled.div`
   @media (min-width: 500px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  @media (min-width: 800px) {
-    grid-template-columns: repeat(3, 1fr);
+  @media (min-width: 650px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media (min-width: 1000px) {
+    grid-template-columns: repeat(5, 1fr);
   }
 `
 
@@ -93,7 +96,7 @@ const ExampleImage = styled.img`
   display: block;
   transition: transform 0.5s;
   &:hover {
-    transform: scale(1.2);
+    transform: scale(1.5);
   }
 `
 const MainExampleImageHoverableLink = styled(HoverableLink)`

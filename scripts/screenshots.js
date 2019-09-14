@@ -3,7 +3,7 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const { examples, screenshotSizes } = require('../src/examples');
 const OUTPUT_PATH = path.resolve(__dirname, '../public/screenshots/');
-const APP_URL = 'http://localhost:3000';
+const APP_URL = 'http://localhost:7000';
 
 const ASPECT_RATIO = 800/600;
 const PAD = 500;

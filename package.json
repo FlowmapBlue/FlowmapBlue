@@ -59,11 +59,11 @@
     "viewport-mercator-project": "^6.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=7000 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "screenshots": "rm -rf public/screenshots/ && node scripts/screenshots.js"
+    "screenshots": "node scripts/screenshots.js"
   },
   "eslintConfig": {
     "extends": "react-app"
