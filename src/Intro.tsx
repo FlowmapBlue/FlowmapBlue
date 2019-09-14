@@ -80,7 +80,6 @@ const ExampleGridHoverableLink = styled(HoverableLink)`
   width: 100%;
   &:hover {
     & > .name {
-     opacity: 1;
      color: ${ColorScheme.primary}; 
     }
   }
@@ -93,11 +92,9 @@ const ExampleName = styled.div`
   line-height: 1.4;
   background: #fff;
   font-size: 10pt;
-  // opacity: 0;
   z-index: 2; 
   pointer-events: none;
-  transition: opacity 0.25s, color 0.25s;
-  // border-bottom-right-radius: 5px;
+  transition: color 0.25s;
   color: #aaa;
   text-align: center;
   border-top: 1px solid rgba(19,124,189,0.25);
