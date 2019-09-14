@@ -76,33 +76,45 @@ const ExampleGridHoverableLink = styled(HoverableLink)`
   position: relative;
   width: 100%;
   &:hover {
-    & > .name { opacity: 1; }
+    & > .name {
+     opacity: 1;
+     color: ${ColorScheme.primary}; 
+    }
   }
 `
 const ExampleName = styled.div`
+  width: 100%;
   position: absolute;
-  padding: 2px 7px;
+  padding: 3px 7px;
+  bottom: 0;
   line-height: 1.4;
   background: #fff;
   font-size: 10pt;
-  opacity: 0;
+  // opacity: 0;
   z-index: 2; 
   pointer-events: none;
-  transition: opacity 0.25s;
-  border-bottom-right-radius: 5px;
+  transition: opacity 0.25s, color 0.25s;
+  // border-bottom-right-radius: 5px;
+  color: #aaa;
+  text-align: center;
+  border-top: 1px solid rgba(19,124,189,0.25);
 `
 const ExampleImage = styled.img`
   width: 100%;
   display: block;
+  transform: scale(1.2);
   transition: transform 0.5s;
   &:hover {
-    transform: scale(1.5);
+    transform: scale(2.5);
   }
 `
 const MainExampleImageHoverableLink = styled(HoverableLink)`
   margin-bottom: 20px;
   max-width: 500px;
   display: inline-block;
+  img {
+    transform: scale(1) !important;
+  }
   @media (min-width: 800px) {
     float: right;
     margin-left: 20px;
@@ -204,11 +216,12 @@ const Intro = () =>
       </p>
       <p>
         We treat the data and the URLs of the spreadsheets and flow maps published by
-        the users as private and are not disclosing them without getting an explicit consent from the authors.
+        the users as private. We do not disclose the URLs without getting an explicit consent from the authors
+        (unless the authors have already disclosed them by linking from a publicly accessible website).
       </p>
       <p>
-        For continuing to improve flowmap.blue we need to know how it is used and when it fails.
         We collect anonymous usage statistics via Google Analytics and track errors via Sentry.
+        We want to know how flowmap.blue is used and when it fails, so that we can improve it.
         The use of Google Analytics involves setting cookies in the users' browsers
         for detecting recurring visits and working sessions.
       </p>
