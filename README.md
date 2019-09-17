@@ -10,8 +10,10 @@ It can be used to visualize numbers of movements of people or goods between pair
 [Try online](http://flowmap.blue/)
 
 
-[![flowmap.blue](https://user-images.githubusercontent.com/351828/56728822-fd3b9e00-6753-11e9-8dba-d3f3ecbb7e4d.png)
+[![flowmap.blue](https://user-images.githubusercontent.com/351828/65035113-b475c300-d948-11e9-959e-941257381f02.png)
 ](https://flowmap.blue/1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc)
+
+![color-schemes](https://user-images.githubusercontent.com/351828/65035296-17675a00-d949-11e9-8b12-b3b08bc76b91.png)
 
 
 ## Running locally
