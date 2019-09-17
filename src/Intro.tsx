@@ -1,9 +1,5 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import Logo from './Logo'
-import MapboxLogo from './images/mapbox-logo-black.svg'
-import TLLogo from './images/TL-Horizontal-Black.svg'
-import GitHubLogo from './images/github.svg'
 import MainExampleImageSrc from './images/swiss-cantons-relocations.jpg'
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
@@ -12,6 +8,12 @@ import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
 import Away from './Away';
 import { Helmet } from 'react-helmet';
 import { ColorScheme } from './colors';
+
+import Logo from './Logo'
+import MapboxLogo from './images/mapbox-logo-black.svg'
+import TLLogo from './images/TL-Horizontal-Black.svg'
+import GitHubLogo from './images/github.svg'
+import SpectrumLogo from './images/spectrum.svg'
 
 const Outer = styled.div`
   padding: 10px 20px;
@@ -123,9 +125,14 @@ const MainExampleImageHoverableLink = styled(HoverableLink)`
 `
 
 const LinksArea = styled.div`
+  display: flex;
+  align-items: center;
   position: absolute;
   top: 20px;
   right: 20px;
+  &>*+* {
+    margin-left: 20px;
+  }
 `
 
 const LinkItem = styled.div`
@@ -152,6 +159,15 @@ const Intro = () =>
     <h1><Logo fontSize={35} collapseWidth={300} /></h1>
 
     <LinksArea>
+      <Away href="https://spectrum.chat/flowmap-blue/">
+        <LinkItem>
+          <span>Spectrum Chat</span>
+          <img
+            alt="flowmap.blue chat on Spectrum"
+            src={SpectrumLogo}
+          />
+        </LinkItem>
+      </Away>
       <Away href="https://github.com/ilyabo/flowmap.blue">
         <LinkItem>
           <span>GitHub</span>
