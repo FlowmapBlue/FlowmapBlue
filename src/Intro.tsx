@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Logo from './Logo'
 import MapboxLogo from './images/mapbox-logo-black.svg'
 import TLLogo from './images/TL-Horizontal-Black.svg'
+import GitHubLogo from './images/github.svg'
 import MainExampleImageSrc from './images/swiss-cantons-relocations.jpg'
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
@@ -121,6 +122,27 @@ const MainExampleImageHoverableLink = styled(HoverableLink)`
   }
 `
 
+const LinksArea = styled.div`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+`
+
+const LinkItem = styled.div`
+  display: flex;
+  align-items: center;
+  span {
+    text-transform: uppercase;
+    font-size: 10px;  
+  }
+  img {
+    width: 20px;
+  }
+  &>*+* {
+    margin-left: 5px;
+  }
+`
+
 const Intro = () =>
   <Outer>
     <Helmet>
@@ -128,6 +150,18 @@ const Intro = () =>
     </Helmet>
 
     <h1><Logo fontSize={35} collapseWidth={300} /></h1>
+
+    <LinksArea>
+      <Away href="https://github.com/ilyabo/flowmap.blue">
+        <LinkItem>
+          <span>GitHub</span>
+          <img
+            alt="flowmap.blue on GitHub"
+            src={GitHubLogo}
+          />
+        </LinkItem>
+      </Away>
+    </LinksArea>
 
     <MainExampleImageHoverableLink to="/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8">
       <ExampleImage
