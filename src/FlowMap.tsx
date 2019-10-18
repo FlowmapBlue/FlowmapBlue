@@ -1048,6 +1048,7 @@ class FlowMap extends React.Component<Props, State> {
                 <div>Color scheme:</div>
                 <HTMLSelect
                   style={{ fontSize: 12 }}
+                  value={this.state.colorSchemeKey}
                   onChange={this.handleChangeColorScheme}
                 >
                   <option>Default</option>
