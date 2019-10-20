@@ -15,6 +15,8 @@
     { "key": "1NekUlySL8_LShjOvVFenW5ed6QJNu31_6ebVCj6eGoE", "name": "NYC employment flows" },
     { "key": "1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc", "name": "Commuters in the Netherlands in 2016" },
     { "key": "1Tlj2e6Kha7SZgIxwcghIqJiCyWXv7VMtgHw20VSjyIE", "name": "Pedestrians in Mexico City" },
+    { "key": "1SuJy9ei8NFQ972-lIdg4Ze9KY7dykUt8CwMLS0GDmGo", "name": "BIXI bicycle sharing Montréal" },
+    { "key": "1PVvaeeASIQV7dflQmvFRY9ztXi1Bwul8V2-v1UyRP_w", "name": "Publibike Bern, Switzerland" },
     { "key": "1CT7i8uLynnO834QHNlSrLDnGSBqSUsH4zsbuGC-VNEk", "name": "Barrick Gold Subsidiaries" },
     { "key": "1FkOWeGgVKL1rfoJZK4fq6X0nDiWOKdv3Lcuqx3sgDu4", "name": "Morning commuters in Santiago, 2012" },
     { "key": "18eQBxQDTGVOxMicvsd5bKplhiXe5ohM_G2D7L6mVspI", "name": "Commuters around Toulouse, France" },
@@ -27,7 +29,6 @@
     { "key": "1ax4J4iLZb5nFWooseKEmLXJyOb-gGpo5qYtHbr_3TOU", "name": "Seattle Lyft rides, 2018 Q2" },
     { "key": "15_pAF6byVzfM4XWjVMryfirY6Lyo_rhJa7M7LADaveQ", "name": "Regional travel in the Greater Toronto Area" },
     { "key": "1BHy69x6MbVZZSqmF53MnOe2X_B_AGGdNUqsXmmmFt0Q", "name": "Commuters to Salzburg in 2011" },
-    { "key": "1PVvaeeASIQV7dflQmvFRY9ztXi1Bwul8V2-v1UyRP_w", "name": "Publibike Bern, Switzerland" },
     { "key": "18C8jcLuEV9Ijx5J_-8WGqjq6HuOs7iWNbVU6XbxX9J0", "name": "Sarah Grace Carr tour in Wales in 1819" },
     { "key": "17460pvyBS5b5z9UaR-eFzlLu6X9Ug281GxTAIaxpyPA", "name": "King John's travels through England in 1216" },
     { "key": "11uuylq4zQ3V6CgJyrZt6Xk0DztlcUw0d7JOKY_EEVWw", "name": "Missionaries of Wales" }
