@@ -635,6 +635,8 @@ class FlowMap extends React.Component<Props, State> {
                   {invalidLocations.length > MAX_NUM_IDS && `… and ${invalidLocations.length - MAX_NUM_IDS} others`}
                 </LocationsBlock>
                 Make sure you named the columns "lat" and "lon" and didn't confuse latitudes and longitudes.
+                The coordinates must be in decimal form. If your coordinates are in DMS format (degrees minutes seconds) you
+                can to convert them with <Away href="https://www.latlong.net/degrees-minutes-seconds-to-decimal-degrees">this tool</Away> for example.
               </ToastContent>
           })
         }
