@@ -68,7 +68,7 @@ try {
         <div style={{ fontSize: 14, }}>
           We use cookies to collect usage statistics on the website.
           This really helps us to improve the app.
-          If you use flowmap.blue, we assume that you agree our <a href="/#privacy">Privacy policy</a>.
+          If you use flowmap.blue, we assume that you agree with our <a href="/#privacy">Privacy policy</a>.
         </div>
         <ButtonArea>
           <Button
