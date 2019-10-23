@@ -281,6 +281,9 @@ const Intro = () =>
         The use of Google Analytics involves setting cookies in the users' browsers
         for detecting recurring visits and working sessions.
       </p>
+      <p>
+        We may try to contact you asking for a permission to add your flow map to the list of examples on the homepage of flowmap.blue.
+      </p>
     </section>
     <section>
       <h2>Open source</h2>
