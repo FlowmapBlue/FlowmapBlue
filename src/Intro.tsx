@@ -271,8 +271,8 @@ const Intro = () =>
         using <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization API</Away>.
       </p>
       <p>
-        We <b>treat the data</b> and the URLs of the spreadsheets and flow maps published by
-        the users <b>as private</b>. We do not disclose the URLs without getting an explicit consent from the authors
+        We <b>treat the data as private</b>, including the URLs of the spreadsheets and flow maps published by
+        the users. We do not disclose the URLs without getting an explicit consent from the authors
         (unless the authors have already disclosed them by linking from a publicly accessible website).
       </p>
       <p>
