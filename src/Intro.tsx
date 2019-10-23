@@ -264,7 +264,7 @@ const Intro = () =>
       </p>
     </section>
     <section>
-      <h2 id="privacy">Privacy notice</h2>
+      <h2 id="privacy">Privacy policy</h2>
       <p>
         flowmap.blue does not store any of the data the users upload to Google Sheets.
         The data from the spreadsheets is loaded directly to the clients' browsers
