@@ -25,7 +25,7 @@ const ButtonArea = styled.div({
 })
 const globalStyles = css`
 html, body, button, select {
-  background: ${Colors.DARK_GRAY2}; 
+  background: ${Colors.DARK_GRAY3}; 
   font-family: 'Sarabun', sans-serif; 
   font-size: 13pt;
 }
