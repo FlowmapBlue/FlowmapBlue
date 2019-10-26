@@ -2,7 +2,7 @@ import * as React from 'react'
 import Logo from './Logo';
 
 export default ({ children }: { children: React.ReactChild }) =>
-  <div style={{
+  <div className="bp3-dark" style={{
     position: 'absolute',
     width: '100%',
     height: '100%',

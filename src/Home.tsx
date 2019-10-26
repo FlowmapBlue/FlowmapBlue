@@ -165,7 +165,7 @@ const LinkItem = styled.div`
 `
 
 const Home = () =>
-  <Outer className={'bp3-dark'}>
+  <Outer className="bp3-dark">
     <Helmet>
       <link href="https://flowmap.blue/" rel="canonical" />
     </Helmet>
