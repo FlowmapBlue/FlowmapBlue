@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Router, Route, Switch, RouteComponentProps } from 'react-router-dom'
 import createBrowserHistory from 'history/createBrowserHistory'
-import Intro from './Intro'
+import Home from './Home'
 import * as Sentry from '@sentry/browser'
 import NoScrollContainer from './NoScrollContainer';
 import Fallback from './Fallback';
@@ -89,7 +89,7 @@ export default class App extends React.Component<Props, State> {
                   }</NoScrollContainer>
                 }
               />
-              <Route path="/" component={Intro} />
+              <Route path="/" component={Home} />
             </Switch>
           </Suspense>
         </Router>

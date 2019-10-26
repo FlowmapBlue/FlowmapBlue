@@ -150,7 +150,7 @@ const LinkItem = styled.div`
   }
 `
 
-const Intro = () =>
+const Home = () =>
   <Outer>
     <Helmet>
       <link href="https://flowmap.blue/" rel="canonical" />
@@ -317,4 +317,4 @@ const Intro = () =>
     </section>
   </Outer>
 
-export default Intro
+export default Home
