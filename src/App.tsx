@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Router, Route, Switch, RouteComponentProps } from 'react-router-dom'
-import createBrowserHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history'
 import Home from './Home'
 import * as Sentry from '@sentry/browser'
 import NoScrollContainer from './NoScrollContainer';

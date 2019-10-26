@@ -24,7 +24,8 @@ const ButtonArea = styled.div({
   },
 })
 const globalStyles = css`
-html, body, button, select { 
+html, body, button, select {
+  background: ${Colors.DARK_GRAY2}; 
   font-family: 'Sarabun', sans-serif; 
   font-size: 13pt;
 }
@@ -38,7 +39,7 @@ a, a:visited { color: ${ColorScheme.primary}; }
   a, a:visited { color: ${Colors.DARK_GRAY1}; }
 }
 
-section { margin-bottom: 3em; line-height: 1.5em; }
+section { margin-bottom: 3em; line-height: 1.4em; }
 #no-token-warning { bottom: 30px; top: unset !important; left: 10px !important; }
 `
 

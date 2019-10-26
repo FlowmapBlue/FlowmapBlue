@@ -39,6 +39,7 @@ async function mkdirp(dirPath) {
     process.stdout.write('Making screenshot of '+ url + '\n');
     await page.goto(url, { waitUntil: 'networkidle0', timeout });
     await page.waitForSelector('.bp3-multi-select', { timeout });
+    await page.waitFor(3000);
     const fname = path.resolve(OUTPUT_PATH, `${key}__${width}px.jpg`);
     process.stdout.write('Writing to '+ fname + '\n');
     await page.screenshot({

@@ -3,6 +3,8 @@
 <svg version="1.1" id="new" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 800 180" style="enable-background:new 0 0 800 180;" xml:space="preserve">
 <title>Mapbox_Logo_08</title>
+	<style>polygon, path { fill: #fff; }</style>
+
 <g>
 	<g>
 		<path d="M594.6,49.8c-9.9,0-19.4,4.1-26.3,11.3V23c0-1.2-1-2.2-2.2-2.2l0,0h-13.4c-1.2,0-2.2,1-2.2,2.2v103c0,1.2,1,2.2,2.2,2.2

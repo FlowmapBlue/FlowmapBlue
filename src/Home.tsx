@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import MainExampleImageSrc from './images/swiss-cantons-relocations.jpg'
+import MainExampleImageSrc from './images/nyc-citi-bike_1000px.jpg'
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
 import { examples, screenshotSizes } from './examples.json';
@@ -14,15 +14,23 @@ import MapboxLogo from './images/mapbox-logo-black.svg'
 import TLLogo from './images/TL-Horizontal-Black.svg'
 import GitHubLogo from './images/github.svg'
 import SpectrumLogo from './images/spectrum.svg'
+import { Button, Colors } from '@blueprintjs/core';
 
 const Outer = styled.div`
   padding: 10px 20px;
+  @media (min-width: 500px) {
+    padding: 20px 60px;
+  }
   & h1 { font-size: 2rem; }
   & li { margin: 0.5em 0; }
   margin: auto;
   max-width: 1500px;
 `
 
+
+const LogoTitle = styled.h1`
+  margin-bottom: 1em;
+`
 
 const Support = styled.p`
   display: flex;
@@ -32,7 +40,7 @@ const Support = styled.p`
 
 const SupportLogoLink = styled.a`
   position: relative;
-  top: 0.25em;
+  top: 0.14em;
   transition: opacity 0.2s;
   opacity: 0.6;
   margin: 0 22px;
@@ -72,7 +80,7 @@ const ExampleGrid = styled.div`
 const HoverableLink = styled(Link)`
   width: 100%;
   overflow: hidden;
-  border: 1px solid #ddd;
+  border: 1px solid ${Colors.GRAY5};
   transition: border 0.25s;
   &:hover {
     border: 1px solid ${ColorScheme.primary};
@@ -98,7 +106,7 @@ const ExampleName = styled.div`
   z-index: 2; 
   pointer-events: none;
   transition: color 0.25s;
-  color: #aaa;
+  color: ${Colors.GRAY1};
   text-align: center;
   border-top: 1px solid rgba(19,124,189,0.25);
 `
@@ -124,12 +132,18 @@ const MainExampleImageHoverableLink = styled(HoverableLink)`
   }
 `
 
+const ListOfSteps = styled.ol`
+  margin: 30px 20px;
+  & > li { 
+    margin: 1em 0;
+    padding-left: 0.3em;
+  }
+`
+
 const LinksArea = styled.div`
   display: flex;
+  float: right;
   align-items: center;
-  position: absolute;
-  top: 20px;
-  right: 20px;
   &>*+* {
     margin-left: 20px;
   }
@@ -140,7 +154,7 @@ const LinkItem = styled.div`
   align-items: center;
   span {
     text-transform: uppercase;
-    font-size: 10px;  
+    font-size: 12px;  
   }
   img {
     width: 20px;
@@ -151,13 +165,10 @@ const LinkItem = styled.div`
 `
 
 const Home = () =>
-  <Outer>
+  <Outer className={'bp3-dark'}>
     <Helmet>
       <link href="https://flowmap.blue/" rel="canonical" />
     </Helmet>
-
-    <h1><Logo fontSize={35} collapseWidth={300} /></h1>
-
     <LinksArea>
       <Away href="https://spectrum.chat/flowmap-blue/">
         <LinkItem>
@@ -179,7 +190,10 @@ const Home = () =>
       </Away>
     </LinksArea>
 
-    <MainExampleImageHoverableLink to="/16wFY54ZbrZuZQoOCvpU2fAzlxB7MKLNspqKBOWrp1J8">
+    <LogoTitle><Logo fontSize={35} collapseWidth={300} /></LogoTitle>
+
+
+    <MainExampleImageHoverableLink to="/1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA">
       <ExampleImage
         src={MainExampleImageSrc}
       />
@@ -206,7 +220,7 @@ const Home = () =>
       <p>
         Follow these steps:
       </p>
-      <ol>
+      <ListOfSteps>
         <li>Open <Away href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA">this spreadsheet</Away> and
           make a copy of it (File / Make a copy…)</li>
         <li>Add data to the new spreadsheet. <ReadMore>
@@ -229,11 +243,10 @@ const Home = () =>
           </ReadMore>
         </li>
         <SpreadsheetKeyExtractor />
-      </ol>
+      </ListOfSteps>
     </section>
 
     <section>
-      <h2>Example data sets</h2>
       <ExampleGrid>
         {
           examples.map(({ key, name }) =>
@@ -253,6 +266,13 @@ const Home = () =>
         }
       </ExampleGrid>
     </section>
+
+    {/*<section>*/}
+    {/*  <h2>Data preparation helpers</h2>*/}
+    {/*  <p>*/}
+    {/*    <Button>Convert OD-matrix</Button>*/}
+    {/*  </p>*/}
+    {/*</section>*/}
 
     <section>
       <h2>Need help?</h2>
