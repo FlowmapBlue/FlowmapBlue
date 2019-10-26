@@ -8,14 +8,16 @@ export interface AbsoluteProps {
   bottom?: number
 }
 
-export const Column = styled.div(({ spacing = 0, padding = 0 }: { spacing?: number, padding?: number }) => `
+type ColumnProps = { spacing?: number, padding?: number }
+export const Column = styled.div<ColumnProps>(({ spacing = 0, padding = 0 }: ColumnProps) => `
   display: flex;
   flex-direction: column;
   padding: ${padding}px;
   & > * + * { margin-top: ${spacing}px; }
 `)
 
-export const Row = styled.div(({ spacing = 0 }: { spacing?: number }) => `
+type RowProps = { spacing?: number }
+export const Row = styled.div<RowProps>(({ spacing = 0 }: RowProps) => `
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -30,7 +32,8 @@ export const Absolute = styled.div<AbsoluteProps>(({ top, left, right, bottom }:
   ${bottom != null ? `bottom: ${bottom}px;` : ''}
 `)
 
-export const Box = styled(Absolute)((props: { darkMode? : boolean }) => `
+type BoxProps = { darkMode? : boolean }
+export const Box = styled(Absolute)<BoxProps>((props: BoxProps) => `
   background: ${props.darkMode ? Colors.DARK_GRAY3 : `rgba(255, 255, 255, 0.9)`};
   // padding: 12px;
   border-radius: 4px;

@@ -23,33 +23,38 @@ const Outer = styled.div`
   flex-direction: row;
 `
 
-const Body = styled.div(({ direction, collapsed, width }: { direction: Direction, collapsed: boolean, width: number }) => `
+type BodyProps = { direction: Direction, collapsed: boolean, width: number }
+const Body = styled.div<BodyProps>(({ direction, collapsed, width }: BodyProps) => `
   order: ${direction === Direction.LEFT ? 2 : 1};
   overflow: hidden;
   max-width: ${collapsed ? 0 : `${width}px`};
   transition: max-width 0.15s ease-out;  
 `)
 
-const Content = styled.div(({ direction, width }: { direction: Direction, width: number }) => `
+type ContentProps = { direction: Direction, width: number }
+const Content = styled.div<ContentProps>(({ direction, width }: ContentProps) => `
   width: ${width}px;
 `)
 
-const Rotate = styled.div(({ degrees }: { degrees: number }) => `
+type RotateProps = { degrees: number }
+const Rotate = styled.div<RotateProps>(({ degrees }: RotateProps) => `
   transform-origin: center;
   transform: rotate(${degrees}deg);
   transition: transform 0.15s ease-out;  
 `)
 
-const Button = styled.button((
+type ButtonProps = {
+  collapsed: boolean,
+  direction: Direction,
+  darkMode: boolean,
+}
+
+const Button = styled.button<ButtonProps>((
   {
     collapsed,
     direction,
     darkMode,
-}: {
-    collapsed: boolean,
-    direction: Direction,
-    darkMode: boolean,
-  }) => `
+}: ButtonProps) => `
   display: flex;
   order: ${direction === Direction.LEFT ? 1 : 2};  
   border: none;

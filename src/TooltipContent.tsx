@@ -5,7 +5,8 @@ import styled from '@emotion/styled'
 import * as d3Format from 'd3-format'
 import { Flow, LocationPickingInfo } from '@flowmap.gl/core';
 
-const Outer = styled.div(({ width }: { width: number}) => `
+type OuterProps = { width: number };
+const Outer = styled.div<OuterProps>(({ width }: OuterProps) => `
   font-size: 10px;
   width: ${width}px;
   display: flex;

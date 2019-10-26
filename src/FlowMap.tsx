@@ -257,7 +257,7 @@ class FlowMap extends React.Component<Props, State> {
     (ids, flows, flowsForKnownLocations) => {
       if (!ids || !flows) return undefined
       if (flowsForKnownLocations && flows.length === flowsForKnownLocations.length) return undefined
-      const missing = new Set()
+      const missing = new Set<string>()
       for (const flow of flows) {
         if (!ids.has(getFlowOriginId(flow))) missing.add(getFlowOriginId(flow))
         if (!ids.has(getFlowDestId(flow))) missing.add(getFlowDestId(flow))

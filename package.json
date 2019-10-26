@@ -26,16 +26,16 @@
     "@types/d3-interpolate": "^1.3.1",
     "@types/d3-scale": "^2.1.1",
     "@types/d3-scale-chromatic": "^1.3.1",
-    "@types/jest": "^23.3.11",
+    "@types/jest": "^24.0.20",
     "@types/lodash.debounce": "^4.0.4",
     "@types/mapbox__geo-viewport": "^0.4.0",
-    "@types/node": "^10.12.18",
+    "@types/node": "^12.11.7",
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
     "@types/react-helmet": "^5.0.8",
-    "@types/react-map-gl": "^4.0.1",
-    "@types/react-router-dom": "^4.3.1",
-    "@types/viewport-mercator-project": "^5.2.1",
+    "@types/react-map-gl": "^5.0.2",
+    "@types/react-router-dom": "^5.1.0",
+    "@types/viewport-mercator-project": "^6.1.0",
     "d3-collection": "^1.0.7",
     "d3-color": "^1.2.3",
     "d3-dsv": "^1.0.10",
@@ -52,8 +52,8 @@
     "react-helmet": "^5.2.0",
     "react-map-gl": "^5.0.10",
     "react-popper": "^1.3.2",
-    "react-refetch": "^2.0.3",
-    "react-router-dom": "^4.3.1",
+    "react-refetch": "^3.0.0",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "^3.1.1",
     "typescript": "^3.2.2",
     "viewport-mercator-project": "^6.1.0"
@@ -77,7 +77,7 @@
   ],
   "devDependencies": {
     "favicons": "^5.4.1",
-    "puppeteer": "^1.19.0",
+    "puppeteer": "^2.0.0",
     "sharp": "^0.23.0"
   }
 }

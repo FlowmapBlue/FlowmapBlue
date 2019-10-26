@@ -11,13 +11,14 @@ type Props = {
 }
 
 
-const LogoImage = styled.img(({ size }: { size: number }) => `
+type LogoImageProps = { size: number };
+const LogoImage = styled.img<LogoImageProps>(({ size }: LogoImageProps) => `
   width: ${size}px;
   height: ${size}px;
 `)
 
 const SHADOW_COLOR = ColorScheme.primary
-const LogoText = styled.div((
+const LogoText = styled.div<Props>((
   { fontSize, collapseWidth }: Props
 ) => ({
   // fontFamily: "'Titillium Web', sans-serif",

@@ -19,7 +19,11 @@ It can be used to visualize numbers of movements of people or goods between pair
 
 Install dependencies:
 
+    yarn install
+or     
+
     npm install
+    
 
 Add `.env` file to the project root with a [Mapbox access token](https://www.mapbox.com/help/define-access-token/):
 

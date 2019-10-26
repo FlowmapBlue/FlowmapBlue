@@ -23,7 +23,8 @@ const ItemContent = styled.div({
   },
 })
 
-const Item = styled(MenuItem)((props: { selected: boolean }) =>
+type ItemProps = { selected: boolean };
+const Item = styled(MenuItem)<ItemProps>((props: ItemProps) =>
   props.selected
     ? {
         backgroundColor: `${Colors.GRAY1} !important`,
