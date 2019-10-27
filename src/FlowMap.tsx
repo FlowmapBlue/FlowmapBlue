@@ -4,7 +4,7 @@ import * as React from 'react'
 import { SyntheticEvent } from 'react'
 import { StaticMap, ViewportProps, ViewState, ViewStateChangeInfo } from 'react-map-gl'
 import FlowMapLayer, { FlowLayerPickingInfo, FlowPickingInfo, LocationPickingInfo, PickingType } from '@flowmap.gl/core'
-import { Colors, HTMLSelect, Intent, Slider, Switch } from '@blueprintjs/core'
+import { Classes, Colors, HTMLSelect, Intent, Slider, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import * as Cluster from '@flowmap.gl/cluster'
 import { isCluster } from '@flowmap.gl/cluster'
@@ -118,7 +118,7 @@ const initialViewState = getInitialViewState([ -180, -70, 180, 70 ])
 
 const Outer = (props: { darkMode: boolean, children: React.ReactNode }) =>
   <NoScrollContainer
-    className={props.darkMode ? 'bp3-dark' : undefined}
+    className={props.darkMode ? Classes.DARK : undefined}
     style={{
       background: props.darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5
     }}

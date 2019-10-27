@@ -13,7 +13,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import checkWebglSupport from './checkWebglSupport'
 import { ColorScheme } from './colors'
 import { AppToaster } from './AppToaster';
-import { Button, Colors, Intent } from '@blueprintjs/core';
+import { Button, Classes, Colors, Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
 
@@ -25,13 +25,14 @@ const ButtonArea = styled.div({
 })
 const globalStyles = css`
 html, body, button, select {
+  margin: 0;
   background: ${Colors.DARK_GRAY3}; 
   font-family: 'Sarabun', sans-serif; 
   font-size: 13pt;
 }
  
 a, a:visited { color: ${ColorScheme.primary}; }
-.bp3-dark {
+.${Classes.DARK} {
   a, a:visited { color: ${Colors.BLUE5}; }
 }
 
@@ -39,7 +40,7 @@ a, a:visited { color: ${ColorScheme.primary}; }
   a, a:visited { color: ${Colors.DARK_GRAY1}; }
 }
 
-section { margin-bottom: 3em; line-height: 1.4em; }
+section { margin-bottom: 4em; line-height: 1.4em; }
 #no-token-warning { bottom: 30px; top: unset !important; left: 10px !important; }
 `
 
