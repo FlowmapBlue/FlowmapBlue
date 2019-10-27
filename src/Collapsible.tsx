@@ -67,7 +67,7 @@ const Button = styled.button<ButtonProps>((
   border-radius: ${collapsed ? 4 : 0}px;
   transition: background-color 0.25s, border-radius 0.15s;  
   &:hover {
-    background-color: ${darkMode ? Colors.DARK_GRAY5 : Colors.LIGHT_GRAY4};
+    background-color: ${darkMode ? Colors.DARK_GRAY3 : Colors.LIGHT_GRAY4};
   }
 `)
 

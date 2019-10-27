@@ -95,8 +95,11 @@ const ExampleGridHoverableLink = styled(HoverableLink)`
     }
   }
 `
-const ExampleName = styled.div`
+const ExampleTitle = styled.div`
   width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;  
   position: absolute;
   padding: 3px 7px;
   bottom: 0;
@@ -251,7 +254,7 @@ const Home = () =>
         {
           examples.map(({ key, name }) =>
             <ExampleGridHoverableLink key={key} to={`/${key}`}>
-                <ExampleName className="name">{name}</ExampleName>
+                <ExampleTitle className="name">{name}</ExampleTitle>
                 <ExampleImage
                   alt={name}
                   src={`screenshots/${key}__${screenshotSizes[0]}px.jpg`}

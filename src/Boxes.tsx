@@ -8,11 +8,15 @@ export interface AbsoluteProps {
   bottom?: number
 }
 
-type ColumnProps = { spacing?: number, padding?: number }
+function isNumber(x: any): x is number {
+    return typeof x === "number";
+}
+
+type ColumnProps = { spacing?: number, padding?: number | string}
 export const Column = styled.div<ColumnProps>(({ spacing = 0, padding = 0 }: ColumnProps) => `
   display: flex;
   flex-direction: column;
-  padding: ${padding}px;
+  padding: ${isNumber(padding) ? `${padding}px` : padding};
   & > * + * { margin-top: ${spacing}px; }
 `)
 
@@ -34,7 +38,7 @@ export const Absolute = styled.div<AbsoluteProps>(({ top, left, right, bottom }:
 
 type BoxProps = { darkMode? : boolean }
 export const Box = styled(Absolute)<BoxProps>((props: BoxProps) => `
-  background: ${props.darkMode ? Colors.DARK_GRAY3 : `rgba(255, 255, 255, 0.9)`};
+  background: ${props.darkMode ? Colors.DARK_GRAY5 : `rgba(255, 255, 255, 0.9)`};
   // padding: 12px;
   border-radius: 4px;
   font-size: 11px;

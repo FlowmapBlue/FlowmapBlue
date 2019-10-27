@@ -4,7 +4,7 @@ import * as React from 'react'
 import { SyntheticEvent } from 'react'
 import { StaticMap, ViewportProps, ViewState, ViewStateChangeInfo } from 'react-map-gl'
 import FlowMapLayer, { FlowLayerPickingInfo, FlowPickingInfo, LocationPickingInfo, PickingType } from '@flowmap.gl/core'
-import { Colors, HTMLSelect, Intent, Switch } from '@blueprintjs/core'
+import { Colors, HTMLSelect, Intent, Slider, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import * as Cluster from '@flowmap.gl/cluster'
 import { isCluster } from '@flowmap.gl/cluster'
@@ -92,6 +92,7 @@ type State = {
   animationEnabled: boolean
   clusteringEnabled: boolean
   darkMode: boolean
+  fadeAmount: number
   colorSchemeKey: string | undefined
 }
 
@@ -155,6 +156,7 @@ class FlowMap extends React.Component<Props, State> {
       animationEnabled: parseBoolConfigProp(props.config[ConfigPropName.ANIMATE_FLOWS]),
       clusteringEnabled: true,
       darkMode: parseBoolConfigProp(props.config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
+      fadeAmount: 50,
       colorSchemeKey: props.config[ConfigPropName.COLORS_SCHEME],
     }
   }
@@ -185,6 +187,8 @@ class FlowMap extends React.Component<Props, State> {
 
   getDarkMode: Selector<boolean> = (state: State, props: Props) => state.darkMode
 
+  getFadeAmount: Selector<number> = (state: State, props: Props) => state.fadeAmount
+
   getAnimate: Selector<boolean> = (state: State, props: Props) => state.animationEnabled
 
   getColors = createSelector(
@@ -192,6 +196,7 @@ class FlowMap extends React.Component<Props, State> {
     this.getDiffMode,
     this.getColorSchemeKey,
     this.getDarkMode,
+    this.getFadeAmount,
     this.getAnimate,
     getColors,
   )
@@ -493,10 +498,21 @@ class FlowMap extends React.Component<Props, State> {
   }
 
   getLayers() {
-    const { clusteringEnabled, animationEnabled, darkMode, colorSchemeKey } = this.state
+    const {
+      clusteringEnabled,
+      animationEnabled,
+      darkMode,
+      colorSchemeKey,
+      fadeAmount,
+    } = this.state
     const layers = []
-    const id =
-      `flow-map-${animationEnabled ? 'animated' : 'arrows'}-${colorSchemeKey}-${darkMode ? 'dark' : 'light'}`;
+    const id = [
+      'flow-map',
+      animationEnabled ? 'animated' : 'arrows',
+      colorSchemeKey,
+      darkMode ? 'dark' : 'light',
+      fadeAmount,
+    ].join('-')
     if (clusteringEnabled) {
       const clusterIndex = this.getClusterIndex(this.state, this.props)
       const flows = this.getAggregatedFlows(this.state, this.props)
@@ -687,6 +703,10 @@ class FlowMap extends React.Component<Props, State> {
   handleToggleDarkMode = (evt: SyntheticEvent) => {
     const value = (evt.target as HTMLInputElement).checked
     this.setState({ darkMode: value })
+  }
+
+  handleChangeFadeAmount = (value: number) => {
+    this.setState({ fadeAmount: value })
   }
 
   handleChangeColorScheme = (evt: SyntheticEvent) => {
@@ -1022,7 +1042,7 @@ class FlowMap extends React.Component<Props, State> {
             width={300}
             direction={Direction.LEFT}
           >
-            <Column spacing={10} padding={12}>
+            <Column spacing={10} padding="12px 20px">
               {title &&
               <div>
                 <Title>{title}</Title>
@@ -1047,7 +1067,7 @@ class FlowMap extends React.Component<Props, State> {
                 >this spreadsheet</Away>. You can <Link to="/">publish your own</Link> too.
               </div>
               <Row spacing={5}>
-                <div>Color scheme:</div>
+                <div>Color scheme</div>
                 <HTMLSelect
                   style={{ fontSize: 12 }}
                   value={this.state.colorSchemeKey}
@@ -1060,6 +1080,18 @@ class FlowMap extends React.Component<Props, State> {
                     </option>
                   ))}
                 </HTMLSelect>
+              </Row>
+              <Row spacing={15}>
+                <div style={{ whiteSpace: 'nowrap' }}>Fade</div>
+                <Slider
+                  value={this.state.fadeAmount}
+                  min={0}
+                  max={100}
+                  stepSize={1}
+                  labelRenderer={false}
+                  showTrackFill={false}
+                  onChange={this.handleChangeFadeAmount}
+                  />
               </Row>
               <Row spacing={20}>
                 <StyledSwitch

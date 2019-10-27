@@ -21,8 +21,9 @@ import {
 } from 'd3-scale-chromatic';
 import { range } from 'd3-array';
 import { scaleSequential, scalePow } from 'd3-scale';
-import { interpolateRgbBasis } from 'd3-interpolate';
+import { interpolateHsl, interpolateHslLong, interpolateRgbBasis } from 'd3-interpolate';
 import { Config } from './types';
+import { hcl, hsl, lab } from 'd3-color';
 
 const asScheme = (scheme: ReadonlyArray<ReadonlyArray<string>>) =>
   scheme[scheme.length - 1] as string[]
@@ -103,6 +104,7 @@ export default function getColors(
   diffMode: boolean,
   schemeKey: string | undefined,
   darkMode: boolean,
+  fadeAmount: number,
   animate: boolean,
 ): Colors | DiffColors {
   if (diffMode) {
@@ -115,21 +117,41 @@ export default function getColors(
     scheme = scheme.slice().reverse()
   }
   // if (animate)
+  // if (fadeAmount > 0)
   {
-    // lighten or darken to prevent the "worms" effect
+
     const indices = range(0, Math.max(10, scheme.length))
     const N = indices.length - 1;
     const colorScale = scaleSequential(interpolateRgbBasis(scheme))
       .domain([0, N])
 
-    const amount = scalePow()
-      .exponent(animate ? 1 : 1/2.5)
-      .domain([0, N])
-      .range([1, 0])
+    if (fadeAmount === 0) {
+      scheme = indices.map((c, i) => colorScale(i))
+    } else {
+      const amount = scalePow()
+        // .exponent(animate ? 1 : 1/2.5)
+        // .exponent(animate ? 100 : 50)
+        // .exponent(animate ? 20 : 5)
+        // .exponent(1/2.5)
+        .exponent(1.5)
+        .domain([N, 0])
+        // .range([fadeAmount/100*(animate?2:1), 0])
+        // .range([0, fadeAmount/100*(animate?2:1)])
+        // .range(darkMode ? [1-fadeAmount/100, 1] : [1, 1 - fadeAmount/100])
+        // .range(darkMode ? [1 - fadeAmount/100, 1] : [fadeAmount/100, 0])
+        // .range([1 - fadeAmount/100, 1])
+        .range([0, (animate ? 2.5 : 2)*fadeAmount/100])
 
-    scheme = indices.map((c, i) =>
-      interpolateRgbBasis([colorScale(i), darkMode ? '#000' : '#fff'])(amount(i))
-    )
+      scheme = indices.map((c, i) => {
+          const col = hcl(colorScale(i))
+          col.l = darkMode ? (col.l - col.l * amount(i)) : (col.l + (100 - col.l) * amount(i))
+          col.c = col.c - col.c * (amount(i) / 4)
+          return col.toString()
+        }
+        // interpolateRgbBasis([colorScale(i), darkMode ? '#000' : '#fff'])(amount(i))
+        // interpolateHsl(colorScale(i), darkMode ? '#000' : '#fff')(amount(i)).toString()
+      )
+    }
   }
 
   return {
