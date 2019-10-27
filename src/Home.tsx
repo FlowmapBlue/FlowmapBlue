@@ -180,7 +180,7 @@ const NewsText = styled.div`
   display: block;
 `
 
-const News = styled.p`
+const News = styled.div`
   display: flex;
   flex-direction: column;
   & > *+* { margin-top: 0.75rem; }

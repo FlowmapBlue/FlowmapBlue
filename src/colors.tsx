@@ -21,9 +21,9 @@ import {
 } from 'd3-scale-chromatic';
 import { range } from 'd3-array';
 import { scaleSequential, scalePow } from 'd3-scale';
-import { interpolateHsl, interpolateHslLong, interpolateRgbBasis } from 'd3-interpolate';
+import { interpolateRgbBasis } from 'd3-interpolate';
 import { Config } from './types';
-import { hcl, hsl, lab } from 'd3-color';
+import { hcl } from 'd3-color';
 
 const asScheme = (scheme: ReadonlyArray<ReadonlyArray<string>>) =>
   scheme[scheme.length - 1] as string[]
