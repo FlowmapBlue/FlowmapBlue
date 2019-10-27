@@ -82,10 +82,10 @@ const ExampleGrid = styled.div`
 const HoverableLink = styled(Link)`
   width: 100%;
   overflow: hidden;
-  border: 1px solid ${Colors.GRAY5};
+  border: 1px solid ${Colors.GRAY2};
   transition: border 0.25s;
   &:hover {
-    border: 1px solid ${ColorScheme.primary};
+    border: 1px solid ${Colors.LIGHT_GRAY1};
   }
 `
 const ExampleGridHoverableLink = styled(HoverableLink)`
@@ -93,7 +93,7 @@ const ExampleGridHoverableLink = styled(HoverableLink)`
   width: 100%;
   &:hover {
     & > .name {
-     color: ${ColorScheme.primary}; 
+     color: ${Colors.LIGHT_GRAY1}; 
     }
   }
 `
@@ -103,15 +103,15 @@ const ExampleTitle = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;  
   position: absolute;
-  padding: 3px 7px;
+  padding: 4px 7px;
   bottom: 0;
   line-height: 1.4;
-  background: #fff;
+  background: ${Colors.DARK_GRAY2};
+  color: ${Colors.GRAY3};
   font-size: 10pt;
   z-index: 2; 
   pointer-events: none;
   transition: color 0.25s;
-  color: ${Colors.GRAY1};
   text-align: center;
   border-top: 1px solid rgba(19,124,189,0.25);
 `
@@ -189,6 +189,10 @@ const NewsItem = styled.div`
   display: flex;
 `
 
+const NavBar = styled(Navbar)`
+  background-color: ${Colors.DARK_GRAY3} !important;
+`
+
 const NavMenu = styled(Navbar.Group)`
   @media (max-width: 1000px) {
     display: none;
@@ -205,7 +209,7 @@ const NavItem = ({ to, children }: { to: string, children: ReactNode }) =>
 
 const Home = () =>
   <>
-    <Navbar
+    <NavBar
       className={Classes.DARK}
       fixedToTop={false}
     >
@@ -243,7 +247,7 @@ const Home = () =>
           </Away>
         </LinksArea>
       </Navbar.Group>
-    </Navbar>
+    </NavBar>
     <Outer className={Classes.DARK}>
       <Helmet>
         <link href="https://flowmap.blue/" rel="canonical" />
