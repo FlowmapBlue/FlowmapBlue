@@ -68,7 +68,7 @@ try {
       message:
       <div style={{ display: 'flex', alignItems: 'flex-end', flexDirection: 'column' }}>
         <div style={{ fontSize: 14, }}>
-          We <b>collect usage statistics</b> on this website.
+          We use cookies to <b>collect usage statistics</b> on this website.
           This really helps us to improve the app.
           If you use flowmap.blue, we assume that you agree with our <b>very short</b> <a href="/#privacy">Privacy policy</a>.
         </div>
