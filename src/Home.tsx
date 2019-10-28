@@ -387,7 +387,7 @@ const Home = () =>
             </NewsText>
           </NewsItem>
           <NewsItem>
-            <NewsDate>Oct 13, 2019</NewsDate>
+            <NewsDate>Mar 3, 2019</NewsDate>
             <NewsText>
               <Away href="https://ilya.boyandin.me/talks/2019-03-03-clisel/">Talk about flowmap.blue</Away> at
               the workshop
