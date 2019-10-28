@@ -362,7 +362,7 @@ const Home = () =>
           <NewsItem>
             <NewsDate>Oct 13, 2019</NewsDate>
             <NewsText>
-              Gave a talk <Away href="https://ilya.boyandin.me/talks/2019-10-11-urban-mobility-symp/">"Scalability of OD-data visualizations"</Away> about
+              Talk <Away href="https://ilya.boyandin.me/talks/2019-10-11-urban-mobility-symp/">"Scalability of OD-data visualizations"</Away> about
               flowmap.blue
               and <Away href="https://github.com/teralytics/flowmap.query">flowmap.query</Away> at
               the <Away href="https://www.citylab-berlin.org/events/mobilitysymposium_en/">Urban Mobility Symposium</Away> in Berlin.
