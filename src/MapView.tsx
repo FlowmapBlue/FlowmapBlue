@@ -35,6 +35,7 @@ const DEFAULT_CONFIG: Config = {
   [ConfigPropName.COLORS_SCHEME]: undefined,
   [ConfigPropName.COLORS_DARK_MODE]: undefined,
   [ConfigPropName.ANIMATE_FLOWS]: undefined,
+  [ConfigPropName.CLUSTER_ON_ZOOM]: undefined,
 }
 
 

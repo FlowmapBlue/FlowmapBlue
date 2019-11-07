@@ -14,6 +14,7 @@ export enum ConfigPropName {
   COLORS_SCHEME = 'colors.scheme',
   COLORS_DARK_MODE = 'colors.darkMode',
   ANIMATE_FLOWS = 'animate.flows',
+  CLUSTER_ON_ZOOM = 'clustering',
 }
 
 export interface ConfigProp {
