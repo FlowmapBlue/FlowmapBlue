@@ -7,16 +7,11 @@ import { examples, screenshotSizes } from './examples.json';
 import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
 import Away from './Away';
 import { Helmet } from 'react-helmet';
-import { ColorScheme } from './colors';
-
 import Logo from './Logo'
 import MapboxLogo from './images/mapbox-logo-black.svg'
 import TLLogo from './images/TL-Horizontal-Black.svg'
-import GitHubLogo from './images/github.svg'
-import SpectrumLogo from './images/spectrum.svg'
-import { Button, Classes, Colors, Navbar } from '@blueprintjs/core';
-import { Alignment } from '@blueprintjs/core/lib/esm/common/alignment';
-import { ReactNode } from 'react';
+import { Classes, Colors } from '@blueprintjs/core';
+import Nav from './Nav';
 
 const Outer = styled.div`
   padding: 10px 20px;
@@ -145,31 +140,6 @@ const ListOfSteps = styled.ol`
   }
 `
 
-const LinksArea = styled.div`
-  display: flex;
-  float: right;
-  align-items: center;
-  &>*+* {
-    margin-left: 20px;
-  }
-`
-
-const LinkItem = styled.div`
-  display: flex;
-  align-items: center;
-  span {
-    text-transform: uppercase;
-    font-size: 12px;  
-  }
-  img {
-    width: 20px;
-  }
-  &>*+* {
-    margin-left: 5px;
-  }
-`
-
-
 const NewsDate = styled.div`
   color: ${Colors.GRAY3};
   font-size: small;
@@ -189,71 +159,17 @@ const NewsItem = styled.div`
   display: flex;
 `
 
-const NavBar = styled(Navbar)`
-  background-color: ${Colors.DARK_GRAY3} !important;
-`
 
-const NavMenu = styled(Navbar.Group)`
-  @media (max-width: 1000px) {
-    display: none;
-  }
-`
-
-const NavItem = ({ to, children }: { to: string, children: ReactNode }) =>
-  <Button
-    className={Classes.INTENT_PRIMARY}
-    minimal={true}
-    large={true}
-    onClick={() => document.location.href = to}
-  >{children}</Button>
 
 const Home = () =>
   <>
-    <NavBar
-      className={Classes.DARK}
-      fixedToTop={false}
-    >
-      <NavMenu align={Alignment.LEFT}>
-        {/*<Navbar.Heading>*/}
-        {/*  <Logo fontSize={25} collapseWidth={Number.MAX_SAFE_INTEGER} />*/}
-        {/*</Navbar.Heading>*/}
-        <NavItem to="#news">News</NavItem>
-        <NavItem to="#how-to">How to visualize</NavItem>
-        <NavItem to="#examples">Examples</NavItem>
-        <NavItem to="#need-help">Need help?</NavItem>
-        <NavItem to="#privacy">Privacy</NavItem>
-        <NavItem to="#open-source">Open source</NavItem>
-        <NavItem to="#credits">Credits</NavItem>
-      </NavMenu>
-      <Navbar.Group align={Alignment.RIGHT}>
-        <LinksArea>
-          <Away href="https://github.com/ilyabo/flowmap.blue">
-            <LinkItem>
-              <span>GitHub</span>
-              <img
-                alt="flowmap.blue on GitHub"
-                src={GitHubLogo}
-              />
-            </LinkItem>
-          </Away>
-          <Away href="https://spectrum.chat/flowmap-blue/">
-            <LinkItem>
-              <span>Spectrum Chat</span>
-              <img
-                alt="flowmap.blue chat on Spectrum"
-                src={SpectrumLogo}
-              />
-            </LinkItem>
-          </Away>
-        </LinksArea>
-      </Navbar.Group>
-    </NavBar>
+    <Nav/>
     <Outer className={Classes.DARK}>
       <Helmet>
-        <link href="https://flowmap.blue/" rel="canonical" />
+        <link href="https://flowmap.blue/" rel="canonical"/>
       </Helmet>
 
-      <LogoTitle><Logo fontSize={35} collapseWidth={300} /></LogoTitle>
+      <LogoTitle><Logo fontSize={35} collapseWidth={300}/></LogoTitle>
 
 
       <MainExampleImageHoverableLink to="/1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA">
@@ -284,12 +200,15 @@ const Home = () =>
           Follow these steps:
         </p>
         <ListOfSteps>
-          <li>Open <Away href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA">this spreadsheet</Away> and
-            make a copy of it (File / Make a copy…)</li>
+          <li>Open <Away href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA">this
+            spreadsheet</Away> and
+            make a copy of it (File / Make a copy…)
+          </li>
           <li>Add data to the new spreadsheet. <ReadMore>
             The spreadsheet has three sheets in it.
             They are named "<b>properties</b>", "<b>locations</b>" and "<b>flows</b>".
-            The <b>properties</b> sheet has the title and the description for your data set and a few other configuration parameters.
+            The <b>properties</b> sheet has the title and the description for your data set and a few other
+            configuration parameters.
             The <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the optional <b>name</b>.
             The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
             The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
@@ -305,22 +224,22 @@ const Home = () =>
               consent from you (unless you disclose them yourself first by linking from a publicly accessible website).
             </ReadMore>
           </li>
-          <SpreadsheetKeyExtractor />
+          <SpreadsheetKeyExtractor/>
         </ListOfSteps>
       </section>
 
       <section id="examples">
         <ExampleGrid>
           {
-            examples.map(({ key, name }) =>
+            examples.map(({key, name}) =>
               <ExampleGridHoverableLink key={key} to={`/${key}`}>
                 <ExampleTitle className="name">{name}</ExampleTitle>
                 <ExampleImage
                   alt={name}
                   src={`screenshots/${key}__${screenshotSizes[0]}px.jpg`}
                   srcSet={screenshotSizes.map(w => `screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
-                  sizes={screenshotSizes.map((w,i) =>
-                    (i < screenshotSizes.length-1 ? `(max-width: ${w*2}px) ` : '')+ `${w}px`)
+                  sizes={screenshotSizes.map((w, i) =>
+                    (i < screenshotSizes.length - 1 ? `(max-width: ${w * 2}px) ` : '') + `${w}px`)
                     .join(',')
                   }
                 />
@@ -355,17 +274,20 @@ const Home = () =>
           <NewsItem>
             <NewsDate>Oct 16, 2019</NewsDate>
             <NewsText>
-              Yay! Flowmap.blue <Away href="http://informationisbeautifulawards.com/showcase/3815-flowmap-blue">made it to the shortlist</Away> of
+              Yay! Flowmap.blue <Away href="http://informationisbeautifulawards.com/showcase/3815-flowmap-blue">made it
+              to the shortlist</Away> of
               the Information is Beautiful Awards.
             </NewsText>
           </NewsItem>
           <NewsItem>
             <NewsDate>Oct 13, 2019</NewsDate>
             <NewsText>
-              Talk <Away href="https://ilya.boyandin.me/talks/2019-10-11-urban-mobility-symp/">"Scalability of OD-data visualizations"</Away> about
+              Talk <Away href="https://ilya.boyandin.me/talks/2019-10-11-urban-mobility-symp/">"Scalability of OD-data
+              visualizations"</Away> about
               flowmap.blue
               and <Away href="https://github.com/teralytics/flowmap.query">flowmap.query</Away> at
-              the <Away href="https://www.citylab-berlin.org/events/mobilitysymposium_en/">Urban Mobility Symposium</Away> in Berlin.
+              the <Away href="https://www.citylab-berlin.org/events/mobilitysymposium_en/">Urban Mobility
+              Symposium</Away> in Berlin.
             </NewsText>
           </NewsItem>
           <NewsItem>
@@ -417,7 +339,8 @@ const Home = () =>
         <p>
           flowmap.blue <b>does not store any of the data</b> the users upload to Google Sheets.
           The data from the spreadsheets is loaded directly to the clients' browsers
-          using <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization API</Away>.
+          using <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">Google Visualization
+          API</Away>.
         </p>
         <p>
           We <b>treat the data as private</b>, including the URLs of the spreadsheets and flow maps published by
@@ -431,7 +354,8 @@ const Home = () =>
           for detecting recurring visits and working sessions.
         </p>
         <p>
-          We <b>may try to contact you</b> asking for a permission to add your flow map to the list of examples on the homepage of flowmap.blue.
+          We <b>may try to contact you</b> asking for a permission to add your flow map to the list of examples on the
+          homepage of flowmap.blue.
         </p>
       </section>
       <section>
@@ -443,7 +367,8 @@ const Home = () =>
           <Away href="https://github.com/ilyabo/flowmap.blue/blob/master/LICENSE">MIT license</Away>.
         </p>
         <p>
-          Make sure to include a proper attribution (URL of flowmap.blue, the original author) if you use it in a different project.
+          Make sure to include a proper attribution (URL of flowmap.blue, the original author) if you use it in a
+          different project.
         </p>
       </section>
       <section>
