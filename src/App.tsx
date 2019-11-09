@@ -12,6 +12,7 @@ import { SPREADSHEET_KEY_RE } from './constants';
 import { ColorScheme } from './colors';
 
 const MapView = React.lazy(() => import('./MapView'))
+const ODMatrixConverter = React.lazy(() => import('./ODMatrixConverter'))
 
 
 const history = createBrowserHistory()
@@ -74,6 +75,10 @@ export default class App extends React.Component<Props, State> {
         <Router history={history}>
           <Suspense fallback={<LoadingSpinner/>}>
             <Switch>
+              <Route
+                path="/helpers/od-matrix"
+                component={ODMatrixConverter}
+                />
               <Route
                 path={`/:sheetKey(${SPREADSHEET_KEY_RE})`}
                 component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>

@@ -13,7 +13,7 @@ import TLLogo from './images/TL-Horizontal-Black.svg'
 import { Classes, Colors } from '@blueprintjs/core';
 import Nav from './Nav';
 
-const Outer = styled.div`
+const ContentBody = styled.div`
   padding: 10px 20px;
   @media (min-width: 500px) {
     padding: 20px 60px;
@@ -164,7 +164,7 @@ const NewsItem = styled.div`
 const Home = () =>
   <>
     <Nav/>
-    <Outer className={Classes.DARK}>
+    <ContentBody className={Classes.DARK}>
       <Helmet>
         <link href="https://flowmap.blue/" rel="canonical"/>
       </Helmet>
@@ -204,14 +204,17 @@ const Home = () =>
             spreadsheet</Away> and
             make a copy of it (File / Make a copy…)
           </li>
-          <li>Add data to the new spreadsheet. <ReadMore>
-            The spreadsheet has three sheets in it.
+          <li>Add data to the new spreadsheet.  <ReadMore>
+            <p>The spreadsheet has three sheets in it.
             They are named "<b>properties</b>", "<b>locations</b>" and "<b>flows</b>".
             The <b>properties</b> sheet has the title and the description for your data set and a few other
             configuration parameters.
             The <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the optional <b>name</b>.
             The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
             The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
+            </p>
+           Use the <Link to="/helpers/od-matrix">OD-matrix data converter</Link> if
+                        your movement counts are stored as a matrix.
           </ReadMore>
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
@@ -226,6 +229,7 @@ const Home = () =>
           </li>
           <SpreadsheetKeyExtractor/>
         </ListOfSteps>
+
       </section>
 
       <section id="examples">
@@ -259,6 +263,12 @@ const Home = () =>
       <section>
         <h2 id="news">News</h2>
         <News>
+          <NewsItem>
+            <NewsDate>Nov 08, 2019</NewsDate>
+            <NewsText>
+              Added the <Link to="/helpers/od-matrix">OD-matrix data converter</Link> data preparation helper tool.
+            </NewsText>
+          </NewsItem>
           <NewsItem>
             <NewsDate>Oct 28, 2019</NewsDate>
             <NewsText>
@@ -389,7 +399,7 @@ const Home = () =>
           </NoWrap>
         </Support>
       </section>
-    </Outer>
+    </ContentBody>
   </>
 
 export default Home
