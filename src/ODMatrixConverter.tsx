@@ -37,7 +37,7 @@ function convert(inputTsv: string) {
     for (let i = 1; i < inputRows.length; i++) {
       const row = inputRows[i]
       if (row.length > 0) {
-        for (let j = 1; j < inputRows.length; j++) {
+        for (let j = 1; j < row.length; j++) {
           outputRows.push([
             row[0],
             header.length > j ? header[j] : `col${j+1}`,
