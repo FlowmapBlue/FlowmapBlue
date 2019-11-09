@@ -12,6 +12,7 @@ import MapboxLogo from './images/mapbox-logo-black.svg'
 import TLLogo from './images/TL-Horizontal-Black.svg'
 import { Classes, Colors } from '@blueprintjs/core';
 import Nav from './Nav';
+import News from './News';
 
 const ContentBody = styled.div`
   padding: 10px 20px;
@@ -140,26 +141,6 @@ const ListOfSteps = styled.ol`
   }
 `
 
-const NewsDate = styled.div`
-  color: ${Colors.GRAY3};
-  font-size: small;
-  min-width: 100px;
-`
-
-const NewsText = styled.div`
-  display: block;
-`
-
-const News = styled.div`
-  display: flex;
-  flex-direction: column;
-  & > *+* { margin-top: 0.75rem; }
-`
-const NewsItem = styled.div`
-  display: flex;
-`
-
-
 
 const Home = () =>
   <>
@@ -262,77 +243,7 @@ const Home = () =>
 
       <section>
         <h2 id="news">News</h2>
-        <News>
-          <NewsItem>
-            <NewsDate>Nov 08, 2019</NewsDate>
-            <NewsText>
-              Added the <Link to="/helpers/od-matrix">OD-matrix data converter</Link> data preparation helper tool.
-            </NewsText>
-          </NewsItem>
-          <NewsItem>
-            <NewsDate>Oct 28, 2019</NewsDate>
-            <NewsText>
-              Added the fade slider to manually adjust the brightness of the arrows for better map visibility.
-            </NewsText>
-          </NewsItem>
-          <NewsItem>
-            <NewsDate>Oct 26, 2019</NewsDate>
-            <NewsText>
-              The dark mode is now enabled by default. Changed the home page appearance.
-            </NewsText>
-          </NewsItem>
-          <NewsItem>
-            <NewsDate>Oct 16, 2019</NewsDate>
-            <NewsText>
-              Yay! Flowmap.blue <Away href="http://informationisbeautifulawards.com/showcase/3815-flowmap-blue">made it
-              to the shortlist</Away> of
-              the Information is Beautiful Awards.
-            </NewsText>
-          </NewsItem>
-          <NewsItem>
-            <NewsDate>Oct 13, 2019</NewsDate>
-            <NewsText>
-              Talk <Away href="https://ilya.boyandin.me/talks/2019-10-11-urban-mobility-symp/">"Scalability of OD-data
-              visualizations"</Away> about
-              flowmap.blue
-              and <Away href="https://github.com/teralytics/flowmap.query">flowmap.query</Away> at
-              the <Away href="https://www.citylab-berlin.org/events/mobilitysymposium_en/">Urban Mobility
-              Symposium</Away> in Berlin.
-            </NewsText>
-          </NewsItem>
-          <NewsItem>
-            <NewsDate>Sep 15, 2019</NewsDate>
-            <NewsText>
-              Added color scheme and dark mode support.
-            </NewsText>
-          </NewsItem>
-          <NewsItem>
-            <NewsDate>Mar 26, 2019</NewsDate>
-            <NewsText>
-              Adding support for map styles.
-            </NewsText>
-          </NewsItem>
-          <NewsItem>
-            <NewsDate>Mar 24, 2019</NewsDate>
-            <NewsText>
-              Automatic clustering.
-            </NewsText>
-          </NewsItem>
-          <NewsItem>
-            <NewsDate>Mar 3, 2019</NewsDate>
-            <NewsText>
-              <Away href="https://ilya.boyandin.me/talks/2019-03-03-clisel/">Talk about flowmap.blue</Away> at
-              the workshop
-              on <Away href="https://clisel.eu/Ascona">Environmental Changes and Human Mobility</Away> in Ascona.
-            </NewsText>
-          </NewsItem>
-          <NewsItem>
-            <NewsDate>Feb 8, 2019</NewsDate>
-            <NewsText>
-              Added animation toggle.
-            </NewsText>
-          </NewsItem>
-        </News>
+        <News/>
       </section>
 
       <section>
