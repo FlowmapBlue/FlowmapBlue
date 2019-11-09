@@ -32,7 +32,7 @@ export default () =>
     <NewsItem>
       <NewsDate>Nov 08, 2019</NewsDate>
       <NewsText>
-        Added the <Link to="/helpers/od-matrix">OD-matrix data converter</Link> data preparation helper tool.
+        Added the <Link to="/od-matrix-converter">OD-matrix data converter</Link> data preparation helper tool.
       </NewsText>
     </NewsItem>
     <NewsItem>

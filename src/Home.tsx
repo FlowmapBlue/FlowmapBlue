@@ -101,7 +101,6 @@ const ExampleTitle = styled.div`
   position: absolute;
   padding: 4px 7px;
   bottom: 0;
-  line-height: 1.4;
   background: ${Colors.DARK_GRAY2};
   color: ${Colors.GRAY3};
   font-size: 10pt;
@@ -194,7 +193,7 @@ const Home = () =>
             The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
             The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
             </p>
-           Use the <Link to="/helpers/od-matrix">OD-matrix data converter</Link> if
+           Use the <Link to="/od-matrix-converter">OD-matrix data converter</Link> if
                         your movement counts are stored as a matrix.
           </ReadMore>
           </li>

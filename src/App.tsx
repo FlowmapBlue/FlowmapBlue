@@ -76,7 +76,7 @@ export default class App extends React.Component<Props, State> {
           <Suspense fallback={<LoadingSpinner/>}>
             <Switch>
               <Route
-                path="/helpers/od-matrix"
+                path="/od-matrix-converter"
                 component={ODMatrixConverter}
                 />
               <Route

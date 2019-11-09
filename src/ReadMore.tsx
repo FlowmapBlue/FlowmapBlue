@@ -6,7 +6,9 @@ import { Elevation } from '@blueprintjs/core/lib/esm/common/elevation';
 const MoreContent = styled(Card)`
   margin-top: 1em;
   margin-bottom: 1em;
-  background-color: ${Colors.GRAY1} !important;
+  background-color: ${Colors.DARK_GRAY5} !important;
+  font-size: 0.9rem;
+  line-height: 1.1rem;
 `
 const MoreLink = styled.a`
   cursor: pointer;
