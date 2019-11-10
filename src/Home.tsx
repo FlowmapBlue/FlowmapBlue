@@ -197,9 +197,8 @@ const Home = () =>
            Use the <Link to="/od-matrix-converter">OD-matrix converter</Link> if
                         your movement counts are represented as a matrix.
             </p>
-            The <Link to="/geocoding">Geocoding utility</Link> can help you
-            finding the coordinates by the location names
-            if you only have names in your dataset.
+            The <Link to="/geocoding">Geocoding utility</Link> The Geocoding utility can help you
+            finding the geographic coordinates for your locations if you only have location names in your dataset.
           </ReadMore>
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
