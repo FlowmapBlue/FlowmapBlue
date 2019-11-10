@@ -145,7 +145,7 @@ const Geocoding = () => {
         <h1>Geocoding</h1>
         <section>
           <p>
-            Find coordinates for locations by their names.
+            Find geographic coordinates of locations by their names.
           </p>
         </section>
         <Container>
@@ -205,7 +205,7 @@ const Geocoding = () => {
             icon={IconNames.ARROW_RIGHT}
             rightIcon={IconNames.ARROW_RIGHT}
             onClick={handleStart}
-          >Start</Button>
+          >Search</Button>
           <GeoCoder
             {...geoCoderParams}
           />
