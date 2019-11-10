@@ -15,7 +15,7 @@ const ContentBody = styled.div`
 
 const ConverterContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr min-content 1fr;
+  grid-template-columns: 2fr min-content 1fr;
   grid-template-rows: min-content 1fr;
   column-gap: 1rem;
   row-gap: 0.2rem;

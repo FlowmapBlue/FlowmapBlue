@@ -130,7 +130,7 @@ const Geocoding = () => {
         </section>
         <Container>
           <div>
-            <H5>Enter location names here (one by line)</H5>
+            <H5>Enter location names here (one per line)</H5>
             <HTMLSelect
               fill={false}
               value={undefined}
