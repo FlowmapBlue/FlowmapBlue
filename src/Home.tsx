@@ -193,8 +193,13 @@ const Home = () =>
             The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and <b>count</b>.
             The values in the <b>origin</b> and <b>dest</b> columns must be the respective locations' <b>id</b>s.
             </p>
-           Use the <Link to="/od-matrix-converter">OD-matrix data converter</Link> if
-                        your movement counts are stored as a matrix.
+            <p>
+           Use the <Link to="/od-matrix-converter">OD-matrix converter</Link> if
+                        your movement counts are represented as a matrix.
+            </p>
+            The <Link to="/geocoding">Geocoding utility</Link> can help you
+            finding the coordinates by the location names
+            if you only have names in your dataset.
           </ReadMore>
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}

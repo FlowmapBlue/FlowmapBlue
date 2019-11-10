@@ -30,9 +30,15 @@ const NewsItem = styled.div`
 export default () =>
   <Outer>
     <NewsItem>
+      <NewsDate>Nov 10, 2019</NewsDate>
+      <NewsText>
+        Added the <Link to="/geocoding">Geocoding</Link> data preparation helper.
+      </NewsText>
+    </NewsItem>
+    <NewsItem>
       <NewsDate>Nov 08, 2019</NewsDate>
       <NewsText>
-        Added the <Link to="/od-matrix-converter">OD-matrix data converter</Link> data preparation helper tool.
+        Added the <Link to="/od-matrix-converter">OD-matrix converter</Link> data preparation helper tool.
       </NewsText>
     </NewsItem>
     <NewsItem>

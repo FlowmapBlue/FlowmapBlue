@@ -13,6 +13,7 @@ import { ColorScheme } from './colors';
 
 const MapView = React.lazy(() => import('./MapView'))
 const ODMatrixConverter = React.lazy(() => import('./ODMatrixConverter'))
+const Geocoding = React.lazy(() => import('./Geocoding'))
 
 
 const history = createBrowserHistory()
@@ -78,6 +79,10 @@ export default class App extends React.Component<Props, State> {
               <Route
                 path="/od-matrix-converter"
                 component={ODMatrixConverter}
+                />
+              <Route
+                path="/geocoding"
+                component={Geocoding}
                 />
               <Route
                 path={`/:sheetKey(${SPREADSHEET_KEY_RE})`}

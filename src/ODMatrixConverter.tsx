@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react'
 import Nav from './Nav';
 import styled from '@emotion/styled';
-import { Button, Classes, H1, H2, H5, Intent, TextArea } from '@blueprintjs/core';
+import { Button, Classes, H5, Intent, TextArea } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
-import { tsvFormat, tsvFormatRows, tsvParse, tsvParseRows } from 'd3-dsv';
+import { tsvFormatRows, tsvParseRows } from 'd3-dsv';
 
 const ContentBody = styled.div`
   padding: 30px 30px;
@@ -70,7 +70,7 @@ const ODMatrixConverter = () => {
     <>
       <Nav />
       <ContentBody className={Classes.DARK}>
-        <h1>OD-matrix data converter </h1>
+        <h1>OD-matrix converter </h1>
         <section>
           <p>Often OD-data comes in the form of an OD-matrix:
             the rows are the origins, the columns are the destinations and the trip counts are in the cells.
