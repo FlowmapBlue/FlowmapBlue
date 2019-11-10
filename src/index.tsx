@@ -10,7 +10,6 @@ import '@blueprintjs/core/lib/css/blueprint.css'
 import '@blueprintjs/select/lib/css/blueprint-select.css'
 import '@blueprintjs/icons/lib/css/blueprint-icons.css'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import checkWebglSupport from './checkWebglSupport'
 import { ColorScheme } from './colors'
 import { AppToaster } from './AppToaster';
 import { Button, Classes, Colors, Intent } from '@blueprintjs/core';
@@ -53,7 +52,7 @@ if (process.env.REACT_APP_SENTRY_DSN) {
 ReactDOM.render(
   <>
     <Global styles={globalStyles} />
-    <App supportsWebGl={checkWebglSupport()} />
+    <App />
   </>,
   document.getElementById('root')
 )

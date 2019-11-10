@@ -30,7 +30,6 @@ import {
   Location,
   LocationSelection
 } from './types';
-import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
 import Message from './Message';
 import LoadingSpinner from './LoadingSpinner';
 import { PromiseState } from 'react-refetch';
@@ -44,7 +43,7 @@ import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
 import Away from './Away';
 import { nest } from 'd3-collection';
-import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp } from './MapView';
+import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp } from './config';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -55,11 +54,11 @@ const CONTROLLER_OPTIONS = {
 // const MAX_ZOOM_LEVELS = 5
 // const MIN_ZOOM_LEVELS = 0.5
 
-type Props = {
+export type Props = {
   config: Config,
   locationsFetch: PromiseState<Location[]>,
   flowsFetch: PromiseState<Flow[]>,
-  spreadSheetKey: string
+  spreadSheetKey: string | undefined
 }
 
 enum HighlightType {
@@ -1124,24 +1123,4 @@ class FlowMap extends React.Component<Props, State> {
   }
 }
 
-
-export default sheetFetcher<any>(({ spreadSheetKey, config }: Props) => ({
-  locationsFetch: {
-    url: makeSheetQueryUrl(spreadSheetKey, 'locations', 'SELECT A,B,C,D'),
-    then: (rows: any[]) => ({
-      value: rows.map(({ id, name, lon, lat }: any) => ({
-        id: `${id}`, name, lon: +lon, lat: +lat,
-      } as Location))
-    })
-  } as any,
-  flowsFetch: {
-    url: makeSheetQueryUrl(spreadSheetKey, 'flows', 'SELECT A,B,C'),
-    then: (rows: any[]) => ({
-      value: rows.map(({ origin, dest, count }: any) => ({
-        origin, dest, count: +count,
-      } as Flow))
-    })
-  } as any,
-}))(FlowMap as any);
-
-
+export default FlowMap

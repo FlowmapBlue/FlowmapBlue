@@ -35,7 +35,7 @@ const NavItem = ({ to, children }: { to: string, children: ReactNode }) =>
     }}
     to={to}
     exact={true}
-    smooth={true}
+    smooth={false}
     className={[
       Classes.INTENT_PRIMARY,
       Classes.BUTTON,

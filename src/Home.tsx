@@ -252,12 +252,16 @@ const Home = () =>
       <section>
         <h2 id="tools">Tools</h2>
         <p>
+        Our <Link to="/geocoding">Geocoding tool</Link> can help you
+        finding the geographic coordinates for your locations if you only have their names in your dataset.
+        </p>
+        <p>
        Use the <Link to="/od-matrix-converter">OD-matrix converter</Link> if
                     your movement counts are represented as an OD-matrix.
         </p>
         <p>
-        Our <Link to="/geocoding">Geocoding tool</Link> can help you
-        finding the geographic coordinates for your locations if you only have their names in your dataset.
+       With the <Link to="/in-browser">In-browser flow map</Link> you can
+          visualize OD-data <b>directly in your browser</b> without having to upload the data to Google Sheets.
         </p>
       </section>
 

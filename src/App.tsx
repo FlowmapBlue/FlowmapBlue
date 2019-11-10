@@ -3,7 +3,6 @@ import { Router, Route, Switch, RouteComponentProps } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 import Home from './Home'
 import * as Sentry from '@sentry/browser'
-import NoScrollContainer from './NoScrollContainer';
 import Fallback from './Fallback';
 import { AppToaster } from './AppToaster';
 import { Suspense } from 'react';
@@ -11,7 +10,8 @@ import LoadingSpinner from './LoadingSpinner';
 import { SPREADSHEET_KEY_RE } from './constants';
 import { ColorScheme } from './colors';
 
-const MapView = React.lazy(() => import('./MapView'))
+const GSheetsFlowMap = React.lazy(() => import('./GSheetsFlowMap'))
+const InBrowserFlowMap = React.lazy(() => import('./InBrowserFlowMap'))
 const ODMatrixConverter = React.lazy(() => import('./ODMatrixConverter'))
 const Geocoding = React.lazy(() => import('./Geocoding'))
 
@@ -20,7 +20,6 @@ const history = createBrowserHistory()
 history.listen(location => AppToaster.clear())
 
 type Props = {
-  supportsWebGl: boolean,
 }
 
 type State = {
@@ -71,7 +70,6 @@ export default class App extends React.Component<Props, State> {
         </Router>
       )
     } else {
-      const { supportsWebGl } = this.props
       return (
         <Router history={history}>
           <Suspense fallback={<LoadingSpinner/>}>
@@ -85,18 +83,15 @@ export default class App extends React.Component<Props, State> {
                 component={Geocoding}
                 />
               <Route
+                path="/in-browser"
+                component={InBrowserFlowMap}
+                />
+              <Route
                 path={`/:sheetKey(${SPREADSHEET_KEY_RE})`}
                 component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
-                  <NoScrollContainer>{
-                    supportsWebGl ?
-                      <MapView
-                        spreadSheetKey={match.params.sheetKey}
-                      />
-                      :
-                      <Fallback>
-                        Sorry, but your browser doesn't seem to support WebGL which is required for this app.
-                      </Fallback>
-                  }</NoScrollContainer>
+                  <GSheetsFlowMap
+                    spreadSheetKey={match.params.sheetKey}
+                  />
                 }
               />
               <Route path="/" component={Home} />

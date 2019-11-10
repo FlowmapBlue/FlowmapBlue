@@ -31,6 +31,12 @@ const NewsItem = styled.div`
 export default () =>
   <Outer>
     <NewsItem>
+      <NewsDate>Nov 11, 2019</NewsDate>
+      <NewsText>
+        Added the <Link to="/in-browser">In-browser flow map</Link>.
+      </NewsText>
+    </NewsItem>
+    <NewsItem>
       <NewsDate>Nov 10, 2019</NewsDate>
       <NewsText>
         Added the <Link to="/geocoding">Geocoding</Link> data preparation helper tool.
