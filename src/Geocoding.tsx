@@ -19,6 +19,14 @@ const ContentBody = styled.div`
   max-width: 1500px;
 `
 
+const SearchOptions = styled.div`
+  display: flex;
+  flex-direction: row;
+  & > * + * { margin-left: 1rem; }
+  margin-bottom: 0.5rem;
+  align-items: center;
+`
+
 const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr min-content 2fr;
@@ -77,13 +85,15 @@ const accessToken = process.env.REACT_APP_MapboxAccessToken
 interface GeoCoderProps {
   names: string[]
   country: string
+  locationType: string
 }
-const GeoCoder = connect(({ names, country }: GeoCoderProps) => {
+const GeoCoder = connect(({ names, country, locationType }: GeoCoderProps) => {
   const fetches: { [key: string]: string } = {}
   for (const name of names) {
     fetches[md5(name)] =
       `${baseURL}${encodeURIComponent(name)}.json?`+
       (country.length > 0 ? `country=${country}&` : '')+
+      (locationType.length > 0 ? `types=${locationType}&` : '')+
       `access_token=${accessToken}`
   }
   return fetches
@@ -112,18 +122,21 @@ const Geocoding = () => {
     ['Paris', 'London', 'New York'].join('\n')
   )
   const [country, setCountry] = useState('')
+  const [locationType, setLocationType] = useState('')
   const [geoCoderParams, setGeoCoderParams] = useState<GeoCoderProps>({
     names: [],
     country: '',
+    locationType: '',
   })
   const handleStart = useCallback(
     () => {
       setGeoCoderParams({
         names: input.split('\n'),
         country,
+        locationType,
       })
     },
-    [input, country]
+    [input, country, locationType]
   )
   return (
     <>
@@ -136,29 +149,50 @@ const Geocoding = () => {
           </p>
         </section>
         <Container>
-          <div>
-            <H5>Enter location names here (one per line)</H5>
-            <HTMLSelect
-              fill={false}
-              value={undefined}
-              options={[
-                  {
-                    value: '',
-                    label: 'Pick country to limit search…'
-                  },
-                  ...Object
-                    .keys(countries)
-                    .map(key => ({
-                      label: countries[key],
-                      value: key,
-                    }))
-                    .sort((a, b) => ascending(a.label, b.label))
-                ]}
-              onChange={event => setCountry(event.currentTarget.value)}
-            />
-          </div>
+          <H5>Enter location names here (one per line)</H5>
           <span/>
-          <H5>Output TSV</H5>
+          <div>
+            <SearchOptions>
+              <span>Limit search to</span>
+              <HTMLSelect
+                fill={false}
+                value={undefined}
+                options={[
+                    {
+                      value: '',
+                      label: 'any country'
+                    },
+                    ...Object
+                      .keys(countries)
+                      .map(key => ({
+                        label: countries[key],
+                        value: key,
+                      }))
+                      .sort((a, b) => ascending(a.label, b.label))
+                  ]}
+                onChange={event => setCountry(event.currentTarget.value)}
+              />
+              <HTMLSelect
+                fill={false}
+                value={undefined}
+                options={[
+                    {
+                      value: '',
+                      label: 'any location type'
+                    },
+                    ...[
+                      'country', 'region', 'postcode', 'district', 'place', 'locality',
+                      'neighborhood', 'address', 'poi'
+                    ]
+                      .map(key => ({
+                        label: key,
+                        value: key,
+                      }))
+                  ]}
+                onChange={event => setLocationType(event.currentTarget.value)}
+              />
+            </SearchOptions>
+          </div>
           <TextArea
             growVertically={false}
             large={true}
