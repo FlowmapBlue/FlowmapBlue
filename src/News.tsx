@@ -23,6 +23,7 @@ const NewsText = styled.div`
 
 const NewsItem = styled.div`
   display: flex;
+  align-items: center;
 `
 
 
@@ -32,13 +33,20 @@ export default () =>
     <NewsItem>
       <NewsDate>Nov 10, 2019</NewsDate>
       <NewsText>
-        Added the <Link to="/geocoding">Geocoding</Link> data preparation helper.
+        Added the <Link to="/geocoding">Geocoding</Link> data preparation helper tool.
       </NewsText>
     </NewsItem>
     <NewsItem>
       <NewsDate>Nov 08, 2019</NewsDate>
       <NewsText>
         Added the <Link to="/od-matrix-converter">OD-matrix converter</Link> data preparation helper tool.
+      </NewsText>
+    </NewsItem>
+    <NewsItem>
+      <NewsDate>Nov 05, 2019</NewsDate>
+      <NewsText>
+        Talk <Away href="https://ilya.boyandin.me/talks/2019-11-05-on-data-and-design/">“Visualizing mobility”</Away> at
+        the <Away href="https://www.meetup.com/ondataanddesign-Switzerland/events/265947767/">“On data and design” meetup</Away> in Basel.
       </NewsText>
     </NewsItem>
     <NewsItem>
@@ -64,8 +72,8 @@ export default () =>
     <NewsItem>
       <NewsDate>Oct 13, 2019</NewsDate>
       <NewsText>
-        Talk <Away href="https://ilya.boyandin.me/talks/2019-10-11-urban-mobility-symp/">"Scalability of OD-data
-        visualizations"</Away> about
+        Talk <Away href="https://ilya.boyandin.me/talks/2019-10-11-urban-mobility-symp/">“Scalability of OD-data
+        visualizations”</Away> about
         flowmap.blue
         and <Away href="https://github.com/teralytics/flowmap.query">flowmap.query</Away> at
         the <Away href="https://www.citylab-berlin.org/events/mobilitysymposium_en/">Urban Mobility
@@ -91,7 +99,7 @@ export default () =>
       </NewsText>
     </NewsItem>
     <NewsItem>
-      <NewsDate>Mar 3, 2019</NewsDate>
+      <NewsDate>Mar 03, 2019</NewsDate>
       <NewsText>
         <Away href="https://ilya.boyandin.me/talks/2019-03-03-clisel/">Talk about flowmap.blue</Away> at
         the workshop
@@ -99,7 +107,7 @@ export default () =>
       </NewsText>
     </NewsItem>
     <NewsItem>
-      <NewsDate>Feb 8, 2019</NewsDate>
+      <NewsDate>Feb 08, 2019</NewsDate>
       <NewsText>
         Added animation toggle.
       </NewsText>
