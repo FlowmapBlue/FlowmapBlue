@@ -118,4 +118,10 @@ export default () =>
         Added animation toggle.
       </NewsText>
     </NewsItem>
+    <NewsItem>
+      <NewsDate>Jan 03, 2019</NewsDate>
+      <NewsText>
+        First published online.
+      </NewsText>
+    </NewsItem>
   </Outer>
