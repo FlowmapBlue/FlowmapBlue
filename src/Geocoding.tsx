@@ -20,7 +20,7 @@ const ContentBody = styled.div`
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: 1fr min-content 3fr;
+  grid-template-columns: 1fr min-content 2fr;
   grid-template-rows: min-content 1fr;
   column-gap: 1rem;
   row-gap: 0.2rem;
@@ -130,7 +130,7 @@ const Geocoding = () => {
         </section>
         <Container>
           <div>
-            <H5>Input location names</H5>
+            <H5>Enter location names here (one by line)</H5>
             <HTMLSelect
               fill={false}
               value={undefined}
