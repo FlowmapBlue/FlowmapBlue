@@ -11,7 +11,8 @@ const NavBar = styled(Navbar)`
 `
 
 const NavMenu = styled(Navbar.Group)`
-  @media (max-width: 1050px) {
+  white-space: nowrap;
+  @media (max-width: 900px) {
     display: none;
   }
 `
@@ -82,6 +83,7 @@ const Nav = () =>
       <NavItem to="/#news">News</NavItem>
       <NavItem to="/#how-to">How to visualize</NavItem>
       <NavItem to="/#examples">Examples</NavItem>
+      <NavItem to="/#tools">Tools</NavItem>
       <NavItem to="/#need-help">Need help?</NavItem>
       <NavItem to="/#privacy">Privacy</NavItem>
       <NavItem to="/#open-source">Open source</NavItem>

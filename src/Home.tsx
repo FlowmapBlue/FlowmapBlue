@@ -197,8 +197,8 @@ const Home = () =>
            Use the <Link to="/od-matrix-converter">OD-matrix converter</Link> if
                         your movement counts are represented as an OD-matrix.
             </p>
-            The <Link to="/geocoding">Geocoding utility</Link> The Geocoding utility can help you
-            finding the geographic coordinates for your locations if you only have location names in your dataset.
+            Our <Link to="/geocoding">Geocoding tool</Link> can help you
+            finding the geographic coordinates for your locations if you only have their names in your dataset.
           </ReadMore>
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
@@ -224,8 +224,8 @@ const Home = () =>
                 <ExampleTitle className="name">{name}</ExampleTitle>
                 <ExampleImage
                   alt={name}
-                  src={`screenshots/${key}__${screenshotSizes[0]}px.jpg`}
-                  srcSet={screenshotSizes.map(w => `screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
+                  src={`/screenshots/${key}__${screenshotSizes[0]}px.jpg`}
+                  srcSet={screenshotSizes.map(w => `/screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
                   sizes={screenshotSizes.map((w, i) =>
                     (i < screenshotSizes.length - 1 ? `(max-width: ${w * 2}px) ` : '') + `${w}px`)
                     .join(',')
@@ -247,6 +247,18 @@ const Home = () =>
       <section>
         <h2 id="news">News</h2>
         <News/>
+      </section>
+
+      <section>
+        <h2 id="tools">Tools</h2>
+        <p>
+       Use the <Link to="/od-matrix-converter">OD-matrix converter</Link> if
+                    your movement counts are represented as an OD-matrix.
+        </p>
+        <p>
+        Our <Link to="/geocoding">Geocoding tool</Link> can help you
+        finding the geographic coordinates for your locations if you only have their names in your dataset.
+        </p>
       </section>
 
       <section>
