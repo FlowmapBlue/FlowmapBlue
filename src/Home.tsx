@@ -198,7 +198,7 @@ const Home = () =>
                         your movement counts are represented as an OD-matrix.
             </p>
             Our <Link to="/geocoding">Geocoding tool</Link> can help you
-            finding the geographic coordinates for your locations if you only have their names in your dataset.
+            finding the geographic coordinates for locations if you only have their names in your dataset.
           </ReadMore>
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
@@ -253,7 +253,7 @@ const Home = () =>
         <h2 id="tools">Tools</h2>
         <p>
         Our <Link to="/geocoding">Geocoding tool</Link> can help you
-        finding the geographic coordinates for your locations if you only have their names in your dataset.
+        finding the geographic coordinates for locations if you only have their names in your dataset.
         </p>
         <p>
        Use the <Link to="/od-matrix-converter">OD-matrix converter</Link> if
