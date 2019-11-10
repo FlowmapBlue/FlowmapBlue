@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { Button, Classes, H5, HTMLSelect, Intent, TextArea } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { tsvFormatRows } from 'd3-dsv';
+import { ascending } from 'd3-array';
 import { connect, PromiseState } from 'react-refetch';
 import md5 from 'blueimp-md5';
 import COUNTRIES from './countries.json';
@@ -111,12 +112,18 @@ const Geocoding = () => {
     ['Paris', 'London', 'New York'].join('\n')
   )
   const [country, setCountry] = useState('')
-  const [names, setNames] = useState([] as string[])
+  const [geoCoderParams, setGeoCoderParams] = useState<GeoCoderProps>({
+    names: [],
+    country: '',
+  })
   const handleStart = useCallback(
     () => {
-      setNames(input.split('\n'))
+      setGeoCoderParams({
+        names: input.split('\n'),
+        country,
+      })
     },
-    [input]
+    [input, country]
   )
   return (
     <>
@@ -139,10 +146,13 @@ const Geocoding = () => {
                     value: '',
                     label: 'Pick country to limit search…'
                   },
-                  ...Object.keys(countries).map(key => ({
-                    label: countries[key],
-                    value: key,
-                  }))
+                  ...Object
+                    .keys(countries)
+                    .map(key => ({
+                      label: countries[key],
+                      value: key,
+                    }))
+                    .sort((a, b) => ascending(a.label, b.label))
                 ]}
               onChange={event => setCountry(event.currentTarget.value)}
             />
@@ -163,8 +173,7 @@ const Geocoding = () => {
             onClick={handleStart}
           >Start</Button>
           <GeoCoder
-            country={country}
-            names={names}
+            {...geoCoderParams}
           />
         </Container>
         <br/>
