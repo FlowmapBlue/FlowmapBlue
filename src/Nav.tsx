@@ -1,9 +1,10 @@
 import React, { ReactNode } from 'react'
-import { Alignment, Button, Classes, Colors, Navbar } from '@blueprintjs/core';
+import { Alignment, Classes, Colors, Navbar } from '@blueprintjs/core';
 import Away from './Away';
 import GitHubLogo from './images/github.svg'
 import SpectrumLogo from './images/spectrum.svg'
 import styled from '@emotion/styled';
+import { NavHashLink } from 'react-router-hash-link'
 
 const NavBar = styled(Navbar)`
   background-color: ${Colors.DARK_GRAY3} !important;
@@ -15,13 +16,34 @@ const NavMenu = styled(Navbar.Group)`
   }
 `
 
+
 const NavItem = ({ to, children }: { to: string, children: ReactNode }) =>
-  <Button
-    className={Classes.INTENT_PRIMARY}
-    minimal={true}
-    large={true}
-    onClick={() => document.location.href = to}
-  >{children}</Button>
+  <NavHashLink
+    activeClassName={Classes.ACTIVE}
+    isActive={(match, location) => {
+      if (!match) {
+        return false;
+      }
+      if (!location.hash && to.indexOf('#') > 0) {
+        return false;
+      }
+      if (location.hash && !to.endsWith(location.hash)) {
+        return false;
+      }
+      return true;
+    }}
+    to={to}
+    exact={true}
+    smooth={true}
+    className={[
+      Classes.INTENT_PRIMARY,
+      Classes.BUTTON,
+      Classes.MINIMAL,
+      Classes.LARGE,
+    ].join(' ')}
+  >
+    {children}
+  </NavHashLink>
 
 const LinksArea = styled.div`
   display: flex;

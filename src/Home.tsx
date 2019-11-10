@@ -195,7 +195,7 @@ const Home = () =>
             </p>
             <p>
            Use the <Link to="/od-matrix-converter">OD-matrix converter</Link> if
-                        your movement counts are represented as a matrix.
+                        your movement counts are represented as an OD-matrix.
             </p>
             The <Link to="/geocoding">Geocoding utility</Link> The Geocoding utility can help you
             finding the geographic coordinates for your locations if you only have location names in your dataset.
@@ -272,7 +272,7 @@ const Home = () =>
           (unless the authors have already disclosed them by linking from a publicly accessible website).
         </p>
         <p>
-          We <b>collect anonymous usage statistics</b> via Google Analytics and track errors via Sentry.
+          We <b>collect usage statistics</b> via Google Analytics and track errors via Sentry.
           We want to know how flowmap.blue is used and when it fails so that we can improve it.
           The use of Google Analytics involves setting cookies in the users' browsers
           for detecting recurring visits and working sessions.

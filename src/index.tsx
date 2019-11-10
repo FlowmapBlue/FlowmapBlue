@@ -40,7 +40,7 @@ a, a:visited { color: ${ColorScheme.primary}; }
   a, a:visited { color: ${Colors.DARK_GRAY1}; }
 }
 
-section { margin-bottom: 4em; line-height: 1.35rem; }
+section { margin-bottom: 4em;  }
 #no-token-warning { bottom: 30px; top: unset !important; left: 10px !important; }
 `
 
