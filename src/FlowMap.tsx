@@ -43,7 +43,7 @@ import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
 import Away from './Away';
 import { nest } from 'd3-collection';
-import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp } from './config';
+import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp, parseNumberConfigProp } from './config';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -155,7 +155,7 @@ class FlowMap extends React.Component<Props, State> {
       animationEnabled: parseBoolConfigProp(props.config[ConfigPropName.ANIMATE_FLOWS]),
       clusteringEnabled: parseBoolConfigProp(props.config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
       darkMode: parseBoolConfigProp(props.config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
-      fadeAmount: 25,
+      fadeAmount: parseNumberConfigProp(props.config[ConfigPropName.FADE_AMOUNT], 25),
       colorSchemeKey: props.config[ConfigPropName.COLORS_SCHEME],
     }
   }

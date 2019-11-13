@@ -17,6 +17,7 @@ export const DEFAULT_CONFIG: Config = {
   [ConfigPropName.COLORS_DARK_MODE]: undefined,
   [ConfigPropName.ANIMATE_FLOWS]: undefined,
   [ConfigPropName.CLUSTER_ON_ZOOM]: undefined,
+  [ConfigPropName.FADE_AMOUNT]: undefined,
 }
 
 export function parseBoolConfigProp(value: string | undefined) {
@@ -25,4 +26,12 @@ export function parseBoolConfigProp(value: string | undefined) {
     if (lower === 'yes' || lower === 'true' || lower === '1') return true
   }
   return false
+}
+
+export function parseNumberConfigProp(value: string | undefined, defaultValue: number) {
+  if (value != null) {
+    const numVal = +value
+    if (isFinite(numVal)) return numVal
+  }
+  return defaultValue
 }
