@@ -111,8 +111,8 @@ const InBrowserFlowMap = () => {
             </p>
           </section>
           <Container>
-            <H5>Locations CSV</H5>
-            <H5>Flows CSV</H5>
+            <H5>Locations TSV (tab-separated values)</H5>
+            <H5>Flows TSV</H5>
             <TextArea
               growVertically={false}
               large={true}
