@@ -70,14 +70,15 @@ const ODMatrixConverter = () => {
     <>
       <Nav />
       <ContentBody className={Classes.DARK}>
-        <h1>OD-matrix converter </h1>
+        <h1>OD-matrix converter</h1>
         <section>
           <p>Often OD-data comes in the form of an OD-matrix:
             the rows are the origins, the columns are the destinations and the trip counts are in the cells.
           </p>
           <p>
             This utility can help you converting an OD-matrix dataset
-            into the form suitable for flowmap.blue.
+            into the form suitable for flowmap.blue
+            by unpivoting the destinations.
           </p>
         </section>
         <ConverterContainer>
