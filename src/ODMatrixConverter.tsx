@@ -24,7 +24,7 @@ const ConverterContainer = styled.div`
     min-height: 300px;
     height: 100%;
     font-size: 12px !important; 
-    white-space: nowrap;
+    white-space: pre;
     font-family: monospace;
   }
 `

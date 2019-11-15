@@ -38,8 +38,8 @@ const Container = styled.div`
     min-height: 300px;
     height: 100%;
     font-size: 12px !important; 
-    white-space: nowrap;
     font-family: monospace;
+    white-space: pre;
   }
 `
 
@@ -111,7 +111,7 @@ const GeoCoder = connect(({ names, country, locationType }: GeoCoderProps) => {
       growVertically={false}
       large={true}
       intent={Intent.PRIMARY}
-      onChange={console.log}
+      onChange={() => undefined}
       value={output}
     />
   )
