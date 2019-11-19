@@ -56,7 +56,7 @@ const Container = styled.div`
     min-height: 350px;
     height: 100%;
     font-size: 12px !important; 
-    white-space: nowrap;
+    white-space: pre;
     font-family: monospace;
   }
 `
