@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import MainExampleImageSrc from './images/nyc-citi-bike_1000px.jpg'
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
 import { examples, screenshotSizes } from './examples.json';
@@ -13,6 +12,7 @@ import TLLogo from './images/TL-Horizontal-Black.svg'
 import { Classes, Colors } from '@blueprintjs/core';
 import Nav from './Nav';
 import News from './News';
+import ReactPlayer from 'react-player';
 
 const ContentBody = styled.div`
   padding: 10px 20px;
@@ -119,17 +119,27 @@ const ExampleImage = styled.img`
     transform: scale(2);
   }
 `
-const MainExampleImageHoverableLink = styled(HoverableLink)`
+const DemoVideo = styled.div`
+  width: 100%;
   margin-bottom: 20px;
   max-width: 500px;
   display: inline-block;
-  img {
-    transform: scale(1) !important;
-  }
   @media (min-width: 800px) {
     float: right;
     margin-left: 20px;
   }
+`
+
+const ResponsivePlayer = styled.div`
+  position: relative;
+  padding-top: 56.25% /* Player ratio: 100 / (1280 / 720) */
+`
+
+const ResponsiveReactPlayer = styled(ReactPlayer)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid ${Colors.GRAY1};
 `
 
 const ListOfSteps = styled.ol`
@@ -152,11 +162,23 @@ const Home = () =>
       <LogoTitle><Logo fontSize={35} collapseWidth={300}/></LogoTitle>
 
 
-      <MainExampleImageHoverableLink to="/1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA">
-        <ExampleImage
-          src={MainExampleImageSrc}
-        />
-      </MainExampleImageHoverableLink>
+      <DemoVideo>
+        <ResponsivePlayer>
+           <ResponsiveReactPlayer
+             url="https://www.facebook.com/104807097656908/videos/2617812241644647/"
+             width="100%"
+             height="100%"
+             controls={false}
+             loop={true}
+             playing={false}
+             config={{
+               vimeo: {
+                 controls: false,
+               }
+             }}
+           />
+        </ResponsivePlayer>
+      </DemoVideo>
 
       <section>
         <p>
