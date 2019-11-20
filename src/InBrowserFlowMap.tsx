@@ -64,31 +64,31 @@ const Container = styled.div`
 
 const InBrowserFlowMap = () => {
   const [locationsCsv, setLocationsCsv] = useState(
-    `id\tname\tlat\tlon
-1\tNew York\t40.713543\t-74.011219
-2\tLondon\t51.507425\t-0.127738
-3\tRio de Janeiro\t-22.906241\t-43.180244`
+    `id,name,lat,lon
+1,New York,40.713543,-74.011219
+2,London,51.507425,-0.127738
+3,Rio de Janeiro,-22.906241,-43.180244`
   )
   const [flowsCsv, setFlowsCsv] = useState(
-    `origin\tdest\tcount
-1\t2\t42
-2\t1\t51
-3\t1\t50
-2\t3\t40
-1\t3\t22
-3\t2\t42`
+    `origin,dest,count
+1,2,42
+2,1,51
+3,1,50
+2,3,40
+1,3,22
+3,2,42`
   )
   const history = useHistory()
   const handleVisualize = () => {
     history.push('/in-browser/visualize', {
-      locations: dsvFormat('\t').parse(locationsCsv,
+      locations: dsvFormat(',').parse(locationsCsv,
         (row: any) => ({
           ...row,
           lat: +row.lat,
           lon: +row.lon,
         })
       ),
-      flows: dsvFormat('\t').parse(flowsCsv),
+      flows: dsvFormat(',').parse(flowsCsv),
     })
   }
   return (
@@ -111,8 +111,8 @@ const InBrowserFlowMap = () => {
             </p>
           </section>
           <Container>
-            <H5>Locations TSV (tab-separated values)</H5>
-            <H5>Flows TSV</H5>
+            <H5>Locations CSV</H5>
+            <H5>Flows CSV</H5>
             <TextArea
               growVertically={false}
               large={true}
