@@ -8,6 +8,7 @@ import Away from './Away';
 import { Helmet } from 'react-helmet';
 import Logo from './Logo'
 import MapboxLogo from './images/mapbox-logo-black.svg'
+import NycCitiBikeImage from './images/nyc-citi-bike.jpg'
 import TLLogo from './images/TL-Horizontal-Black.svg'
 import { Classes, Colors } from '@blueprintjs/core';
 import Nav from './Nav';
@@ -165,17 +166,14 @@ const Home = () =>
       <DemoVideo>
         <ResponsivePlayer>
            <ResponsiveReactPlayer
-             url="https://www.facebook.com/104807097656908/videos/2617812241644647/"
+             // url={["/videos/demo_500.webm", "/videos/demo_500.mp4"]}
+             url="https://streamable.com/5zcsq"
              width="100%"
              height="100%"
              controls={false}
              loop={true}
-             playing={false}
-             config={{
-               vimeo: {
-                 controls: false,
-               }
-             }}
+             playing={true}
+             // light={NycCitiBikeImage}
            />
         </ResponsivePlayer>
       </DemoVideo>
