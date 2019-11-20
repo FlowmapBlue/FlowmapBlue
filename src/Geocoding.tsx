@@ -3,7 +3,7 @@ import Nav from './Nav';
 import styled from '@emotion/styled';
 import { Button, Classes, H5, HTMLSelect, Intent, TextArea } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
-import { tsvFormatRows } from 'd3-dsv';
+import { dsvFormat } from 'd3-dsv';
 import { ascending } from 'd3-array';
 import { connect, PromiseState } from 'react-refetch';
 import md5 from 'blueimp-md5';
@@ -20,11 +20,19 @@ const ContentBody = styled.div`
 `
 
 const SearchOptions = styled.div`
-  display: flex;
+  display: grid;
   flex-direction: row;
-  & > * + * { margin-left: 1rem; }
+  column-gap: 1rem;
+  grid-template-columns: min-content 1fr 1fr min-content min-content;
   margin-bottom: 0.5rem;
   align-items: center;
+  & select {
+    min-width: 60px;
+  }
+`
+
+const Nowrap = styled.span`
+  white-space: nowrap;
 `
 
 const Container = styled.div`
@@ -51,10 +59,13 @@ interface GeoCodingResult {
   }[]
 }
 
-function prepareOutput(fetchStates: {
-  name: string,
-  fetchState: PromiseState<GeoCodingResult>
-}[]) {
+function prepareOutput(
+  fetchStates: {
+    name: string,
+    fetchState: PromiseState<GeoCodingResult>,
+  }[],
+  delimiter: string,
+) {
   const outputRows = [['id', 'name', 'lat', 'lon']]
   for (const { name, fetchState } of fetchStates) {
     if (!fetchState || fetchState.pending) {
@@ -76,7 +87,7 @@ function prepareOutput(fetchStates: {
       }
     }
   }
-  return tsvFormatRows(outputRows)
+  return dsvFormat(delimiter).formatRows(outputRows)
 }
 
 const baseURL = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'
@@ -86,6 +97,7 @@ interface GeoCoderProps {
   names: string[]
   country: string
   locationType: string
+  delimiter: string
 }
 const GeoCoder = connect(({ names, country, locationType }: GeoCoderProps) => {
   const fetches: { [key: string]: string } = {}
@@ -104,7 +116,8 @@ const GeoCoder = connect(({ names, country, locationType }: GeoCoderProps) => {
         name,
         fetchState: (props as any)[md5(name)] as PromiseState<GeoCodingResult>,
       })
-    )
+    ),
+    props.delimiter,
   )
   return (
     <TextArea
@@ -122,11 +135,13 @@ const Geocoding = () => {
     ['Paris', 'London', 'New York'].join('\n')
   )
   const [country, setCountry] = useState('')
+  const [outputDelimiter, setOutputDelimiter] = useState('\t')
   const [locationType, setLocationType] = useState('')
   const [geoCoderParams, setGeoCoderParams] = useState<GeoCoderProps>({
     names: [],
     country: '',
     locationType: '',
+    delimiter: '\t',
   })
   const handleStart = useCallback(
     () => {
@@ -134,9 +149,10 @@ const Geocoding = () => {
         names: input.split('\n'),
         country,
         locationType,
+        delimiter: outputDelimiter,
       })
     },
-    [input, country, locationType]
+    [input, country, locationType, outputDelimiter]
   )
   return (
     <>
@@ -149,11 +165,11 @@ const Geocoding = () => {
           </p>
         </section>
         <Container>
-          <H5>Enter location names here (one per line)</H5>
+          <H5>Location names (one per line)</H5>
           <span/>
           <div>
             <SearchOptions>
-              <span>Limit search to</span>
+              <Nowrap>Limit search to</Nowrap>
               <HTMLSelect
                 fill={false}
                 value={undefined}
@@ -191,6 +207,22 @@ const Geocoding = () => {
                   ]}
                 onChange={event => setLocationType(event.currentTarget.value)}
               />
+              <span>as</span>
+              <HTMLSelect
+                fill={false}
+                value={outputDelimiter}
+                options={[
+                  {
+                    value: '\t',
+                    label: 'TSV'
+                  },
+                  {
+                    value: ',',
+                    label: 'CSV'
+                  },
+                ]}
+                onChange={event => setOutputDelimiter(event.currentTarget.value)}
+              />
             </SearchOptions>
           </div>
           <TextArea
@@ -205,7 +237,7 @@ const Geocoding = () => {
             icon={IconNames.ARROW_RIGHT}
             rightIcon={IconNames.ARROW_RIGHT}
             onClick={handleStart}
-          >Search</Button>
+          >Geocode</Button>
           <GeoCoder
             {...geoCoderParams}
           />
