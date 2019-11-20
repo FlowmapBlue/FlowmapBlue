@@ -166,14 +166,12 @@ const Home = () =>
       <DemoVideo>
         <ResponsivePlayer>
            <ResponsiveReactPlayer
-             // url={["/videos/demo_500.webm", "/videos/demo_500.mp4"]}
-             url="https://streamable.com/5zcsq"
+             url={["/videos/demo_500.webm", "/videos/demo_500.mp4"]} light={NycCitiBikeImage}
              width="100%"
              height="100%"
              controls={false}
              loop={true}
              playing={true}
-             // light={NycCitiBikeImage}
            />
         </ResponsivePlayer>
       </DemoVideo>
