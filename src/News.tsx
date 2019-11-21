@@ -31,6 +31,13 @@ const NewsItem = styled.div`
 export default () =>
   <Outer>
     <NewsItem>
+      <NewsDate>Nov 20, 2019</NewsDate>
+      <NewsText>
+        Flowmap.blue <Away href="https://twitter.com/infobeautyaward/status/1197248080640380929">won Bronze at
+        the Information is Beautiful Awards</Away>.
+      </NewsText>
+    </NewsItem>
+    <NewsItem>
       <NewsDate>Nov 11, 2019</NewsDate>
       <NewsText>
         Added the <Link to="/in-browser">In-browser flow map</Link>.
