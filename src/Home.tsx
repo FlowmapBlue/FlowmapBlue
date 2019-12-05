@@ -37,6 +37,14 @@ const Support = styled.p`
   flex-wrap: wrap;
 `
 
+const AwardImage = styled.img`
+  filter: grayscale(80%);        
+  transition: filter 0.5s; 
+  &:hover {
+    filter: grayscale(20%);
+  }
+`
+
 const SupportLogoLink = styled.a`
   position: relative;
   top: 0.14em;
@@ -161,7 +169,6 @@ const Home = () =>
       </Helmet>
 
       <LogoTitle><Logo fontSize={35} collapseWidth={300}/></LogoTitle>
-
 
       <DemoVideo>
         <ResponsivePlayer>
@@ -346,6 +353,14 @@ const Home = () =>
             <SupportLogo href="https://www.mapbox.com" src={MapboxLogo}/>
           </NoWrap>
         </Support>
+      </section>
+      <section>
+        <Away href="https://www.informationisbeautifulawards.com/showcase/3815">
+          <AwardImage
+            width={100}
+            src="https://infobawards.s3.amazonaws.com/2019/badges/w-2019.png"
+          />
+        </Away>
       </section>
     </ContentBody>
   </>
