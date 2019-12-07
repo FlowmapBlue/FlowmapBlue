@@ -36,7 +36,7 @@ export const Absolute = styled.div<AbsoluteProps>(({ top, left, right, bottom }:
   ${bottom != null ? `bottom: ${bottom}px;` : ''}
 `)
 
-type BoxProps = { darkMode? : boolean }
+export type BoxProps = { darkMode? : boolean }
 export const Box = styled(Absolute)<BoxProps>((props: BoxProps) => `
   background: ${props.darkMode ? Colors.DARK_GRAY5 : `rgba(255, 255, 255, 0.9)`};
   // padding: 12px;

@@ -2,7 +2,14 @@ import { DeckGL } from '@deck.gl/react'
 import { MapController } from '@deck.gl/core'
 import * as React from 'react'
 import { SyntheticEvent } from 'react'
-import { StaticMap, ViewportProps, ViewState, ViewStateChangeInfo } from 'react-map-gl'
+import {
+  _MapContext as MapContext,
+  NavigationControl,
+  StaticMap,
+  ViewportProps,
+  ViewState,
+  ViewStateChangeInfo
+} from 'react-map-gl'
 import FlowMapLayer, { FlowLayerPickingInfo, FlowPickingInfo, LocationPickingInfo, PickingType } from '@flowmap.gl/core'
 import { Classes, Colors, HTMLSelect, Intent, Slider, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
@@ -11,7 +18,7 @@ import { isCluster } from '@flowmap.gl/cluster'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector, ParametricSelector } from 'reselect'
 import getColors, { flowColorSchemes } from './colors'
-import { Box, Column, Description, LegendTitle, Row, Title, TitleBox, ToastContent } from './Boxes'
+import { Box, BoxProps, Column, Description, LegendTitle, Row, Title, TitleBox, ToastContent } from './Boxes'
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
@@ -125,16 +132,29 @@ const Outer = (props: { darkMode: boolean, children: React.ReactNode }) =>
     {props.children}
   </NoScrollContainer>
 
-// const ZoomControls = styled(NavigationControl)`
-//   position: absolute;
-//   top: 10px;
-//   right: 10px;
-//   z-supercluster: 10;
-// `
 const StyledSwitch = styled(Switch)`
   margin-bottom: 0;
   align-self: flex-start;
 `
+const MapNavBox = styled(Box)((props: BoxProps) => `
+  z-index: 1;
+  ${props.darkMode ? `
+    & > .mapboxgl-ctrl-group {
+      background-color: ${Colors.DARK_GRAY3};
+      button {
+        mix-blend-mode: screen;
+        &:not(:first-child) {
+          border-top: 1px solid ${Colors.GRAY1};
+        }
+        &:hover {
+          mix-blend-mode: normal;
+          background-color: ${Colors.DARK_GRAY5};
+        }
+      }
+    }
+  ` : ``}
+`)
+
 
 type Selector<T> = ParametricSelector<State, Props, T>
 
@@ -682,8 +702,8 @@ class FlowMap extends React.Component<Props, State> {
                 </LocationsBlock>
                 {formatCount(allFlows.length - flows.length)} flows were omitted.
                 {flows.length === 0 &&
-                <div style={{ marginTop: '1em'}}>Make sure the header row in the flows sheet is correct.
-                  There must be columns named origin, dest, and count.</div>}
+                <div style={{ marginTop: '1em'}}>Make sure the columns are named  header row in the flows sheet is correct.
+                                  There must be <b>origin</b>, <b>dest</b>, and <b>count</b>.</div>}
               </ToastContent>
             })
           }
@@ -995,17 +1015,22 @@ class FlowMap extends React.Component<Props, State> {
           viewState={viewState}
           onViewStateChange={this.handleViewStateChange}
           layers={this.getLayers()}
+          ContextProvider={MapContext.Provider}
           children={({ width, height, viewState }: any) => (
-            mapboxAccessToken && <StaticMap
-              mapboxApiAccessToken={mapboxAccessToken}
-              mapStyle={mapboxMapStyle}
-              width={width} height={height} viewState={viewState}
-            >
-               {/*<ZoomControls*/}
-                 {/*showCompass={false}*/}
-                 {/*onViewportChange={this.handleNavigation}*/}
-               {/*/>*/}
-            </StaticMap>
+            mapboxAccessToken &&
+            <>
+              <StaticMap
+                mapboxApiAccessToken={mapboxAccessToken}
+                mapStyle={mapboxMapStyle}
+                width={width} height={height} viewState={viewState}
+              />
+              {flows &&
+              <MapNavBox top={50} right={10} darkMode={darkMode}>
+                <NavigationControl
+                  showCompass={false}
+                />
+              </MapNavBox>}
+            </>
           )}
         />
         {flows &&
