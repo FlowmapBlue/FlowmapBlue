@@ -11,7 +11,7 @@ import {
   ViewStateChangeInfo
 } from 'react-map-gl'
 import FlowMapLayer, { FlowLayerPickingInfo, FlowPickingInfo, LocationPickingInfo, PickingType } from '@flowmap.gl/core'
-import { Classes, Colors, HTMLSelect, Intent, Slider, Switch } from '@blueprintjs/core'
+import { Button, Classes, Colors, HTMLSelect, Intent, Popover, Slider, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import * as Cluster from '@flowmap.gl/cluster'
 import { isCluster } from '@flowmap.gl/cluster'
@@ -131,6 +131,14 @@ const Outer = (props: { darkMode: boolean, children: React.ReactNode }) =>
   >
     {props.children}
   </NoScrollContainer>
+
+const SettingsOuter = styled.div`
+  font-size: 12px;
+`
+
+const SettingsButton = styled(Button)`
+  outline: none;
+`
 
 const StyledSwitch = styled(Switch)`
   margin-bottom: 0;
@@ -1060,6 +1068,72 @@ class FlowMap extends React.Component<Props, State> {
             </Collapsible>
           </Box>
         </>}
+        <Box bottom={50} left={10} darkMode={darkMode}>
+          <Popover
+            hoverOpenDelay={0}
+            hoverCloseDelay={0}
+            content={
+              <SettingsOuter>
+                <Column spacing={10} padding="12px 20px">
+                  <LegendTitle>Settings</LegendTitle>
+                  <Row spacing={5}>
+                    <div>Color scheme</div>
+                    <HTMLSelect
+                      style={{ fontSize: 12 }}
+                      value={this.state.colorSchemeKey}
+                      onChange={this.handleChangeColorScheme}
+                    >
+                      <option>Default</option>
+                      {Object.keys(flowColorSchemes).sort().map(scheme => (
+                        <option key={scheme}>
+                          {scheme}
+                        </option>
+                      ))}
+                    </HTMLSelect>
+                  </Row>
+                  <Row spacing={15}>
+                    <div style={{ whiteSpace: 'nowrap' }}>Fade</div>
+                    <Slider
+                      value={this.state.fadeAmount}
+                      min={0}
+                      max={100}
+                      stepSize={1}
+                      labelRenderer={false}
+                      showTrackFill={false}
+                      onChange={this.handleChangeFadeAmount}
+                      />
+                  </Row>
+                  <Row spacing={20}>
+                    <StyledSwitch
+                      checked={darkMode}
+                      label="Dark mode"
+                      onChange={this.handleToggleDarkMode}
+                    />
+                  </Row>
+                  <Row spacing={20}>
+                    <StyledSwitch
+                      checked={this.state.animationEnabled}
+                      label="Animate flows"
+                      onChange={this.handleToggleAnimation}
+                    />
+                  </Row>
+                  <Row spacing={10}>
+                    <StyledSwitch
+                      checked={this.state.clusteringEnabled}
+                      label="Cluster on zoom"
+                      onChange={this.handleToggleClustering}
+                    />
+                  </Row>
+                </Column>
+              </SettingsOuter>
+            }
+          >
+            <SettingsButton
+              icon={IconNames.COG}
+            />
+          </Popover>
+        </Box>}
+
         <TitleBox top={60} left={0} darkMode={darkMode}>
           <Collapsible
             darkMode={darkMode}
@@ -1090,52 +1164,6 @@ class FlowMap extends React.Component<Props, State> {
                 <Away href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
                 >this spreadsheet</Away>. You can <Link to="/">publish your own</Link> too.
               </div>
-              <Row spacing={5}>
-                <div>Color scheme</div>
-                <HTMLSelect
-                  style={{ fontSize: 12 }}
-                  value={this.state.colorSchemeKey}
-                  onChange={this.handleChangeColorScheme}
-                >
-                  <option>Default</option>
-                  {Object.keys(flowColorSchemes).sort().map(scheme => (
-                    <option key={scheme}>
-                      {scheme}
-                    </option>
-                  ))}
-                </HTMLSelect>
-              </Row>
-              <Row spacing={15}>
-                <div style={{ whiteSpace: 'nowrap' }}>Fade</div>
-                <Slider
-                  value={this.state.fadeAmount}
-                  min={0}
-                  max={100}
-                  stepSize={1}
-                  labelRenderer={false}
-                  showTrackFill={false}
-                  onChange={this.handleChangeFadeAmount}
-                  />
-              </Row>
-              <Row spacing={20}>
-                <StyledSwitch
-                  checked={darkMode}
-                  label="Dark mode"
-                  onChange={this.handleToggleDarkMode}
-                />
-                <StyledSwitch
-                  checked={this.state.animationEnabled}
-                  label="Animate flows"
-                  onChange={this.handleToggleAnimation}
-                />
-              </Row>
-              <Row spacing={10}>
-                <StyledSwitch
-                  checked={this.state.clusteringEnabled}
-                  label="Cluster on zoom"
-                  onChange={this.handleToggleClustering}
-                />
-              </Row>
             </Column>
           </Collapsible>
         </TitleBox>
