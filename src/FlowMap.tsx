@@ -4,7 +4,6 @@ import * as React from 'react'
 import { SyntheticEvent } from 'react'
 import {
   _MapContext as MapContext,
-  NavigationControl,
   StaticMap,
   ViewportProps,
   ViewState,
@@ -18,7 +17,7 @@ import { isCluster } from '@flowmap.gl/cluster'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { createSelector, ParametricSelector } from 'reselect'
 import getColors, { flowColorSchemes } from './colors'
-import { Box, BoxProps, Column, Description, LegendTitle, Row, Title, TitleBox, ToastContent } from './Boxes'
+import { Box, Column, Description, LegendTitle, Row, Title, TitleBox, ToastContent } from './Boxes'
 import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
