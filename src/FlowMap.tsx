@@ -1127,18 +1127,18 @@ class FlowMap extends React.Component<Props, State> {
                       onChange={this.handleToggleDarkMode}
                     />
                   </Row>
-                  <Row spacing={20}>
-                    <StyledSwitch
-                      checked={this.state.animationEnabled}
-                      label="Animate flows"
-                      onChange={this.handleToggleAnimation}
-                    />
-                  </Row>
                   <Row spacing={10}>
                     <StyledSwitch
                       checked={this.state.clusteringEnabled}
                       label="Cluster on zoom"
                       onChange={this.handleToggleClustering}
+                    />
+                  </Row>
+                  <Row spacing={20}>
+                    <StyledSwitch
+                      checked={this.state.animationEnabled}
+                      label="Animate flows"
+                      onChange={this.handleToggleAnimation}
                     />
                   </Row>
                 </Column>
@@ -1151,6 +1151,7 @@ class FlowMap extends React.Component<Props, State> {
           </Popover>
         </Box>}
 
+        {spreadSheetKey &&
         <TitleBox top={60} left={0} darkMode={darkMode}>
           <Collapsible
             darkMode={darkMode}
@@ -1184,6 +1185,7 @@ class FlowMap extends React.Component<Props, State> {
             </Column>
           </Collapsible>
         </TitleBox>
+        }
         {tooltip && <Tooltip {...tooltip} />}
         {(flowsFetch.pending || flowsFetch.refreshing) &&
           <LoadingSpinner/>
