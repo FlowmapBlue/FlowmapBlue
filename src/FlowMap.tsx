@@ -151,7 +151,7 @@ const MapNavBox = styled(Box)((props: BoxProps) => `
       background-color: ${Colors.DARK_GRAY3};
       button {
         mix-blend-mode: screen;
-        &:not(:first-child) {
+        &:not(:first-of-type) {
           border-top: 1px solid ${Colors.GRAY1};
         }
         &:hover {
