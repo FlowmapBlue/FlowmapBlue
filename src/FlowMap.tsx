@@ -51,14 +51,16 @@ import Away from './Away';
 import { nest } from 'd3-collection';
 import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp, parseNumberConfigProp } from './config';
 
+const MIN_ZOOM_LEVEL = 1
+const MAX_ZOOM_LEVEL = 20
+
 const CONTROLLER_OPTIONS = {
   type: MapController,
   dragRotate: false,
   touchRotate: false,
+  minZoom: MIN_ZOOM_LEVEL,
+  maxZoom: MAX_ZOOM_LEVEL,
 }
-
-// const MAX_ZOOM_LEVELS = 5
-// const MIN_ZOOM_LEVELS = 0.5
 
 export type Props = {
   config: Config,
@@ -294,7 +296,7 @@ class FlowMap extends React.Component<Props, State> {
         { getLocationId, getLocationCentroid },
         getLocationWeight,
         {
-          maxZoom: 18,
+          maxZoom: MAX_ZOOM_LEVEL,
         }
       );
       const clusterIndex = Cluster.buildIndex(clusterLevels);
@@ -838,7 +840,7 @@ class FlowMap extends React.Component<Props, State> {
       viewState: {
         ...viewState,
         zoom: Math.min(
-          maxZoom != null ? maxZoom : Number.POSITIVE_INFINITY,
+          maxZoom != null ? maxZoom : MAX_ZOOM_LEVEL,
           viewState.zoom * 1.1
         ),
       }
@@ -851,7 +853,7 @@ class FlowMap extends React.Component<Props, State> {
       viewState: {
         ...viewState,
         zoom: Math.max(
-          minZoom != null ? minZoom : Number.NEGATIVE_INFINITY,
+          minZoom != null ? minZoom : MIN_ZOOM_LEVEL,
           viewState.zoom / 1.1
         ),
       }
