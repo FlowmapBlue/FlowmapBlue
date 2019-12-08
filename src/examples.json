@@ -1,4 +1,5 @@
 {
+  "aspectRatio": 1.3333333333333333,
   "screenshotSizes": [600],
   "examples": [
     { "key": "15kwLB4baXZ7jpip8q0JjgR6zDoS5Gt3gMLCTUAboQxk", "name": "Relocations between Swiss cantons in 2016" },

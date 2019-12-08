@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
-import { examples, screenshotSizes } from './examples.json';
+import { examples, aspectRatio, screenshotSizes } from './examples.json';
 import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
 import Away from './Away';
 import { Helmet } from 'react-helmet';
@@ -119,13 +119,26 @@ const ExampleTitle = styled.div`
   text-align: center;
   border-top: 1px solid rgba(19,124,189,0.25);
 `
-const ExampleImage = styled.img`
-  width: 100%;
-  display: block;
-  transform: scale(1.2);
-  transition: transform 0.5s;
-  &:hover {
-    transform: scale(2);
+const ExampleImage = styled.div`
+  img {
+    display: block;
+    height: auto;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    transform: scale(1.2);
+    transition: transform 0.5s;
+    &:hover {
+      transform: scale(2);
+    }
+  }
+  &:before {
+    // persistent aspect ratio trick https://stackoverflow.com/a/51578598/120779
+    content: "";
+    display: block;
+    height: 0;
+    width: 0;
+    padding-bottom: calc(${1/aspectRatio} * 100%);
   }
 `
 const DemoVideo = styled.div`
@@ -246,16 +259,20 @@ const Home = () =>
           {
             examples.map(({key, name}) =>
               <ExampleGridHoverableLink key={key} to={`/${key}`}>
-                <ExampleTitle className="name">{name}</ExampleTitle>
-                <ExampleImage
-                  alt={name}
-                  src={`/screenshots/${key}__${screenshotSizes[0]}px.jpg`}
-                  srcSet={screenshotSizes.map(w => `/screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
-                  sizes={screenshotSizes.map((w, i) =>
-                    (i < screenshotSizes.length - 1 ? `(max-width: ${w * 2}px) ` : '') + `${w}px`)
-                    .join(',')
-                  }
-                />
+                <ExampleImage>
+                  <ExampleTitle className="name">{name}</ExampleTitle>
+                  <img
+                    width={screenshotSizes[0]}
+                    height={Math.floor(screenshotSizes[0] / aspectRatio)}
+                    alt={name}
+                    src={`/screenshots/${key}__${screenshotSizes[0]}px.jpg`}
+                    // srcSet={screenshotSizes.map(w => `/screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
+                    // sizes={screenshotSizes.map((w, i) =>
+                    //   (i < screenshotSizes.length - 1 ? `(max-width: ${w * 2}px) ` : '') + `${w}px`)
+                    //   .join(',')
+                    // }
+                  />
+                </ExampleImage>
               </ExampleGridHoverableLink>
             )
           }

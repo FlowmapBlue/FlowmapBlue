@@ -2,11 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 const puppeteer = require('puppeteer');
-const { examples, screenshotSizes } = require('../src/examples');
+const { examples, aspectRatio, screenshotSizes } = require('../src/examples');
 const OUTPUT_PATH = path.resolve(__dirname, '../public/screenshots/');
 const APP_URL = 'http://localhost:7000';
 
-const ASPECT_RATIO = 800/600;
 const PAD = 500;
 const timeout = 3 * 60 * 1000;
 const SIZE = 1200;
@@ -32,7 +31,7 @@ async function mkdirp(dirPath) {
   page.on('pageerror', console.error);
 
   const width = SIZE;
-  const height = Math.floor(SIZE/ASPECT_RATIO);
+  const height = Math.floor(SIZE/aspectRatio);
   await page.setViewport({ width: width + PAD * 2, height, });
   for (const key of exampleKeys) {
     const url = `${APP_URL}/${key}`;
