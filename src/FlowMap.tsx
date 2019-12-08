@@ -11,7 +11,7 @@ import {
   ViewStateChangeInfo
 } from 'react-map-gl'
 import FlowMapLayer, { FlowLayerPickingInfo, FlowPickingInfo, LocationPickingInfo, PickingType } from '@flowmap.gl/core'
-import { Button, Classes, Colors, HTMLSelect, Intent, Popover, Slider, Switch } from '@blueprintjs/core'
+import { Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent, Popover, Slider, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import * as Cluster from '@flowmap.gl/cluster'
 import { isCluster } from '@flowmap.gl/cluster'
@@ -136,7 +136,7 @@ const SettingsOuter = styled.div`
   font-size: 12px;
 `
 
-const SettingsButton = styled(Button)`
+const NoOutlineButton = styled(Button)`
   outline: none;
 `
 
@@ -144,24 +144,6 @@ const StyledSwitch = styled(Switch)`
   margin-bottom: 0;
   align-self: flex-start;
 `
-const MapNavBox = styled(Box)((props: BoxProps) => `
-  z-index: 1;
-  ${props.darkMode ? `
-    & > .mapboxgl-ctrl-group {
-      background-color: ${Colors.DARK_GRAY3};
-      button {
-        mix-blend-mode: screen;
-        &:not(:first-of-type) {
-          border-top: 1px solid ${Colors.GRAY1};
-        }
-        &:hover {
-          mix-blend-mode: normal;
-          background-color: ${Colors.DARK_GRAY5};
-        }
-      }
-    }
-  ` : ``}
-`)
 
 
 type Selector<T> = ParametricSelector<State, Props, T>
@@ -851,6 +833,32 @@ class FlowMap extends React.Component<Props, State> {
     this.handleNavigation(viewState)
   }
 
+  handleZoomIn = () => {
+    const { viewState, maxZoom } = this.state
+    this.setState({
+      viewState: {
+        ...viewState,
+        zoom: Math.min(
+          maxZoom != null ? maxZoom : Number.POSITIVE_INFINITY,
+          viewState.zoom * 1.1
+        ),
+      }
+    })
+  }
+
+  handleZoomOut = () => {
+    const { viewState, minZoom } = this.state
+    this.setState({
+      viewState: {
+        ...viewState,
+        zoom: Math.max(
+          minZoom != null ? minZoom : Number.NEGATIVE_INFINITY,
+          viewState.zoom / 1.1
+        ),
+      }
+    })
+  }
+
   handleNavigation = (viewState: ViewState) => {
     const { maxZoom, minZoom } = this.state
     let zoom = viewState.zoom
@@ -1032,12 +1040,6 @@ class FlowMap extends React.Component<Props, State> {
                 mapStyle={mapboxMapStyle}
                 width={width} height={height} viewState={viewState}
               />
-              {flows &&
-              <MapNavBox top={50} right={10} darkMode={darkMode}>
-                <NavigationControl
-                  showCompass={false}
-                />
-              </MapNavBox>}
             </>
           )}
         />
@@ -1068,7 +1070,21 @@ class FlowMap extends React.Component<Props, State> {
             </Collapsible>
           </Box>
         </>}
-        <Box bottom={50} left={10} darkMode={darkMode}>
+        <Box top={50} right={10} darkMode={darkMode}>
+          <ButtonGroup
+            vertical={true}
+          >
+            <NoOutlineButton
+              icon={IconNames.PLUS}
+              onClick={this.handleZoomIn}
+            />
+            <NoOutlineButton
+              icon={IconNames.MINUS}
+              onClick={this.handleZoomOut}
+            />
+          </ButtonGroup>
+        </Box>
+        <Box bottom={40} left={10} darkMode={darkMode}>
           <Popover
             hoverOpenDelay={0}
             hoverCloseDelay={0}
@@ -1128,7 +1144,7 @@ class FlowMap extends React.Component<Props, State> {
               </SettingsOuter>
             }
           >
-            <SettingsButton
+            <NoOutlineButton
               icon={IconNames.COG}
             />
           </Popover>
