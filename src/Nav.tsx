@@ -102,7 +102,7 @@ const Nav = () =>
         </Away>
         <Away href="https://spectrum.chat/flowmap-blue/">
           <LinkItem>
-            <span>Spectrum Chat</span>
+            <span>Ask a question</span>
             <img
               alt="flowmap.blue chat on Spectrum"
               src={SpectrumLogo}
