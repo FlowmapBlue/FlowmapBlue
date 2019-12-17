@@ -1,33 +1,23 @@
 import { DeckGL } from '@deck.gl/react'
 import { MapController } from '@deck.gl/core'
 import * as React from 'react'
-import { SyntheticEvent } from 'react'
-import {
-  _MapContext as MapContext,
-  StaticMap,
-  ViewportProps,
-  ViewState,
-  ViewStateChangeInfo
-} from 'react-map-gl'
+import { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { _MapContext as MapContext, StaticMap, ViewStateChangeInfo } from 'react-map-gl'
 import FlowMapLayer, { FlowLayerPickingInfo, FlowPickingInfo, LocationPickingInfo, PickingType } from '@flowmap.gl/core'
 import { Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent, Popover, Slider, Switch } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import * as Cluster from '@flowmap.gl/cluster'
-import { isCluster } from '@flowmap.gl/cluster'
 import WebMercatorViewport from 'viewport-mercator-project'
-import { createSelector, ParametricSelector } from 'reselect'
-import getColors, { flowColorSchemes } from './colors'
+import { flowColorSchemes } from './colors'
 import { Box, Column, Description, LegendTitle, Row, Title, TitleBox, ToastContent } from './Boxes'
-import { findDOMNode } from 'react-dom';
 import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
-import Tooltip, { Props as TooltipProps, TargetBounds } from './Tooltip';
+import Tooltip, { TargetBounds } from './Tooltip';
 import { Link } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
 import {
   Config,
   ConfigPropName,
   Flow,
-  FlowDirection,
   getFlowDestId,
   getFlowMagnitude,
   getFlowOriginId,
@@ -41,18 +31,27 @@ import LoadingSpinner from './LoadingSpinner';
 import { PromiseState } from 'react-refetch';
 import NoScrollContainer from './NoScrollContainer';
 import styled from '@emotion/styled';
-import sendEvent from './ga';
-import { viewport } from '@mapbox/geo-viewport';
-import { AppToaster } from './AppToaster';
 import { IconNames } from '@blueprintjs/icons';
 import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
 import Away from './Away';
-import { nest } from 'd3-collection';
-import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp, parseNumberConfigProp } from './config';
-
-const MIN_ZOOM_LEVEL = 1
-const MAX_ZOOM_LEVEL = 20
+import { parseBoolConfigProp, parseNumberConfigProp } from './config';
+import { ActionType, Highlight, HighlightType, MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL, reducer, State } from './FlowMap.state';
+import {
+  getAggregatedFlows,
+  getClusterIndex,
+  getClusterZoom,
+  getDarkMode,
+  getDiffMode,
+  getExpandedSelection,
+  getFlowMapColors, getFlows,
+  getFlowsForKnownLocations,
+  getInitialViewState, getInvalidLocationIds,
+  getLocationsForSearchBox,
+  getLocationsHavingFlows,
+  getMapboxMapStyle, getUnknownLocations
+} from './FlowMap.selectors';
+import { AppToaster } from './AppToaster';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -69,62 +68,14 @@ export type Props = {
   spreadSheetKey: string | undefined
 }
 
-enum HighlightType {
-  LOCATION = 'location',
-  FLOW = 'flow',
-}
 
-interface LocationHighlight {
-  type: HighlightType.LOCATION;
-  locationId: string;
-}
-
-interface FlowHighlight {
-  type: HighlightType.FLOW;
-  flow: Flow;
-}
-
-type Highlight = LocationHighlight | FlowHighlight;
-
-type State = {
-  viewState: ViewState | ViewportProps
-  lastLocations: Location[] | undefined
-  tooltip?: TooltipProps
-  highlight?: Highlight
-  selectedLocations: LocationSelection[] | undefined,
-  error?: string
-  maxZoom: number | undefined
-  minZoom: number | undefined
-  time: number
-  animationEnabled: boolean
-  clusteringEnabled: boolean
-  darkMode: boolean
-  fadeAmount: number
-  colorSchemeKey: string | undefined
-}
-
-
-const getInitialViewState = (bbox: [number, number, number, number]) => {
-  const { center: [longitude, latitude], zoom } =
-    viewport(
-      bbox,
-      [window.innerWidth, window.innerHeight],
-      undefined, undefined, 512, true
-    )
-  return {
-    longitude,
-    latitude,
-    zoom,
-    bearing: 0,
-    pitch: 0,
-  }
-}
-
-const initialViewState = getInitialViewState([ -180, -70, 180, 70 ])
-
-
-const Outer = (props: { darkMode: boolean, children: React.ReactNode }) =>
+const Outer: React.FC<
+  {
+    darkMode: boolean,
+    ref: React.Ref<HTMLDivElement>,
+  }> = (props) =>
   <NoScrollContainer
+    ref={props.ref}
     className={props.darkMode ? Classes.DARK : undefined}
     style={{
       background: props.darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5
@@ -146,305 +97,242 @@ const StyledSwitch = styled(Switch)`
   align-self: flex-start;
 `
 
+const ErrorsLocationsBlock = styled.div`
+  font-size: 10px;
+  padding: 10px;
+`
 
-type Selector<T> = ParametricSelector<State, Props, T>
+const initialViewState = getInitialViewState([ -180, -70, 180, 70 ])
+const MAX_NUM_OF_IDS_IN_ERROR = 100
 
-class FlowMap extends React.Component<Props, State> {
 
-  readonly state: State
+const FlowMap: React.FC<Props> = (props) => {
 
-  constructor(props: Props) {
-    super(props)
-    this.state = {
+  const {
+    config,
+    spreadSheetKey,
+    locationsFetch,
+    flowsFetch,
+  } = props
+
+  const initialState = useMemo<State>(
+    () => ({
       viewState: initialViewState,
       lastLocations: undefined,
       selectedLocations: undefined,
       error: undefined,
       maxZoom: undefined,
       minZoom: undefined,
-      time: 0,
-      animationEnabled: parseBoolConfigProp(props.config[ConfigPropName.ANIMATE_FLOWS]),
-      clusteringEnabled: parseBoolConfigProp(props.config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
-      darkMode: parseBoolConfigProp(props.config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
-      fadeAmount: parseNumberConfigProp(props.config[ConfigPropName.FADE_AMOUNT], 45),
-      colorSchemeKey: props.config[ConfigPropName.COLORS_SCHEME],
+      animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
+      clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
+      darkMode: parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
+      fadeAmount: parseNumberConfigProp(config[ConfigPropName.FADE_AMOUNT], 45),
+      colorSchemeKey: config[ConfigPropName.COLORS_SCHEME],
+    }),
+    [config]
+  )
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const {
+    viewState,
+    tooltip,
+    error,
+    animationEnabled,
+  } = state
+  const locations = locationsFetch.value
+  const flows = getFlowsForKnownLocations(state, props)
+  const allFlows = getFlows(state, props)
+
+  const handleKeyDown = (evt: Event) => {
+    if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
+      dispatch({ type: ActionType.CLEAR_SELECTION })
     }
   }
-
-  getFlows = (state: State, props: Props) => props.flowsFetch.value
-  getLocations = (state: State, props: Props) => props.locationsFetch.value
-  getSelectedLocations = (state: State, props: Props) => state.selectedLocations
-  getClusteringEnabled = (state: State, props: Props) => state.clusteringEnabled
-  getZoom = (state: State, props: Props) => state.viewState.zoom
-  getConfig = (state: State, props: Props) => props.config
-
-  getLocationIds: Selector<Set<string> | undefined> = createSelector(
-    this.getLocations,
-    locations => locations ? new Set(locations.map(getLocationId)) : undefined
-  )
-
-  getDiffMode: Selector<boolean> = createSelector(
-    this.getFlows,
-    flows => {
-      if (flows && flows.find(f => getFlowMagnitude(f) < 0)) {
-        return true
-      }
-      return false
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
     }
-  )
+  })
 
-  getColorSchemeKey: Selector<string | undefined> = (state: State, props: Props) => state.colorSchemeKey
+  const [time, setTime] = useState(0)
 
-  getDarkMode: Selector<boolean> = (state: State, props: Props) => state.darkMode
+  // Use useRef for mutable variables that we want to persist
+  // without triggering a re-render on their change
+  const requestAnimationFrameRef = useRef<number>()
 
-  getFadeAmount: Selector<number> = (state: State, props: Props) => state.fadeAmount
+  const animate = useCallback((time: number) => {
+    const loopLength = 1800
+    const animationSpeed = 30
+    const loopTime = loopLength / animationSpeed
+    const timestamp = time / 1000
+    setTime(((timestamp % loopTime) / loopTime) * loopLength)
+    requestAnimationFrameRef.current = requestAnimationFrame(animate)
+  }, [requestAnimationFrameRef, setTime])
 
-  getAnimate: Selector<boolean> = (state: State, props: Props) => state.animationEnabled
-
-  getColors = createSelector(
-    this.getConfig,
-    this.getDiffMode,
-    this.getColorSchemeKey,
-    this.getDarkMode,
-    this.getFadeAmount,
-    this.getAnimate,
-    getColors,
-  )
-
-  getMapboxMapStyle = createSelector(
-    this.getConfig,
-    this.getDarkMode,
-    (config, darkMode) => {
-      const configMapStyle = config[ConfigPropName.MAPBOX_MAP_STYLE];
-      if (configMapStyle) {
-        if (darkMode === parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE])) {
-          return configMapStyle
-        }
+  useEffect(() => {
+    if (animationEnabled) {
+      requestAnimationFrameRef.current = requestAnimationFrame(animate)
+    } else {
+      const animationFrame = requestAnimationFrameRef.current;
+      if (animationFrame != null && animationFrame > 0) {
+        window.cancelAnimationFrame(animationFrame)
+        requestAnimationFrameRef.current = undefined
       }
-      return darkMode ? DEFAULT_MAP_STYLE_DARK : DEFAULT_MAP_STYLE_LIGHT
     }
-  )
+    return () => {
+      if (requestAnimationFrameRef.current != null) {
+        cancelAnimationFrame(requestAnimationFrameRef.current)
+      }
+    }
+  }, [animationEnabled, animate])
 
-  getFlowsForKnownLocations: Selector<Flow[] | undefined> = createSelector(
-    this.getFlows,
-    this.getLocationIds,
-    (flows, ids) => {
-      if (!ids || !flows) return undefined
-      return flows.filter(flow =>
-        ids.has(getFlowOriginId(flow)) &&
-        ids.has(getFlowDestId(flow))
+  const handleToggleAnimation = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked
+    dispatch({
+      type: ActionType.SET_ANIMATION_ENABLED,
+      animationEnabled: value
+    })
+  }
+
+  const showErrorToast = useCallback((errorText: ReactNode) => {
+    if (config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
+      AppToaster.show({
+        intent: Intent.WARNING,
+        icon: IconNames.WARNING_SIGN,
+        timeout: 0,
+        message: <ToastContent>{errorText}</ToastContent>
+      })
+    }
+  }, [config])
+
+  const invalidLocations = getInvalidLocationIds(state, props)
+  useEffect(() => {
+    if (invalidLocations) {
+      showErrorToast(
+        <>
+          Locations with the following IDs have invalid coordinates:
+          <ErrorsLocationsBlock>
+            {(invalidLocations.length > MAX_NUM_OF_IDS_IN_ERROR ?
+              invalidLocations.slice(0, MAX_NUM_OF_IDS_IN_ERROR) : invalidLocations).map(id => `${id}`).join(', ')
+            }
+            {invalidLocations.length > MAX_NUM_OF_IDS_IN_ERROR && `… and ${invalidLocations.length - MAX_NUM_OF_IDS_IN_ERROR} others`}
+          </ErrorsLocationsBlock>
+          Make sure you named the columns "lat" and "lon" and didn't confuse latitudes and longitudes.
+          The coordinates must be in decimal form. If your coordinates are in degrees-minutes-seconds (DSM format) you
+          can convert them with <Away href="https://www.latlong.net/degrees-minutes-seconds-to-decimal-degrees">this tool</Away> for example.
+        </>
       )
     }
-  )
+  }, [invalidLocations, showErrorToast])
 
-  getLocationsHavingFlows: Selector<Location[] | undefined> = createSelector(
-    this.getFlowsForKnownLocations,
-    this.getLocations,
-    (flows, locations) => {
-      if (!locations || !flows) return locations;
-      const withFlows = new Set();
-      for (const flow of flows) {
-        withFlows.add(getFlowOriginId(flow));
-        withFlows.add(getFlowDestId(flow));
+  const unknownLocations = getUnknownLocations(state, props)
+  useEffect(() => {
+    if (unknownLocations) {
+      if (flows && allFlows)  {
+        const ids = Array.from(unknownLocations).sort();
+        showErrorToast(
+          <>
+            Locations with the following IDs couldn't be found in the locations sheet:
+            <ErrorsLocationsBlock>
+              {(ids.length > MAX_NUM_OF_IDS_IN_ERROR ?
+                ids.slice(0, MAX_NUM_OF_IDS_IN_ERROR) : ids).map(id => `${id}`).join(', ')
+              }
+              {ids.length > MAX_NUM_OF_IDS_IN_ERROR && `… and ${ids.length - MAX_NUM_OF_IDS_IN_ERROR} others`}
+            </ErrorsLocationsBlock>
+            {formatCount(allFlows.length - flows.length)} flows were omitted.
+            {flows.length === 0 &&
+            <div style={{ marginTop: '1em'}}>Make sure the columns are named  header row in the flows sheet is correct.
+              There must be <b>origin</b>, <b>dest</b>, and <b>count</b>.</div>}
+          </>
+        )
       }
-      return locations.filter((location: Location) => withFlows.has(getLocationId(location)));
     }
-  )
+  }, [unknownLocations, showErrorToast, allFlows, flows])
 
-  getInvalidLocationIds: Selector<string[] | undefined> = createSelector(
-    this.getLocations,
-    (locations) => {
-      if (!locations) return undefined
-      const invalid = []
-      for (const location of locations) {
-        if (!(-90 <= location.lat && location.lat <= 90) || !(-180 <= location.lon && location.lon <= 180)) {
-          invalid.push(location.id)
-        }
+  if (locations != null && locations !== state.lastLocations) {
+    let nextViewState
+
+    const bbox = config[ConfigPropName.MAP_BBOX]
+    if (bbox) {
+      const bounds: number[] = bbox.split(',').map(d => +d)
+      if (bounds.length === 4) {
+        nextViewState = getInitialViewState(bounds as [number, number, number, number])
       }
-      return invalid.length > 0 ? invalid : undefined
     }
-  )
 
-  getUnknownLocations: Selector<Set<string> | undefined> = createSelector(
-    this.getLocationIds,
-    this.getFlows,
-    this.getFlowsForKnownLocations,
-    (ids, flows, flowsForKnownLocations) => {
-      if (!ids || !flows) return undefined
-      if (flowsForKnownLocations && flows.length === flowsForKnownLocations.length) return undefined
-      const missing = new Set<string>()
-      for (const flow of flows) {
-        if (!ids.has(getFlowOriginId(flow))) missing.add(getFlowOriginId(flow))
-        if (!ids.has(getFlowDestId(flow))) missing.add(getFlowDestId(flow))
-      }
-      return missing
-    }
-  )
-
-  getClusterIndex: Selector<Cluster.ClusterIndex | undefined> = createSelector(
-    this.getLocationsHavingFlows,
-    this.getFlowsForKnownLocations,
-    (locations, flows) => {
-      if (!locations || !flows) return undefined
-
-      const getLocationWeight = Cluster.makeLocationWeightGetter(
-        flows,
-        { getFlowOriginId, getFlowDestId, getFlowMagnitude }
-      );
-      const clusterLevels = Cluster.clusterLocations(
+    if (!nextViewState) {
+      nextViewState = getViewStateForLocations(
         locations,
-        { getLocationId, getLocationCentroid },
-        getLocationWeight,
-        {
-          maxZoom: MAX_ZOOM_LEVEL,
-        }
-      );
-      const clusterIndex = Cluster.buildIndex(clusterLevels);
-
-      const locationsById = nest<Location, Location>()
-        .key((d: Location) => d.id)
-        .rollup(([d]) => d)
-        .object(locations)
-
-      // Adding meaningful names
-      const getName = (id: string) => {
-        const loc = locationsById[id]
-        if (loc) return loc.name || loc.id || id
-        return `#${id}`
-      }
-      for (const level of clusterLevels) {
-        for (const node of level.nodes) {
-          // Here mutating the nodes (adding names)
-          if (isCluster(node)) {
-            const leaves = clusterIndex.expandCluster(node);
-            const topId = leaves.reduce((m: string | undefined, d: string) =>
-              (!m || getLocationWeight(d) > getLocationWeight(m) ? d : m)
-            )
-            const otherId = leaves.length === 2 && leaves.find(id => id !== topId)
-            node.name = `"${getName(topId)}" and ${otherId ? `"${getName(otherId)}"` : `${leaves.length - 1} others`}`
-          } else {
-            (node as any).name = getName(node.id)
-          }
-        }
-      }
-
-      return clusterIndex
+        getLocationCentroid,
+        [
+          window.innerWidth,
+          window.innerHeight,
+        ],
+        { pad: 0.05 }
+      )
     }
-  )
 
-  getClusterZoom: Selector<number | undefined> = createSelector(
-    this.getClusterIndex,
-    this.getZoom,
-    this.getSelectedLocations,
-    (clusterIndex, zoom, selectedLocations) => {
-      if (!clusterIndex) return undefined
-      let minZoom = clusterIndex.availableZoomLevels[0]
-      const maxZoom = clusterIndex.availableZoomLevels[clusterIndex.availableZoomLevels.length - 1]
-      if (selectedLocations) {
-        for (const { id } of selectedLocations) {
-          let itemZoom
-          const cluster = clusterIndex.getClusterById(id)
-          if (cluster) {
-            if (cluster) itemZoom = cluster.zoom
-          } else {
-            itemZoom = clusterIndex.getMinZoomForLocation(id)
-          }
-          if (itemZoom !== undefined && itemZoom > minZoom) {
-            minZoom = itemZoom
-          }
-        }
+    if (!nextViewState.zoom) {
+      nextViewState = {
+        zoom: 1,
+        latitude: 0,
+        longitude: 0,
       }
-      return Math.max(minZoom, Math.min(Math.floor(zoom), maxZoom));
     }
-  )
 
-  getAggregatedFlows: Selector<Flow[] | undefined> = createSelector(
-    this.getClusterIndex,
-    this.getFlowsForKnownLocations,
-    this.getClusterZoom,
-    (clusterTree, flows, clusterZoom) => {
-      if (!clusterTree || !flows || clusterZoom == null) return undefined
-      return clusterTree.aggregateFlows(flows, clusterZoom, { getFlowOriginId, getFlowDestId, getFlowMagnitude })
-    }
-  )
-
-  getLocationsForSearchBox: Selector<(Location | Cluster.Cluster)[] | undefined> = createSelector(
-    this.getClusteringEnabled,
-    this.getLocationsHavingFlows,
-    this.getSelectedLocations,
-    this.getClusterZoom,
-    this.getClusterIndex,
-    (clusteringEnabled, locations, selectedLocations, clusterZoom, clusterIndex) => {
-      if (!locations) return undefined
-      let result: (Location | Cluster.Cluster)[] = locations
-      if (clusteringEnabled) {
-        if (clusterIndex) {
-          const zoomItems = clusterIndex.getClusterNodesFor(clusterZoom)
-          if (zoomItems) {
-            result = result.concat(zoomItems.filter(Cluster.isCluster))
-          }
-        }
+    dispatch({
+      type: ActionType.SET_VIEW_STATE,
+      lastLocations: locations,
+      viewState: {
+        ...nextViewState,
+        minPitch: 0,
+        maxPitch: 0,
+        bearing: 0,
+        pitch: 0,
+        // transitionDuration: 2000,
+        // transitionInterpolator: new FlyToInterpolator(),
+        // transitionEasing: d3ease.easeCubic,
       }
-
-      if (result && clusterIndex && selectedLocations) {
-        const toAppend = []
-        for (const { id } of selectedLocations) {
-          const cluster = clusterIndex.getClusterById(id)
-          if (cluster && !result.find(d => d.id === id)) {
-            toAppend.push(cluster)
-          }
-        }
-        if (toAppend.length > 0) {
-          result = result.concat(toAppend)
-        }
-      }
-      return result
-    }
-  )
-
-  getMaxClusterZoom: Selector<number | undefined> = createSelector(
-    this.getClusterIndex,
-    clusterIndex => {
-      if (!clusterIndex) return undefined
-      return Math.max.apply(null, clusterIndex.availableZoomLevels)
-    }
-  )
-
-  getExpandedSelection: Selector<Array<string> | undefined> = createSelector(
-    this.getClusteringEnabled,
-    this.getSelectedLocations,
-    this.getClusterZoom,
-    this.getClusterIndex,
-    this.getMaxClusterZoom,
-    (clusteringEnabled, selectedLocations, clusterZoom, clusterIndex, maxClusterZoom) => {
-      if (!selectedLocations || !clusterIndex || clusterZoom === undefined) {
-        return undefined
-      }
-
-      const targetZoom = clusteringEnabled ? clusterZoom : maxClusterZoom
-
-      const result = new Set<string>()
-      for (const loc of selectedLocations) {
-        const cluster = clusterIndex.getClusterById(loc.id)
-        if (cluster) {
-          const expanded = clusterIndex.expandCluster(cluster, targetZoom)
-          for (const id of expanded) {
-            result.add(id)
-          }
-        } else {
-          result.add(loc.id)
-        }
-      }
-      return Array.from(result)
     })
+  }
 
-  getHighlightForZoom() {
-    const { highlight, clusteringEnabled } = this.state
+
+  if (error)  {
+    return <Message>Oops… There is a problem. <br/>{error}</Message>
+  }
+  if (locationsFetch.pending || locationsFetch.refreshing) {
+    return <LoadingSpinner />
+  }
+  if (locationsFetch.rejected || flowsFetch.rejected) {
+    return <Message>
+      <p>
+      Oops… Couldn't fetch data from{` `}
+      <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.{` `}
+      </p>
+      <p>
+      If you are the owner of this spreadsheet, make sure you have shared it by going to "File" / "Share with others", clicking "Advanced", and then choosing "Anyone with the link can view".
+      </p>
+    </Message>;
+  }
+  const searchBoxLocations = getLocationsForSearchBox(state, props)
+  const title = config[ConfigPropName.TITLE]
+  const description = config[ConfigPropName.DESCRIPTION]
+  const sourceUrl = config[ConfigPropName.SOURCE_URL]
+  const sourceName = config[ConfigPropName.SOURCE_NAME]
+  const authorUrl = config[ConfigPropName.AUTHOR_URL]
+  const authorName = config[ConfigPropName.AUTHOR_NAME]
+  const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
+  const diffMode = getDiffMode(state, props)
+  const darkMode = getDarkMode(state, props)
+  const mapboxMapStyle = getMapboxMapStyle(state, props)
+
+  function getHighlightForZoom() {
+    const { highlight, clusteringEnabled } = state
     if (!highlight || !clusteringEnabled) {
       return highlight
     }
-    const clusterTree = this.getClusterIndex(this.state, this.props)
-    const clusterZoom = this.getClusterZoom(this.state, this.props)
+    const clusterTree = getClusterIndex(state, props)
+    const clusterZoom = getClusterZoom(state, props)
     if (!clusterTree || clusterZoom === undefined) {
       return undefined
     }
@@ -478,299 +366,43 @@ class FlowMap extends React.Component<Props, State> {
     return undefined
   }
 
-  makeFlowMapLayer(id: string, locations: (Location | Cluster.ClusterNode)[], flows: Flow[], visible: boolean) {
-    const { animationEnabled, time } = this.state
-    const highlight = this.getHighlightForZoom()
+  const outerRef = React.createRef<HTMLDivElement>()
 
-    return new FlowMapLayer({
-      id,
-      animate: animationEnabled,
-      animationCurrentTime: time,
-      diffMode: this.getDiffMode(this.state, this.props),
-      colors: this.getColors(this.state, this.props),
-      locations,
-      flows,
-      showOnlyTopFlows: 10000,
-      getLocationCentroid,
-      getFlowMagnitude,
-      getFlowOriginId,
-      getFlowDestId,
-      getLocationId,
-      varyFlowColorByMagnitude: true,
-      showTotals: true,
-      selectedLocationIds: this.getExpandedSelection(this.state, this.props),
-      highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
-      highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
-      onHover: this.handleHover,
-      onClick: this.handleClick as any,
-      visible,
-    } as any)
-  }
-
-  getLayers() {
-    const {
-      clusteringEnabled,
-      animationEnabled,
-      darkMode,
-      colorSchemeKey,
-      fadeAmount,
-    } = this.state
-    const layers = []
-    const id = [
-      'flow-map',
-      animationEnabled ? 'animated' : 'arrows',
-      colorSchemeKey,
-      darkMode ? 'dark' : 'light',
-      fadeAmount,
-    ].join('-')
-    if (clusteringEnabled) {
-      const clusterIndex = this.getClusterIndex(this.state, this.props)
-      const flows = this.getAggregatedFlows(this.state, this.props)
-      const clusterZoom = this.getClusterZoom(this.state, this.props)
-      if (/*clusterZoom !== undefined && */ clusterIndex && flows) {
-      //   const flows = flows.get(clusterZoom)
-        if (flows) {
-          layers.push(this.makeFlowMapLayer(
-            id,
-            clusterIndex.getClusterNodesFor(clusterZoom)!,
-            flows,
-            // zoom === clusterZoom,
-            true
-          ))
-        }
-      }
-    } else {
-      const locations = this.getLocationsHavingFlows(this.state, this.props);
-      const flows = this.getFlowsForKnownLocations(this.state, this.props);
-      if (locations && flows) {
-        layers.push(this.makeFlowMapLayer(
-          id,
-          locations,
-          flows,
-          true,
-        ))
-      }
-    }
-    return layers
-  }
-
-  static getDerivedStateFromProps(props: Props, state: State): Partial<State> | null {
-    const locations = props.locationsFetch.value
-    if (locations != null && locations !== state.lastLocations) {
-      let viewState
-
-      const bbox = props.config[ConfigPropName.MAP_BBOX]
-      if (bbox) {
-        const bounds: number[] = bbox.split(',').map(d => +d)
-        if (bounds.length === 4) {
-          viewState = getInitialViewState(bounds as [number, number, number, number])
-        }
-      }
-
-      if (!viewState) {
-        viewState = getViewStateForLocations(
-          locations,
-          getLocationCentroid,
-          [
-            window.innerWidth,
-            window.innerHeight,
-          ],
-          { pad: 0.05 }
-        )
-      }
-
-      // if (!viewState.zoom) {
-      //   return {
-      //     error: `The geo bounding box couldn't be calculated.
-      //     Please, make sure that all the locations have valid coordinates in the spreadsheet.`
-      //   }
-      // }
-      if (!viewState.zoom) {
-        viewState = {
-          zoom: 1,
-          latitude: 0,
-          longitude: 0,
-        }
-      }
-      return {
-        lastLocations: locations,
-        // maxZoom: viewState.zoom + MAX_ZOOM_LEVELS,
-        // minZoom: viewState.zoom - MIN_ZOOM_LEVELS,
-        viewState: {
-          ...viewState,
-          minPitch: 0,
-          maxPitch: 0,
-          bearing: 0,
-          pitch: 0,
-          // transitionDuration: 2000,
-          // transitionInterpolator: new FlyToInterpolator(),
-          // transitionEasing: d3ease.easeCubic,
-        }
-      }
-    }
-
-    return null
-  }
-
-  getContainerClientRect = () => {
-    const container = findDOMNode(this) as Element
+  const getContainerClientRect = () => {
+    const container = outerRef.current
     if (!container) return undefined
     return container.getBoundingClientRect()
   }
 
-  getMercator = () => {
-    const containerBounds = this.getContainerClientRect()
+  const getMercator = () => {
+    const containerBounds = getContainerClientRect()
     if (!containerBounds) return undefined
     const { width, height } = containerBounds
     return new WebMercatorViewport({
-      ...this.state.viewState,
+      ...state.viewState,
       width, height,
     })
   }
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown)
-    const { animationEnabled } = this.state;
-    if (animationEnabled) {
-      this.animate();
-    }
+  const highlight = (highlight: Highlight | undefined) => {
+    dispatch({ type: ActionType.SET_HIGHLIGHT, highlight })
+    highlightDebounced.cancel()
   }
+  const highlightDebounced = debounce(highlight, 200)
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    const { flowsFetch, locationsFetch } = this.props
-    const LocationsBlock = styled.div`
-      font-size: 10px;
-      padding: 10px;          
-    `
-    const MAX_NUM_IDS = 100;
-    if (locationsFetch.value !== prevProps.locationsFetch.value) {
-      const invalidLocations = this.getInvalidLocationIds(this.state, this.props);
-      if (invalidLocations) {
-        if (this.props.config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
-          AppToaster.show({
-            intent: Intent.WARNING,
-            icon: IconNames.WARNING_SIGN,
-            timeout: 0,
-            message:
-              <ToastContent>
-                Locations with the following IDs have invalid coordinates:
-                <LocationsBlock>
-                  {(invalidLocations.length > MAX_NUM_IDS ?
-                    invalidLocations.slice(0, MAX_NUM_IDS) : invalidLocations).map(id => `${id}`).join(', ')
-                  }
-                  {invalidLocations.length > MAX_NUM_IDS && `… and ${invalidLocations.length - MAX_NUM_IDS} others`}
-                </LocationsBlock>
-                Make sure you named the columns "lat" and "lon" and didn't confuse latitudes and longitudes.
-                The coordinates must be in decimal form. If your coordinates are in degrees-minutes-seconds (DSM format) you
-                can convert them with <Away href="https://www.latlong.net/degrees-minutes-seconds-to-decimal-degrees">this tool</Away> for example.
-              </ToastContent>
-          })
-        }
-      }
-    }
-    if (flowsFetch.value !== prevProps.flowsFetch.value ||
-      locationsFetch.value !== prevProps.locationsFetch.value
-    ) {
-      const unknownLocations = this.getUnknownLocations(this.state, this.props);
-      if (unknownLocations) {
-        if (this.props.config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
-          const allFlows = this.getFlows(this.state, this.props)
-          const flows = this.getFlowsForKnownLocations(this.state, this.props)
-          if (flows && allFlows)  {
-            const ids = Array.from(unknownLocations).sort();
-            AppToaster.show({
-              intent: Intent.WARNING,
-              icon: IconNames.WARNING_SIGN,
-              timeout: 0,
-              message:
-              <ToastContent>
-                Locations with the following IDs couldn't be found in the locations sheet:
-                <LocationsBlock>
-                  {(ids.length > MAX_NUM_IDS ?
-                    ids.slice(0, MAX_NUM_IDS) : ids).map(id => `${id}`).join(', ')
-                  }
-                  {ids.length > MAX_NUM_IDS && `… and ${ids.length - MAX_NUM_IDS} others`}
-                </LocationsBlock>
-                {formatCount(allFlows.length - flows.length)} flows were omitted.
-                {flows.length === 0 &&
-                <div style={{ marginTop: '1em'}}>Make sure the columns are named  header row in the flows sheet is correct.
-                                  There must be <b>origin</b>, <b>dest</b>, and <b>count</b>.</div>}
-              </ToastContent>
-            })
-          }
-        }
-
-
-      }
-    }
-  }
-
-  handleToggleClustering = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
-    this.setState({ clusteringEnabled: value })
-  }
-
-  handleToggleDarkMode = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
-    this.setState({ darkMode: value })
-  }
-
-  handleChangeFadeAmount = (value: number) => {
-    this.setState({ fadeAmount: value })
-  }
-
-  handleChangeColorScheme = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).value
-    this.setState({ colorSchemeKey: value })
-  }
-
-  private animationFrame: number = -1;
-
-  handleToggleAnimation = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
-    if (value) {
-      this.animate()
-    } else {
-      this.stopAnimation()
-    }
-    this.setState({ animationEnabled: value })
-  }
-
-  private animate = () => {
-    const loopLength = 1800
-    const animationSpeed = 30
-    const timestamp = Date.now() / 1000
-    const loopTime = loopLength / animationSpeed
-
-    this.setState({
-      time: ((timestamp % loopTime) / loopTime) * loopLength,
-    })
-    this.animationFrame = window.requestAnimationFrame(this.animate)
-  }
-
-  private stopAnimation() {
-    if (this.animationFrame > 0) {
-      window.cancelAnimationFrame(this.animationFrame)
-      this.animationFrame = -1
-    }
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown)
-  }
-
-  hideTooltip = () => {
-    this.setState({
+  const hideTooltip = () => {
+    dispatch({
+      type: ActionType.SET_TOOLTIP,
       tooltip: undefined
     })
-    this.showTooltipDebounced.cancel()
+    showTooltipDebounced.cancel()
   }
 
-  showFlowTooltip = (pos: [number, number], info: FlowPickingInfo) => {
+  const showFlowTooltip = (pos: [number, number], info: FlowPickingInfo) => {
     const [x, y] = pos
-    const r = 5
-    const showTooltip = this.state.tooltip ? this.showTooltip : this.showTooltipDebounced
-    showTooltip(
+    const r = 5;
+    const show = state.tooltip ? showTooltip : showTooltipDebounced;
+    show(
       {
         left: x - r,
         top: y - r,
@@ -785,15 +417,15 @@ class FlowMap extends React.Component<Props, State> {
     )
   }
 
-  showLocationTooltip = (info: LocationPickingInfo) => {
+  const showLocationTooltip = (info: LocationPickingInfo) => {
     const { object: location, circleRadius } = info
-    const mercator = this.getMercator()
+    const mercator = getMercator()
     if (!mercator) return
     const [x, y] = mercator.project(getLocationCentroid(location))
     const r = circleRadius + 5
-    const { selectedLocations } = this.state
-    const showTooltip = this.state.tooltip ? this.showTooltip : this.showTooltipDebounced
-    showTooltip(
+    const { selectedLocations } = state;
+    const show = state.tooltip ? showTooltip : showTooltipDebounced
+    show(
       {
         left: x - r,
         top: y - r,
@@ -810,11 +442,12 @@ class FlowMap extends React.Component<Props, State> {
     )
   }
 
-  showTooltip = (bounds: TargetBounds, content: React.ReactNode) => {
-    const containerBounds = this.getContainerClientRect()
+  const showTooltip = (bounds: TargetBounds, content: React.ReactNode) => {
+    const containerBounds = getContainerClientRect()
     if (!containerBounds) return
     const { top, left } = containerBounds
-    this.setState({
+    dispatch({
+      type: ActionType.SET_TOOLTIP,
       tooltip: {
         target: {
           ...bounds,
@@ -825,374 +458,382 @@ class FlowMap extends React.Component<Props, State> {
         content,
       }
     })
-    this.showTooltipDebounced.cancel()
+    showTooltipDebounced.cancel()
   }
 
-  private showTooltipDebounced = debounce(this.showTooltip, 200)
+  const showTooltipDebounced = debounce(showTooltip, 200)
 
-  handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
-    this.handleNavigation(viewState)
-  }
-
-  handleZoomIn = () => {
-    const { viewState, maxZoom } = this.state
-    this.setState({
-      viewState: {
-        ...viewState,
-        zoom: Math.min(
-          maxZoom != null ? maxZoom : MAX_ZOOM_LEVEL,
-          viewState.zoom * 1.1
-        ),
-      }
-    })
-  }
-
-  handleZoomOut = () => {
-    const { viewState, minZoom } = this.state
-    this.setState({
-      viewState: {
-        ...viewState,
-        zoom: Math.max(
-          minZoom != null ? minZoom : MIN_ZOOM_LEVEL,
-          viewState.zoom / 1.1
-        ),
-      }
-    })
-  }
-
-  handleNavigation = (viewState: ViewState) => {
-    const { maxZoom, minZoom } = this.state
-    let zoom = viewState.zoom
-    if (maxZoom && zoom > maxZoom) return
-    if (minZoom && zoom < minZoom) return
-    this.setState({
-      viewState: {
-        ...viewState,
-        zoom,
-      },
-      tooltip: undefined,
-      highlight: undefined,
-    })
-  }
-
-  private highlight(highlight: Highlight | undefined) {
-    this.setState({ highlight })
-    this.highlightDebounced.cancel()
-  }
-  private highlightDebounced = debounce(this.highlight, 200)
-
-  private handleHover = (info: FlowLayerPickingInfo) => {
+  const handleHover = (info: FlowLayerPickingInfo) => {
     const { type, object, x, y } = info
     switch (type) {
       case PickingType.FLOW: {
         if (object) {
-          this.highlight({
+          highlight({
             type: HighlightType.FLOW,
             flow: object,
           })
-          this.showFlowTooltip(
+          showFlowTooltip(
             [x, y],
             info as FlowPickingInfo
           )
         } else {
-          this.highlight(undefined);
-          this.hideTooltip()
+          highlight(undefined);
+          hideTooltip()
         }
         break
       }
       case PickingType.LOCATION: {
         if (object) {
-          this.highlightDebounced({
+          highlightDebounced({
             type: HighlightType.LOCATION,
             locationId: getLocationId!(object),
           })
-          this.showLocationTooltip(info as LocationPickingInfo)
+          showLocationTooltip(info as LocationPickingInfo)
         } else {
-          this.highlight(undefined);
-          this.hideTooltip()
+          highlight(undefined);
+          hideTooltip()
         }
         break
       }
       default: {
-        this.highlight(undefined)
-        this.hideTooltip()
+        highlight(undefined)
+        hideTooltip()
       }
     }
   };
 
-  private handleClick = (info: FlowLayerPickingInfo, event: { srcEvent: MouseEvent }) => {
+  const handleClick = (info: FlowLayerPickingInfo, event: { srcEvent: MouseEvent }) => {
     switch (info.type) {
       case PickingType.LOCATION:
       // fall through
       case PickingType.LOCATION_AREA: {
         const { object } = info
         if (object) {
-          this.setState(state => {
-            const { selectedLocations } = state
-            const locationId = getLocationId(object)
-            let nextSelectedLocations
-            if (selectedLocations) {
-              const idx = selectedLocations.findIndex(s => s.id === locationId)
-              if (idx >= 0) {
-                nextSelectedLocations = selectedLocations.slice()
-                nextSelectedLocations.splice(idx, 1)
-                if (nextSelectedLocations.length === 0) nextSelectedLocations = undefined
-              } else {
-                if (event.srcEvent.shiftKey) {
-                  nextSelectedLocations = [...selectedLocations, { id: locationId, direction: FlowDirection.BOTH }]
-                } else {
-                  nextSelectedLocations = [{ id: locationId, direction: FlowDirection.BOTH }]
-                }
-              }
-            } else {
-              nextSelectedLocations = [{ id: locationId, direction: FlowDirection.BOTH }]
-            }
-
-            return {
-              ...state,
-              selectedLocations: nextSelectedLocations,
-              highlight: undefined,
-              tooltip: undefined,
-            }
+          dispatch({
+            type: ActionType.SELECT_LOCATION,
+            locationId: getLocationId(object),
+            incremental: event.srcEvent.shiftKey,
           })
-          sendEvent(
-            `${this.props.spreadSheetKey} "${this.props.config.title}"`,
-            `Select location`,
-            `Select location "${object.name}" in "${this.props.config.title}"`,
-          )
         }
         break
       }
     }
   };
 
-  private handleSelectLocation = (selectedLocations: LocationSelection[] | undefined) => {
-    this.setState({
+
+  const handleChangeSelectLocations = (selectedLocations: LocationSelection[] | undefined) => {
+    dispatch({
+      type: ActionType.SET_SELECTED_LOCATIONS,
       selectedLocations,
-      highlight: undefined,
     })
   }
 
-  private handleKeyDown = (evt: Event) => {
-    if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
-      this.setState({
-        selectedLocations: undefined,
-        highlight: undefined,
-        tooltip: undefined,
-      })
-    }
+
+  const handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
+    const { maxZoom, minZoom } = state
+    let zoom = viewState.zoom
+    if (maxZoom && zoom > maxZoom) return
+    if (minZoom && zoom < minZoom) return
+    dispatch({
+      type: ActionType.SET_VIEW_STATE,
+      viewState: {
+        ...viewState,
+        zoom,
+      },
+    })
   }
 
-  static getDerivedStateFromError(error: any) {
-    return { error: error.toString() }
+  const handleZoomIn = () => {
+    dispatch({ type: ActionType.ZOOM_IN })
   }
 
-  render() {
+  const handleZoomOut = () => {
+    dispatch({ type: ActionType.ZOOM_OUT })
+  }
+
+  const handleToggleClustering = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked
+    dispatch({
+      type: ActionType.SET_CLUSTERING_ENABLED,
+      clusteringEnabled: value,
+    })
+  }
+
+  const handleToggleDarkMode = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked
+    dispatch({
+      type: ActionType.SET_DARK_MODE,
+      darkMode: value,
+    })
+  }
+
+  const handleChangeFadeAmount = (value: number) => {
+    dispatch({
+      type: ActionType.SET_FADE_AMOUNT,
+      fadeAmount: value,
+    })
+  }
+
+  const handleChangeColorScheme = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).value
+    dispatch({
+      type: ActionType.SET_COLOR_SCHEME,
+      colorSchemeKey: value,
+    })
+  }
+
+
+  function makeFlowMapLayer(id: string, locations: (Location | Cluster.ClusterNode)[], flows: Flow[], visible: boolean) {
+    const { animationEnabled } = state
+    const highlight = getHighlightForZoom()
+
+    return new FlowMapLayer({
+      id,
+      animate: animationEnabled,
+      animationCurrentTime: time,
+      diffMode: getDiffMode(state, props),
+      colors: getFlowMapColors(state, props),
+      locations,
+      flows,
+      showOnlyTopFlows: 10000,
+      getLocationCentroid,
+      getFlowMagnitude,
+      getFlowOriginId,
+      getFlowDestId,
+      getLocationId,
+      varyFlowColorByMagnitude: true,
+      showTotals: true,
+      selectedLocationIds: getExpandedSelection(state, props),
+      highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
+      highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
+      onHover: handleHover,
+      onClick: handleClick as any,
+      visible,
+    } as any)
+  }
+
+  function getLayers() {
     const {
-      config,
-      spreadSheetKey,
-      locationsFetch,
-      flowsFetch,
-    } = this.props
-    const { viewState, tooltip, error } = this.state
-    if (error)  {
-      return <Message>Oops… There is a problem. <br/>{error}</Message>
+      clusteringEnabled,
+      animationEnabled,
+      darkMode,
+      colorSchemeKey,
+      fadeAmount,
+    } = state
+    const layers = []
+    const id = [
+      'flow-map',
+      animationEnabled ? 'animated' : 'arrows',
+      colorSchemeKey,
+      darkMode ? 'dark' : 'light',
+      fadeAmount,
+    ].join('-')
+    if (clusteringEnabled) {
+      const clusterIndex = getClusterIndex(state, props)
+      const flows = getAggregatedFlows(state, props)
+      const clusterZoom = getClusterZoom(state, props)
+      if (/*clusterZoom !== undefined && */ clusterIndex && flows) {
+      //   const flows = flows.get(clusterZoom)
+        if (flows) {
+          layers.push(makeFlowMapLayer(
+            id,
+            clusterIndex.getClusterNodesFor(clusterZoom)!,
+            flows,
+            // zoom === clusterZoom,
+            true
+          ))
+        }
+      }
+    } else {
+      const locations = getLocationsHavingFlows(state, props);
+      const flows = getFlowsForKnownLocations(state, props);
+      if (locations && flows) {
+        layers.push(makeFlowMapLayer(
+          id,
+          locations,
+          flows,
+          true,
+        ))
+      }
     }
-    if (locationsFetch.pending || locationsFetch.refreshing) {
-      return <LoadingSpinner />
-    }
-    if (locationsFetch.rejected || flowsFetch.rejected) {
-      return <Message>
-        <p>
-        Oops… Couldn't fetch data from{` `}
-        <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.{` `}
-        </p>
-        <p>
-        If you are the owner of this spreadsheet, make sure you have shared it by going to "File" / "Share with others", clicking "Advanced", and then choosing "Anyone with the link can view".
-        </p>
-      </Message>;
-    }
-    const searchBoxLocations = this.getLocationsForSearchBox(this.state, this.props)
-    const flows = this.getFlowsForKnownLocations(this.state, this.props)
-    const title = config[ConfigPropName.TITLE]
-    const description = config[ConfigPropName.DESCRIPTION]
-    const sourceUrl = config[ConfigPropName.SOURCE_URL]
-    const sourceName = config[ConfigPropName.SOURCE_NAME]
-    const authorUrl = config[ConfigPropName.AUTHOR_URL]
-    const authorName = config[ConfigPropName.AUTHOR_NAME]
-    const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN]
-    const diffMode = this.getDiffMode(this.state, this.props)
-    const darkMode = this.getDarkMode(this.state, this.props)
-    const mapboxMapStyle = this.getMapboxMapStyle(this.state, this.props)
-    return (
-      <Outer darkMode={darkMode}>
-        <DeckGL
-          style={{ mixBlendMode: darkMode ? 'screen' : 'multiply' }}
-          controller={CONTROLLER_OPTIONS}
-          viewState={viewState}
-          onViewStateChange={this.handleViewStateChange}
-          layers={this.getLayers()}
-          ContextProvider={MapContext.Provider}
-          children={({ width, height, viewState }: any) => (
-            mapboxAccessToken &&
-            <>
-              <StaticMap
-                mapboxApiAccessToken={mapboxAccessToken}
-                mapStyle={mapboxMapStyle}
-                width={width} height={height} viewState={viewState}
-              />
-            </>
-          )}
-        />
-        {flows &&
-        <>
-          {searchBoxLocations &&
-            <Box top={10} right={10} darkMode={darkMode}>
-              <LocationsSearchBox
-                locations={searchBoxLocations}
-                selectedLocations={this.state.selectedLocations}
-                onSelectionChanged={this.handleSelectLocation}
-              />
-            </Box>
-          }
-          <Box bottom={28} right={0} darkMode={darkMode}>
-            <Collapsible
-              darkMode={darkMode}
-              width={160}
-              direction={Direction.RIGHT}
-            >
-              <Column spacing={10} padding={12}>
-                <LegendTitle>Location totals</LegendTitle>
-                <LocationTotalsLegend
-                  diff={diffMode}
-                  colors={this.getColors(this.state, this.props)}
-                />
-              </Column>
-            </Collapsible>
-          </Box>
-        </>}
-        <Box top={50} right={10} darkMode={darkMode}>
-          <ButtonGroup
-            vertical={true}
-          >
-            <NoOutlineButton
-              icon={IconNames.PLUS}
-              onClick={this.handleZoomIn}
-            />
-            <NoOutlineButton
-              icon={IconNames.MINUS}
-              onClick={this.handleZoomOut}
-            />
-          </ButtonGroup>
-        </Box>
-        <Box bottom={40} left={10} darkMode={darkMode}>
-          <Popover
-            hoverOpenDelay={0}
-            hoverCloseDelay={0}
-            content={
-              <SettingsOuter>
-                <Column spacing={10} padding="12px 20px">
-                  <LegendTitle>Settings</LegendTitle>
-                  <Row spacing={5}>
-                    <div>Color scheme</div>
-                    <HTMLSelect
-                      style={{ fontSize: 12 }}
-                      value={this.state.colorSchemeKey}
-                      onChange={this.handleChangeColorScheme}
-                    >
-                      <option>Default</option>
-                      {Object.keys(flowColorSchemes).sort().map(scheme => (
-                        <option key={scheme}>
-                          {scheme}
-                        </option>
-                      ))}
-                    </HTMLSelect>
-                  </Row>
-                  <Row spacing={15}>
-                    <div style={{ whiteSpace: 'nowrap' }}>Fade</div>
-                    <Slider
-                      value={this.state.fadeAmount}
-                      min={0}
-                      max={100}
-                      stepSize={1}
-                      labelRenderer={false}
-                      showTrackFill={false}
-                      onChange={this.handleChangeFadeAmount}
-                      />
-                  </Row>
-                  <Row spacing={20}>
-                    <StyledSwitch
-                      checked={darkMode}
-                      label="Dark mode"
-                      onChange={this.handleToggleDarkMode}
-                    />
-                  </Row>
-                  <Row spacing={10}>
-                    <StyledSwitch
-                      checked={this.state.clusteringEnabled}
-                      label="Cluster on zoom"
-                      onChange={this.handleToggleClustering}
-                    />
-                  </Row>
-                  <Row spacing={20}>
-                    <StyledSwitch
-                      checked={this.state.animationEnabled}
-                      label="Animate flows"
-                      onChange={this.handleToggleAnimation}
-                    />
-                  </Row>
-                </Column>
-              </SettingsOuter>
-            }
-          >
-            <NoOutlineButton
-              icon={IconNames.COG}
-            />
-          </Popover>
-        </Box>}
+    return layers
+  }
 
-        {spreadSheetKey &&
-        <TitleBox top={60} left={0} darkMode={darkMode}>
+
+
+  return (
+    <Outer
+      ref={outerRef}
+      darkMode={darkMode}
+    >
+      <DeckGL
+        style={{ mixBlendMode: darkMode ? 'screen' : 'multiply' }}
+        controller={CONTROLLER_OPTIONS}
+        viewState={viewState}
+        onViewStateChange={handleViewStateChange}
+        layers={getLayers()}
+        ContextProvider={MapContext.Provider}
+        children={({ width, height, viewState }: any) => (
+          mapboxAccessToken &&
+          <>
+            <StaticMap
+              mapboxApiAccessToken={mapboxAccessToken}
+              mapStyle={mapboxMapStyle}
+              width={width} height={height} viewState={viewState}
+            />
+          </>
+        )}
+      />
+      {flows &&
+      <>
+        {searchBoxLocations &&
+          <Box top={10} right={10} darkMode={darkMode}>
+            <LocationsSearchBox
+              locations={searchBoxLocations}
+              selectedLocations={state.selectedLocations}
+              onSelectionChanged={handleChangeSelectLocations}
+            />
+          </Box>
+        }
+        <Box bottom={28} right={0} darkMode={darkMode}>
           <Collapsible
             darkMode={darkMode}
-            width={300}
-            direction={Direction.LEFT}
+            width={160}
+            direction={Direction.RIGHT}
           >
-            <Column spacing={10} padding="12px 20px">
-              {title &&
-              <div>
-                <Title>{title}</Title>
-                <Description>{description}</Description>
-              </div>
-              }
-              {(
-                authorUrl ?
-                  <div>Created by: <Away href={authorUrl}>{authorName || 'Author'}</Away></div>
-                : authorName ? <div>Created by: {authorName}</div> : null
-              )}
-              {sourceName && sourceUrl &&
-              <div>
-                {'Original data source: '}
-                <>
-                  <Away href={sourceUrl}>{sourceName}</Away>
-                </>
-              </div>}
-              <div>
-                {'Data behind this map is in '}
-                <Away href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
-                >this spreadsheet</Away>. You can <Link to="/">publish your own</Link> too.
-              </div>
+            <Column spacing={10} padding={12}>
+              <LegendTitle>Location totals</LegendTitle>
+              <LocationTotalsLegend
+                diff={diffMode}
+                colors={getFlowMapColors(state, props)}
+              />
             </Column>
           </Collapsible>
-        </TitleBox>
-        }
-        {tooltip && <Tooltip {...tooltip} />}
-        {(flowsFetch.pending || flowsFetch.refreshing) &&
-          <LoadingSpinner/>
-        }
-      </Outer>
-    )
-  }
+        </Box>
+      </>}
+      <Box top={50} right={10} darkMode={darkMode}>
+        <ButtonGroup
+          vertical={true}
+        >
+          <NoOutlineButton
+            icon={IconNames.PLUS}
+            onClick={handleZoomIn}
+          />
+          <NoOutlineButton
+            icon={IconNames.MINUS}
+            onClick={handleZoomOut}
+          />
+        </ButtonGroup>
+      </Box>
+      <Box bottom={40} left={10} darkMode={darkMode}>
+        <Popover
+          hoverOpenDelay={0}
+          hoverCloseDelay={0}
+          content={
+            <SettingsOuter>
+              <Column spacing={10} padding="12px 20px">
+                <LegendTitle>Settings</LegendTitle>
+                <Row spacing={5}>
+                  <div>Color scheme</div>
+                  <HTMLSelect
+                    style={{ fontSize: 12 }}
+                    value={state.colorSchemeKey}
+                    onChange={handleChangeColorScheme}
+                  >
+                    <option>Default</option>
+                    {Object.keys(flowColorSchemes).sort().map(scheme => (
+                      <option key={scheme}>
+                        {scheme}
+                      </option>
+                    ))}
+                  </HTMLSelect>
+                </Row>
+                <Row spacing={15}>
+                  <div style={{ whiteSpace: 'nowrap' }}>Fade</div>
+                  <Slider
+                    value={state.fadeAmount}
+                    min={0}
+                    max={100}
+                    stepSize={1}
+                    labelRenderer={false}
+                    showTrackFill={false}
+                    onChange={handleChangeFadeAmount}
+                    />
+                </Row>
+                <Row spacing={20}>
+                  <StyledSwitch
+                    checked={darkMode}
+                    label="Dark mode"
+                    onChange={handleToggleDarkMode}
+                  />
+                </Row>
+                <Row spacing={10}>
+                  <StyledSwitch
+                    checked={state.clusteringEnabled}
+                    label="Cluster on zoom"
+                    onChange={handleToggleClustering}
+                  />
+                </Row>
+                <Row spacing={20}>
+                  <StyledSwitch
+                    checked={state.animationEnabled}
+                    label="Animate flows"
+                    onChange={handleToggleAnimation}
+                  />
+                </Row>
+              </Column>
+            </SettingsOuter>
+          }
+        >
+          <NoOutlineButton
+            icon={IconNames.COG}
+          />
+        </Popover>
+      </Box>}
+
+      {spreadSheetKey &&
+      <TitleBox top={60} left={0} darkMode={darkMode}>
+        <Collapsible
+          darkMode={darkMode}
+          width={300}
+          direction={Direction.LEFT}
+        >
+          <Column spacing={10} padding="12px 20px">
+            {title &&
+            <div>
+              <Title>{title}</Title>
+              <Description>{description}</Description>
+            </div>
+            }
+            {(
+              authorUrl ?
+                <div>Created by: <Away href={authorUrl}>{authorName || 'Author'}</Away></div>
+              : authorName ? <div>Created by: {authorName}</div> : null
+            )}
+            {sourceName && sourceUrl &&
+            <div>
+              {'Original data source: '}
+              <>
+                <Away href={sourceUrl}>{sourceName}</Away>
+              </>
+            </div>}
+            <div>
+              {'Data behind this map is in '}
+              <Away href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}
+              >this spreadsheet</Away>. You can <Link to="/">publish your own</Link> too.
+            </div>
+          </Column>
+        </Collapsible>
+      </TitleBox>
+      }
+      {tooltip && <Tooltip {...tooltip} />}
+      {(flowsFetch.pending || flowsFetch.refreshing) &&
+        <LoadingSpinner/>
+      }
+    </Outer>
+  )
 }
+
+
 
 export default FlowMap
