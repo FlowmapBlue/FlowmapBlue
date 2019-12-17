@@ -29,9 +29,6 @@ export interface State {
   tooltip?: TooltipProps
   highlight?: Highlight
   selectedLocations: LocationSelection[] | undefined,
-  error?: string
-  maxZoom: number | undefined
-  minZoom: number | undefined
   animationEnabled: boolean
   clusteringEnabled: boolean
   darkMode: boolean
@@ -103,7 +100,13 @@ export function reducer(state: State, action: Action) {
       const { viewState, lastLocations } = action
       return {
         ...state,
-        viewState: viewState,
+        viewState: {
+          ...viewState,
+          zoom: Math.min(
+            MAX_ZOOM_LEVEL,
+            Math.max(MIN_ZOOM_LEVEL, viewState.zoom),
+          )
+        },
         ...(lastLocations !== undefined && {
           lastLocations: lastLocations,
         }),
@@ -112,13 +115,13 @@ export function reducer(state: State, action: Action) {
       }
     }
     case ActionType.ZOOM_IN: {
-      const { viewState, maxZoom } = state
+      const { viewState } = state
       return {
         ...state,
         viewState: {
           ...viewState,
           zoom: Math.min(
-            maxZoom != null ? maxZoom : MAX_ZOOM_LEVEL,
+            MAX_ZOOM_LEVEL,
             viewState.zoom * 1.1
           ),
         },
@@ -127,13 +130,13 @@ export function reducer(state: State, action: Action) {
       }
     }
     case ActionType.ZOOM_OUT: {
-      const { viewState, minZoom } = state
+      const { viewState } = state
       return {
         ...state,
         viewState: {
           ...viewState,
           zoom: Math.max(
-            minZoom != null ? minZoom : MIN_ZOOM_LEVEL,
+            MIN_ZOOM_LEVEL,
             viewState.zoom / 1.1
           ),
         },

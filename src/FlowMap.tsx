@@ -120,9 +120,6 @@ const FlowMap: React.FC<Props> = (props) => {
       viewState: initialViewState,
       lastLocations: undefined,
       selectedLocations: undefined,
-      error: undefined,
-      maxZoom: undefined,
-      minZoom: undefined,
       animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
       clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
       darkMode: parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
@@ -135,7 +132,6 @@ const FlowMap: React.FC<Props> = (props) => {
   const {
     viewState,
     tooltip,
-    error,
     animationEnabled,
   } = state
   const locations = locationsFetch.value
@@ -296,10 +292,6 @@ const FlowMap: React.FC<Props> = (props) => {
     })
   }
 
-
-  if (error)  {
-    return <Message>Oops… There is a problem. <br/>{error}</Message>
-  }
   if (locationsFetch.pending || locationsFetch.refreshing) {
     return <LoadingSpinner />
   }
@@ -530,16 +522,9 @@ const FlowMap: React.FC<Props> = (props) => {
 
 
   const handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
-    const { maxZoom, minZoom } = state
-    let zoom = viewState.zoom
-    if (maxZoom && zoom > maxZoom) return
-    if (minZoom && zoom < minZoom) return
     dispatch({
       type: ActionType.SET_VIEW_STATE,
-      viewState: {
-        ...viewState,
-        zoom,
-      },
+      viewState,
     })
   }
 
