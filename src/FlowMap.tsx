@@ -69,21 +69,6 @@ export type Props = {
 }
 
 
-const Outer: React.FC<
-  {
-    darkMode: boolean,
-    ref: React.Ref<HTMLDivElement>,
-  }> = (props) =>
-  <NoScrollContainer
-    ref={props.ref}
-    className={props.darkMode ? Classes.DARK : undefined}
-    style={{
-      background: props.darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5
-    }}
-  >
-    {props.children}
-  </NoScrollContainer>
-
 const SettingsOuter = styled.div`
   font-size: 12px;
 `
@@ -128,6 +113,9 @@ const FlowMap: React.FC<Props> = (props) => {
     }),
     [config]
   )
+
+  const outerRef = useRef<HTMLDivElement>(null)
+
   const [state, dispatch] = useReducer(reducer, initialState)
   const {
     viewState,
@@ -357,8 +345,6 @@ const FlowMap: React.FC<Props> = (props) => {
 
     return undefined
   }
-
-  const outerRef = React.createRef<HTMLDivElement>()
 
   const getContainerClientRect = () => {
     const container = outerRef.current
@@ -647,9 +633,12 @@ const FlowMap: React.FC<Props> = (props) => {
 
 
   return (
-    <Outer
+    <NoScrollContainer
       ref={outerRef}
-      darkMode={darkMode}
+      className={darkMode ? Classes.DARK : undefined}
+      style={{
+        background: darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5
+      }}
     >
       <DeckGL
         style={{ mixBlendMode: darkMode ? 'screen' : 'multiply' }}
@@ -815,7 +804,7 @@ const FlowMap: React.FC<Props> = (props) => {
       {(flowsFetch.pending || flowsFetch.refreshing) &&
         <LoadingSpinner/>
       }
-    </Outer>
+    </NoScrollContainer>
   )
 }
 
