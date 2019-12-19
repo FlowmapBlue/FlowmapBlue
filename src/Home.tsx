@@ -360,6 +360,7 @@ const Home = () =>
           <Away href="https://github.com/teralytics/flowmap.gl">flowmap.gl</Away>,{` `}
           <Away href="http://deck.gl">deck.gl</Away>,{` `}
           <Away href="https://github.com/mapbox/mapbox-gl-js">mapbox</Away>,{` `}
+          <Away href="https://blueprintjs.com/">blueprint</Away>,
           <Away href="https://d3js.org/">d3</Away>.
         </p>
         <Support>
