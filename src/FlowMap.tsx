@@ -32,7 +32,6 @@ import { PromiseState } from 'react-refetch';
 import NoScrollContainer from './NoScrollContainer';
 import styled from '@emotion/styled';
 import { IconNames } from '@blueprintjs/icons';
-import debounce from 'lodash.debounce';
 import LocationsSearchBox from './LocationSearchBox';
 import Away from './Away';
 import { parseBoolConfigProp, parseNumberConfigProp } from './config';
@@ -52,6 +51,7 @@ import {
   getMapboxMapStyle, getUnknownLocations
 } from './FlowMap.selectors';
 import { AppToaster } from './AppToaster';
+import useDebounced from './hooks';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -280,17 +280,160 @@ const FlowMap: React.FC<Props> = (props) => {
     })
   }
 
+
+  const getContainerClientRect = () => {
+    const container = outerRef.current
+    if (!container) return undefined
+    return container.getBoundingClientRect()
+  }
+
+  const getMercator = () => {
+    const containerBounds = getContainerClientRect()
+    if (!containerBounds) return undefined
+    const { width, height } = containerBounds
+    return new WebMercatorViewport({
+      ...state.viewState,
+      width, height,
+    })
+  }
+
+  const showTooltip = (bounds: TargetBounds, content: React.ReactNode) => {
+    const containerBounds = getContainerClientRect()
+    if (!containerBounds) return
+    const { top, left } = containerBounds
+    dispatch({
+      type: ActionType.SET_TOOLTIP,
+      tooltip: {
+        target: {
+          ...bounds,
+          left: left + bounds.left,
+          top: top + bounds.top,
+        },
+        placement: 'top',
+        content,
+      }
+    })
+  }
+
+  const highlight = (highlight: Highlight | undefined) => {
+    dispatch({ type: ActionType.SET_HIGHLIGHT, highlight })
+  }
+  const [showTooltipDebounced, cancelShowTooltipDebounced] = useDebounced(showTooltip, 500)
+  const [highlightDebounced, cancelHighlightDebounced] = useDebounced(highlight, 500)
+
+  const hideTooltip = () => {
+    dispatch({
+      type: ActionType.SET_TOOLTIP,
+      tooltip: undefined
+    })
+    cancelShowTooltipDebounced()
+  }
+
+  const showFlowTooltip = (pos: [number, number], info: FlowPickingInfo) => {
+    const [x, y] = pos
+    const r = 5;
+    const bounds = {
+      left: x - r,
+      top: y - r,
+      width: r * 2,
+      height: r * 2,
+    };
+    const content = <FlowTooltipContent
+      flow={info.object}
+      origin={info.origin}
+      dest={info.dest}
+    />;
+    if (state.tooltip) {
+      showTooltip(bounds, content)
+      cancelShowTooltipDebounced()
+    } else {
+      showTooltipDebounced(bounds, content)
+    }
+  }
+
+  const showLocationTooltip = (info: LocationPickingInfo) => {
+    const { object: location, circleRadius } = info
+    const mercator = getMercator()
+    if (!mercator) return
+    const [x, y] = mercator.project(getLocationCentroid(location))
+    const r = circleRadius + 5
+    const { selectedLocations } = state;
+    const bounds = {
+      left: x - r,
+      top: y - r,
+      width: r * 2,
+      height: r * 2,
+    };
+    const content = <LocationTooltipContent
+      locationInfo={info}
+      isSelectionEmpty={!selectedLocations}
+      isSelected={
+        selectedLocations && selectedLocations.find(s => s.id === location.id) ? true : false
+      }
+    />;
+    if (state.tooltip) {
+      showTooltip(bounds, content)
+      cancelShowTooltipDebounced()
+    } else {
+      showTooltipDebounced(bounds, content)
+    }
+  }
+
+  const handleHover = (info: FlowLayerPickingInfo) => {
+    const { type, object, x, y } = info
+    switch (type) {
+      case PickingType.FLOW: {
+        if (object) {
+          highlight({
+            type: HighlightType.FLOW,
+            flow: object,
+          })
+          cancelHighlightDebounced()
+          showFlowTooltip(
+            [x, y],
+            info as FlowPickingInfo
+          )
+        } else {
+          highlight(undefined);
+          cancelHighlightDebounced()
+          hideTooltip()
+        }
+        break
+      }
+      case PickingType.LOCATION: {
+        if (object) {
+          highlightDebounced({
+            type: HighlightType.LOCATION,
+            locationId: getLocationId!(object),
+          })
+          showLocationTooltip(info as LocationPickingInfo)
+        } else {
+          highlight(undefined);
+          cancelHighlightDebounced()
+          hideTooltip()
+        }
+        break
+      }
+      default: {
+        highlight(undefined)
+        cancelHighlightDebounced()
+        hideTooltip()
+      }
+    }
+  };
+
+
   if (locationsFetch.pending || locationsFetch.refreshing) {
     return <LoadingSpinner />
   }
   if (locationsFetch.rejected || flowsFetch.rejected) {
     return <Message>
       <p>
-      Oops… Couldn't fetch data from{` `}
-      <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.{` `}
+        Oops… Couldn't fetch data from{` `}
+        <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.{` `}
       </p>
       <p>
-      If you are the owner of this spreadsheet, make sure you have shared it by going to "File" / "Share with others", clicking "Advanced", and then choosing "Anyone with the link can view".
+        If you are the owner of this spreadsheet, make sure you have shared it by going to "File" / "Share with others", clicking "Advanced", and then choosing "Anyone with the link can view".
       </p>
     </Message>;
   }
@@ -306,7 +449,7 @@ const FlowMap: React.FC<Props> = (props) => {
   const darkMode = getDarkMode(state, props)
   const mapboxMapStyle = getMapboxMapStyle(state, props)
 
-  function getHighlightForZoom() {
+  const getHighlightForZoom = () => {
     const { highlight, clusteringEnabled } = state
     if (!highlight || !clusteringEnabled) {
       return highlight
@@ -345,140 +488,6 @@ const FlowMap: React.FC<Props> = (props) => {
 
     return undefined
   }
-
-  const getContainerClientRect = () => {
-    const container = outerRef.current
-    if (!container) return undefined
-    return container.getBoundingClientRect()
-  }
-
-  const getMercator = () => {
-    const containerBounds = getContainerClientRect()
-    if (!containerBounds) return undefined
-    const { width, height } = containerBounds
-    return new WebMercatorViewport({
-      ...state.viewState,
-      width, height,
-    })
-  }
-
-  const highlight = (highlight: Highlight | undefined) => {
-    dispatch({ type: ActionType.SET_HIGHLIGHT, highlight })
-    highlightDebounced.cancel()
-  }
-  const highlightDebounced = debounce(highlight, 200)
-
-  const hideTooltip = () => {
-    dispatch({
-      type: ActionType.SET_TOOLTIP,
-      tooltip: undefined
-    })
-    showTooltipDebounced.cancel()
-  }
-
-  const showFlowTooltip = (pos: [number, number], info: FlowPickingInfo) => {
-    const [x, y] = pos
-    const r = 5;
-    const show = state.tooltip ? showTooltip : showTooltipDebounced;
-    show(
-      {
-        left: x - r,
-        top: y - r,
-        width: r * 2,
-        height: r * 2,
-      },
-      <FlowTooltipContent
-        flow={info.object}
-        origin={info.origin}
-        dest={info.dest}
-      />
-    )
-  }
-
-  const showLocationTooltip = (info: LocationPickingInfo) => {
-    const { object: location, circleRadius } = info
-    const mercator = getMercator()
-    if (!mercator) return
-    const [x, y] = mercator.project(getLocationCentroid(location))
-    const r = circleRadius + 5
-    const { selectedLocations } = state;
-    const show = state.tooltip ? showTooltip : showTooltipDebounced
-    show(
-      {
-        left: x - r,
-        top: y - r,
-        width: r * 2,
-        height: r * 2,
-      },
-      <LocationTooltipContent
-        locationInfo={info}
-        isSelectionEmpty={!selectedLocations}
-        isSelected={
-          selectedLocations && selectedLocations.find(s => s.id === location.id) ? true : false
-        }
-      />
-    )
-  }
-
-  const showTooltip = (bounds: TargetBounds, content: React.ReactNode) => {
-    const containerBounds = getContainerClientRect()
-    if (!containerBounds) return
-    const { top, left } = containerBounds
-    dispatch({
-      type: ActionType.SET_TOOLTIP,
-      tooltip: {
-        target: {
-          ...bounds,
-          left: left + bounds.left,
-          top: top + bounds.top,
-        },
-        placement: 'top',
-        content,
-      }
-    })
-    showTooltipDebounced.cancel()
-  }
-
-  const showTooltipDebounced = debounce(showTooltip, 200)
-
-  const handleHover = (info: FlowLayerPickingInfo) => {
-    const { type, object, x, y } = info
-    switch (type) {
-      case PickingType.FLOW: {
-        if (object) {
-          highlight({
-            type: HighlightType.FLOW,
-            flow: object,
-          })
-          showFlowTooltip(
-            [x, y],
-            info as FlowPickingInfo
-          )
-        } else {
-          highlight(undefined);
-          hideTooltip()
-        }
-        break
-      }
-      case PickingType.LOCATION: {
-        if (object) {
-          highlightDebounced({
-            type: HighlightType.LOCATION,
-            locationId: getLocationId!(object),
-          })
-          showLocationTooltip(info as LocationPickingInfo)
-        } else {
-          highlight(undefined);
-          hideTooltip()
-        }
-        break
-      }
-      default: {
-        highlight(undefined)
-        hideTooltip()
-      }
-    }
-  };
 
   const handleClick = (info: FlowLayerPickingInfo, event: { srcEvent: MouseEvent }) => {
     switch (info.type) {
@@ -554,7 +563,7 @@ const FlowMap: React.FC<Props> = (props) => {
   }
 
 
-  function makeFlowMapLayer(id: string, locations: (Location | Cluster.ClusterNode)[], flows: Flow[], visible: boolean) {
+  const makeFlowMapLayer = (id: string, locations: (Location | Cluster.ClusterNode)[], flows: Flow[], visible: boolean) => {
     const { animationEnabled } = state
     const highlight = getHighlightForZoom()
 
@@ -583,7 +592,7 @@ const FlowMap: React.FC<Props> = (props) => {
     } as any)
   }
 
-  function getLayers() {
+  const getLayers = () => {
     const {
       clusteringEnabled,
       animationEnabled,
@@ -604,7 +613,7 @@ const FlowMap: React.FC<Props> = (props) => {
       const flows = getAggregatedFlows(state, props)
       const clusterZoom = getClusterZoom(state, props)
       if (/*clusterZoom !== undefined && */ clusterIndex && flows) {
-      //   const flows = flows.get(clusterZoom)
+        //   const flows = flows.get(clusterZoom)
         if (flows) {
           layers.push(makeFlowMapLayer(
             id,
@@ -635,6 +644,7 @@ const FlowMap: React.FC<Props> = (props) => {
   return (
     <NoScrollContainer
       ref={outerRef}
+      onMouseLeave={hideTooltip}
       className={darkMode ? Classes.DARK : undefined}
       style={{
         background: darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5
@@ -661,13 +671,13 @@ const FlowMap: React.FC<Props> = (props) => {
       {flows &&
       <>
         {searchBoxLocations &&
-          <Box top={10} right={10} darkMode={darkMode}>
-            <LocationsSearchBox
-              locations={searchBoxLocations}
-              selectedLocations={state.selectedLocations}
-              onSelectionChanged={handleChangeSelectLocations}
-            />
-          </Box>
+        <Box top={10} right={10} darkMode={darkMode}>
+          <LocationsSearchBox
+            locations={searchBoxLocations}
+            selectedLocations={state.selectedLocations}
+            onSelectionChanged={handleChangeSelectLocations}
+          />
+        </Box>
         }
         <Box bottom={28} right={0} darkMode={darkMode}>
           <Collapsible
@@ -732,7 +742,7 @@ const FlowMap: React.FC<Props> = (props) => {
                     labelRenderer={false}
                     showTrackFill={false}
                     onChange={handleChangeFadeAmount}
-                    />
+                  />
                 </Row>
                 <Row spacing={20}>
                   <StyledSwitch
@@ -782,7 +792,7 @@ const FlowMap: React.FC<Props> = (props) => {
             {(
               authorUrl ?
                 <div>Created by: <Away href={authorUrl}>{authorName || 'Author'}</Away></div>
-              : authorName ? <div>Created by: {authorName}</div> : null
+                : authorName ? <div>Created by: {authorName}</div> : null
             )}
             {sourceName && sourceUrl &&
             <div>
@@ -802,7 +812,7 @@ const FlowMap: React.FC<Props> = (props) => {
       }
       {tooltip && <Tooltip {...tooltip} />}
       {(flowsFetch.pending || flowsFetch.refreshing) &&
-        <LoadingSpinner/>
+      <LoadingSpinner/>
       }
     </NoScrollContainer>
   )

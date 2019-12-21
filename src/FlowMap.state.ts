@@ -94,7 +94,7 @@ export type Action = {
 }
 
 
-export function reducer(state: State, action: Action) {
+function mainReducer(state: State, action: Action) {
   switch (action.type) {
     case ActionType.SET_VIEW_STATE: {
       const { viewState, lastLocations } = action
@@ -237,4 +237,10 @@ export function reducer(state: State, action: Action) {
     }
   }
   return state;
+}
+
+export const reducer = (state: State, action: Action) => {
+  const nextState = mainReducer(state, action);
+  //console.log(type, rest);
+  return nextState;
 }
