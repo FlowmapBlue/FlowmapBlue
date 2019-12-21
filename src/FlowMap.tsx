@@ -281,21 +281,21 @@ const FlowMap: React.FC<Props> = (props) => {
   }
 
 
-  const getContainerClientRect = () => {
+  const getContainerClientRect = useCallback(() => {
     const container = outerRef.current
     if (!container) return undefined
     return container.getBoundingClientRect()
-  }
+  }, [outerRef])
 
-  const getMercator = () => {
+  const getMercator = useCallback(() => {
     const containerBounds = getContainerClientRect()
     if (!containerBounds) return undefined
     const { width, height } = containerBounds
     return new WebMercatorViewport({
-      ...state.viewState,
+      ...viewState,
       width, height,
     })
-  }
+  }, [viewState, getContainerClientRect])
 
   const showTooltip = (bounds: TargetBounds, content: React.ReactNode) => {
     const containerBounds = getContainerClientRect()
