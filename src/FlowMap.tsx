@@ -232,6 +232,8 @@ const FlowMap: React.FC<Props> = (props) => {
     }
   }, [unknownLocations, showErrorToast, allFlows, flows])
 
+  const locationsHavingFlows = getLocationsHavingFlows(state, props)
+
   useEffect(() => {
     if (locations != null) {
       let nextViewState
@@ -246,13 +248,13 @@ const FlowMap: React.FC<Props> = (props) => {
 
       if (!nextViewState) {
         nextViewState = getViewStateForLocations(
-          locations,
+          locationsHavingFlows ?? locations,
           getLocationCentroid,
           [
             window.innerWidth,
             window.innerHeight,
           ],
-          { pad: 0.05 }
+          { pad: 0.1 }
         )
       }
 
@@ -278,7 +280,7 @@ const FlowMap: React.FC<Props> = (props) => {
         }
       })
     }
-  }, [locations])
+  }, [locations, locationsHavingFlows])
 
 
   const getContainerClientRect = useCallback(() => {
@@ -629,12 +631,10 @@ const FlowMap: React.FC<Props> = (props) => {
         }
       }
     } else {
-      const locations = getLocationsHavingFlows(state, props);
-      const flows = getFlowsForKnownLocations(state, props);
-      if (locations && flows) {
+      if (locationsHavingFlows && flows) {
         layers.push(makeFlowMapLayer(
           id,
-          locations,
+          locationsHavingFlows,
           flows,
           true,
         ))
