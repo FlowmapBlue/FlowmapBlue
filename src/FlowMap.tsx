@@ -103,7 +103,6 @@ const FlowMap: React.FC<Props> = (props) => {
   const initialState = useMemo<State>(
     () => ({
       viewState: initialViewState,
-      lastLocations: undefined,
       selectedLocations: undefined,
       animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
       clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
@@ -233,52 +232,53 @@ const FlowMap: React.FC<Props> = (props) => {
     }
   }, [unknownLocations, showErrorToast, allFlows, flows])
 
-  if (locations != null && locations !== state.lastLocations) {
-    let nextViewState
+  useEffect(() => {
+    if (locations != null) {
+      let nextViewState
 
-    const bbox = config[ConfigPropName.MAP_BBOX]
-    if (bbox) {
-      const bounds: number[] = bbox.split(',').map(d => +d)
-      if (bounds.length === 4) {
-        nextViewState = getInitialViewState(bounds as [number, number, number, number])
+      const bbox = config[ConfigPropName.MAP_BBOX]
+      if (bbox) {
+        const bounds: number[] = bbox.split(',').map(d => +d)
+        if (bounds.length === 4) {
+          nextViewState = getInitialViewState(bounds as [number, number, number, number])
+        }
       }
-    }
 
-    if (!nextViewState) {
-      nextViewState = getViewStateForLocations(
-        locations,
-        getLocationCentroid,
-        [
-          window.innerWidth,
-          window.innerHeight,
-        ],
-        { pad: 0.05 }
-      )
-    }
-
-    if (!nextViewState.zoom) {
-      nextViewState = {
-        zoom: 1,
-        latitude: 0,
-        longitude: 0,
+      if (!nextViewState) {
+        nextViewState = getViewStateForLocations(
+          locations,
+          getLocationCentroid,
+          [
+            window.innerWidth,
+            window.innerHeight,
+          ],
+          { pad: 0.05 }
+        )
       }
-    }
 
-    dispatch({
-      type: ActionType.SET_VIEW_STATE,
-      lastLocations: locations,
-      viewState: {
-        ...nextViewState,
-        minPitch: 0,
-        maxPitch: 0,
-        bearing: 0,
-        pitch: 0,
-        // transitionDuration: 2000,
-        // transitionInterpolator: new FlyToInterpolator(),
-        // transitionEasing: d3ease.easeCubic,
+      if (!nextViewState.zoom) {
+        nextViewState = {
+          zoom: 1,
+          latitude: 0,
+          longitude: 0,
+        }
       }
-    })
-  }
+
+      dispatch({
+        type: ActionType.SET_VIEW_STATE,
+        viewState: {
+          ...nextViewState,
+          minPitch: 0,
+          maxPitch: 0,
+          bearing: 0,
+          pitch: 0,
+          // transitionDuration: 2000,
+          // transitionInterpolator: new FlyToInterpolator(),
+          // transitionEasing: d3ease.easeCubic,
+        }
+      })
+    }
+  }, [locations])
 
 
   const getContainerClientRect = useCallback(() => {

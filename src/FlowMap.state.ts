@@ -25,7 +25,6 @@ export type Highlight = LocationHighlight | FlowHighlight;
 
 export interface State {
   viewState: ViewState | ViewportProps
-  lastLocations: Location[] | undefined
   tooltip?: TooltipProps
   highlight?: Highlight
   selectedLocations: LocationSelection[] | undefined,
@@ -56,7 +55,6 @@ export enum ActionType {
 export type Action = {
   type: ActionType.SET_VIEW_STATE
   viewState: ViewState | ViewportProps
-  lastLocations?: Location[]
 } | {
   type: ActionType.ZOOM_IN
 } | {
@@ -97,7 +95,7 @@ export type Action = {
 function mainReducer(state: State, action: Action) {
   switch (action.type) {
     case ActionType.SET_VIEW_STATE: {
-      const { viewState, lastLocations } = action
+      const { viewState } = action
       return {
         ...state,
         viewState: {
@@ -107,9 +105,6 @@ function mainReducer(state: State, action: Action) {
             Math.max(MIN_ZOOM_LEVEL, viewState.zoom),
           )
         },
-        ...(lastLocations !== undefined && {
-          lastLocations: lastLocations,
-        }),
         tooltip: undefined,
         highlight: undefined,
       }
