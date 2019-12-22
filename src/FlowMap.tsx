@@ -587,8 +587,12 @@ const FlowMap: React.FC<Props> = (props) => {
       highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
       highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
       onHover: handleHover,
-      onClick: handleClick as any,
+      onClick: handleClick,
       visible,
+      updateTriggers: {
+        onHover: handleHover,  // to avoid stale closure in the handler
+        onClick: handleClick,
+      }
     } as any)
   }
 
