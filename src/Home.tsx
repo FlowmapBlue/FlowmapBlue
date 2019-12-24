@@ -126,10 +126,10 @@ const ExampleImage = styled.div`
     width: 100%;
     position: absolute;
     top: 0;
-    transform: scale(1.2);
+    transform: scale(1);
     transition: transform 0.5s;
     &:hover {
-      transform: scale(2);
+      transform: scale(1.5);
     }
   }
   &:before {
