@@ -315,7 +315,9 @@ export function stateToQueryString(state: State) {
   parts.push(`a=${state.animationEnabled ? 1 : 0}`)
   parts.push(`d=${state.darkMode ? 1 : 0}`)
   parts.push(`c=${state.clusteringEnabled ? 1 : 0}`)
-  parts.push(`col=${state.colorSchemeKey}`)
+  if (state.colorSchemeKey != null) {
+    parts.push(`col=${state.colorSchemeKey}`)
+  }
   parts.push(`f=${state.fadeAmount}`)
   if (selectedLocations) {
     parts.push(
