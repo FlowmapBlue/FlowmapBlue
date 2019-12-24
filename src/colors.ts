@@ -28,7 +28,7 @@ import { hcl } from 'd3-color';
 const asScheme = (scheme: ReadonlyArray<ReadonlyArray<string>>) =>
   scheme[scheme.length - 1] as string[]
 
-export const flowColorSchemes: { [key: string]: string[] } = {
+export const COLOR_SCHEMES: { [key: string]: string[] } = {
   GnBu: asScheme(schemeGnBu),
   PuRd: asScheme(schemePuRd),
   Blues: asScheme(schemeBlues),
@@ -111,7 +111,7 @@ export default function getColors(
     return diffColors
   }
 
-  let scheme = (schemeKey && flowColorSchemes[schemeKey]) || DEFAULT_COLOR_SCHEME
+  let scheme = (schemeKey && COLOR_SCHEMES[schemeKey]) || DEFAULT_COLOR_SCHEME
 
   if (darkMode) {
     scheme = scheme.slice().reverse()

@@ -102,7 +102,6 @@ const ODMatrixConverter = () => {
             growVertically={false}
             large={true}
             intent={Intent.PRIMARY}
-            onChange={console.log}
             value={output}
           />
         </ConverterContainer>

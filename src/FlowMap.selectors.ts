@@ -1,42 +1,26 @@
 import { createSelector, ParametricSelector } from 'reselect';
 import { MAX_ZOOM_LEVEL, State } from './FlowMap.state';
-import { viewport } from '@mapbox/geo-viewport';
 import {
   ConfigPropName,
   Flow,
   getFlowDestId,
   getFlowMagnitude,
-  getFlowOriginId, getLocationCentroid,
+  getFlowOriginId,
+  getLocationCentroid,
   getLocationId,
   Location
 } from './types';
 import * as Cluster from '@flowmap.gl/cluster';
+import { isCluster } from '@flowmap.gl/cluster';
 import getColors from './colors';
 import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp } from './config';
 import { nest } from 'd3-collection';
-import { isCluster } from '@flowmap.gl/cluster';
 import { Props } from './FlowMap';
 
 
 export type Selector<T> = ParametricSelector<State, Props, T>
 
 
-
-export const getInitialViewState = (bbox: [number, number, number, number]) => {
-  const { center: [longitude, latitude], zoom } =
-    viewport(
-      bbox,
-      [window.innerWidth, window.innerHeight],
-      undefined, undefined, 512, true
-    )
-  return {
-    longitude,
-    latitude,
-    zoom,
-    bearing: 0,
-    pitch: 0,
-  }
-}
 
 
 export const getFlows = (state: State, props: Props) => props.flowsFetch.value
@@ -45,6 +29,7 @@ export const getSelectedLocations = (state: State, props: Props) => state.select
 export const getClusteringEnabled = (state: State, props: Props) => state.clusteringEnabled
 export const getZoom = (state: State, props: Props) => state.viewState.zoom
 export const getConfig = (state: State, props: Props) => props.config
+
 
 export const getLocationIds: Selector<Set<string> | undefined> = createSelector(
   getLocations,

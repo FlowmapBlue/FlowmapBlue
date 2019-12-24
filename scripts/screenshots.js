@@ -34,7 +34,9 @@ async function mkdirp(dirPath) {
   const height = Math.floor(SIZE/aspectRatio);
   await page.setViewport({ width: width + PAD * 2, height, });
   for (const key of exampleKeys) {
-    const url = `${APP_URL}/${key}`;
+    const ex = examples.find(ex => ex.key === key)
+    const query = ex ? ex.query : undefined
+    const url = `${APP_URL}/${key}${query ? `?${query}` : ''}`;
     process.stdout.write('Making screenshot of '+ url + '\n');
     await page.goto(url, { waitUntil: 'networkidle0', timeout });
     await page.waitForSelector('.bp3-multi-select', { timeout });

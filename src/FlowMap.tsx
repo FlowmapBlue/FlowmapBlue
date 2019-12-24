@@ -8,11 +8,11 @@ import { Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent, Popover, Slid
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import * as Cluster from '@flowmap.gl/cluster'
 import WebMercatorViewport from 'viewport-mercator-project'
-import { flowColorSchemes } from './colors'
+import { COLOR_SCHEMES } from './colors'
 import { Box, Column, Description, LegendTitle, Row, Title, TitleBox, ToastContent } from './Boxes'
 import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { TargetBounds } from './Tooltip';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
 import {
   Config,
@@ -34,8 +34,17 @@ import styled from '@emotion/styled';
 import { IconNames } from '@blueprintjs/icons';
 import LocationsSearchBox from './LocationSearchBox';
 import Away from './Away';
-import { parseBoolConfigProp, parseNumberConfigProp } from './config';
-import { ActionType, Highlight, HighlightType, MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL, reducer, State } from './FlowMap.state';
+import {
+  ActionType,
+  getInitialState,
+  Highlight,
+  HighlightType,
+  MAX_ZOOM_LEVEL,
+  MIN_ZOOM_LEVEL,
+  reducer,
+  State,
+  stateToQueryString
+} from './FlowMap.state';
 import {
   getAggregatedFlows,
   getClusterIndex,
@@ -44,8 +53,7 @@ import {
   getDiffMode,
   getExpandedSelection,
   getFlowMapColors, getFlows,
-  getFlowsForKnownLocations,
-  getInitialViewState, getInvalidLocationIds,
+  getFlowsForKnownLocations, getInvalidLocationIds,
   getLocationsForSearchBox,
   getLocationsHavingFlows,
   getMapboxMapStyle, getUnknownLocations
@@ -87,7 +95,6 @@ const ErrorsLocationsBlock = styled.div`
   padding: 10px;
 `
 
-const initialViewState = getInitialViewState([ -180, -70, 180, 70 ])
 const MAX_NUM_OF_IDS_IN_ERROR = 100
 
 
@@ -100,22 +107,25 @@ const FlowMap: React.FC<Props> = (props) => {
     flowsFetch,
   } = props
 
+  const history = useHistory()
   const initialState = useMemo<State>(
-    () => ({
-      viewState: initialViewState,
-      selectedLocations: undefined,
-      animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
-      clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
-      darkMode: parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
-      fadeAmount: parseNumberConfigProp(config[ConfigPropName.FADE_AMOUNT], 45),
-      colorSchemeKey: config[ConfigPropName.COLORS_SCHEME],
-    }),
-    [config]
+    () => getInitialState(config, history.location.search),
+    [config, history.location.search]
   )
 
   const outerRef = useRef<HTMLDivElement>(null)
 
   const [state, dispatch] = useReducer(reducer, initialState)
+  const [updateQuerySearch] = useDebounced(() => {
+    const locationSearch = `?${stateToQueryString(state)}`
+    if (locationSearch !== history.location.search) {
+      history.replace({
+        search: locationSearch,
+      })
+    }
+  }, 500, [state, history.location.search])
+  useEffect(updateQuerySearch, [history, state])
+
   const {
     viewState,
     tooltip,
@@ -233,33 +243,26 @@ const FlowMap: React.FC<Props> = (props) => {
   }, [unknownLocations, showErrorToast, allFlows, flows])
 
   const locationsHavingFlows = getLocationsHavingFlows(state, props)
+  const { adjustViewportToLocations } = state
 
   useEffect(() => {
+    if (!adjustViewportToLocations) {
+      return;
+    }
+
     if (locations != null) {
-      let nextViewState
+      let draft = getViewStateForLocations(
+        locationsHavingFlows ?? locations,
+        getLocationCentroid,
+        [
+          window.innerWidth,
+          window.innerHeight,
+        ],
+        { pad: 0.1 }
+      )
 
-      const bbox = config[ConfigPropName.MAP_BBOX]
-      if (bbox) {
-        const bounds: number[] = bbox.split(',').map(d => +d)
-        if (bounds.length === 4) {
-          nextViewState = getInitialViewState(bounds as [number, number, number, number])
-        }
-      }
-
-      if (!nextViewState) {
-        nextViewState = getViewStateForLocations(
-          locationsHavingFlows ?? locations,
-          getLocationCentroid,
-          [
-            window.innerWidth,
-            window.innerHeight,
-          ],
-          { pad: 0.1 }
-        )
-      }
-
-      if (!nextViewState.zoom) {
-        nextViewState = {
+      if (!draft.zoom) {
+        draft = {
           zoom: 1,
           latitude: 0,
           longitude: 0,
@@ -269,7 +272,7 @@ const FlowMap: React.FC<Props> = (props) => {
       dispatch({
         type: ActionType.SET_VIEW_STATE,
         viewState: {
-          ...nextViewState,
+          ...draft,
           minPitch: 0,
           maxPitch: 0,
           bearing: 0,
@@ -280,7 +283,7 @@ const FlowMap: React.FC<Props> = (props) => {
         }
       })
     }
-  }, [locations, locationsHavingFlows])
+  }, [locations, locationsHavingFlows, adjustViewportToLocations])
 
 
   const getContainerClientRect = useCallback(() => {
@@ -729,7 +732,7 @@ const FlowMap: React.FC<Props> = (props) => {
                     onChange={handleChangeColorScheme}
                   >
                     <option>Default</option>
-                    {Object.keys(flowColorSchemes).sort().map(scheme => (
+                    {Object.keys(COLOR_SCHEMES).sort().map(scheme => (
                       <option key={scheme}>
                         {scheme}
                       </option>
