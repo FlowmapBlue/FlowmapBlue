@@ -120,6 +120,7 @@ const FlowMap: React.FC<Props> = (props) => {
     const locationSearch = `?${stateToQueryString(state)}`
     if (locationSearch !== history.location.search) {
       history.replace({
+        ...history.location,  // keep location state for in-browser flowmap
         search: locationSearch,
       })
     }
