@@ -103,9 +103,9 @@ const InBrowserFlowMap = () => {
           <h1>In-browser flow map</h1>
           <section>
             <p>
-              Visualize OD-data as a flow map directly in your browser
+              With this tool you can visualize OD-data as a flow map directly in your browser
               without the need to upload it to Google Sheets.
-              Your data will remain in your browser and <i>will not be uploaded anywhere</i>.
+              The data will remain in your browser and <i>will not be uploaded anywhere</i>.
               Note that the visualization will be lost as soon as you close the browser window with it.
               There will be no URL to come back to or to share with other people.
             </p>

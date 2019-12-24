@@ -251,6 +251,8 @@ const Home = () =>
           </li>
           <SpreadsheetKeyExtractor/>
         </ListOfSteps>
+        If you are not comfortable uploading your data to Google Sheets,
+        consider using our <Link to="/in-browser">In-browser flow map</Link> tool.
 
       </section>
 
