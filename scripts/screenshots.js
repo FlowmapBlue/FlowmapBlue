@@ -6,7 +6,7 @@ const { examples, aspectRatio, screenshotSizes } = require('../src/examples');
 const OUTPUT_PATH = path.resolve(__dirname, '../public/screenshots/');
 const APP_URL = 'http://localhost:7000';
 
-const PAD = 500;
+const PAD = 600;
 const timeout = 3 * 60 * 1000;
 const SIZE = 1200;
 
