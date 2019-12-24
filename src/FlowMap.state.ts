@@ -6,6 +6,7 @@ import { viewport } from '@mapbox/geo-viewport';
 import { parseBoolConfigProp, parseNumberConfigProp } from './config';
 import { COLOR_SCHEMES } from './colors';
 import { csvFormatRows, csvParseRows } from 'd3-dsv';
+import { Reducer } from 'react';
 
 export const MIN_ZOOM_LEVEL = 1
 export const MAX_ZOOM_LEVEL = 20
@@ -35,6 +36,7 @@ export interface State {
   highlight?: Highlight
   selectedLocations: LocationSelection[] | undefined,
   animationEnabled: boolean
+  locationTotalsEnabled: boolean
   clusteringEnabled: boolean
   darkMode: boolean
   fadeAmount: number
@@ -52,6 +54,7 @@ export enum ActionType {
   SET_SELECTED_LOCATIONS = 'SET_SELECTED_LOCATIONS',
   SET_CLUSTERING_ENABLED = 'SET_CLUSTERING_ENABLED',
   SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED',
+  SET_LOCATION_TOTALS_ENABLED = 'SET_LOCATION_TOTALS_ENABLED',
   SET_DARK_MODE = 'SET_DARK_MODE',
   SET_FADE_AMOUNT = 'SET_FADE_AMOUNT',
   SET_COLOR_SCHEME = 'SET_COLOR_SCHEME',
@@ -85,6 +88,9 @@ export type Action = {
 } | {
   type: ActionType.SET_ANIMATION_ENABLED
   animationEnabled: boolean
+} | {
+  type: ActionType.SET_LOCATION_TOTALS_ENABLED
+  locationTotalsEnabled: boolean
 } | {
   type: ActionType.SET_DARK_MODE
   darkMode: boolean
@@ -214,6 +220,13 @@ function mainReducer(state: State, action: Action) {
         animationEnabled,
       }
     }
+    case ActionType.SET_LOCATION_TOTALS_ENABLED: {
+      const { locationTotalsEnabled } = action
+      return {
+        ...state,
+        locationTotalsEnabled,
+      }
+    }
     case ActionType.SET_DARK_MODE: {
       const { darkMode } = action
       return {
@@ -239,7 +252,7 @@ function mainReducer(state: State, action: Action) {
   return state;
 }
 
-export const reducer = (state: State, action: Action) => {
+export const reducer: Reducer<State, Action> = (state: State, action: Action) => {
   const nextState = mainReducer(state, action);
   //console.log(type, rest);
   return nextState;
@@ -291,6 +304,7 @@ export function applyStateFromQueryString(initialState: State, query: string) {
   draft.darkMode = asBoolean(params.d) ?? draft.darkMode
   draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled
+  draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled
   if (typeof params.col === 'string' &&
     Object.keys(COLOR_SCHEMES).includes(params.col))
   {
@@ -315,6 +329,7 @@ export function stateToQueryString(state: State) {
   parts.push(`a=${state.animationEnabled ? 1 : 0}`)
   parts.push(`d=${state.darkMode ? 1 : 0}`)
   parts.push(`c=${state.clusteringEnabled ? 1 : 0}`)
+  parts.push(`lt=${state.locationTotalsEnabled ? 1 : 0}`)
   if (state.colorSchemeKey != null) {
     parts.push(`col=${state.colorSchemeKey}`)
   }
@@ -352,6 +367,7 @@ export function getInitialState(config: Config, queryString: string) {
     viewState: DEFAULT_VIEW_STATE,
     adjustViewportToLocations: true,
     selectedLocations: undefined,
+    locationTotalsEnabled: true,
     animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
     clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
     darkMode: parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE] || 'true'),

@@ -188,6 +188,14 @@ const FlowMap: React.FC<Props> = (props) => {
     })
   }
 
+  const handleToggleLocationTotals = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked
+    dispatch({
+      type: ActionType.SET_LOCATION_TOTALS_ENABLED,
+      locationTotalsEnabled: value
+    })
+  }
+
   const showErrorToast = useCallback((errorText: ReactNode) => {
     if (config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
       AppToaster.show({
@@ -570,7 +578,7 @@ const FlowMap: React.FC<Props> = (props) => {
 
 
   const makeFlowMapLayer = (id: string, locations: (Location | Cluster.ClusterNode)[], flows: Flow[], visible: boolean) => {
-    const { animationEnabled } = state
+    const { locationTotalsEnabled, animationEnabled } = state
     const highlight = getHighlightForZoom()
 
     return new FlowMapLayer({
@@ -589,6 +597,7 @@ const FlowMap: React.FC<Props> = (props) => {
       getLocationId,
       varyFlowColorByMagnitude: true,
       showTotals: true,
+      maxLocationCircleSize: locationTotalsEnabled ? 17 : 0,
       selectedLocationIds: getExpandedSelection(state, props),
       highlightedLocationId: highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
       highlightedFlow: highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
@@ -606,6 +615,7 @@ const FlowMap: React.FC<Props> = (props) => {
     const {
       clusteringEnabled,
       animationEnabled,
+      locationTotalsEnabled,
       darkMode,
       colorSchemeKey,
       fadeAmount,
@@ -614,6 +624,7 @@ const FlowMap: React.FC<Props> = (props) => {
     const id = [
       'flow-map',
       animationEnabled ? 'animated' : 'arrows',
+      locationTotalsEnabled ? 'withTotals' : '',
       colorSchemeKey,
       darkMode ? 'dark' : 'light',
       fadeAmount,
@@ -687,6 +698,7 @@ const FlowMap: React.FC<Props> = (props) => {
           />
         </Box>
         }
+        {state.locationTotalsEnabled &&
         <Box bottom={28} right={0} darkMode={darkMode}>
           <Collapsible
             darkMode={darkMode}
@@ -702,6 +714,7 @@ const FlowMap: React.FC<Props> = (props) => {
             </Column>
           </Collapsible>
         </Box>
+        }
       </>}
       <Box top={50} right={10} darkMode={darkMode}>
         <ButtonGroup
@@ -764,6 +777,13 @@ const FlowMap: React.FC<Props> = (props) => {
                     checked={state.clusteringEnabled}
                     label="Cluster on zoom"
                     onChange={handleToggleClustering}
+                  />
+                </Row>
+                <Row spacing={20}>
+                  <StyledSwitch
+                    checked={state.locationTotalsEnabled}
+                    label="Location totals"
+                    onChange={handleToggleLocationTotals}
                   />
                 </Row>
                 <Row spacing={20}>
