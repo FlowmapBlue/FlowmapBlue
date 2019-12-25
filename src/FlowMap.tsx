@@ -595,7 +595,7 @@ const FlowMap: React.FC<Props> = props => {
       getLocationId,
       varyFlowColorByMagnitude: true,
       showTotals: true,
-      maxLocationCircleSize: locationTotalsEnabled ? 17 : 0,
+      maxLocationCircleSize: locationTotalsEnabled ? 15 : 0,
       selectedLocationIds: getExpandedSelection(state, props),
       highlightedLocationId:
         highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
