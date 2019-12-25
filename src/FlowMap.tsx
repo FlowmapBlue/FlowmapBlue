@@ -536,6 +536,16 @@ const FlowMap: React.FC<Props> = (props) => {
     dispatch({ type: ActionType.ZOOM_OUT })
   }
 
+  const handleFullScreen = () => {
+    const outer = outerRef.current
+    if (outer) {
+      if (outer.requestFullscreen) {
+        outer.requestFullscreen()
+      } else if ((outer as any).webkitRequestFullscreen) {
+        (outer as any).webkitRequestFullscreen()
+      }
+    }
+  }
 
   const makeFlowMapLayer = (id: string, locations: (Location | Cluster.ClusterNode)[], flows: Flow[], visible: boolean) => {
     const { locationTotalsEnabled, animationEnabled } = state
@@ -723,7 +733,13 @@ const FlowMap: React.FC<Props> = (props) => {
           dispatch={dispatch}
         />
       </Absolute>}}
-
+      {embed &&
+      <Absolute bottom={30} right={10}>
+        <NoOutlineButton
+          onClick={handleFullScreen}
+          icon={IconNames.FULLSCREEN}
+          />
+      </Absolute>}}
       {spreadSheetKey && !embed &&
       <TitleBox top={60} left={0} darkMode={darkMode}>
         <Collapsible
