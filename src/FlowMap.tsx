@@ -744,7 +744,7 @@ const FlowMap: React.FC<Props> = (props) => {
             </Column>
           </Row>
         </Absolute>
-        {state.locationTotalsEnabled &&
+        {state.locationTotalsEnabled && !embed &&
         <Box bottom={28} right={0} darkMode={darkMode}>
           <Collapsible
             darkMode={darkMode}
@@ -762,7 +762,7 @@ const FlowMap: React.FC<Props> = (props) => {
         </Box>
         }
       </>}
-      <Absolute bottom={40} left={10}>
+      {!embed && <Absolute bottom={40} left={10}>
         <Popover
           hoverOpenDelay={0}
           hoverCloseDelay={0}
@@ -834,7 +834,7 @@ const FlowMap: React.FC<Props> = (props) => {
             icon={IconNames.COG}
           />
         </Popover>
-      </Absolute>}
+      </Absolute>}}
 
       {spreadSheetKey && !embed &&
       <TitleBox top={60} left={0} darkMode={darkMode}>
