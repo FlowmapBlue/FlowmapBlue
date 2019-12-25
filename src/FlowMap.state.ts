@@ -8,8 +8,8 @@ import { COLOR_SCHEMES } from './colors';
 import { csvFormatRows, csvParseRows } from 'd3-dsv';
 import { Reducer } from 'react';
 
-export const MIN_ZOOM_LEVEL = 1
-export const MAX_ZOOM_LEVEL = 20
+export const MIN_ZOOM_LEVEL = 1;
+export const MAX_ZOOM_LEVEL = 20;
 
 export enum HighlightType {
   LOCATION = 'location',
@@ -28,19 +28,18 @@ export interface FlowHighlight {
 
 export type Highlight = LocationHighlight | FlowHighlight;
 
-
 export interface State {
-  viewState: ViewState | ViewportProps
-  adjustViewportToLocations: boolean
-  tooltip?: TooltipProps
-  highlight?: Highlight
-  selectedLocations: string[] | undefined,
-  animationEnabled: boolean
-  locationTotalsEnabled: boolean
-  clusteringEnabled: boolean
-  darkMode: boolean
-  fadeAmount: number
-  colorSchemeKey: string | undefined
+  viewState: ViewState | ViewportProps;
+  adjustViewportToLocations: boolean;
+  tooltip?: TooltipProps;
+  highlight?: Highlight;
+  selectedLocations: string[] | undefined;
+  animationEnabled: boolean;
+  locationTotalsEnabled: boolean;
+  clusteringEnabled: boolean;
+  darkMode: boolean;
+  fadeAmount: number;
+  colorSchemeKey: string | undefined;
 }
 
 export enum ActionType {
@@ -60,109 +59,113 @@ export enum ActionType {
   SET_COLOR_SCHEME = 'SET_COLOR_SCHEME',
 }
 
-export type Action = {
-  type: ActionType.SET_VIEW_STATE
-  viewState: ViewState | ViewportProps
-} | {
-  type: ActionType.ZOOM_IN
-} | {
-  type: ActionType.ZOOM_OUT
-} | {
-  type: ActionType.SET_HIGHLIGHT
-  highlight: Highlight | undefined
-} | {
-  type: ActionType.CLEAR_SELECTION
-} | {
-  type: ActionType.SELECT_LOCATION
-  locationId: string
-  incremental: boolean
-} | {
-  type: ActionType.SET_SELECTED_LOCATIONS
-  selectedLocations: string[] | undefined
-} | {
-  type: ActionType.SET_TOOLTIP
-  tooltip: TooltipProps | undefined
-} | {
-  type: ActionType.SET_CLUSTERING_ENABLED
-  clusteringEnabled: boolean
-} | {
-  type: ActionType.SET_ANIMATION_ENABLED
-  animationEnabled: boolean
-} | {
-  type: ActionType.SET_LOCATION_TOTALS_ENABLED
-  locationTotalsEnabled: boolean
-} | {
-  type: ActionType.SET_DARK_MODE
-  darkMode: boolean
-} | {
-  type: ActionType.SET_FADE_AMOUNT
-  fadeAmount: number
-} | {
-  type: ActionType.SET_COLOR_SCHEME
-  colorSchemeKey: string
-}
-
+export type Action =
+  | {
+      type: ActionType.SET_VIEW_STATE;
+      viewState: ViewState | ViewportProps;
+    }
+  | {
+      type: ActionType.ZOOM_IN;
+    }
+  | {
+      type: ActionType.ZOOM_OUT;
+    }
+  | {
+      type: ActionType.SET_HIGHLIGHT;
+      highlight: Highlight | undefined;
+    }
+  | {
+      type: ActionType.CLEAR_SELECTION;
+    }
+  | {
+      type: ActionType.SELECT_LOCATION;
+      locationId: string;
+      incremental: boolean;
+    }
+  | {
+      type: ActionType.SET_SELECTED_LOCATIONS;
+      selectedLocations: string[] | undefined;
+    }
+  | {
+      type: ActionType.SET_TOOLTIP;
+      tooltip: TooltipProps | undefined;
+    }
+  | {
+      type: ActionType.SET_CLUSTERING_ENABLED;
+      clusteringEnabled: boolean;
+    }
+  | {
+      type: ActionType.SET_ANIMATION_ENABLED;
+      animationEnabled: boolean;
+    }
+  | {
+      type: ActionType.SET_LOCATION_TOTALS_ENABLED;
+      locationTotalsEnabled: boolean;
+    }
+  | {
+      type: ActionType.SET_DARK_MODE;
+      darkMode: boolean;
+    }
+  | {
+      type: ActionType.SET_FADE_AMOUNT;
+      fadeAmount: number;
+    }
+  | {
+      type: ActionType.SET_COLOR_SCHEME;
+      colorSchemeKey: string;
+    };
 
 function mainReducer(state: State, action: Action) {
   switch (action.type) {
     case ActionType.SET_VIEW_STATE: {
-      const { viewState } = action
+      const { viewState } = action;
       return {
         ...state,
         viewState: {
           ...viewState,
-          zoom: Math.min(
-            MAX_ZOOM_LEVEL,
-            Math.max(MIN_ZOOM_LEVEL, viewState.zoom),
-          )
+          zoom: Math.min(MAX_ZOOM_LEVEL, Math.max(MIN_ZOOM_LEVEL, viewState.zoom)),
         },
         tooltip: undefined,
         highlight: undefined,
-      }
+      };
     }
     case ActionType.ZOOM_IN: {
-      const { viewState } = state
+      const { viewState } = state;
       return {
         ...state,
         viewState: {
           ...viewState,
-          zoom: Math.min(
-            MAX_ZOOM_LEVEL,
-            viewState.zoom * 1.1
-          ),
+          zoom: Math.min(MAX_ZOOM_LEVEL, viewState.zoom * 1.1),
         },
         tooltip: undefined,
         highlight: undefined,
-      }
+      };
     }
     case ActionType.ZOOM_OUT: {
-      const { viewState } = state
+      const { viewState } = state;
       return {
         ...state,
         viewState: {
           ...viewState,
-          zoom: Math.max(
-            MIN_ZOOM_LEVEL,
-            viewState.zoom / 1.1
-          ),
+          zoom: Math.max(MIN_ZOOM_LEVEL, viewState.zoom / 1.1),
         },
         tooltip: undefined,
         highlight: undefined,
-      }
+      };
     }
     case ActionType.SET_HIGHLIGHT: {
-      const { highlight } = action
+      const { highlight } = action;
       return {
         ...state,
         highlight,
-      }
+      };
     }
     case ActionType.SET_TOOLTIP: {
-      const { tooltip } = action
+      const { tooltip } = action;
       return {
         ...state,
         tooltip,
-      }
+      };
     }
     case ActionType.CLEAR_SELECTION: {
       return {
@@ -170,83 +173,83 @@ function mainReducer(state: State, action: Action) {
         selectedLocations: undefined,
         highlight: undefined,
         tooltip: undefined,
-      }
+      };
     }
     case ActionType.SET_SELECTED_LOCATIONS: {
-      const { selectedLocations } = action
+      const { selectedLocations } = action;
       return {
         ...state,
         selectedLocations,
-      }
+      };
     }
     case ActionType.SELECT_LOCATION: {
-      const { selectedLocations } = state
-      const { locationId, incremental } = action
-      let nextSelectedLocations
+      const { selectedLocations } = state;
+      const { locationId, incremental } = action;
+      let nextSelectedLocations;
       if (selectedLocations) {
-        const idx = selectedLocations.findIndex(id => id === locationId)
+        const idx = selectedLocations.findIndex(id => id === locationId);
         if (idx >= 0) {
-          nextSelectedLocations = selectedLocations.slice()
-          nextSelectedLocations.splice(idx, 1)
-          if (nextSelectedLocations.length === 0) nextSelectedLocations = undefined
+          nextSelectedLocations = selectedLocations.slice();
+          nextSelectedLocations.splice(idx, 1);
+          if (nextSelectedLocations.length === 0) nextSelectedLocations = undefined;
         } else {
           if (incremental) {
-            nextSelectedLocations = [...selectedLocations, locationId]
+            nextSelectedLocations = [...selectedLocations, locationId];
           } else {
-            nextSelectedLocations = [locationId]
+            nextSelectedLocations = [locationId];
           }
         }
       } else {
-        nextSelectedLocations = [locationId]
+        nextSelectedLocations = [locationId];
       }
       return {
         ...state,
         selectedLocations: nextSelectedLocations,
         highlight: undefined,
         tooltip: undefined,
-      }
+      };
     }
     case ActionType.SET_CLUSTERING_ENABLED: {
-      const { clusteringEnabled } = action
+      const { clusteringEnabled } = action;
       return {
         ...state,
         clusteringEnabled,
-      }
+      };
     }
     case ActionType.SET_ANIMATION_ENABLED: {
-      const { animationEnabled } = action
+      const { animationEnabled } = action;
       return {
         ...state,
         animationEnabled,
-      }
+      };
     }
     case ActionType.SET_LOCATION_TOTALS_ENABLED: {
-      const { locationTotalsEnabled } = action
+      const { locationTotalsEnabled } = action;
       return {
         ...state,
         locationTotalsEnabled,
-      }
+      };
     }
     case ActionType.SET_DARK_MODE: {
-      const { darkMode } = action
+      const { darkMode } = action;
       return {
         ...state,
         darkMode,
-      }
+      };
     }
     case ActionType.SET_FADE_AMOUNT: {
-      const { fadeAmount } = action
+      const { fadeAmount } = action;
       return {
         ...state,
         fadeAmount,
-      }
+      };
     }
     case ActionType.SET_COLOR_SCHEME: {
-      const { colorSchemeKey } = action
+      const { colorSchemeKey } = action;
       return {
         ...state,
         colorSchemeKey,
-      }
+      };
     }
   }
   return state;
@@ -256,12 +259,12 @@ export const reducer: Reducer<State, Action> = (state: State, action: Action) =>
   const nextState = mainReducer(state, action);
   //console.log(type, rest);
   return nextState;
-}
+};
 
 export function asNumber(v: string | string[] | null | undefined): number | undefined {
   if (typeof v === 'string') {
-    const val = +v
-    if (!isNaN(val) && isFinite(val)) return val
+    const val = +v;
+    if (!isNaN(val) && isFinite(val)) return val;
   }
   return undefined;
 }
@@ -274,85 +277,73 @@ export function asBoolean(v: string | string[] | null | undefined): boolean | un
 }
 
 export function applyStateFromQueryString(initialState: State, query: string) {
-  const draft = { ...initialState }
-  const params = queryString.parse(query.substr(1))
+  const draft = { ...initialState };
+  const params = queryString.parse(query.substr(1));
   if (typeof params.s === 'string') {
     const rows = csvParseRows(params.s);
     if (rows.length > 0) {
-      draft.selectedLocations = rows[0]
+      draft.selectedLocations = rows[0];
     }
   }
   if (typeof params.v === 'string') {
     const rows = csvParseRows(params.v);
     if (rows.length > 0) {
-      const [ latitude, longitude, zoom ] = rows[0].map(asNumber);
+      const [latitude, longitude, zoom] = rows[0].map(asNumber);
       if (latitude != null && longitude != null && zoom != null) {
         draft.viewState = {
           ...draft.viewState,
           latitude,
           longitude,
           zoom,
-        }
+        };
         draft.adjustViewportToLocations = false;
       }
     }
   }
-  draft.fadeAmount = asNumber(params.f) ?? draft.fadeAmount
-  draft.darkMode = asBoolean(params.d) ?? draft.darkMode
-  draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled
-  draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled
-  draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled
-  if (typeof params.col === 'string' &&
-    Object.keys(COLOR_SCHEMES).includes(params.col))
-  {
-    draft.colorSchemeKey = params.col
+  draft.fadeAmount = asNumber(params.f) ?? draft.fadeAmount;
+  draft.darkMode = asBoolean(params.d) ?? draft.darkMode;
+  draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled;
+  draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
+  draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled;
+  if (typeof params.col === 'string' && Object.keys(COLOR_SCHEMES).includes(params.col)) {
+    draft.colorSchemeKey = params.col;
   }
-  return draft
+  return draft;
 }
 
 export function stateToQueryString(state: State) {
-  const parts: string[] = []
+  const parts: string[] = [];
   const {
     viewState: { latitude, longitude, zoom },
     selectedLocations,
-  } = state
-  parts.push(
-    `v=${csvFormatRows([[
-      latitude.toFixed(6),
-      longitude.toFixed(6),
-      zoom.toFixed(2),
-    ]])}`
-  )
-  parts.push(`a=${state.animationEnabled ? 1 : 0}`)
-  parts.push(`d=${state.darkMode ? 1 : 0}`)
-  parts.push(`c=${state.clusteringEnabled ? 1 : 0}`)
-  parts.push(`lt=${state.locationTotalsEnabled ? 1 : 0}`)
+  } = state;
+  parts.push(`v=${csvFormatRows([[latitude.toFixed(6), longitude.toFixed(6), zoom.toFixed(2)]])}`);
+  parts.push(`a=${state.animationEnabled ? 1 : 0}`);
+  parts.push(`d=${state.darkMode ? 1 : 0}`);
+  parts.push(`c=${state.clusteringEnabled ? 1 : 0}`);
+  parts.push(`lt=${state.locationTotalsEnabled ? 1 : 0}`);
   if (state.colorSchemeKey != null) {
-    parts.push(`col=${state.colorSchemeKey}`)
+    parts.push(`col=${state.colorSchemeKey}`);
   }
-  parts.push(`f=${state.fadeAmount}`)
+  parts.push(`f=${state.fadeAmount}`);
   if (selectedLocations) {
-    parts.push(
-      `s=${csvFormatRows([selectedLocations])}`
-    )
+    parts.push(`s=${csvFormatRows([selectedLocations])}`);
   }
-  return parts.join('&')
+  return parts.join('&');
 }
 
 export function getInitialViewState(bbox: [number, number, number, number]) {
-  const {center: [longitude, latitude], zoom} =
-    viewport(
-      bbox,
-      [window.innerWidth, window.innerHeight],
-      undefined, undefined, 512, true
-    )
+  const {
+    center: [longitude, latitude],
+    zoom,
+  } = viewport(bbox, [window.innerWidth, window.innerHeight], undefined, undefined, 512, true);
   return {
     longitude,
     latitude,
     zoom,
     bearing: 0,
     pitch: 0,
-  }
+  };
 }
 
 export const DEFAULT_VIEW_STATE = getInitialViewState([-180, -70, 180, 70]);
@@ -370,14 +361,14 @@ export function getInitialState(config: Config, queryString: string) {
     colorSchemeKey: config[ConfigPropName.COLORS_SCHEME],
   };
 
-  const bbox = config[ConfigPropName.MAP_BBOX]
+  const bbox = config[ConfigPropName.MAP_BBOX];
   if (bbox) {
     const bounds = bbox
       .split(',')
       .map(asNumber)
-      .filter(v => v != null) as number[]
+      .filter(v => v != null) as number[];
     if (bounds.length === 4) {
-      draft.viewState = getInitialViewState(bounds as [number, number, number, number])
+      draft.viewState = getInitialViewState(bounds as [number, number, number, number]);
       draft.adjustViewportToLocations = false;
     }
   }

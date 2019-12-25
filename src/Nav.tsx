@@ -1,24 +1,23 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode } from 'react';
 import { Alignment, Classes, Colors, Navbar } from '@blueprintjs/core';
 import Away from './Away';
-import GitHubLogo from './images/github.svg'
-import SpectrumLogo from './images/spectrum.svg'
+import GitHubLogo from './images/github.svg';
+import SpectrumLogo from './images/spectrum.svg';
 import styled from '@emotion/styled';
-import { NavHashLink } from 'react-router-hash-link'
+import { NavHashLink } from 'react-router-hash-link';
 
 const NavBar = styled(Navbar)`
   background-color: ${Colors.DARK_GRAY3} !important;
-`
+`;
 
 const NavMenu = styled(Navbar.Group)`
   white-space: nowrap;
   @media (max-width: 900px) {
     display: none;
   }
-`
+`;
 
-
-const NavItem = ({ to, children }: { to: string, children: ReactNode }) =>
+const NavItem = ({ to, children }: { to: string; children: ReactNode }) => (
   <NavHashLink
     activeClassName={Classes.ACTIVE}
     isActive={(match, location) => {
@@ -36,45 +35,38 @@ const NavItem = ({ to, children }: { to: string, children: ReactNode }) =>
     to={to}
     exact={true}
     smooth={false}
-    className={[
-      Classes.INTENT_PRIMARY,
-      Classes.BUTTON,
-      Classes.MINIMAL,
-      Classes.LARGE,
-    ].join(' ')}
+    className={[Classes.INTENT_PRIMARY, Classes.BUTTON, Classes.MINIMAL, Classes.LARGE].join(' ')}
   >
     {children}
   </NavHashLink>
+);
 
 const LinksArea = styled.div`
   display: flex;
   float: right;
   align-items: center;
-  &>*+* {
+  & > * + * {
     margin-left: 20px;
   }
-`
+`;
 
 const LinkItem = styled.div`
   display: flex;
   align-items: center;
   span {
     text-transform: uppercase;
-    font-size: 12px;  
+    font-size: 12px;
   }
   img {
     width: 20px;
   }
-  &>*+* {
+  & > * + * {
     margin-left: 5px;
   }
-`
+`;
 
-const Nav = () =>
-  <NavBar
-    className={Classes.DARK}
-    fixedToTop={false}
-  >
+const Nav = () => (
+  <NavBar className={Classes.DARK} fixedToTop={false}>
     <NavMenu align={Alignment.LEFT}>
       {/*<Navbar.Heading>*/}
       {/*  <Logo fontSize={25} collapseWidth={Number.MAX_SAFE_INTEGER} />*/}
@@ -94,24 +86,18 @@ const Nav = () =>
         <Away href="https://github.com/ilyabo/flowmap.blue">
           <LinkItem>
             <span>GitHub</span>
-            <img
-              alt="flowmap.blue on GitHub"
-              src={GitHubLogo}
-            />
+            <img alt="flowmap.blue on GitHub" src={GitHubLogo} />
           </LinkItem>
         </Away>
         <Away href="https://spectrum.chat/flowmap-blue/">
           <LinkItem>
             <span>Ask a question</span>
-            <img
-              alt="flowmap.blue chat on Spectrum"
-              src={SpectrumLogo}
-            />
+            <img alt="flowmap.blue chat on Spectrum" src={SpectrumLogo} />
           </LinkItem>
         </Away>
       </LinksArea>
     </Navbar.Group>
-  </NavBar>;
+  </NavBar>
+);
 
-
-export default Nav
+export default Nav;

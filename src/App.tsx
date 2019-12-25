@@ -1,8 +1,8 @@
-import * as React from 'react'
-import { Router, Route, Switch, RouteComponentProps } from 'react-router-dom'
-import { createBrowserHistory } from 'history'
-import Home from './Home'
-import * as Sentry from '@sentry/browser'
+import * as React from 'react';
+import { Router, Route, Switch, RouteComponentProps } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import Home from './Home';
+import * as Sentry from '@sentry/browser';
 import Fallback from './Fallback';
 import { AppToaster } from './AppToaster';
 import { Suspense } from 'react';
@@ -10,34 +10,30 @@ import LoadingSpinner from './LoadingSpinner';
 import { SPREADSHEET_KEY_RE } from './constants';
 import { ColorScheme } from './colors';
 
-const GSheetsFlowMap = React.lazy(() => import('./GSheetsFlowMap'))
-const InBrowserFlowMap = React.lazy(() => import('./InBrowserFlowMap'))
-const ODMatrixConverter = React.lazy(() => import('./ODMatrixConverter'))
-const Geocoding = React.lazy(() => import('./Geocoding'))
+const GSheetsFlowMap = React.lazy(() => import('./GSheetsFlowMap'));
+const InBrowserFlowMap = React.lazy(() => import('./InBrowserFlowMap'));
+const ODMatrixConverter = React.lazy(() => import('./ODMatrixConverter'));
+const Geocoding = React.lazy(() => import('./Geocoding'));
 
+const history = createBrowserHistory();
+history.listen(location => AppToaster.clear());
 
-const history = createBrowserHistory()
-history.listen(location => AppToaster.clear())
-
-type Props = {
-}
+type Props = {};
 
 type State = {
-  error: any,
-}
+  error: any;
+};
 
-const makeGSheetsFlowMap = (embed: boolean) =>
-  ({ match }: RouteComponentProps<{ sheetKey: string }>) =>
-    <GSheetsFlowMap
-      spreadSheetKey={match.params.sheetKey}
-      embed={embed}
-    />
+const makeGSheetsFlowMap = (embed: boolean) => ({
+  match,
+}: RouteComponentProps<{ sheetKey: string }>) => (
+  <GSheetsFlowMap spreadSheetKey={match.params.sheetKey} embed={embed} />
+);
 
 export default class App extends React.Component<Props, State> {
-
   state = {
     error: null,
-  }
+  };
 
   componentDidCatch(error: any, errorInfo: any) {
     this.setState({ error });
@@ -45,9 +41,9 @@ export default class App extends React.Component<Props, State> {
       Sentry.withScope(scope => {
         Object.keys(errorInfo).forEach(key => {
           scope.setExtra(key, errorInfo[key]);
-        })
+        });
         Sentry.captureException(error);
-      })
+      });
     }
   }
 
@@ -69,30 +65,23 @@ export default class App extends React.Component<Props, State> {
                     marginTop: '1em',
                     textDecoration: 'underline',
                   }}
-                  onClick={Sentry.showReportDialog}>Click to report feedback
+                  onClick={Sentry.showReportDialog}
+                >
+                  Click to report feedback
                 </button>
               </p>
             </>
           </Fallback>
         </Router>
-      )
+      );
     } else {
       return (
         <Router history={history}>
-          <Suspense fallback={<LoadingSpinner/>}>
+          <Suspense fallback={<LoadingSpinner />}>
             <Switch>
-              <Route
-                path="/od-matrix-converter"
-                component={ODMatrixConverter}
-                />
-              <Route
-                path="/geocoding"
-                component={Geocoding}
-                />
-              <Route
-                path="/in-browser"
-                component={InBrowserFlowMap}
-                />
+              <Route path="/od-matrix-converter" component={ODMatrixConverter} />
+              <Route path="/geocoding" component={Geocoding} />
+              <Route path="/in-browser" component={InBrowserFlowMap} />
               <Route
                 path={`/:sheetKey(${SPREADSHEET_KEY_RE})/embed`}
                 component={makeGSheetsFlowMap(true)}
@@ -105,8 +94,7 @@ export default class App extends React.Component<Props, State> {
             </Switch>
           </Suspense>
         </Router>
-      )
+      );
     }
   }
 }
-

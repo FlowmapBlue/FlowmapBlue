@@ -11,71 +11,65 @@ import { NoOutlineButton } from './FlowMap';
 
 const SettingsOuter = styled.div`
   font-size: 12px;
-`
+`;
 
 const StyledSwitch = styled(Switch)`
   margin-bottom: 0;
   align-self: flex-start;
-`
+`;
 
 interface Props {
-  state: State
-  dispatch: Dispatch<Action>
+  state: State;
+  dispatch: Dispatch<Action>;
 }
 
-const SettingsPopover: React.FC<Props> = (
-  {
-    dispatch,
-    state,
-  }
-) => {
-
+const SettingsPopover: React.FC<Props> = ({ dispatch, state }) => {
   const handleToggleClustering = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
+    const value = (evt.target as HTMLInputElement).checked;
     dispatch({
       type: ActionType.SET_CLUSTERING_ENABLED,
       clusteringEnabled: value,
-    })
-  }
+    });
+  };
 
   const handleToggleDarkMode = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
+    const value = (evt.target as HTMLInputElement).checked;
     dispatch({
       type: ActionType.SET_DARK_MODE,
       darkMode: value,
-    })
-  }
+    });
+  };
 
   const handleChangeFadeAmount = (value: number) => {
     dispatch({
       type: ActionType.SET_FADE_AMOUNT,
       fadeAmount: value,
-    })
-  }
+    });
+  };
 
   const handleChangeColorScheme = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).value
+    const value = (evt.target as HTMLInputElement).value;
     dispatch({
       type: ActionType.SET_COLOR_SCHEME,
       colorSchemeKey: value,
-    })
-  }
+    });
+  };
 
   const handleToggleAnimation = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
+    const value = (evt.target as HTMLInputElement).checked;
     dispatch({
       type: ActionType.SET_ANIMATION_ENABLED,
-      animationEnabled: value
-    })
-  }
+      animationEnabled: value,
+    });
+  };
 
   const handleToggleLocationTotals = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
+    const value = (evt.target as HTMLInputElement).checked;
     dispatch({
       type: ActionType.SET_LOCATION_TOTALS_ENABLED,
-      locationTotalsEnabled: value
-    })
-  }
+      locationTotalsEnabled: value,
+    });
+  };
 
   return (
     <Popover
@@ -93,11 +87,11 @@ const SettingsPopover: React.FC<Props> = (
                 onChange={handleChangeColorScheme}
               >
                 <option>Default</option>
-                {Object.keys(COLOR_SCHEMES).sort().map(scheme => (
-                  <option key={scheme}>
-                    {scheme}
-                  </option>
-                ))}
+                {Object.keys(COLOR_SCHEMES)
+                  .sort()
+                  .map(scheme => (
+                    <option key={scheme}>{scheme}</option>
+                  ))}
               </HTMLSelect>
             </Row>
             <Row spacing={15}>
@@ -144,12 +138,9 @@ const SettingsPopover: React.FC<Props> = (
         </SettingsOuter>
       }
     >
-      <NoOutlineButton
-        title="Settings…"
-        icon={IconNames.COG}
-      />
+      <NoOutlineButton title="Settings…" icon={IconNames.COG} />
     </Popover>
-  )
-}
+  );
+};
 
-export default SettingsPopover
+export default SettingsPopover;

@@ -1,7 +1,7 @@
 import { Config, ConfigPropName } from './types';
 
-export const DEFAULT_MAP_STYLE_LIGHT = 'mapbox://styles/mapbox/light-v10'
-export const DEFAULT_MAP_STYLE_DARK = 'mapbox://styles/mapbox/dark-v10'
+export const DEFAULT_MAP_STYLE_LIGHT = 'mapbox://styles/mapbox/light-v10';
+export const DEFAULT_MAP_STYLE_DARK = 'mapbox://styles/mapbox/dark-v10';
 export const DEFAULT_CONFIG: Config = {
   [ConfigPropName.MAPBOX_ACCESS_TOKEN]: process.env.REACT_APP_MapboxAccessToken,
   [ConfigPropName.TITLE]: undefined,
@@ -18,20 +18,20 @@ export const DEFAULT_CONFIG: Config = {
   [ConfigPropName.ANIMATE_FLOWS]: undefined,
   [ConfigPropName.CLUSTER_ON_ZOOM]: undefined,
   [ConfigPropName.FADE_AMOUNT]: undefined,
-}
+};
 
 export function parseBoolConfigProp(value: string | undefined) {
   if (value != null) {
-    const lower = value.toLowerCase()
-    if (lower === 'yes' || lower === 'true' || lower === '1') return true
+    const lower = value.toLowerCase();
+    if (lower === 'yes' || lower === 'true' || lower === '1') return true;
   }
-  return false
+  return false;
 }
 
 export function parseNumberConfigProp(value: string | undefined, defaultValue: number) {
   if (value != null) {
-    const numVal = +value
-    if (isFinite(numVal)) return numVal
+    const numVal = +value;
+    if (isFinite(numVal)) return numVal;
   }
-  return defaultValue
+  return defaultValue;
 }

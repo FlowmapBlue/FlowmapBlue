@@ -6,41 +6,41 @@ import { IconNames } from '@blueprintjs/icons';
 import { useLocation } from 'react-router-dom';
 import { FC, useState } from 'react';
 
-
 const Outer = styled(Column)`
   padding: 10px 20px 10px 20px;
   font-size: 12px;
-`
+`;
 
-const StyledTextArea = styled.textarea<{ multiline?: boolean }>((props) => `
+const StyledTextArea = styled.textarea<{ multiline?: boolean }>(
+  props => `
   @media (min-width: 500px) {
      width: 30em;
   }
   min-height: ${props.multiline ? '10em;' : '6em'};
   overflow: hidden;
   font-family: monospace;
-`);
+`
+);
 
 const Group = styled.div`
   position: relative;
-`
+`;
 
 const CopyButton = styled(Button)`
   position: absolute;
   top: 10px;
   right: 10px;
-`
+`;
 
-const CopyInput: FC<{ text: string, embed?: boolean }> =
-  ({ text, embed }) => {
-  const textAreaRef = React.createRef<HTMLTextAreaElement>()
+const CopyInput: FC<{ text: string; embed?: boolean }> = ({ text, embed }) => {
+  const textAreaRef = React.createRef<HTMLTextAreaElement>();
   const handleCopyToClipboard = () => {
-    const input = textAreaRef.current
+    const input = textAreaRef.current;
     if (input) {
-      input.select()
-      document.execCommand('copy')
+      input.select();
+      document.execCommand('copy');
     }
-  }
+  };
   return (
     <Column spacing={5}>
       <Group>
@@ -59,12 +59,12 @@ const CopyInput: FC<{ text: string, embed?: boolean }> =
       </Group>
     </Column>
   );
-}
+};
 
 const SharePopover: React.FC<{}> = ({ children }) => {
   const location = useLocation();
-  const [selectedTab, setSelectedTab] = useState('url')
-  const [withState, setWithState] = useState(false)
+  const [selectedTab, setSelectedTab] = useState('url');
+  const [withState, setWithState] = useState(false);
   return (
     <Popover
       hoverOpenDelay={0}
@@ -72,30 +72,29 @@ const SharePopover: React.FC<{}> = ({ children }) => {
       position={Position.RIGHT_BOTTOM}
       content={
         <Outer spacing={15}>
-          <Tabs
-            selectedTabId={selectedTab}
-            onChange={newTabId => setSelectedTab(`${newTabId}`)}
-          >
-            <Tab id="url"
+          <Tabs selectedTabId={selectedTab} onChange={newTabId => setSelectedTab(`${newTabId}`)}>
+            <Tab
+              id="url"
               title="Share URL"
               panel={
                 <CopyInput
                   text={
-                    `${document.location.protocol}//${document.location.host}${location.pathname}`+
+                    `${document.location.protocol}//${document.location.host}${location.pathname}` +
                     `${withState ? location.search : ''}`
                   }
                 />
               }
             />
-            <Tab id="embed"
+            <Tab
+              id="embed"
               title="Embed code"
               panel={
                 <CopyInput
                   embed={true}
                   text={
-                    `<iframe width="800" height="600" `+
-                    `src="${document.location.protocol}//${document.location.host}${location.pathname}/embed`+
-                    `${withState ? location.search : ''}" `+
+                    `<iframe width="800" height="600" ` +
+                    `src="${document.location.protocol}//${document.location.host}${location.pathname}/embed` +
+                    `${withState ? location.search : ''}" ` +
                     `frameborder="0" allowfullscreen></iframe>`
                   }
                 />
@@ -112,7 +111,7 @@ const SharePopover: React.FC<{}> = ({ children }) => {
     >
       {children}
     </Popover>
-  )
-}
+  );
+};
 
 export default SharePopover;

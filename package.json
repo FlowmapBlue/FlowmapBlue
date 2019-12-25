@@ -46,6 +46,9 @@
     "d3-interpolate": "^1.3.2",
     "d3-scale": "^3.0.0",
     "d3-scale-chromatic": "^1.3.3",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
+    "prettier": "^1.19.1",
     "query-string": "^6.9.0",
     "react": "^16.7.0",
     "react-app-polyfill": "^1.0.1",
@@ -60,6 +63,13 @@
     "react-scripts": "^3.1.1",
     "typescript": "^3.2.2",
     "viewport-mercator-project": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/blueimp-md5": "^2.7.0",
+    "@types/react-router-hash-link": "^1.2.1",
+    "favicons": "^5.4.1",
+    "puppeteer": "^2.0.0",
+    "sharp": "^0.23.0"
   },
   "scripts": {
     "start": "PORT=7000 react-scripts start",
@@ -78,11 +88,22 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "devDependencies": {
-    "@types/blueimp-md5": "^2.7.0",
-    "@types/react-router-hash-link": "^1.2.1",
-    "favicons": "^5.4.1",
-    "puppeteer": "^2.0.0",
-    "sharp": "^0.23.0"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "printWidth": 100
   }
 }

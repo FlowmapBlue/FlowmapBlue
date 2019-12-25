@@ -1,12 +1,13 @@
-import * as React from 'react'
-import { getFlowMagnitude } from './types'
-import { Location } from './types'
-import styled from '@emotion/styled'
-import * as d3Format from 'd3-format'
+import * as React from 'react';
+import { getFlowMagnitude } from './types';
+import { Location } from './types';
+import styled from '@emotion/styled';
+import * as d3Format from 'd3-format';
 import { Flow, LocationPickingInfo } from '@flowmap.gl/core';
 
 type OuterProps = { width: number };
-const Outer = styled.div<OuterProps>(({ width }: OuterProps) => `
+const Outer = styled.div<OuterProps>(
+  ({ width }: OuterProps) => `
   font-size: 10px;
   width: ${width}px;
   display: flex;
@@ -14,50 +15,49 @@ const Outer = styled.div<OuterProps>(({ width }: OuterProps) => `
   & > * + * {
     margin-top: 2px;    
   }
-`)
+`
+);
 
 const Title = styled.div`
   font-weight: bold;
   margin-bottom: 5px;
-`
+`;
 
 const Comment = styled.div`
   font-size: 9px;
   opacity: 0.3;
-  margin-top: 0.75em;  
+  margin-top: 0.75em;
   text-align: center;
-`
+`;
 
 const Row = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-`
+`;
 
 const Label = styled.div`
   display: flex;
   flex-grow: 1;
   opacity: 0.7;
   margin-right: 10px;
-`
+`;
 
 const Value = styled.div`
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
-`
+`;
 
-export const formatCount = d3Format.format(',.0f')
+export const formatCount = d3Format.format(',.0f');
 
 interface Props {
-  locationInfo: LocationPickingInfo
-  isSelected: boolean
-  isSelectionEmpty: boolean
+  locationInfo: LocationPickingInfo;
+  isSelected: boolean;
+  isSelectionEmpty: boolean;
 }
 
-export const LocationTooltipContent =
-  ({ locationInfo, isSelected, isSelectionEmpty }: Props) => {
-
+export const LocationTooltipContent = ({ locationInfo, isSelected, isSelectionEmpty }: Props) => {
   const { object: location, totalIn, totalOut, totalWithin } = locationInfo;
 
   return (
@@ -76,26 +76,34 @@ export const LocationTooltipContent =
         <Value>{formatCount(totalWithin)}</Value>
       </Row>
       <Comment>
-        {isSelected ?
-        `Click to remove from selection` :
-        isSelectionEmpty ?
-        `Click to select this location`
-        : `Shift+click to add to selection`
-        }
+        {isSelected
+          ? `Click to remove from selection`
+          : isSelectionEmpty
+          ? `Click to select this location`
+          : `Shift+click to add to selection`}
       </Comment>
     </Outer>
-  )
-}
+  );
+};
 
-export const FlowTooltipContent = ({ flow, origin, dest }: { flow: Flow, origin: Location, dest: Location }) => {
+export const FlowTooltipContent = ({
+  flow,
+  origin,
+  dest,
+}: {
+  flow: Flow;
+  origin: Location;
+  dest: Location;
+}) => {
   return (
     <Outer width={150}>
-      <Title>{origin.name || origin.id} → {dest.name || dest.id}</Title>
+      <Title>
+        {origin.name || origin.id} → {dest.name || dest.id}
+      </Title>
       <Row>
         <Label>Number of trips</Label>
         <Value>{formatCount(getFlowMagnitude(flow))}</Value>
       </Row>
     </Outer>
-  )
-}
-
+  );
+};

@@ -31,7 +31,12 @@ interface State {
   query: string;
 }
 
-function filterItems<Item>(items: Item[], query: string, itemPredicate: ItemPredicate<Item>, maxLength: number) {
+function filterItems<Item>(
+  items: Item[],
+  query: string,
+  itemPredicate: ItemPredicate<Item>,
+  maxLength: number
+) {
   const matches: Item[] = [];
   if (!items || items.length === 0) {
     return matches;
@@ -51,7 +56,7 @@ const Outer = styled.div`
   .bp3-popover-target {
     width: 15rem;
   }
-`
+`;
 
 export default class SearchBox<Item> extends React.PureComponent<Props<Item>, State> {
   state = {
