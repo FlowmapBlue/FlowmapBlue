@@ -37,13 +37,15 @@ export const Absolute = styled.div<AbsoluteProps>(({ top, left, right, bottom }:
 `)
 
 export type BoxProps = { darkMode? : boolean }
-export const Box = styled(Absolute)<BoxProps>((props: BoxProps) => `
+const getBoxStyle = (props: BoxProps) => `
   background: ${props.darkMode ? Colors.DARK_GRAY5 : `rgba(255, 255, 255, 0.9)`};
-  // padding: 12px;
   border-radius: 4px;
   font-size: 11px;
-  box-shadow: 0 0 4px #aaa; 
-`)
+  box-shadow: 0 0 5px #aaa; 
+`
+export const StyledBox = styled.div<BoxProps>(getBoxStyle)
+
+export const Box = styled(Absolute)<BoxProps>(getBoxStyle)
 
 export const TitleBox = styled(Box)`
   line-height: 1.3;

@@ -9,7 +9,7 @@ import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/reac
 import * as Cluster from '@flowmap.gl/cluster'
 import WebMercatorViewport from 'viewport-mercator-project'
 import { COLOR_SCHEMES } from './colors'
-import { Box, Column, Description, LegendTitle, Row, Title, TitleBox, ToastContent } from './Boxes'
+import { Absolute, Box, Column, Description, LegendTitle, Row, StyledBox, Title, TitleBox, ToastContent } from './Boxes'
 import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { TargetBounds } from './Tooltip';
 import { Link, useHistory } from 'react-router-dom';
@@ -688,15 +688,41 @@ const FlowMap: React.FC<Props> = (props) => {
       />
       {flows &&
       <>
-        {searchBoxLocations &&
-        <Box top={10} right={10} darkMode={darkMode}>
-          <LocationsSearchBox
-            locations={searchBoxLocations}
-            selectedLocations={state.selectedLocations}
-            onSelectionChanged={handleChangeSelectLocations}
-          />
-        </Box>
-        }
+        <Absolute
+          top={10}
+          right={10}
+        >
+          <Row
+            spacing={10}
+            style={{ alignItems: 'flex-start' }}
+          >
+            {searchBoxLocations &&
+            <StyledBox
+              darkMode={darkMode}
+            >
+              <LocationsSearchBox
+                locations={searchBoxLocations}
+                selectedLocations={state.selectedLocations}
+                onSelectionChanged={handleChangeSelectLocations}
+              />
+            </StyledBox>
+            }
+            <Column spacing={10}>
+              <ButtonGroup
+                vertical={true}
+              >
+                <NoOutlineButton
+                  icon={IconNames.PLUS}
+                  onClick={handleZoomIn}
+                />
+                <NoOutlineButton
+                  icon={IconNames.MINUS}
+                  onClick={handleZoomOut}
+                />
+              </ButtonGroup>
+            </Column>
+          </Row>
+        </Absolute>
         {state.locationTotalsEnabled &&
         <Box bottom={28} right={0} darkMode={darkMode}>
           <Collapsible
@@ -715,21 +741,7 @@ const FlowMap: React.FC<Props> = (props) => {
         </Box>
         }
       </>}
-      <Box top={50} right={10} darkMode={darkMode}>
-        <ButtonGroup
-          vertical={true}
-        >
-          <NoOutlineButton
-            icon={IconNames.PLUS}
-            onClick={handleZoomIn}
-          />
-          <NoOutlineButton
-            icon={IconNames.MINUS}
-            onClick={handleZoomOut}
-          />
-        </ButtonGroup>
-      </Box>
-      <Box bottom={40} left={10} darkMode={darkMode}>
+      <Absolute bottom={40} left={10}>
         <Popover
           hoverOpenDelay={0}
           hoverCloseDelay={0}
@@ -800,7 +812,7 @@ const FlowMap: React.FC<Props> = (props) => {
             icon={IconNames.COG}
           />
         </Popover>
-      </Box>}
+      </Absolute>}
 
       {spreadSheetKey &&
       <TitleBox top={60} left={0} darkMode={darkMode}>
