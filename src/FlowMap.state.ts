@@ -327,7 +327,7 @@ export function stateToQueryString(state: State) {
   }
   parts.push(`f=${state.fadeAmount}`);
   if (selectedLocations) {
-    parts.push(`s=${csvFormatRows([selectedLocations])}`);
+    parts.push(`s=${encodeURIComponent(csvFormatRows([selectedLocations]))}`);
   }
   return parts.join('&');
 }
