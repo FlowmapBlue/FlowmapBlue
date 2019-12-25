@@ -104,7 +104,7 @@ const SharePopover: React.FC<{}> = ({ children }) => {
           <Switch
             checked={withState}
             onChange={() => setWithState(!withState)}
-            label="With current state (viewport, selection, animation…)"
+            label="With the current state (viewport, selection, animation…)"
           />
         </Outer>
       }
