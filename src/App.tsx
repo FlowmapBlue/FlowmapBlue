@@ -26,6 +26,13 @@ type State = {
   error: any,
 }
 
+const makeGSheetsFlowMap = (embed: boolean) =>
+  ({ match }: RouteComponentProps<{ sheetKey: string }>) =>
+    <GSheetsFlowMap
+      spreadSheetKey={match.params.sheetKey}
+      embed={embed}
+    />
+
 export default class App extends React.Component<Props, State> {
 
   state = {
@@ -87,12 +94,12 @@ export default class App extends React.Component<Props, State> {
                 component={InBrowserFlowMap}
                 />
               <Route
+                path={`/:sheetKey(${SPREADSHEET_KEY_RE})/embed`}
+                component={makeGSheetsFlowMap(true)}
+              />
+              <Route
                 path={`/:sheetKey(${SPREADSHEET_KEY_RE})`}
-                component={({ match }: RouteComponentProps<{ sheetKey: string }>) =>
-                  <GSheetsFlowMap
-                    spreadSheetKey={match.params.sheetKey}
-                  />
-                }
+                component={makeGSheetsFlowMap(false)}
               />
               <Route path="/" component={Home} />
             </Switch>

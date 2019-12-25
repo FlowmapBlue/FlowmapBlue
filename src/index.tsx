@@ -59,6 +59,7 @@ ReactDOM.render(
 
 try {
   if (window.localStorage &&
+    window.location.pathname === '/' &&
     window.localStorage.getItem('privacyPolicyAccepted') !== 'true') {
     AppToaster.show({
       intent: Intent.PRIMARY,

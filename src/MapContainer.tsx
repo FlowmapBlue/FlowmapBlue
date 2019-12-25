@@ -6,18 +6,19 @@ import { Absolute } from './Boxes';
 import Logo from './Logo';
 
 interface Props {
+  embed?: boolean
   children: ReactNode
 }
 
 const supportsWebGl = checkWebglSupport()
 
-const MapContainer: React.FC<Props> = ({ children }) =>
+const MapContainer: React.FC<Props> = ({ embed, children }) =>
   <NoScrollContainer>{
     supportsWebGl ?
       <>
         {children}
         <Absolute top={10} left={10}>
-          <Logo />
+          <Logo embed={embed} />
         </Absolute>
       </>
       :

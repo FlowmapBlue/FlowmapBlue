@@ -11,6 +11,7 @@ import MapContainer from './MapContainer';
 
 interface Props {
   spreadSheetKey: string
+  embed: boolean
 }
 
 type PropsWithData = Props & {
@@ -56,15 +57,16 @@ const GSheetsFlowMap = sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
       return { value }
     },
   } as any
-}))(({ spreadSheetKey, configFetch }: PropsWithData) => {
+}))(({ spreadSheetKey, embed, configFetch }: PropsWithData) => {
   return (
-    <MapContainer>
+    <MapContainer embed={embed}>
       {configFetch.pending || configFetch.refreshing ?
         <LoadingSpinner/>
         :
         <FlowMapWithData
           animate={true}
           spreadSheetKey={spreadSheetKey}
+          embed={embed}
           config={configFetch.fulfilled ? configFetch.value : DEFAULT_CONFIG}
         />
       }

@@ -71,6 +71,7 @@ const CONTROLLER_OPTIONS = {
 
 export type Props = {
   inBrowser: boolean,
+  embed?: boolean,
   config: Config,
   locationsFetch: PromiseState<Location[]>,
   flowsFetch: PromiseState<Flow[]>,
@@ -103,6 +104,7 @@ const FlowMap: React.FC<Props> = (props) => {
 
   const {
     inBrowser,
+    embed,
     config,
     spreadSheetKey,
     locationsFetch,
@@ -727,7 +729,7 @@ const FlowMap: React.FC<Props> = (props) => {
                   onClick={handleZoomOut}
                 />
               </ButtonGroup>
-              {!inBrowser &&
+              {!inBrowser && !embed &&
               <ButtonGroup
                 vertical={true}
               >
@@ -834,7 +836,7 @@ const FlowMap: React.FC<Props> = (props) => {
         </Popover>
       </Absolute>}
 
-      {spreadSheetKey &&
+      {spreadSheetKey && !embed &&
       <TitleBox top={60} left={0} darkMode={darkMode}>
         <Collapsible
           darkMode={darkMode}

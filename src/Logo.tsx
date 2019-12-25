@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import { Row } from './Boxes';
 
 type Props = {
+  embed?: boolean
   fontSize?: number,
   collapseWidth?: number,
 }
@@ -35,22 +36,34 @@ const LogoText = styled.div<Props>((
   },
 }))
 
-const Logo = ({ fontSize = 25, collapseWidth = 525 }: Props) => {
-  return <Link to="/" style={{ textDecoration: 'none' }}>
-    <Row spacing={fontSize / 5}>
-      <LogoImage
-        size={fontSize * 1.5}
-        alt="flowmap.blue logo"
-        src={logo}
-      />
-      <LogoText
-        collapseWidth={collapseWidth}
-        fontSize={fontSize}
-      >
-        flowmap.blue
-      </LogoText>
-    </Row>
-  </Link>
+const Logo = (
+  {
+    fontSize = 25,
+    collapseWidth = 525,
+    embed,
+  }: Props) => {
+  return (
+    <Link
+      to="/"
+      style={{ textDecoration: 'none' }}
+      target={embed ? '_blank' : undefined}
+      rel="noopener noreferrer"
+    >
+      <Row spacing={fontSize / 5}>
+        <LogoImage
+          size={fontSize * 1.5}
+          alt="flowmap.blue logo"
+          src={logo}
+        />
+        <LogoText
+          collapseWidth={collapseWidth}
+          fontSize={fontSize}
+        >
+          flowmap.blue
+        </LogoText>
+      </Row>
+    </Link>
+  )
 }
 
 
