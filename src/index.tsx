@@ -59,6 +59,10 @@ const globalStyles = css`
     top: unset !important;
     left: 10px !important;
   }
+
+  .${Classes.TAB} {
+    outline: none;
+  }
 `;
 
 if (process.env.REACT_APP_SENTRY_DSN) {
