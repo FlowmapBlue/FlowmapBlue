@@ -259,8 +259,11 @@ const Home = () =>
       <section id="examples">
         <ExampleGrid>
           {
-            examples.map(({key, name}) =>
-              <ExampleGridHoverableLink key={key} to={`/${key}`}>
+            examples.map(({key, name, query}) =>
+              <ExampleGridHoverableLink
+                key={key}
+                to={`/${key}${query ? `?${query}` : ''}`}
+              >
                 <ExampleImage>
                   <ExampleTitle className="name">{name}</ExampleTitle>
                   <img
