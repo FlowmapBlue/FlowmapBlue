@@ -736,6 +736,7 @@ const FlowMap: React.FC<Props> = (props) => {
       {embed &&
       <Absolute bottom={30} right={10}>
         <NoOutlineButton
+          title="Open in full-screen mode"
           onClick={handleFullScreen}
           icon={IconNames.FULLSCREEN}
           />
