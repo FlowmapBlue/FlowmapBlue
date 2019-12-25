@@ -82,6 +82,9 @@ const ExampleGrid = styled.div`
   @media (min-width: 1000px) {
     grid-template-columns: repeat(5, 1fr);
   }
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(6, 1fr);
+  }
 `
 
 const HoverableLink = styled(Link)`
