@@ -59,6 +59,7 @@ import {
 } from './FlowMap.selectors';
 import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
+import SharePopover from './SharePopover';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -123,7 +124,7 @@ const FlowMap: React.FC<Props> = (props) => {
         search: locationSearch,
       })
     }
-  }, 500, [state, history.location.search])
+  }, 250, [state, history.location.search])
   useEffect(updateQuerySearch, [history, state])
 
   const {
@@ -712,13 +713,25 @@ const FlowMap: React.FC<Props> = (props) => {
                 vertical={true}
               >
                 <NoOutlineButton
+                  title="Zoom in"
                   icon={IconNames.PLUS}
                   onClick={handleZoomIn}
                 />
                 <NoOutlineButton
+                  title="Zoom out"
                   icon={IconNames.MINUS}
                   onClick={handleZoomOut}
                 />
+              </ButtonGroup>
+              <ButtonGroup
+                vertical={true}
+              >
+                <SharePopover>
+                  <NoOutlineButton
+                    title="Share…"
+                    icon={IconNames.SHARE}
+                  />
+                </SharePopover>
               </ButtonGroup>
             </Column>
           </Row>
@@ -809,6 +822,7 @@ const FlowMap: React.FC<Props> = (props) => {
           }
         >
           <NoOutlineButton
+            title="Settings…"
             icon={IconNames.COG}
           />
         </Popover>

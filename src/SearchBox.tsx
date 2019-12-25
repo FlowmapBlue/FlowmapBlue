@@ -1,4 +1,4 @@
-import { Button, IPopoverProps, MenuItem } from '@blueprintjs/core';
+import { Button, IconName, IPopoverProps, MenuItem } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { ItemPredicate, ItemRenderer, MultiSelect } from '@blueprintjs/select';
 import React from 'react';
@@ -77,6 +77,7 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
     const tagInputProps = {
       placeholder,
       onRemove: this.handleItemRemoved,
+      leftIcon: IconNames.SEARCH as IconName,
       rightElement:
         selectedItems && selectedItems.length > 0 ? (
           <Button icon={IconNames.CROSS} minimal={true} onClick={onCleared} />
