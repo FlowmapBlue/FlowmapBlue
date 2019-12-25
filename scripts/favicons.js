@@ -8,7 +8,7 @@ const CONFIG = {
     path: "/",                                // Path for overriding default icons path. `string`
     appName: "flowmap.blue",                            // Your application's name. `string`
     appShortName: "flowmap.blue",                       // Your application's short_name. `string`. Optional. If not set, appName will be used
-    appDescription: "Create geographic flow maps from data published in Google Sheets. Visualize numbers of movements between locations (origin-destination data). Explore the data interactively.",                     // Your application's description. `string`
+    appDescription: "Create geographic flow maps representing your data published in Google Sheets. Visualize numbers of movements between locations (origin-destination data). Explore the data interactively.",                     // Your application's description. `string`
     developerName: "Ilya Boyandin",                      // Your (or your developer's) name. `string`
     developerURL: "http://ilya.boyandin.me",                       // Your (or your developer's) URL. `string`
     dir: "auto",                              // Primary text direction for name, short_name, and description

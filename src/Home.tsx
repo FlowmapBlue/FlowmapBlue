@@ -206,7 +206,7 @@ const Home = () => (
       </DemoVideo>
 
       <section>
-        <p>Create geographic flow maps from your data published in Google Sheets.</p>
+        <p>Create geographic flow maps representing your data published in Google Sheets.</p>
         <p>Visualize numbers of movements between locations (origin-destination data).</p>
         <p>Explore the data interactively.</p>
       </section>
