@@ -1,14 +1,22 @@
 import { DeckGL } from '@deck.gl/react'
 import { MapController } from '@deck.gl/core'
 import * as React from 'react'
-import { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import {
+  ReactNode,
+  Reducer,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState
+} from 'react'
 import { _MapContext as MapContext, StaticMap, ViewStateChangeInfo } from 'react-map-gl'
 import FlowMapLayer, { FlowLayerPickingInfo, FlowPickingInfo, LocationPickingInfo, PickingType } from '@flowmap.gl/core'
-import { Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent, Popover, Slider, Switch } from '@blueprintjs/core'
+import { Button, ButtonGroup, Classes, Colors, Intent } from '@blueprintjs/core'
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react'
 import * as Cluster from '@flowmap.gl/cluster'
 import WebMercatorViewport from 'viewport-mercator-project'
-import { COLOR_SCHEMES } from './colors'
 import { Absolute, Box, Column, Description, LegendTitle, Row, StyledBox, Title, TitleBox, ToastContent } from './Boxes'
 import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { TargetBounds } from './Tooltip';
@@ -34,6 +42,7 @@ import { IconNames } from '@blueprintjs/icons';
 import LocationsSearchBox from './LocationSearchBox';
 import Away from './Away';
 import {
+  Action,
   ActionType,
   getInitialState,
   Highlight,
@@ -60,6 +69,7 @@ import {
 import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
 import SharePopover from './SharePopover';
+import SettingsPopover from './SettingsPopover';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -79,17 +89,8 @@ export type Props = {
 }
 
 
-const SettingsOuter = styled.div`
-  font-size: 12px;
-`
-
-const NoOutlineButton = styled(Button)`
+export const NoOutlineButton = styled(Button)`
   outline: none;
-`
-
-const StyledSwitch = styled(Switch)`
-  margin-bottom: 0;
-  align-self: flex-start;
 `
 
 const ErrorsLocationsBlock = styled.div`
@@ -119,7 +120,7 @@ const FlowMap: React.FC<Props> = (props) => {
 
   const outerRef = useRef<HTMLDivElement>(null)
 
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState)
 
   const [updateQuerySearch] = useDebounced(() => {
     if (inBrowser) return;
@@ -185,22 +186,6 @@ const FlowMap: React.FC<Props> = (props) => {
       }
     }
   }, [animationEnabled, animate])
-
-  const handleToggleAnimation = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
-    dispatch({
-      type: ActionType.SET_ANIMATION_ENABLED,
-      animationEnabled: value
-    })
-  }
-
-  const handleToggleLocationTotals = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
-    dispatch({
-      type: ActionType.SET_LOCATION_TOTALS_ENABLED,
-      locationTotalsEnabled: value
-    })
-  }
 
   const showErrorToast = useCallback((errorText: ReactNode) => {
     if (config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
@@ -551,37 +536,6 @@ const FlowMap: React.FC<Props> = (props) => {
     dispatch({ type: ActionType.ZOOM_OUT })
   }
 
-  const handleToggleClustering = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
-    dispatch({
-      type: ActionType.SET_CLUSTERING_ENABLED,
-      clusteringEnabled: value,
-    })
-  }
-
-  const handleToggleDarkMode = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked
-    dispatch({
-      type: ActionType.SET_DARK_MODE,
-      darkMode: value,
-    })
-  }
-
-  const handleChangeFadeAmount = (value: number) => {
-    dispatch({
-      type: ActionType.SET_FADE_AMOUNT,
-      fadeAmount: value,
-    })
-  }
-
-  const handleChangeColorScheme = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).value
-    dispatch({
-      type: ActionType.SET_COLOR_SCHEME,
-      colorSchemeKey: value,
-    })
-  }
-
 
   const makeFlowMapLayer = (id: string, locations: (Location | Cluster.ClusterNode)[], flows: Flow[], visible: boolean) => {
     const { locationTotalsEnabled, animationEnabled } = state
@@ -762,78 +716,12 @@ const FlowMap: React.FC<Props> = (props) => {
         </Box>
         }
       </>}
-      {!embed && <Absolute bottom={40} left={10}>
-        <Popover
-          hoverOpenDelay={0}
-          hoverCloseDelay={0}
-          content={
-            <SettingsOuter>
-              <Column spacing={10} padding="12px 20px">
-                <LegendTitle>Settings</LegendTitle>
-                <Row spacing={5}>
-                  <div>Color scheme</div>
-                  <HTMLSelect
-                    style={{ fontSize: 12 }}
-                    value={state.colorSchemeKey}
-                    onChange={handleChangeColorScheme}
-                  >
-                    <option>Default</option>
-                    {Object.keys(COLOR_SCHEMES).sort().map(scheme => (
-                      <option key={scheme}>
-                        {scheme}
-                      </option>
-                    ))}
-                  </HTMLSelect>
-                </Row>
-                <Row spacing={15}>
-                  <div style={{ whiteSpace: 'nowrap' }}>Fade</div>
-                  <Slider
-                    value={state.fadeAmount}
-                    min={0}
-                    max={100}
-                    stepSize={1}
-                    labelRenderer={false}
-                    showTrackFill={false}
-                    onChange={handleChangeFadeAmount}
-                  />
-                </Row>
-                <Row spacing={20}>
-                  <StyledSwitch
-                    checked={darkMode}
-                    label="Dark mode"
-                    onChange={handleToggleDarkMode}
-                  />
-                </Row>
-                <Row spacing={10}>
-                  <StyledSwitch
-                    checked={state.clusteringEnabled}
-                    label="Cluster on zoom"
-                    onChange={handleToggleClustering}
-                  />
-                </Row>
-                <Row spacing={20}>
-                  <StyledSwitch
-                    checked={state.locationTotalsEnabled}
-                    label="Location totals"
-                    onChange={handleToggleLocationTotals}
-                  />
-                </Row>
-                <Row spacing={20}>
-                  <StyledSwitch
-                    checked={state.animationEnabled}
-                    label="Animate flows"
-                    onChange={handleToggleAnimation}
-                  />
-                </Row>
-              </Column>
-            </SettingsOuter>
-          }
-        >
-          <NoOutlineButton
-            title="Settings…"
-            icon={IconNames.COG}
-          />
-        </Popover>
+      {!embed &&
+      <Absolute bottom={40} left={10}>
+        <SettingsPopover
+          state={state}
+          dispatch={dispatch}
+        />
       </Absolute>}}
 
       {spreadSheetKey && !embed &&

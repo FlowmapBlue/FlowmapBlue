@@ -96,7 +96,7 @@ const SharePopover: React.FC<{}> = ({ children }) => {
                     `<iframe width="800" height="600" `+
                     `src="${document.location.protocol}//${document.location.host}${location.pathname}/embed`+
                     `${withState ? location.search : ''}" `+
-                    `frameborder="0"></iframe>`
+                    `frameborder="0" allowfullscreen></iframe>`
                   }
                 />
               }
