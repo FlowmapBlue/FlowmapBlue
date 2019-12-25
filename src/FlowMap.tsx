@@ -24,7 +24,6 @@ import {
   getLocationCentroid,
   getLocationId,
   Location,
-  LocationSelection
 } from './types';
 import Message from './Message';
 import LoadingSpinner from './LoadingSpinner';
@@ -382,7 +381,7 @@ const FlowMap: React.FC<Props> = (props) => {
       locationInfo={info}
       isSelectionEmpty={!selectedLocations}
       isSelected={
-        selectedLocations && selectedLocations.find(s => s.id === location.id) ? true : false
+        selectedLocations && selectedLocations.find(id => id === location.id) ? true : false
       }
     />;
     if (state.tooltip) {
@@ -522,7 +521,7 @@ const FlowMap: React.FC<Props> = (props) => {
   };
 
 
-  const handleChangeSelectLocations = (selectedLocations: LocationSelection[] | undefined) => {
+  const handleChangeSelectLocations = (selectedLocations: string[] | undefined) => {
     dispatch({
       type: ActionType.SET_SELECTED_LOCATIONS,
       selectedLocations,

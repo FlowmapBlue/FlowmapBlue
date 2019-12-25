@@ -123,7 +123,7 @@ export const getClusterZoom: Selector<number | undefined> = createSelector(
     let minZoom = clusterIndex.availableZoomLevels[0]
     const maxZoom = clusterIndex.availableZoomLevels[clusterIndex.availableZoomLevels.length - 1]
     if (selectedLocations) {
-      for (const { id } of selectedLocations) {
+      for (const id of selectedLocations) {
         let itemZoom
         const cluster = clusterIndex.getClusterById(id)
         if (cluster) {
@@ -162,7 +162,7 @@ export const getLocationsForSearchBox: Selector<(Location | Cluster.Cluster)[] |
 
     if (result && clusterIndex && selectedLocations) {
       const toAppend = []
-      for (const { id } of selectedLocations) {
+      for (const id of selectedLocations) {
         const cluster = clusterIndex.getClusterById(id)
         if (cluster && !result.find(d => d.id === id)) {
           toAppend.push(cluster)
@@ -282,15 +282,15 @@ export const getExpandedSelection: Selector<Array<string> | undefined> = createS
     const targetZoom = clusteringEnabled ? clusterZoom : maxClusterZoom
 
     const result = new Set<string>()
-    for (const loc of selectedLocations) {
-      const cluster = clusterIndex.getClusterById(loc.id)
+    for (const locationId of selectedLocations) {
+      const cluster = clusterIndex.getClusterById(locationId)
       if (cluster) {
         const expanded = clusterIndex.expandCluster(cluster, targetZoom)
         for (const id of expanded) {
           result.add(id)
         }
       } else {
-        result.add(loc.id)
+        result.add(locationId)
       }
     }
     return Array.from(result)

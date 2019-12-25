@@ -5,14 +5,14 @@ import React from 'react'
 import { defaultMemoize } from 'reselect'
 import { matchesSearchQuery } from './matchesSearchQuery'
 import SearchBox from './SearchBox'
-import { LocationSelection, Location } from './types'
+import { Location } from './types'
 import styled from '@emotion/styled'
 import { Cluster } from '@flowmap.gl/cluster'
 
 export interface Props {
-  selectedLocations: LocationSelection[] | undefined
+  selectedLocations: string[] | undefined
   locations: (Location | Cluster)[]
-  onSelectionChanged: (selectedLocations: LocationSelection[] | undefined) => void
+  onSelectionChanged: (selectedLocations: string[] | undefined) => void
 }
 
 const LocationTag = styled.div({
@@ -39,14 +39,11 @@ function sortLocations(locations: (Location | Cluster)[]): (Location | Cluster)[
   })
 }
 
-function getSelectedLocationsById(selectedLocations: LocationSelection[] | undefined) {
+function getSelectedLocationsSet(selectedLocations: string[] | undefined) {
   if (!selectedLocations || selectedLocations.length === 0) {
     return undefined
   }
-  return nest<LocationSelection, LocationSelection>()
-    .key(d => d.id)
-    .rollup(([d]) => d)
-    .object(selectedLocations)
+  return new Set(selectedLocations);
 }
 
 interface LocationsBySelectionStatus {
@@ -56,10 +53,10 @@ interface LocationsBySelectionStatus {
 
 function getLocationsBySelectionStatus(
   locations: (Location | Cluster)[],
-  selectedLocations: LocationSelection[] | undefined,
+  selectedLocations: string[] | undefined,
 ): LocationsBySelectionStatus {
-  const selectedByID = getSelectedLocationsById(selectedLocations)
-  if (!selectedByID) {
+  const selectedIds = getSelectedLocationsSet(selectedLocations)
+  if (!selectedIds) {
     return {
       selected: undefined,
       unselected: locations,
@@ -67,7 +64,7 @@ function getLocationsBySelectionStatus(
   }
 
   const { selected, unselected } = nest<Location | Cluster, LocationsBySelectionStatus>()
-    .key(location => selectedByID[location.id] ? 'selected' : 'unselected')
+    .key(location => selectedIds.has(location.id) ? 'selected' : 'unselected')
     .object(locations)
 
   return {
@@ -89,7 +86,11 @@ class LocationsSearchBox extends React.PureComponent<Props> {
 
   render() {
     const { locations, selectedLocations } = this.props
-    const { selected, unselected } = this.getLocationsBySelectionStatus(this.getSortedLocations(locations), selectedLocations)
+    const { selected, unselected } =
+      this.getLocationsBySelectionStatus(
+        this.getSortedLocations(locations),
+        selectedLocations
+      )
     return (
       <SearchBox<Location | Cluster>
         placeholder="Search for locations…"
@@ -108,7 +109,7 @@ class LocationsSearchBox extends React.PureComponent<Props> {
 
   private tagRenderer = (location: Location | Cluster) => {
     const { selectedLocations } = this.props
-    const selection = selectedLocations && selectedLocations.find(z => z.id === location.id)
+    const selection = selectedLocations && selectedLocations.find(id => id === location.id)
     if (!selection) {
       return null
     }
@@ -125,7 +126,7 @@ class LocationsSearchBox extends React.PureComponent<Props> {
     }
     const { id, name } = (item as Location | Cluster)
     const { selectedLocations } = this.props
-    const isSelected = selectedLocations && selectedLocations.find(d => d.id === id)
+    const isSelected = selectedLocations && selectedLocations.indexOf(id) >= 0
     const intent = isSelected ? Intent.PRIMARY : Intent.NONE
     return <MenuItem key={id} active={modifiers.active} text={name} intent={intent} onClick={handleClick} />
   }
@@ -135,13 +136,12 @@ class LocationsSearchBox extends React.PureComponent<Props> {
   private handleLocationSelected = (location: Location | Cluster) => {
     const { selectedLocations, onSelectionChanged } = this.props
     const { id } = location
-    const locationSelection = { id }
     if (selectedLocations) {
-      if (!selectedLocations.find(z => z.id === id)) {
-        onSelectionChanged([...selectedLocations, locationSelection])
+      if (selectedLocations.indexOf(id) < 0) {
+        onSelectionChanged([...selectedLocations, id])
       }
     } else {
-      onSelectionChanged([locationSelection])
+      onSelectionChanged([id])
     }
   }
 
@@ -149,7 +149,7 @@ class LocationsSearchBox extends React.PureComponent<Props> {
     const { selectedLocations, onSelectionChanged } = this.props
     if (selectedLocations) {
       const { id } = location
-      const idx = selectedLocations.findIndex(z => z.id === id)
+      const idx = selectedLocations.indexOf(id)
       if (idx >= 0) {
         const next = selectedLocations.slice();
         next.splice(idx, 1);

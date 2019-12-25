@@ -1,5 +1,5 @@
 import { ViewportProps, ViewState } from 'react-map-gl';
-import { Config, ConfigPropName, Flow, LocationSelection } from './types';
+import { Config, ConfigPropName, Flow } from './types';
 import { Props as TooltipProps } from './Tooltip';
 import * as queryString from 'query-string';
 import { viewport } from '@mapbox/geo-viewport';
@@ -34,7 +34,7 @@ export interface State {
   adjustViewportToLocations: boolean
   tooltip?: TooltipProps
   highlight?: Highlight
-  selectedLocations: LocationSelection[] | undefined,
+  selectedLocations: string[] | undefined,
   animationEnabled: boolean
   locationTotalsEnabled: boolean
   clusteringEnabled: boolean
@@ -78,7 +78,7 @@ export type Action = {
   incremental: boolean
 } | {
   type: ActionType.SET_SELECTED_LOCATIONS
-  selectedLocations: LocationSelection[] | undefined
+  selectedLocations: string[] | undefined
 } | {
   type: ActionType.SET_TOOLTIP
   tooltip: TooltipProps | undefined
@@ -184,20 +184,20 @@ function mainReducer(state: State, action: Action) {
       const { locationId, incremental } = action
       let nextSelectedLocations
       if (selectedLocations) {
-        const idx = selectedLocations.findIndex(s => s.id === locationId)
+        const idx = selectedLocations.findIndex(id => id === locationId)
         if (idx >= 0) {
           nextSelectedLocations = selectedLocations.slice()
           nextSelectedLocations.splice(idx, 1)
           if (nextSelectedLocations.length === 0) nextSelectedLocations = undefined
         } else {
           if (incremental) {
-            nextSelectedLocations = [...selectedLocations, { id: locationId }]
+            nextSelectedLocations = [...selectedLocations, locationId]
           } else {
-            nextSelectedLocations = [{ id: locationId }]
+            nextSelectedLocations = [locationId]
           }
         }
       } else {
-        nextSelectedLocations = [{ id: locationId }]
+        nextSelectedLocations = [locationId]
       }
       return {
         ...state,
@@ -279,9 +279,7 @@ export function applyStateFromQueryString(initialState: State, query: string) {
   if (typeof params.s === 'string') {
     const rows = csvParseRows(params.s);
     if (rows.length > 0) {
-      draft.selectedLocations = rows[0].map(id => ({
-        id,
-      }))
+      draft.selectedLocations = rows[0]
     }
   }
   if (typeof params.v === 'string') {
@@ -335,9 +333,7 @@ export function stateToQueryString(state: State) {
   parts.push(`f=${state.fadeAmount}`)
   if (selectedLocations) {
     parts.push(
-      `s=${csvFormatRows([
-        selectedLocations.map(({ id }) => id)
-      ])}`
+      `s=${csvFormatRows([selectedLocations])}`
     )
   }
   return parts.join('&')

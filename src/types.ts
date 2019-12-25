@@ -52,7 +52,3 @@ export interface Flow {
   dest: string
   count: number
 }
-
-export interface LocationSelection {
-  id: string;
-}
