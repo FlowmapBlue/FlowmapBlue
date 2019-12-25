@@ -30,6 +30,10 @@ const NewsItem = styled.div`
 export default () => (
   <Outer>
     <NewsItem>
+      <NewsDate>Dec 25, 2019</NewsDate>
+      <NewsText>Added support for sharing and embedding.</NewsText>
+    </NewsItem>
+    <NewsItem>
       <NewsDate>Nov 20, 2019</NewsDate>
       <NewsText>
         Flowmap.blue{' '}
