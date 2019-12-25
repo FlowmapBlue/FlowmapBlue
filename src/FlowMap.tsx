@@ -70,6 +70,7 @@ const CONTROLLER_OPTIONS = {
 }
 
 export type Props = {
+  inBrowser: boolean,
   config: Config,
   locationsFetch: PromiseState<Location[]>,
   flowsFetch: PromiseState<Flow[]>,
@@ -101,6 +102,7 @@ const MAX_NUM_OF_IDS_IN_ERROR = 100
 const FlowMap: React.FC<Props> = (props) => {
 
   const {
+    inBrowser,
     config,
     spreadSheetKey,
     locationsFetch,
@@ -116,7 +118,9 @@ const FlowMap: React.FC<Props> = (props) => {
   const outerRef = useRef<HTMLDivElement>(null)
 
   const [state, dispatch] = useReducer(reducer, initialState)
+
   const [updateQuerySearch] = useDebounced(() => {
+    if (inBrowser) return;
     const locationSearch = `?${stateToQueryString(state)}`
     if (locationSearch !== history.location.search) {
       history.replace({
@@ -723,6 +727,7 @@ const FlowMap: React.FC<Props> = (props) => {
                   onClick={handleZoomOut}
                 />
               </ButtonGroup>
+              {!inBrowser &&
               <ButtonGroup
                 vertical={true}
               >
@@ -733,6 +738,7 @@ const FlowMap: React.FC<Props> = (props) => {
                   />
                 </SharePopover>
               </ButtonGroup>
+              }
             </Column>
           </Row>
         </Absolute>

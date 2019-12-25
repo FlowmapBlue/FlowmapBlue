@@ -24,6 +24,7 @@ const FlowMapContainer = (props: Props) => {
   return (
     <MapContainer>
       <FlowMap
+        inBrowser={true}
         flowsFetch={PromiseState.resolve(flows)}
         locationsFetch={PromiseState.resolve(locations)}
         config={DEFAULT_CONFIG}
