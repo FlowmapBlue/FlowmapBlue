@@ -1,5 +1,5 @@
 import { ViewportProps, ViewState } from 'react-map-gl';
-import { Config, ConfigPropName, Flow, FlowDirection, LocationSelection } from './types';
+import { Config, ConfigPropName, Flow, LocationSelection } from './types';
 import { Props as TooltipProps } from './Tooltip';
 import * as queryString from 'query-string';
 import { viewport } from '@mapbox/geo-viewport';
@@ -191,13 +191,13 @@ function mainReducer(state: State, action: Action) {
           if (nextSelectedLocations.length === 0) nextSelectedLocations = undefined
         } else {
           if (incremental) {
-            nextSelectedLocations = [...selectedLocations, { id: locationId, direction: FlowDirection.BOTH }]
+            nextSelectedLocations = [...selectedLocations, { id: locationId }]
           } else {
-            nextSelectedLocations = [{ id: locationId, direction: FlowDirection.BOTH }]
+            nextSelectedLocations = [{ id: locationId }]
           }
         }
       } else {
-        nextSelectedLocations = [{ id: locationId, direction: FlowDirection.BOTH }]
+        nextSelectedLocations = [{ id: locationId }]
       }
       return {
         ...state,
@@ -281,7 +281,6 @@ export function applyStateFromQueryString(initialState: State, query: string) {
     if (rows.length > 0) {
       draft.selectedLocations = rows[0].map(id => ({
         id,
-        direction: FlowDirection.BOTH,
       }))
     }
   }

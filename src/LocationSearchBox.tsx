@@ -5,7 +5,7 @@ import React from 'react'
 import { defaultMemoize } from 'reselect'
 import { matchesSearchQuery } from './matchesSearchQuery'
 import SearchBox from './SearchBox'
-import { LocationSelection, Location, FlowDirection } from './types'
+import { LocationSelection, Location } from './types'
 import styled from '@emotion/styled'
 import { Cluster } from '@flowmap.gl/cluster'
 
@@ -112,20 +112,8 @@ class LocationsSearchBox extends React.PureComponent<Props> {
     if (!selection) {
       return null
     }
-    // return (
-    //   <FlowDirectionDropdown
-    //     selected={selection.direction}
-    //     onChange={(dir: FlowDirection) => this.handleFlowDirectionChanged(location, dir)}
-    //   >
-    //     <LocationTag>
-    //       <FlowDirectionIcon width={11} height={8} dir={selection.direction} />
-    //       <TextOverflowEllipsis>{location.name}</TextOverflowEllipsis>
-    //     </LocationTag>
-    //   </FlowDirectionDropdown>
-    // )
     return (
       <LocationTag>
-        {/*<FlowDirectionIcon width={11} height={8} dir={selection.direction} />*/}
         <TextOverflowEllipsis>{location.name}</TextOverflowEllipsis>
       </LocationTag>
     )
@@ -144,23 +132,10 @@ class LocationsSearchBox extends React.PureComponent<Props> {
 
   private handleSelectionCleared = () => this.props.onSelectionChanged(undefined)
 
-  // private handleFlowDirectionChanged = (location: Location, direction: FlowDirection) => {
-  //   const { selectedLocations, onSelectionChanged } = this.props
-  //   if (selectedLocations) {
-  //     const locationId = location.id
-  //     const index = selectedLocations.findIndex(z => z.id === locationId)
-  //     if (index >= 0) {
-  //       const next = selectedLocations.slice()
-  //       next[index] = { id: locationId, direction }
-  //       onSelectionChanged(next)
-  //     }
-  //   }
-  // }
-
   private handleLocationSelected = (location: Location | Cluster) => {
     const { selectedLocations, onSelectionChanged } = this.props
     const { id } = location
-    const locationSelection = { id, direction: FlowDirection.BOTH }
+    const locationSelection = { id }
     if (selectedLocations) {
       if (!selectedLocations.find(z => z.id === id)) {
         onSelectionChanged([...selectedLocations, locationSelection])

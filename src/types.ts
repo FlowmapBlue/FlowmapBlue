@@ -55,11 +55,4 @@ export interface Flow {
 
 export interface LocationSelection {
   id: string;
-  direction: FlowDirection;
-}
-
-export enum FlowDirection {
-  BOTH = 'BOTH',
-  IN = 'IN',
-  OUT = 'OUT',
 }
