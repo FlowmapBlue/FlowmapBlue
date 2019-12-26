@@ -214,7 +214,7 @@ const Home = () => (
       <section>
         <h2 id="how-to">Visualize your own data</h2>
         <p>
-          To visualize your data set in flowmap.blue you need to have a Google account.{' '}
+          To visualize a data set in flowmap.blue you need to have a Google account.{' '}
           <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don't.
         </p>
         <p>Follow these steps:</p>
@@ -222,16 +222,16 @@ const Home = () => (
           <li>
             Open{' '}
             <Away href="https://docs.google.com/spreadsheets/d/1aEgwtGUGc0TdnsO0jIm50hshCZ-m4DHms3P0Qq9IYdA">
-              this spreadsheet
+              the template spreadsheet
             </Away>{' '}
-            and make a copy of it (File / Make a copy…)
           </li>
+          <li>Make a copy of it (find “File” / “Make a copy…” in the menu)</li>
           <li>
             Add data to the new spreadsheet.{' '}
             <ReadMore>
               <p>
-                The spreadsheet has three sheets in it. They are named "<b>properties</b>", "
-                <b>locations</b>" and "<b>flows</b>". The <b>properties</b> sheet has the title and
+                The spreadsheet has three sheets in it. They are named “<b>properties</b>”, “
+                <b>locations</b>” and “<b>flows</b>”. The <b>properties</b> sheet has the title and
                 the description for your data set and a few other configuration parameters. The{' '}
                 <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the
                 optional <b>name</b>. The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and{' '}
@@ -248,8 +248,8 @@ const Home = () => (
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
           <li>
-            Share the spreadsheet by going to "File" / "Share with others", clicking "Advanced", and
-            then choosing "Anyone with the link can view".{' '}
+            Share the spreadsheet by going to “File” / “Share with others”, clicking “Advanced”, and
+            then choosing “Anyone with the link can view”.{' '}
             <ReadMore>
               This step is required so that flowmap.blue can access the data in your spreadsheet.
               The spreadsheet and the flow map will be private effectively as long as you don't send

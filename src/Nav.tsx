@@ -74,7 +74,7 @@ const Nav = () => (
       <NavItem to="/">Home</NavItem>
       <NavItem to="/#news">News</NavItem>
       <NavItem to="/#how-to">How to visualize</NavItem>
-      <NavItem to="/#examples">Examples</NavItem>
+      <NavItem to="/#examples">Gallery</NavItem>
       <NavItem to="/#tools">Tools</NavItem>
       <NavItem to="/#need-help">Need help?</NavItem>
       <NavItem to="/#privacy">Privacy</NavItem>
