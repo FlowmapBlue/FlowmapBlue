@@ -734,7 +734,6 @@ const FlowMap: React.FC<Props> = props => {
           <SettingsPopover state={state} dispatch={dispatch} />
         </Absolute>
       )}
-      }
       {embed && (
         <Absolute bottom={30} right={10}>
           <NoOutlineButton
@@ -744,7 +743,6 @@ const FlowMap: React.FC<Props> = props => {
           />
         </Absolute>
       )}
-      }
       {spreadSheetKey && !embed && (
         <TitleBox top={60} left={0} darkMode={darkMode}>
           <Collapsible darkMode={darkMode} width={300} direction={Direction.LEFT}>
