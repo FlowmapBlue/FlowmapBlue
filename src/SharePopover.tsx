@@ -33,7 +33,7 @@ const CopyButton = styled(Button)`
 `;
 
 const CopyInput: FC<{ text: string; embed?: boolean }> = ({ text, embed }) => {
-  const textAreaRef = React.createRef<HTMLTextAreaElement>();
+  const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
   const handleCopyToClipboard = () => {
     const input = textAreaRef.current;
     if (input) {
