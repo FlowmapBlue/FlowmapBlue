@@ -31,7 +31,9 @@ export default () => (
   <Outer>
     <NewsItem>
       <NewsDate>Dec 25, 2019</NewsDate>
-      <NewsText>Added support for sharing and embedding.</NewsText>
+      <NewsText>
+        Added support for <a href="videos/sharing.mp4">sharing and embedding</a>.
+      </NewsText>
     </NewsItem>
     <NewsItem>
       <NewsDate>Nov 20, 2019</NewsDate>
