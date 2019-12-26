@@ -214,7 +214,7 @@ const Home = () => (
       <section>
         <h2 id="how-to">Visualize your own data</h2>
         <p>
-          To visualize a data set in flowmap.blue you need to have a Google account.{' '}
+          To visualize and publish a data set you need to have a Google account.{' '}
           <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don't.
         </p>
         <p>Follow these steps:</p>
