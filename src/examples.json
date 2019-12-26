@@ -4,7 +4,8 @@
   "examples": [
     {
       "key": "15kwLB4baXZ7jpip8q0JjgR6zDoS5Gt3gMLCTUAboQxk",
-      "name": "Relocations between Swiss cantons in 2016"
+      "name": "Relocations between Swiss cantons 2016",
+      "query": "v=46.719075,7.817990,7.51&a=0&d=1&c=0&lt=1&col=Default&f=45"
     },
     {
       "key": "1e3Euejg1bPCe5mdSPFVahi6Fy_LqXFyPTKJT-BcpMP8",
@@ -13,13 +14,18 @@
     },
     {
       "key": "1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc",
-      "name": "Commuters in the Netherlands in 2016",
+      "name": "Commuters in the Netherlands 2016",
       "query": "v=52.098668,4.658308,8.60&a=0&d=1&c=1&lt=1&col=Default&f=45"
     },
     {
       "key": "1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA",
-      "name": "17 million New York Citi Bike trips in 2018",
+      "name": "17 million New York Citi Bike trips 2018",
       "query": "v=40.733700,-73.985072,12.47&a=0&d=1&c=1&f=45"
+    },
+    {
+      "key": "1IRBIOBywJ9nNqBOf6VX0KXOmkMAc8c1dEr5qiu84TN8",
+      "name": "US migration 2012-2016",
+      "query": "v=35.129811,-98.580030,3.99&a=0&d=1&c=1&f=45"
     },
     {
       "key": "1MQK6xs-lS82crlfubyAzSXRQDiWTUrIgNuvkXhUKjUs",
@@ -27,16 +33,21 @@
     },
     {
       "key": "1B75NgT4vzOW86HZdIgKRv4lxE_GXDHalJW-0vGfFqQY",
-      "name": "Commuters in France in 2016",
+      "name": "Commuters in France 2016",
       "query": "v=46.924884,2.000794,5.47&a=0&d=1&c=1&lt=1&f=27"
     },
     {
+      "key": "1mgZFk4wM3BZHXJK0j25NS5lXjFkskJ8JYztDub5iwQA",
+      "name": "Migration in Austria 2019",
+      "query": "v=47.362589,13.205399,6.75&a=0&d=1&c=1&lt=1&col=Sunset&f=46"
+    },
+    {
       "key": "1Z6dVVFFrdooHIs8xnJ_O7eM5bhS5KscCi7G_k0jUNDI",
-      "name": "London bicycle hires in 2017"
+      "name": "London bicycle hires 2017"
     },
     {
       "key": "18RxRi1aKytbiBL7O_lXbTx4n69JWqiGJquPGJmv7wos",
-      "name": "Commuters in New Zealand in 2013",
+      "name": "Commuters in New Zealand 2013",
       "query": "v=-42.466480,173.015758,4.68&a=0&d=1&c=1&f=45"
     },
     {
@@ -50,7 +61,7 @@
     },
     {
       "key": "1k-GPUBh334sXxKg3-bY-MAiH0wgiM7A6rE1px9T0hKA",
-      "name": "World refugees in 2017"
+      "name": "World refugees 2017"
     },
     {
       "key": "1xl5VCFJvx1wjtBTRhH-QzULIojiTORauFRqREnQkJN4",
@@ -58,7 +69,7 @@
     },
     {
       "key": "1qPnZV0wYv9SKh1HInREh_KwuRRgV496nnoKEu6BT8ug",
-      "name": "Commuters in Switzerland in 2014"
+      "name": "Commuters in Switzerland 2014"
     },
     {
       "key": "1wMmN1dXjvTR7S4dv9gtFeuwJRtdMLFRm0GAORVZynCg",
@@ -75,7 +86,8 @@
     },
     {
       "key": "1Tlj2e6Kha7SZgIxwcghIqJiCyWXv7VMtgHw20VSjyIE",
-      "name": "Pedestrians in Mexico City"
+      "name": "Pedestrians in Mexico City",
+      "query": "v=19.391692,-99.151511,10.91&a=0&d=1&c=1&lt=1&f=45"
     },
     {
       "key": "1SuJy9ei8NFQ972-lIdg4Ze9KY7dykUt8CwMLS0GDmGo",
@@ -89,7 +101,7 @@
     },
     {
       "key": "1FkOWeGgVKL1rfoJZK4fq6X0nDiWOKdv3Lcuqx3sgDu4",
-      "name": "Morning commuters in Santiago, 2012"
+      "name": "Morning commuters in Santiago 2012"
     },
     {
       "key": "18eQBxQDTGVOxMicvsd5bKplhiXe5ohM_G2D7L6mVspI",
@@ -100,17 +112,13 @@
       "name": "Commuter flows in Cook County, Chicago"
     },
     {
-      "key": "1IRBIOBywJ9nNqBOf6VX0KXOmkMAc8c1dEr5qiu84TN8",
-      "name": "US County-to-County Migration 2012-2016",
-      "query": "v=35.129811,-98.580030,3.99&a=0&d=1&c=1&f=45"
-    },
-    {
       "key": "13krjWPeGx5yIauhDrQMVa0xaTER4Td5txQAw-Plh3w4",
-      "name": "Relocations in Barcelona 2017"
+      "name": "Relocations in Barcelona 2017",
+      "query": "v=41.388489,2.162359,12.48&a=0&d=1&c=1&lt=1&f=45"
     },
     {
       "key": "1rhsLubo_ZCjoBhP7PbX16nm-WUPvtHRguEFXhLJu1Jk",
-      "name": "Relocations in the Netherlands in 2017"
+      "name": "Relocations in the Netherlands 2017"
     },
     {
       "key": "1Gq9xzv8utBOcZB36dJiX3Ksl9msuw20fad7J6IKnUKY",
@@ -123,7 +131,7 @@
     },
     {
       "key": "1ax4J4iLZb5nFWooseKEmLXJyOb-gGpo5qYtHbr_3TOU",
-      "name": "Seattle Lyft rides, 2018 Q2",
+      "name": "Seattle Lyft rides 2018 Q2",
       "query": "v=47.614581,-122.332389,12.36&a=0&d=1&c=0&f=45"
     },
     {
@@ -149,11 +157,11 @@
     },
     {
       "key": "1BHy69x6MbVZZSqmF53MnOe2X_B_AGGdNUqsXmmmFt0Q",
-      "name": "Commuters to Salzburg in 2011"
+      "name": "Commuters to Salzburg 2011"
     },
     {
       "key": "1XQXu5-HHCVUxtJoA70qoCe7Od0kJW3TjnsRIrjaPFpg",
-      "name": "Migration of European developers"
+      "name": "Migration of developers"
     },
     {
       "key": "1ElqxUc0fhgMzBGQ5XVsff0ScESdXK1OiGOizda-l-DE",
@@ -180,12 +188,12 @@
     },
     {
       "key": "1CT7i8uLynnO834QHNlSrLDnGSBqSUsH4zsbuGC-VNEk",
-      "name": "Barrick Gold Subsidiaries",
+      "name": "Barrick Gold subsidiaries",
       "query": "v=30.017415,-73.881040,2.60&a=0&d=1&c=1&col=OrRd&f=45"
     },
     {
       "key": "10ujwLgqN_GlazlqMhyFxyM4D9Vd2V8LHR396BC-uerc",
-      "name": "Voting location changes in the Ukraine"
+      "name": "Ukraine voting location changes"
     }
   ]
 }
