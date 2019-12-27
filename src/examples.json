@@ -28,6 +28,10 @@
       "query": "v=35.129811,-98.580030,3.99&a=0&d=1&c=1&f=45"
     },
     {
+      "key": "1Z6dVVFFrdooHIs8xnJ_O7eM5bhS5KscCi7G_k0jUNDI",
+      "name": "London bicycle hires 2017"
+    },
+    {
       "key": "1MQK6xs-lS82crlfubyAzSXRQDiWTUrIgNuvkXhUKjUs",
       "name": "5 million relocations in Australia"
     },
@@ -42,8 +46,9 @@
       "query": "v=47.362589,13.205399,6.75&a=0&d=1&c=1&lt=1&col=Sunset&f=46"
     },
     {
-      "key": "1Z6dVVFFrdooHIs8xnJ_O7eM5bhS5KscCi7G_k0jUNDI",
-      "name": "London bicycle hires 2017"
+      "key": "1icUMT7Q3V0DOPHBahXJlz7Mz_BYOgLv9InZUHX_5xIE",
+      "name": "Bird migration model",
+      "query": "v=49.272478,5.910396,5.91&a=1&d=1&c=0&lt=0&col=Sunset&f=24"
     },
     {
       "key": "18RxRi1aKytbiBL7O_lXbTx4n69JWqiGJquPGJmv7wos",
