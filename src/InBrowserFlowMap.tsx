@@ -90,7 +90,10 @@ const InBrowserFlowMap = () => {
         lat: +row.lat,
         lon: +row.lon,
       })),
-      flows: dsvFormat(',').parse(flowsCsv),
+      flows: dsvFormat(',').parse(flowsCsv, (row: any) => ({
+        ...row,
+        count: +row.count,
+      })),
     });
   };
   return (
