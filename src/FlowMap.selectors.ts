@@ -23,7 +23,7 @@ export const getFlows = (state: State, props: Props) => props.flowsFetch.value;
 export const getLocations = (state: State, props: Props) => props.locationsFetch.value;
 export const getSelectedLocations = (state: State, props: Props) => state.selectedLocations;
 export const getClusteringEnabled = (state: State, props: Props) => state.clusteringEnabled;
-export const getZoom = (state: State, props: Props) => state.viewState.zoom;
+export const getZoom = (state: State, props: Props) => state.viewport.zoom;
 export const getConfig = (state: State, props: Props) => props.config;
 
 export const getLocationIds: Selector<Set<string> | undefined> = createSelector(

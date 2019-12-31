@@ -147,7 +147,7 @@ const FlowMap: React.FC<Props> = props => {
   );
   useEffect(updateQuerySearch, [history, state]);
 
-  const { viewState, tooltip, animationEnabled } = state;
+  const { viewport, tooltip, animationEnabled } = state;
   const locations = locationsFetch.value;
   const flows = getFlowsForKnownLocations(state, props);
   const allFlows = getFlows(state, props);
@@ -277,11 +277,13 @@ const FlowMap: React.FC<Props> = props => {
       return;
     }
 
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     if (locations != null) {
       let draft = getViewStateForLocations(
         locationsHavingFlows ?? locations,
         getLocationCentroid,
-        [window.innerWidth, window.innerHeight],
+        [width, height],
         { pad: 0.1 }
       );
 
@@ -294,13 +296,18 @@ const FlowMap: React.FC<Props> = props => {
       }
 
       dispatch({
-        type: ActionType.SET_VIEW_STATE,
-        viewState: {
+        type: ActionType.SET_VIEWPORT,
+        viewport: {
+          width,
+          height,
           ...draft,
+          minZoom: MIN_ZOOM_LEVEL,
+          maxZoom: MAX_ZOOM_LEVEL,
           minPitch: 0,
           maxPitch: 0,
           bearing: 0,
           pitch: 0,
+          altitude: 0,
           // transitionDuration: 2000,
           // transitionInterpolator: new FlyToInterpolator(),
           // transitionEasing: d3ease.easeCubic,
@@ -320,11 +327,11 @@ const FlowMap: React.FC<Props> = props => {
     if (!containerBounds) return undefined;
     const { width, height } = containerBounds;
     return new WebMercatorViewport({
-      ...viewState,
+      ...viewport,
       width,
       height,
     });
-  }, [viewState, getContainerClientRect]);
+  }, [viewport, getContainerClientRect]);
 
   const showTooltip = (bounds: TargetBounds, content: React.ReactNode) => {
     const containerBounds = getContainerClientRect();
@@ -546,8 +553,8 @@ const FlowMap: React.FC<Props> = props => {
 
   const handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
     dispatch({
-      type: ActionType.SET_VIEW_STATE,
-      viewState,
+      type: ActionType.SET_VIEWPORT,
+      viewport: viewState,
     });
   };
 
@@ -667,7 +674,7 @@ const FlowMap: React.FC<Props> = props => {
       <DeckGL
         style={{ mixBlendMode: darkMode ? 'screen' : 'multiply' }}
         controller={CONTROLLER_OPTIONS}
-        viewState={viewState}
+        viewState={viewport}
         onViewStateChange={handleViewStateChange}
         layers={getLayers()}
         ContextProvider={MapContext.Provider}
