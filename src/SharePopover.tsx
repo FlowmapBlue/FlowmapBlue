@@ -16,6 +16,7 @@ const StyledTextArea = styled.textarea<{ multiline?: boolean }>(
   @media (min-width: 500px) {
      width: 30em;
   }
+  width: 18em;
   min-height: ${props.multiline ? '10em;' : '6em'};
   overflow: hidden;
   font-family: monospace;
@@ -104,7 +105,7 @@ const SharePopover: React.FC<{}> = ({ children }) => {
           <Switch
             checked={withState}
             onChange={() => setWithState(!withState)}
-            label="With the current state (viewport, selection, animation…)"
+            label="Current state (viewport, selection…)"
           />
         </Outer>
       }
