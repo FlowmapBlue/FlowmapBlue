@@ -20,7 +20,6 @@ import FlowMapLayer, {
 } from '@flowmap.gl/core';
 import { Button, ButtonGroup, Classes, Colors, Intent } from '@blueprintjs/core';
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react';
-import * as Cluster from '@flowmap.gl/cluster';
 import WebMercatorViewport from 'viewport-mercator-project';
 import {
   Absolute,
@@ -70,7 +69,6 @@ import {
   stateToQueryString,
 } from './FlowMap.state';
 import {
-  getAggregatedFlows,
   getClusterIndex,
   getClusterZoom,
   getDarkMode,
@@ -78,12 +76,16 @@ import {
   getExpandedSelection,
   getFlowMapColors,
   getFlows,
+  getFlowsForFlowMapLayer,
   getFlowsForKnownLocations,
   getInvalidLocationIds,
+  getLocations,
+  getLocationsForFlowMapLayer,
   getLocationsForSearchBox,
   getLocationsHavingFlows,
   getMapboxMapStyle,
   getUnknownLocations,
+  getViewportBoundingBox,
 } from './FlowMap.selectors';
 import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
@@ -148,9 +150,11 @@ const FlowMap: React.FC<Props> = props => {
   useEffect(updateQuerySearch, [history, state]);
 
   const { viewport, tooltip, animationEnabled } = state;
-  const locations = locationsFetch.value;
-  const flows = getFlowsForKnownLocations(state, props);
   const allFlows = getFlows(state, props);
+  const allLocations = getLocations(state, props);
+  const locationsHavingFlows = getLocationsHavingFlows(state, props);
+  const locations = getLocationsForFlowMapLayer(state, props);
+  const flows = getFlowsForFlowMapLayer(state, props);
 
   const handleKeyDown = (evt: Event) => {
     if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
@@ -242,9 +246,10 @@ const FlowMap: React.FC<Props> = props => {
   }, [invalidLocations, showErrorToast]);
 
   const unknownLocations = getUnknownLocations(state, props);
+  const flowsForKnownLocations = getFlowsForKnownLocations(state, props);
   useEffect(() => {
     if (unknownLocations) {
-      if (flows && allFlows) {
+      if (flowsForKnownLocations && allFlows) {
         const ids = Array.from(unknownLocations).sort();
         showErrorToast(
           <>
@@ -256,8 +261,8 @@ const FlowMap: React.FC<Props> = props => {
               {ids.length > MAX_NUM_OF_IDS_IN_ERROR &&
                 `… and ${ids.length - MAX_NUM_OF_IDS_IN_ERROR} others`}
             </ErrorsLocationsBlock>
-            {formatCount(allFlows.length - flows.length)} flows were omitted.
-            {flows.length === 0 && (
+            {formatCount(allFlows.length - flowsForKnownLocations.length)} flows were omitted.
+            {flowsForKnownLocations.length === 0 && (
               <div style={{ marginTop: '1em' }}>
                 Make sure the columns are named header row in the flows sheet is correct. There must
                 be <b>origin</b>, <b>dest</b>, and <b>count</b>.
@@ -267,9 +272,8 @@ const FlowMap: React.FC<Props> = props => {
         );
       }
     }
-  }, [unknownLocations, showErrorToast, allFlows, flows]);
+  }, [unknownLocations, showErrorToast, allFlows, flowsForKnownLocations]);
 
-  const locationsHavingFlows = getLocationsHavingFlows(state, props);
   const { adjustViewportToLocations } = state;
 
   useEffect(() => {
@@ -279,9 +283,9 @@ const FlowMap: React.FC<Props> = props => {
 
     const width = window.innerWidth;
     const height = window.innerHeight;
-    if (locations != null) {
+    if (allLocations != null) {
       let draft = getViewStateForLocations(
-        locationsHavingFlows ?? locations,
+        locationsHavingFlows ?? allLocations,
         getLocationCentroid,
         [width, height],
         { pad: 0.1 }
@@ -314,7 +318,7 @@ const FlowMap: React.FC<Props> = props => {
         },
       });
     }
-  }, [locations, locationsHavingFlows, adjustViewportToLocations]);
+  }, [allLocations, locationsHavingFlows, adjustViewportToLocations]);
 
   const getContainerClientRect = useCallback(() => {
     const container = outerRef.current;
@@ -577,87 +581,54 @@ const FlowMap: React.FC<Props> = props => {
     }
   };
 
-  const makeFlowMapLayer = (
-    id: string,
-    locations: (Location | Cluster.ClusterNode)[],
-    flows: Flow[],
-    visible: boolean
-  ) => {
-    const { locationTotalsEnabled, animationEnabled } = state;
-    const highlight = getHighlightForZoom();
-
-    return new FlowMapLayer({
-      id,
-      animate: animationEnabled,
-      animationCurrentTime: time,
-      diffMode: getDiffMode(state, props),
-      colors: getFlowMapColors(state, props),
-      locations,
-      flows,
-      showOnlyTopFlows: 10000,
-      getLocationCentroid,
-      getFlowMagnitude,
-      getFlowOriginId,
-      getFlowDestId,
-      getLocationId,
-      varyFlowColorByMagnitude: true,
-      showTotals: true,
-      maxLocationCircleSize: locationTotalsEnabled ? 15 : 0,
-      selectedLocationIds: getExpandedSelection(state, props),
-      highlightedLocationId:
-        highlight && highlight.type === HighlightType.LOCATION ? highlight.locationId : undefined,
-      highlightedFlow:
-        highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
-      onHover: handleHover,
-      onClick: handleClick,
-      visible,
-      updateTriggers: {
-        onHover: handleHover, // to avoid stale closure in the handler
-        onClick: handleClick,
-      },
-    } as any);
-  };
-
   const getLayers = () => {
-    const {
-      clusteringEnabled,
-      animationEnabled,
-      locationTotalsEnabled,
-      darkMode,
-      colorSchemeKey,
-      fadeAmount,
-    } = state;
+    const { animationEnabled, locationTotalsEnabled, darkMode, colorSchemeKey, fadeAmount } = state;
     const layers = [];
-    const id = [
-      'flow-map',
-      animationEnabled ? 'animated' : 'arrows',
-      locationTotalsEnabled ? 'withTotals' : '',
-      colorSchemeKey,
-      darkMode ? 'dark' : 'light',
-      fadeAmount,
-    ].join('-');
-    if (clusteringEnabled) {
-      const clusterIndex = getClusterIndex(state, props);
-      const flows = getAggregatedFlows(state, props);
-      const clusterZoom = getClusterZoom(state, props);
-      if (/*clusterZoom !== undefined && */ clusterIndex && flows) {
-        //   const flows = flows.get(clusterZoom)
-        if (flows) {
-          layers.push(
-            makeFlowMapLayer(
-              id,
-              clusterIndex.getClusterNodesFor(clusterZoom)!,
-              flows,
-              // zoom === clusterZoom,
-              true
-            )
-          );
-        }
-      }
-    } else {
-      if (locationsHavingFlows && flows) {
-        layers.push(makeFlowMapLayer(id, locationsHavingFlows, flows, true));
-      }
+    if (locations && flows) {
+      const id = [
+        'flow-map',
+        animationEnabled ? 'animated' : 'arrows',
+        locationTotalsEnabled ? 'withTotals' : '',
+        colorSchemeKey,
+        darkMode ? 'dark' : 'light',
+        fadeAmount,
+      ].join('-');
+
+      const highlight = getHighlightForZoom();
+      layers.push(
+        new FlowMapLayer({
+          id,
+          animate: animationEnabled,
+          animationCurrentTime: time,
+          diffMode: getDiffMode(state, props),
+          colors: getFlowMapColors(state, props),
+          locations,
+          flows,
+          showOnlyTopFlows: 10000,
+          getLocationCentroid,
+          getFlowMagnitude,
+          getFlowOriginId,
+          getFlowDestId,
+          getLocationId,
+          varyFlowColorByMagnitude: true,
+          showTotals: true,
+          maxLocationCircleSize: locationTotalsEnabled ? 15 : 0,
+          selectedLocationIds: getExpandedSelection(state, props),
+          highlightedLocationId:
+            highlight && highlight.type === HighlightType.LOCATION
+              ? highlight.locationId
+              : undefined,
+          highlightedFlow:
+            highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
+          onHover: handleHover,
+          onClick: handleClick,
+          visible: true,
+          updateTriggers: {
+            onHover: handleHover, // to avoid stale closure in the handler
+            onClick: handleClick,
+          },
+        } as any)
+      );
     }
     return layers;
   };

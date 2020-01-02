@@ -8,14 +8,17 @@ import {
   getFlowOriginId,
   getLocationCentroid,
   getLocationId,
+  isLocationCluster,
   Location,
 } from './types';
 import * as Cluster from '@flowmap.gl/cluster';
-import { isCluster } from '@flowmap.gl/cluster';
+import { ClusterNode, isCluster } from '@flowmap.gl/cluster';
 import getColors from './colors';
 import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp } from './config';
 import { nest } from 'd3-collection';
 import { Props } from './FlowMap';
+import { bounds } from '@mapbox/geo-viewport';
+import KDBush from 'kdbush';
 
 export type Selector<T> = ParametricSelector<State, Props, T>;
 
@@ -25,6 +28,7 @@ export const getSelectedLocations = (state: State, props: Props) => state.select
 export const getClusteringEnabled = (state: State, props: Props) => state.clusteringEnabled;
 export const getZoom = (state: State, props: Props) => state.viewport.zoom;
 export const getConfig = (state: State, props: Props) => props.config;
+export const getViewport = (state: State, props: Props) => state.viewport;
 
 export const getLocationIds: Selector<Set<string> | undefined> = createSelector(
   getLocations,
@@ -289,3 +293,121 @@ export const getExpandedSelection: Selector<Array<string> | undefined> = createS
     return Array.from(result);
   }
 );
+
+export const getViewportBoundingBox: Selector<[
+  number,
+  number,
+  number,
+  number
+]> = createSelector(getViewport, viewport =>
+  bounds([viewport.longitude, viewport.latitude], viewport.zoom, [viewport.width, viewport.height])
+);
+
+const getLocationsForZoom: Selector<Location[] | ClusterNode[] | undefined> = createSelector(
+  getClusteringEnabled,
+  getLocationsHavingFlows,
+  getClusterIndex,
+  getClusterZoom,
+  (clusteringEnabled, locationsHavingFlows, clusterIndex, clusterZoom) => {
+    if (clusteringEnabled && clusterIndex) {
+      return clusterIndex.getClusterNodesFor(clusterZoom);
+    } else {
+      return locationsHavingFlows;
+    }
+  }
+);
+
+const getLocationsTree: Selector<any> = createSelector(getLocationsForZoom, locations => {
+  if (!locations) {
+    return undefined;
+  }
+  return new KDBush(
+    locations,
+    (location: Location | Cluster.Cluster) =>
+      lngX(isLocationCluster(location) ? location.centroid[0] : location.lon),
+    (location: Location | Cluster.Cluster) =>
+      latY(isLocationCluster(location) ? location.centroid[1] : location.lat)
+  );
+});
+
+const getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelector(
+  getLocationsForZoom,
+  getLocationsTree,
+  getViewportBoundingBox,
+  (locations, tree, bbox) => {
+    if (!tree || !locations) return undefined;
+    const [lon1, lat1, lon2, lat2] = bbox;
+    const [x1, y1, x2, y2] = [lngX(lon1), latY(lat1), lngX(lon2), latY(lat2)];
+    const range = tree.range(
+      Math.min(x1, x2),
+      Math.min(y1, y2),
+      Math.max(x1, x2),
+      Math.max(y1, y2)
+    );
+    return new Set(range.map((idx: number) => locations[idx].id));
+  }
+);
+
+export const getLocationsForFlowMapLayer: Selector<
+  Location[] | ClusterNode[] | undefined
+> = createSelector(
+  getLocationsForZoom,
+  getLocationIdsInViewport,
+  (locations, locationIdsInViewport) => {
+    if (!locations) return undefined;
+    if (!locationIdsInViewport) return locations;
+    if (locationIdsInViewport.size === locations.length) return locations;
+    // const filtered = [];
+    // for (const loc of locations) {
+    //   if (locationIdsInViewport.has(loc.id)) {
+    //     filtered.push(loc);
+    //   }
+    // }
+    // return filtered;
+    // @ts-ignore
+    // return locations.filter(
+    //   (loc: Location | ClusterNode) => locationIdsInViewport.has(loc.id)
+    // );
+    // TODO: return location in viewport + "connected" ones
+    return locations;
+  }
+);
+
+const getFlowsForZoom: Selector<Flow[] | undefined> = createSelector(
+  getClusteringEnabled,
+  getFlowsForKnownLocations,
+  getAggregatedFlows,
+  getClusterIndex,
+  getClusterZoom,
+  (clusteringEnabled, flows, aggregatedFlows, clusterIndex, clusterZoom) => {
+    if (clusteringEnabled && aggregatedFlows) {
+      return aggregatedFlows;
+    } else {
+      return flows;
+    }
+  }
+);
+
+export const getFlowsForFlowMapLayer: Selector<Flow[] | undefined> = createSelector(
+  getFlowsForZoom,
+  getLocationIdsInViewport,
+  (flows, locationIdsInViewport) => {
+    if (!flows) return undefined;
+    if (!locationIdsInViewport) return flows;
+    // TODO: only keep top 10000
+    return flows.filter(
+      f => locationIdsInViewport.has(f.origin) || locationIdsInViewport.has(f.dest)
+    );
+  }
+);
+
+// longitude/latitude to spherical mercator in [0..1] range
+function lngX(lng: number) {
+  return lng / 360 + 0.5;
+}
+
+function latY(lat: number) {
+  const sin = Math.sin((lat * Math.PI) / 180);
+  const y = 0.5 - (0.25 * Math.log((1 + sin) / (1 - sin))) / Math.PI;
+  return y < 0 ? 0 : y > 1 ? 1 : y;
+}
