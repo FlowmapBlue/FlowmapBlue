@@ -77,7 +77,7 @@ import {
   getFlowMapColors,
   getFlows,
   getFlowsForFlowMapLayer,
-  getFlowsForKnownLocations,
+  getSortedFlowsForKnownLocations,
   getInvalidLocationIds,
   getLocations,
   getLocationsForFlowMapLayer,
@@ -86,6 +86,7 @@ import {
   getMapboxMapStyle,
   getMaxLocationCircleSize,
   getUnknownLocations,
+  NUMBER_OF_FLOWS_TO_DISPLAY,
 } from './FlowMap.selectors';
 import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
@@ -246,7 +247,7 @@ const FlowMap: React.FC<Props> = props => {
   }, [invalidLocations, showErrorToast]);
 
   const unknownLocations = getUnknownLocations(state, props);
-  const flowsForKnownLocations = getFlowsForKnownLocations(state, props);
+  const flowsForKnownLocations = getSortedFlowsForKnownLocations(state, props);
   useEffect(() => {
     if (unknownLocations) {
       if (flowsForKnownLocations && allFlows) {
@@ -604,7 +605,7 @@ const FlowMap: React.FC<Props> = props => {
           colors: getFlowMapColors(state, props),
           locations,
           flows,
-          showOnlyTopFlows: 10000,
+          showOnlyTopFlows: NUMBER_OF_FLOWS_TO_DISPLAY,
           getLocationCentroid,
           getFlowMagnitude,
           getFlowOriginId,

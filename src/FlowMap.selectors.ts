@@ -19,6 +19,9 @@ import { nest } from 'd3-collection';
 import { Props } from './FlowMap';
 import { bounds } from '@mapbox/geo-viewport';
 import KDBush from 'kdbush';
+import { descending } from 'd3-array';
+
+export const NUMBER_OF_FLOWS_TO_DISPLAY = 5000;
 
 export type Selector<T> = ParametricSelector<State, Props, T>;
 
@@ -36,17 +39,19 @@ export const getLocationIds: Selector<Set<string> | undefined> = createSelector(
   locations => (locations ? new Set(locations.map(getLocationId)) : undefined)
 );
 
-export const getFlowsForKnownLocations: Selector<Flow[] | undefined> = createSelector(
+export const getSortedFlowsForKnownLocations: Selector<Flow[] | undefined> = createSelector(
   getFlows,
   getLocationIds,
   (flows, ids) => {
     if (!ids || !flows) return undefined;
-    return flows.filter(flow => ids.has(getFlowOriginId(flow)) && ids.has(getFlowDestId(flow)));
+    return flows
+      .filter(flow => ids.has(getFlowOriginId(flow)) && ids.has(getFlowDestId(flow)))
+      .sort((a, b) => descending(Math.abs(getFlowMagnitude(a)), Math.abs(getFlowMagnitude(b))));
   }
 );
 
 export const getLocationsHavingFlows: Selector<Location[] | undefined> = createSelector(
-  getFlowsForKnownLocations,
+  getSortedFlowsForKnownLocations,
   getLocations,
   (flows, locations) => {
     if (!locations || !flows) return locations;
@@ -61,7 +66,7 @@ export const getLocationsHavingFlows: Selector<Location[] | undefined> = createS
 
 export const getClusterIndex: Selector<Cluster.ClusterIndex | undefined> = createSelector(
   getLocationsHavingFlows,
-  getFlowsForKnownLocations,
+  getSortedFlowsForKnownLocations,
   (locations, flows) => {
     if (!locations || !flows) return undefined;
 
@@ -231,7 +236,7 @@ export const getInvalidLocationIds: Selector<string[] | undefined> = createSelec
 export const getUnknownLocations: Selector<Set<string> | undefined> = createSelector(
   getLocationIds,
   getFlows,
-  getFlowsForKnownLocations,
+  getSortedFlowsForKnownLocations,
   (ids, flows, flowsForKnownLocations) => {
     if (!ids || !flows) return undefined;
     if (flowsForKnownLocations && flows.length === flowsForKnownLocations.length) return undefined;
@@ -244,17 +249,19 @@ export const getUnknownLocations: Selector<Set<string> | undefined> = createSele
   }
 );
 
-export const getAggregatedFlows: Selector<Flow[] | undefined> = createSelector(
+export const getSortedAggregatedFlows: Selector<Flow[] | undefined> = createSelector(
   getClusterIndex,
-  getFlowsForKnownLocations,
+  getSortedFlowsForKnownLocations,
   getClusterZoom,
   (clusterTree, flows, clusterZoom) => {
     if (!clusterTree || !flows || clusterZoom == null) return undefined;
-    return clusterTree.aggregateFlows(flows, clusterZoom, {
-      getFlowOriginId,
-      getFlowDestId,
-      getFlowMagnitude,
-    });
+    return clusterTree
+      .aggregateFlows(flows, clusterZoom, {
+        getFlowOriginId,
+        getFlowDestId,
+        getFlowMagnitude,
+      })
+      .sort((a, b) => descending(Math.abs(getFlowMagnitude(a)), Math.abs(getFlowMagnitude(b))));
   }
 );
 
@@ -380,10 +387,10 @@ export const getLocationsForFlowMapLayer: Selector<
   }
 );
 
-const getFlowsForZoom: Selector<Flow[] | undefined> = createSelector(
+const getSortedFlowsForZoom: Selector<Flow[] | undefined> = createSelector(
   getClusteringEnabled,
-  getFlowsForKnownLocations,
-  getAggregatedFlows,
+  getSortedFlowsForKnownLocations,
+  getSortedAggregatedFlows,
   getClusterIndex,
   getClusterZoom,
   (clusteringEnabled, flows, aggregatedFlows, clusterIndex, clusterZoom) => {
@@ -396,15 +403,25 @@ const getFlowsForZoom: Selector<Flow[] | undefined> = createSelector(
 );
 
 export const getFlowsForFlowMapLayer: Selector<Flow[] | undefined> = createSelector(
-  getFlowsForZoom,
+  getSortedFlowsForZoom,
   getLocationIdsInViewport,
   (flows, locationIdsInViewport) => {
     if (!flows) return undefined;
     if (!locationIdsInViewport) return flows;
-    // TODO: only keep top 10000
-    return flows.filter(
-      f => locationIdsInViewport.has(f.origin) || locationIdsInViewport.has(f.dest)
-    );
+    const picked: Flow[] = [];
+    let count = 0;
+    for (const flow of flows) {
+      if (locationIdsInViewport.has(flow.origin) || locationIdsInViewport.has(flow.dest)) {
+        picked.push(flow);
+        if (flow.origin !== flow.dest) {
+          // exclude self-loops from count
+          count++;
+        }
+      }
+      // Only keep top
+      if (count > NUMBER_OF_FLOWS_TO_DISPLAY) break;
+    }
+    return picked;
   }
 );
 
