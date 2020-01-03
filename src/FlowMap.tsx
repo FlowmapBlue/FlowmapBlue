@@ -84,8 +84,8 @@ import {
   getLocationsForSearchBox,
   getLocationsHavingFlows,
   getMapboxMapStyle,
+  getMaxLocationCircleSize,
   getUnknownLocations,
-  getViewportBoundingBox,
 } from './FlowMap.selectors';
 import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
@@ -612,7 +612,7 @@ const FlowMap: React.FC<Props> = props => {
           getLocationId,
           varyFlowColorByMagnitude: true,
           showTotals: true,
-          maxLocationCircleSize: locationTotalsEnabled ? 15 : 0,
+          maxLocationCircleSize: getMaxLocationCircleSize(state, props),
           selectedLocationIds: getExpandedSelection(state, props),
           highlightedLocationId:
             highlight && highlight.type === HighlightType.LOCATION
@@ -630,6 +630,7 @@ const FlowMap: React.FC<Props> = props => {
         } as any)
       );
     }
+
     return layers;
   };
 

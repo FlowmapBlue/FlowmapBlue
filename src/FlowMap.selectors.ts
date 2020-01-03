@@ -26,6 +26,7 @@ export const getFlows = (state: State, props: Props) => props.flowsFetch.value;
 export const getLocations = (state: State, props: Props) => props.locationsFetch.value;
 export const getSelectedLocations = (state: State, props: Props) => state.selectedLocations;
 export const getClusteringEnabled = (state: State, props: Props) => state.clusteringEnabled;
+export const getLocationTotalsEnabled = (state: State, props: Props) => state.locationTotalsEnabled;
 export const getZoom = (state: State, props: Props) => state.viewport.zoom;
 export const getConfig = (state: State, props: Props) => props.config;
 export const getViewport = (state: State, props: Props) => state.viewport;
@@ -294,13 +295,23 @@ export const getExpandedSelection: Selector<Array<string> | undefined> = createS
   }
 );
 
-export const getViewportBoundingBox: Selector<[
-  number,
-  number,
-  number,
-  number
-]> = createSelector(getViewport, viewport =>
-  bounds([viewport.longitude, viewport.latitude], viewport.zoom, [viewport.width, viewport.height])
+export const getMaxLocationCircleSize: Selector<number> = createSelector(
+  getLocationTotalsEnabled,
+  locationTotalsEnabled => (locationTotalsEnabled ? 15 : 0)
+);
+
+const getViewportBoundingBox: Selector<[number, number, number, number]> = createSelector(
+  getViewport,
+  getMaxLocationCircleSize,
+  (viewport, maxLocationCircleSize) => {
+    const pad = maxLocationCircleSize;
+    return bounds(
+      [viewport.longitude, viewport.latitude],
+      viewport.zoom,
+      [viewport.width + pad * 2, viewport.height + pad * 2],
+      512
+    );
+  }
 );
 
 const getLocationsForZoom: Selector<Location[] | ClusterNode[] | undefined> = createSelector(
@@ -331,20 +342,16 @@ const getLocationsTree: Selector<any> = createSelector(getLocationsForZoom, loca
 });
 
 const getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelector(
-  getLocationsForZoom,
   getLocationsTree,
   getViewportBoundingBox,
-  (locations, tree, bbox) => {
-    if (!tree || !locations) return undefined;
+  (tree, bbox) => {
+    if (!tree) return undefined;
     const [lon1, lat1, lon2, lat2] = bbox;
     const [x1, y1, x2, y2] = [lngX(lon1), latY(lat1), lngX(lon2), latY(lat2)];
-    const range = tree.range(
-      Math.min(x1, x2),
-      Math.min(y1, y2),
-      Math.max(x1, x2),
-      Math.max(y1, y2)
-    );
-    return new Set(range.map((idx: number) => locations[idx].id));
+    const locationIds = tree
+      .range(Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2))
+      .map((idx: number) => tree.points[idx].id);
+    return new Set(locationIds);
   }
 );
 
