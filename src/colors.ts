@@ -69,6 +69,8 @@ export const COLOR_SCHEMES: { [key: string]: string[] } = {
   BrwnYl: ['#ede5cf', '#e0c2a2', '#d39c83', '#c1766f', '#a65461', '#813753', '#541f3f'],
 };
 
+export const COLOR_SCHEME_KEYS = ['Default'].concat(Object.keys(COLOR_SCHEMES));
+
 export enum ColorScheme {
   primary = '#137CBD',
 }

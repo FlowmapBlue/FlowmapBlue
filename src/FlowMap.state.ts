@@ -4,7 +4,7 @@ import { Props as TooltipProps } from './Tooltip';
 import * as queryString from 'query-string';
 import { viewport } from '@mapbox/geo-viewport';
 import { parseBoolConfigProp, parseNumberConfigProp } from './config';
-import { COLOR_SCHEMES } from './colors';
+import { COLOR_SCHEME_KEYS, COLOR_SCHEMES } from './colors';
 import { csvFormatRows, csvParseRows } from 'd3-dsv';
 import { Reducer } from 'react';
 
@@ -319,7 +319,7 @@ export function applyStateFromQueryString(initialState: State, query: string) {
   draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled;
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
   draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled;
-  if (typeof params.col === 'string' && Object.keys(COLOR_SCHEMES).includes(params.col)) {
+  if (typeof params.col === 'string' && COLOR_SCHEME_KEYS.includes(params.col)) {
     draft.colorSchemeKey = params.col;
   }
   return draft;
