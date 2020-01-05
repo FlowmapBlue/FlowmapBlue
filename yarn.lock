@@ -1153,19 +1153,19 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.4.tgz#622a72bebd1e3f48d921563b4b60a762295a81fc"
   integrity sha512-6PYY5DVdAY1ifaQW6XYTnOMihmBVT27elqSjEoodchsGjzYlEsTQMcEhSud99kVawatyTZRTiVkJ/c6lwbQ7nA==
 
-"@flowmap.gl/cluster@6.1.1-alpha.1":
-  version "6.1.1-alpha.1"
-  resolved "https://registry.yarnpkg.com/@flowmap.gl/cluster/-/cluster-6.1.1-alpha.1.tgz#7f09c439ee40672c334460418886286076eba1a2"
-  integrity sha512-9VEI8DoDsqJKkIAQ/2t3rfMJIppFKmdNVSVDIk1wbYB6/LBcYUqXHmoQkU7R0Q5OxMkafaaS+Il/U7JzQoxSbQ==
+"@flowmap.gl/cluster@6.1.1-alpha.2":
+  version "6.1.1-alpha.2"
+  resolved "https://registry.yarnpkg.com/@flowmap.gl/cluster/-/cluster-6.1.1-alpha.2.tgz#0aa9e5974a9dd192df4c29e2c74efd6168258b51"
+  integrity sha512-lnvmeoLX5ZR2Q2aLhxpLqP/mC0sShR8CrCTMVXWf4JP/n5+efqWx2D0BPfyZUDXh08wjN5Sb7SOdXqse6U2KuQ==
   dependencies:
     "@types/d3-array" "^2.0.0"
     d3-array "^2.0.3"
     kdbush "^3.0.0"
 
-"@flowmap.gl/core@6.1.1-alpha.1", "@flowmap.gl/core@^6.1.1-alpha.1":
-  version "6.1.1-alpha.1"
-  resolved "https://registry.yarnpkg.com/@flowmap.gl/core/-/core-6.1.1-alpha.1.tgz#dc4cbb6f61ea9faf902617cdfed2286ee73afd62"
-  integrity sha512-FwaqHhyNNAVwiI6qmfns8c/WT30zgnjsfF5yGxWGujliiOd5H8pXEneWDivbqMPAoUdeaaNVoTzOqL4LYAuYDw==
+"@flowmap.gl/core@6.1.1-alpha.2", "@flowmap.gl/core@^6.1.1-alpha.2":
+  version "6.1.1-alpha.2"
+  resolved "https://registry.yarnpkg.com/@flowmap.gl/core/-/core-6.1.1-alpha.2.tgz#4bb0616d6ea99bd7c313ad45e0e43b074e493333"
+  integrity sha512-lNNC+ATgDDPTTZs23U4XnZY8rMGtqWrkZwaKjyuhuogXJAan9DeF+jZw+BX8SxnH4kEMOjMhRqSY5jQ8WWNmbg==
   dependencies:
     d3-array "^2.0.3"
     d3-collection "^1.0.7"
@@ -1174,12 +1174,12 @@
     d3-scale "^3.0.0"
     reselect "^4.0.0"
 
-"@flowmap.gl/react@6.1.1-alpha.1":
-  version "6.1.1-alpha.1"
-  resolved "https://registry.yarnpkg.com/@flowmap.gl/react/-/react-6.1.1-alpha.1.tgz#08e9ec74c6ecdc7367c94cb61fc1c5b077046ae1"
-  integrity sha512-U8VMU5mk122RXQeERrotQwhoaw4kcSZsEFkF2dYvnDLW2WQXpSA9yDs1odYqEtmzU75aleAA4zJKgn1r69jLQw==
+"@flowmap.gl/react@6.1.1-alpha.2":
+  version "6.1.1-alpha.2"
+  resolved "https://registry.yarnpkg.com/@flowmap.gl/react/-/react-6.1.1-alpha.2.tgz#e038217e52846db78f3190f9e1cf47caeeff4a07"
+  integrity sha512-WsQq0cCYHgF2RU0WVlvy/j/nyQOULRqyrsJVXuJTTiV/56hHnerpC44VDfgLH4vPBMHzQekCHwyFhvWf1vR5/A==
   dependencies:
-    "@flowmap.gl/core" "^6.1.1-alpha.1"
+    "@flowmap.gl/core" "^6.1.1-alpha.2"
     "@mapbox/geo-viewport" "^0.4.0"
     d3-color "^1.2.3"
     d3-geo "^1.11.3"
