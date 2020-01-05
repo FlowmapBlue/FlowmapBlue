@@ -152,7 +152,7 @@ const FlowMap: React.FC<Props> = props => {
   );
   useEffect(updateQuerySearch, [history, state]);
 
-  const { viewport, tooltip, animationEnabled } = state;
+  const { viewport, tooltip, animationEnabled, baseMapEnabled } = state;
   const allFlows = getFlows(state, props);
   const allLocations = getLocations(state, props);
   const locationsHavingFlows = getLocationsHavingFlows(state, props);
@@ -659,7 +659,8 @@ const FlowMap: React.FC<Props> = props => {
         layers={getLayers()}
         ContextProvider={MapContext.Provider}
         children={({ width, height, viewState }: any) =>
-          mapboxAccessToken && (
+          mapboxAccessToken &&
+          baseMapEnabled && (
             <>
               <StaticMap
                 mapboxApiAccessToken={mapboxAccessToken}

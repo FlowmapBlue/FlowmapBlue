@@ -40,6 +40,14 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state }) => {
     });
   };
 
+  const handleToggleBaseMap = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked;
+    dispatch({
+      type: ActionType.SET_BASE_MAP_ENABLED,
+      baseMapEnabled: value,
+    });
+  };
+
   const handleChangeFadeAmount = (value: number) => {
     dispatch({
       type: ActionType.SET_FADE_AMOUNT,
@@ -106,34 +114,33 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state }) => {
                 onChange={handleChangeFadeAmount}
               />
             </Row>
-            <Row spacing={20}>
+            <Column spacing={10}>
               <StyledSwitch
                 checked={state.darkMode}
                 label="Dark mode"
                 onChange={handleToggleDarkMode}
               />
-            </Row>
-            <Row spacing={10}>
-              <StyledSwitch
-                checked={state.clusteringEnabled}
-                label="Cluster on zoom"
-                onChange={handleToggleClustering}
-              />
-            </Row>
-            <Row spacing={20}>
-              <StyledSwitch
-                checked={state.locationTotalsEnabled}
-                label="Location totals"
-                onChange={handleToggleLocationTotals}
-              />
-            </Row>
-            <Row spacing={20}>
               <StyledSwitch
                 checked={state.animationEnabled}
                 label="Animate flows"
                 onChange={handleToggleAnimation}
               />
-            </Row>
+              <StyledSwitch
+                checked={state.clusteringEnabled}
+                label="Cluster on zoom"
+                onChange={handleToggleClustering}
+              />
+              <StyledSwitch
+                checked={state.baseMapEnabled}
+                label="Base map"
+                onChange={handleToggleBaseMap}
+              />
+              <StyledSwitch
+                checked={state.locationTotalsEnabled}
+                label="Location totals"
+                onChange={handleToggleLocationTotals}
+              />
+            </Column>
           </Column>
         </SettingsOuter>
       }

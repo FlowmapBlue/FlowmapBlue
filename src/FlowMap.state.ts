@@ -37,6 +37,7 @@ export interface State {
   animationEnabled: boolean;
   locationTotalsEnabled: boolean;
   clusteringEnabled: boolean;
+  baseMapEnabled: boolean;
   darkMode: boolean;
   fadeAmount: number;
   colorSchemeKey: string | undefined;
@@ -55,6 +56,7 @@ export enum ActionType {
   SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED',
   SET_LOCATION_TOTALS_ENABLED = 'SET_LOCATION_TOTALS_ENABLED',
   SET_DARK_MODE = 'SET_DARK_MODE',
+  SET_BASE_MAP_ENABLED = 'SET_BASE_MAP_ENABLED',
   SET_FADE_AMOUNT = 'SET_FADE_AMOUNT',
   SET_COLOR_SCHEME = 'SET_COLOR_SCHEME',
 }
@@ -105,6 +107,10 @@ export type Action =
   | {
       type: ActionType.SET_DARK_MODE;
       darkMode: boolean;
+    }
+  | {
+      type: ActionType.SET_BASE_MAP_ENABLED;
+      baseMapEnabled: boolean;
     }
   | {
       type: ActionType.SET_FADE_AMOUNT;
@@ -237,6 +243,13 @@ function mainReducer(state: State, action: Action): State {
         darkMode,
       };
     }
+    case ActionType.SET_BASE_MAP_ENABLED: {
+      const { baseMapEnabled } = action;
+      return {
+        ...state,
+        baseMapEnabled,
+      };
+    }
     case ActionType.SET_FADE_AMOUNT: {
       const { fadeAmount } = action;
       return {
@@ -301,6 +314,7 @@ export function applyStateFromQueryString(initialState: State, query: string) {
     }
   }
   draft.fadeAmount = asNumber(params.f) ?? draft.fadeAmount;
+  draft.baseMapEnabled = asBoolean(params.b) ?? draft.baseMapEnabled;
   draft.darkMode = asBoolean(params.d) ?? draft.darkMode;
   draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled;
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
@@ -319,8 +333,9 @@ export function stateToQueryString(state: State) {
   } = state;
   parts.push(`v=${csvFormatRows([[latitude.toFixed(6), longitude.toFixed(6), zoom.toFixed(2)]])}`);
   parts.push(`a=${state.animationEnabled ? 1 : 0}`);
-  parts.push(`d=${state.darkMode ? 1 : 0}`);
+  parts.push(`b=${state.baseMapEnabled ? 1 : 0}`);
   parts.push(`c=${state.clusteringEnabled ? 1 : 0}`);
+  parts.push(`d=${state.darkMode ? 1 : 0}`);
   parts.push(`lt=${state.locationTotalsEnabled ? 1 : 0}`);
   if (state.colorSchemeKey != null) {
     parts.push(`col=${state.colorSchemeKey}`);
@@ -363,6 +378,7 @@ export function getInitialState(config: Config, queryString: string) {
     adjustViewportToLocations: true,
     selectedLocations: undefined,
     locationTotalsEnabled: true,
+    baseMapEnabled: true,
     animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
     clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
     darkMode: parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
