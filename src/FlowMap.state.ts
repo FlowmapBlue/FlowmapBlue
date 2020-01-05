@@ -1,4 +1,4 @@
-import { ViewportProps, ViewState } from 'react-map-gl';
+import { ViewportProps } from 'react-map-gl';
 import { Config, ConfigPropName, Flow } from './types';
 import { Props as TooltipProps } from './Tooltip';
 import * as queryString from 'query-string';
@@ -29,7 +29,7 @@ export interface FlowHighlight {
 export type Highlight = LocationHighlight | FlowHighlight;
 
 export interface State {
-  viewState: ViewState | ViewportProps;
+  viewport: ViewportProps;
   adjustViewportToLocations: boolean;
   tooltip?: TooltipProps;
   highlight?: Highlight;
@@ -43,7 +43,7 @@ export interface State {
 }
 
 export enum ActionType {
-  SET_VIEW_STATE = 'SET_VIEW_STATE',
+  SET_VIEWPORT = 'SET_VIEWPORT',
   ZOOM_IN = 'ZOOM_IN',
   ZOOM_OUT = 'ZOOM_OUT',
   SET_HIGHLIGHT = 'SET_HIGHLIGHT',
@@ -61,8 +61,8 @@ export enum ActionType {
 
 export type Action =
   | {
-      type: ActionType.SET_VIEW_STATE;
-      viewState: ViewState | ViewportProps;
+      type: ActionType.SET_VIEWPORT;
+      viewport: ViewportProps;
     }
   | {
       type: ActionType.ZOOM_IN;
@@ -115,39 +115,39 @@ export type Action =
       colorSchemeKey: string;
     };
 
-function mainReducer(state: State, action: Action) {
+function mainReducer(state: State, action: Action): State {
   switch (action.type) {
-    case ActionType.SET_VIEW_STATE: {
-      const { viewState } = action;
+    case ActionType.SET_VIEWPORT: {
+      const { viewport } = action;
       return {
         ...state,
-        viewState: {
-          ...viewState,
-          zoom: Math.min(MAX_ZOOM_LEVEL, Math.max(MIN_ZOOM_LEVEL, viewState.zoom)),
+        viewport: {
+          ...viewport,
+          zoom: Math.min(MAX_ZOOM_LEVEL, Math.max(MIN_ZOOM_LEVEL, viewport.zoom)),
         },
         tooltip: undefined,
         highlight: undefined,
       };
     }
     case ActionType.ZOOM_IN: {
-      const { viewState } = state;
+      const { viewport } = state;
       return {
         ...state,
-        viewState: {
-          ...viewState,
-          zoom: Math.min(MAX_ZOOM_LEVEL, viewState.zoom * 1.1),
+        viewport: {
+          ...viewport,
+          zoom: Math.min(MAX_ZOOM_LEVEL, viewport.zoom * 1.1),
         },
         tooltip: undefined,
         highlight: undefined,
       };
     }
     case ActionType.ZOOM_OUT: {
-      const { viewState } = state;
+      const { viewport } = state;
       return {
         ...state,
-        viewState: {
-          ...viewState,
-          zoom: Math.max(MIN_ZOOM_LEVEL, viewState.zoom / 1.1),
+        viewport: {
+          ...viewport,
+          zoom: Math.max(MIN_ZOOM_LEVEL, viewport.zoom / 1.1),
         },
         tooltip: undefined,
         highlight: undefined,
@@ -290,8 +290,8 @@ export function applyStateFromQueryString(initialState: State, query: string) {
     if (rows.length > 0) {
       const [latitude, longitude, zoom] = rows[0].map(asNumber);
       if (latitude != null && longitude != null && zoom != null) {
-        draft.viewState = {
-          ...draft.viewState,
+        draft.viewport = {
+          ...draft.viewport,
           latitude,
           longitude,
           zoom,
@@ -314,7 +314,7 @@ export function applyStateFromQueryString(initialState: State, query: string) {
 export function stateToQueryString(state: State) {
   const parts: string[] = [];
   const {
-    viewState: { latitude, longitude, zoom },
+    viewport: { latitude, longitude, zoom },
     selectedLocations,
   } = state;
   parts.push(`v=${csvFormatRows([[latitude.toFixed(6), longitude.toFixed(6), zoom.toFixed(2)]])}`);
@@ -332,25 +332,34 @@ export function stateToQueryString(state: State) {
   return parts.join('&');
 }
 
-export function getInitialViewState(bbox: [number, number, number, number]) {
+export function getInitialViewport(bbox: [number, number, number, number]) {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
   const {
     center: [longitude, latitude],
     zoom,
-  } = viewport(bbox, [window.innerWidth, window.innerHeight], undefined, undefined, 512, true);
+  } = viewport(bbox, [width, height], undefined, undefined, 512, true);
   return {
+    width,
+    height,
     longitude,
     latitude,
     zoom,
+    minZoom: MIN_ZOOM_LEVEL,
+    maxZoom: MAX_ZOOM_LEVEL,
+    minPitch: 0,
+    maxPitch: 0,
     bearing: 0,
     pitch: 0,
+    altitude: 0,
   };
 }
 
-export const DEFAULT_VIEW_STATE = getInitialViewState([-180, -70, 180, 70]);
+export const DEFAULT_VIEWPORT = getInitialViewport([-180, -70, 180, 70]);
 
 export function getInitialState(config: Config, queryString: string) {
   const draft = {
-    viewState: DEFAULT_VIEW_STATE,
+    viewport: DEFAULT_VIEWPORT,
     adjustViewportToLocations: true,
     selectedLocations: undefined,
     locationTotalsEnabled: true,
@@ -368,7 +377,7 @@ export function getInitialState(config: Config, queryString: string) {
       .map(asNumber)
       .filter(v => v != null) as number[];
     if (bounds.length === 4) {
-      draft.viewState = getInitialViewState(bounds as [number, number, number, number]);
+      draft.viewport = getInitialViewport(bounds as [number, number, number, number]);
       draft.adjustViewportToLocations = false;
     }
   }

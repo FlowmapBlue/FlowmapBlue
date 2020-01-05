@@ -30,7 +30,7 @@ const itemPredicate: ItemPredicate<Location | Cluster> = (query, location) => {
 };
 
 function sortLocations(locations: (Location | Cluster)[]): (Location | Cluster)[] {
-  return locations.sort((a, b) => {
+  return locations.slice().sort((a, b) => {
     const aname = a.name || a.id;
     const bname = b.name || b.id;
     if (aname < bname) return -1;
