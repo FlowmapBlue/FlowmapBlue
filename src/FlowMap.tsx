@@ -14,7 +14,6 @@ import {
 } from 'react';
 import { _MapContext as MapContext, StaticMap, ViewStateChangeInfo } from 'react-map-gl';
 import FlowMapLayer, {
-  AccessorObjectInfo,
   FlowLayerPickingInfo,
   FlowPickingInfo,
   LocationPickingInfo,

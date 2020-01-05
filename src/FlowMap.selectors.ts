@@ -1,4 +1,9 @@
-import { createSelector, ParametricSelector } from 'reselect';
+import {
+  createSelector,
+  createSelectorCreator,
+  defaultMemoize,
+  ParametricSelector,
+} from 'reselect';
 import { MAX_ZOOM_LEVEL, State } from './FlowMap.state';
 import {
   ConfigPropName,
@@ -335,7 +340,9 @@ const getLocationsForZoom: Selector<Location[] | ClusterNode[] | undefined> = cr
   }
 );
 
-const getLocationsTree: Selector<any> = createSelector(getLocationsForZoom, locations => {
+type KDBushTree = any;
+
+const getLocationsTree: Selector<KDBushTree> = createSelector(getLocationsForZoom, locations => {
   if (!locations) {
     return undefined;
   }
@@ -348,10 +355,10 @@ const getLocationsTree: Selector<any> = createSelector(getLocationsForZoom, loca
   );
 });
 
-const getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelector(
+const _getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelector(
   getLocationsTree,
   getViewportBoundingBox,
-  (tree, bbox) => {
+  (tree: KDBushTree, bbox: [number, number, number, number]) => {
     if (!tree) return undefined;
     const [lon1, lat1, lon2, lat2] = bbox;
     const [x1, y1, x2, y2] = [lngX(lon1), latY(lat1), lngX(lon2), latY(lat2)];
@@ -361,6 +368,23 @@ const getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelect
     return new Set(locationIds);
   }
 );
+
+const getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelectorCreator<
+  Set<string> | undefined
+>(
+  // @ts-ignore
+  defaultMemoize,
+  (s1: Set<string> | undefined, s2: Set<string> | undefined, index: number) => {
+    if (s1 === s2) return true;
+    if (s1 == null || s2 == null) return false;
+    if (s1.size !== s2.size) return false;
+    for (const item of s1) if (!s2.has(item)) return false;
+    return true;
+  }
+)(_getLocationIdsInViewport, (locationIds: Set<string> | undefined) => {
+  if (!locationIds) return undefined;
+  return locationIds;
+});
 
 export const getLocationsForFlowMapLayer: Selector<
   Location[] | ClusterNode[] | undefined
