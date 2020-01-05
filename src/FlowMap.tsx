@@ -742,7 +742,10 @@ const FlowMap: React.FC<Props> = props => {
               )}
               {authorUrl ? (
                 <div>
-                  Created by: <Away href={authorUrl}>{authorName || 'Author'}</Away>
+                  {`Created by: `}
+                  <Away href={`${authorUrl.indexOf('://') < 0 ? 'http://' : ''}${authorUrl}`}>
+                    {authorName || 'Author'}
+                  </Away>
                 </div>
               ) : authorName ? (
                 <div>Created by: {authorName}</div>
@@ -751,7 +754,9 @@ const FlowMap: React.FC<Props> = props => {
                 <div>
                   {'Original data source: '}
                   <>
-                    <Away href={sourceUrl}>{sourceName}</Away>
+                    <Away href={`${sourceUrl.indexOf('://') < 0 ? 'http://' : ''}${sourceUrl}`}>
+                      {sourceName}
+                    </Away>
                   </>
                 </div>
               )}
