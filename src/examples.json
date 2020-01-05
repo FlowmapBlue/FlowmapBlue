@@ -115,7 +115,8 @@
     },
     {
       "key": "18eQBxQDTGVOxMicvsd5bKplhiXe5ohM_G2D7L6mVspI",
-      "name": "Commuters around Toulouse, France"
+      "query": "v=43.545350,1.442510,9.14&a=0&d=1&c=1&lt=1&f=46",
+      "name": "Commuters in the south of France"
     },
     {
       "key": "1DepInNULQvNmy1x5jeQr5A1KsxWB8_4QuBnV57TtsXI",
@@ -171,16 +172,11 @@
     },
     {
       "key": "1XQXu5-HHCVUxtJoA70qoCe7Od0kJW3TjnsRIrjaPFpg",
-      "name": "Migration of developers"
+      "name": "Migration of developers in Europe"
     },
     {
       "key": "1ElqxUc0fhgMzBGQ5XVsff0ScESdXK1OiGOizda-l-DE",
       "name": "Refugees resettlement 2019"
-    },
-    {
-      "key": "1TxwXpzLaWTfVgvdQVoloLP0D4fnLZwqqw9ej8seVmH4",
-      "name": "Fishing across borders",
-      "query": "v=29.662909,135.265746,3.47&a=0&d=1&c=1&f=45"
     },
     {
       "key": "11SBtjPvJF9DwhaA8ZBGCYdMwajd4VPTGTp4AXmw1j5k",
@@ -195,11 +191,6 @@
       "key": "11BnSxpgE3MrogkSi1jAXd0fk2xtTH4l45DHaPviKE9U",
       "name": "Internal migration in Georgia",
       "query": "v=42.100657,43.315967,6.46&a=0&d=1&c=0&col=Default&f=45"
-    },
-    {
-      "key": "1CT7i8uLynnO834QHNlSrLDnGSBqSUsH4zsbuGC-VNEk",
-      "name": "Barrick Gold subsidiaries",
-      "query": "v=30.017415,-73.881040,2.60&a=0&d=1&c=1&col=OrRd&f=45"
     },
     {
       "key": "10ujwLgqN_GlazlqMhyFxyM4D9Vd2V8LHR396BC-uerc",
