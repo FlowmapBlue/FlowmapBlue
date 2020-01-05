@@ -1,6 +1,7 @@
 import { DeckGL } from '@deck.gl/react';
 import { MapController } from '@deck.gl/core';
 import * as React from 'react';
+import { alea } from 'seedrandom';
 import {
   ReactNode,
   Reducer,
@@ -13,6 +14,7 @@ import {
 } from 'react';
 import { _MapContext as MapContext, StaticMap, ViewStateChangeInfo } from 'react-map-gl';
 import FlowMapLayer, {
+  AccessorObjectInfo,
   FlowLayerPickingInfo,
   FlowPickingInfo,
   LocationPickingInfo,
@@ -178,7 +180,7 @@ const FlowMap: React.FC<Props> = props => {
   const animate = useCallback(
     (time: number) => {
       const loopLength = 1800;
-      const animationSpeed = 30;
+      const animationSpeed = 20;
       const loopTime = loopLength / animationSpeed;
       const timestamp = time / 1000;
       setTime(((timestamp % loopTime) / loopTime) * loopLength);
@@ -611,9 +613,13 @@ const FlowMap: React.FC<Props> = props => {
           getFlowOriginId,
           getFlowDestId,
           getLocationId,
+          getAnimatedFlowLineStaggering: (d: Flow) =>
+            // @ts-ignore
+            new alea(`${d.origin}-${d.dest}`)(),
           varyFlowColorByMagnitude: true,
           showTotals: true,
           maxLocationCircleSize: getMaxLocationCircleSize(state, props),
+          maxFlowThickness: animationEnabled ? 5 : 12,
           selectedLocationIds: getExpandedSelection(state, props),
           highlightedLocationId:
             highlight && highlight.type === HighlightType.LOCATION
@@ -622,13 +628,14 @@ const FlowMap: React.FC<Props> = props => {
           highlightedFlow:
             highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
           onHover: handleHover,
+          // @ts-ignore
           onClick: handleClick,
           visible: true,
           updateTriggers: {
             onHover: handleHover, // to avoid stale closure in the handler
             onClick: handleClick,
           },
-        } as any)
+        })
       );
     }
 
