@@ -77,6 +77,11 @@
       "name": "Commuters in Switzerland 2014"
     },
     {
+      "key": "12OpNobFWMLRFuBhCxP-hJIGMA3iqDwA3P6fwkDqfQms",
+      "query": "v=45.450771,9.183115,11.46&a=0&d=1&c=1&lt=1&col=Burg&f=64",
+      "name": "Commuters in Milan 2020"
+    },
+    {
       "key": "1wMmN1dXjvTR7S4dv9gtFeuwJRtdMLFRm0GAORVZynCg",
       "name": "Metro travels in Santiago, Chile"
     },
