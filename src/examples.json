@@ -51,6 +51,11 @@
       "query": "v=49.272478,5.910396,5.91&a=1&d=1&c=0&lt=0&col=Sunset&f=24"
     },
     {
+      "key": "11leYaPeZ2uw3tlPUKlzto8fET_QLxa3PYitdZJEK2YA",
+      "name": "Commuters in Metro Vancouver 2016",
+      "query": "v=49.210835,-122.943528,9.71&a=0&b=1&c=1&d=1&lt=1&col=Default&f=45"
+    },
+    {
       "key": "18RxRi1aKytbiBL7O_lXbTx4n69JWqiGJquPGJmv7wos",
       "name": "Commuters in New Zealand 2013",
       "query": "v=-42.466480,173.015758,4.68&a=0&d=1&c=1&f=45"
@@ -60,9 +65,14 @@
       "name": "International migrant stock 2019"
     },
     {
+      "key": "1Wz6ohj-PTWIQ7X9nu5dpdliqp9azSLWVPOCQoOpLvKQ",
+      "name": "Commuters in Canada 2016",
+      "query": "v=52.554402,-94.862964,3.52&a=0&b=1&c=1&d=1&lt=1&col=Default&f=28"
+    },
+    {
       "key": "15_pAF6byVzfM4XWjVMryfirY6Lyo_rhJa7M7LADaveQ",
-      "name": "Regional travel in the Greater Toronto Area",
-      "query": "v=43.623020,-79.393302,8.92&a=0&d=1&c=1&f=45"
+      "name": "Travel in the Greater Toronto Area",
+      "query": "v=43.647088,-79.432299,8.91&a=0&b=1&c=1&d=1&lt=1&f=45"
     },
     {
       "key": "1k-GPUBh334sXxKg3-bY-MAiH0wgiM7A6rE1px9T0hKA",
