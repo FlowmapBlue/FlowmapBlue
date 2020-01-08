@@ -36,7 +36,7 @@ async function mkdirp(dirPath) {
   for (const key of exampleKeys) {
     const ex = examples.find(ex => ex.key === key)
     const query = ex ? ex.query : undefined
-    const url = `${APP_URL}/${key}${query ? `?${query}` : ''}`;
+    const url = `${APP_URL}/${key}/embed${query ? `?${query}` : ''}`;
     process.stdout.write('Making screenshot of '+ url + '\n');
     await page.goto(url, { waitUntil: 'networkidle0', timeout });
     await page.waitForSelector('.bp3-multi-select', { timeout });

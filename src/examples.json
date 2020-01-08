@@ -4,8 +4,13 @@
   "examples": [
     {
       "key": "15kwLB4baXZ7jpip8q0JjgR6zDoS5Gt3gMLCTUAboQxk",
-      "name": "Relocations between Swiss cantons 2016",
+      "name": "Migration in Switzerland 2016",
       "query": "v=46.719075,7.817990,7.51&a=0&d=1&c=0&lt=1&col=Default&f=45"
+    },
+    {
+      "key": "1B75NgT4vzOW86HZdIgKRv4lxE_GXDHalJW-0vGfFqQY",
+      "name": "Commuters in France 2016",
+      "query": "v=46.924884,2.000794,5.47&a=0&d=1&c=1&lt=1&f=27"
     },
     {
       "key": "1e3Euejg1bPCe5mdSPFVahi6Fy_LqXFyPTKJT-BcpMP8",
@@ -36,11 +41,6 @@
       "name": "5 million relocations in Australia"
     },
     {
-      "key": "1B75NgT4vzOW86HZdIgKRv4lxE_GXDHalJW-0vGfFqQY",
-      "name": "Commuters in France 2016",
-      "query": "v=46.924884,2.000794,5.47&a=0&d=1&c=1&lt=1&f=27"
-    },
-    {
       "key": "1mgZFk4wM3BZHXJK0j25NS5lXjFkskJ8JYztDub5iwQA",
       "name": "Migration in Austria 2019",
       "query": "v=47.362589,13.205399,6.75&a=0&d=1&c=1&lt=1&col=Sunset&f=46"
@@ -56,9 +56,9 @@
       "query": "v=49.210835,-122.943528,9.71&a=0&b=1&c=1&d=1&lt=1&col=Default&f=45"
     },
     {
-      "key": "18RxRi1aKytbiBL7O_lXbTx4n69JWqiGJquPGJmv7wos",
-      "name": "Commuters in New Zealand 2013",
-      "query": "v=-42.466480,173.015758,4.68&a=0&d=1&c=1&f=45"
+      "key": "1PVvaeeASIQV7dflQmvFRY9ztXi1Bwul8V2-v1UyRP_w",
+      "query": "v=46.944276,7.428740,12.93&a=0&b=1&c=1&d=1&lt=1&col=TealGrn&f=45",
+      "name": "Bicycle hires in Bern, Switzerland"
     },
     {
       "key": "1upuL1_mCgXjjIp2OI_PekFS5r_Vtyr46Fayt1aWnnjc",
@@ -67,7 +67,7 @@
     {
       "key": "1Wz6ohj-PTWIQ7X9nu5dpdliqp9azSLWVPOCQoOpLvKQ",
       "name": "Commuters in Canada 2016",
-      "query": "v=52.554402,-94.862964,3.52&a=0&b=1&c=1&d=1&lt=1&col=Default&f=28"
+      "query": "v=48.379110,-94.389853,3.79&a=0&b=1&c=1&d=1&lt=1&col=Default&f=28"
     },
     {
       "key": "15_pAF6byVzfM4XWjVMryfirY6Lyo_rhJa7M7LADaveQ",
@@ -76,7 +76,8 @@
     },
     {
       "key": "1k-GPUBh334sXxKg3-bY-MAiH0wgiM7A6rE1px9T0hKA",
-      "name": "World refugees 2017"
+      "name": "World refugees 2017",
+      "query": "v=27.125172,31.789959,3.19&a=0&b=1&c=1&d=1&lt=1&col=SunsetDark&f=30"
     },
     {
       "key": "1xl5VCFJvx1wjtBTRhH-QzULIojiTORauFRqREnQkJN4",
@@ -87,13 +88,14 @@
       "name": "Commuters in Switzerland 2014"
     },
     {
+      "key": "1SuJy9ei8NFQ972-lIdg4Ze9KY7dykUt8CwMLS0GDmGo",
+      "name": "BIXI bicycle sharing Montréal",
+      "query": "v=45.513266,-73.573425,12.18&a=0&d=1&c=1&col=Teal&f=45"
+    },
+    {
       "key": "12OpNobFWMLRFuBhCxP-hJIGMA3iqDwA3P6fwkDqfQms",
       "query": "v=45.450771,9.183115,11.46&a=0&d=1&c=1&lt=1&col=Burg&f=64",
       "name": "Commuters in Milan 2020"
-    },
-    {
-      "key": "1wMmN1dXjvTR7S4dv9gtFeuwJRtdMLFRm0GAORVZynCg",
-      "name": "Metro travels in Santiago, Chile"
     },
     {
       "key": "1jhDwRoMv12lEzdNyldmGTNbWJ11YgIb-TbuC9qJ6SQs",
@@ -101,18 +103,26 @@
       "query": "v=47.569243,-122.273770,11.01&a=0&d=1&c=1&col=SunsetDark&f=45"
     },
     {
-      "key": "1NekUlySL8_LShjOvVFenW5ed6QJNu31_6ebVCj6eGoE",
-      "name": "NYC employment flows"
-    },
-    {
       "key": "1Tlj2e6Kha7SZgIxwcghIqJiCyWXv7VMtgHw20VSjyIE",
       "name": "Pedestrians in Mexico City",
       "query": "v=19.391692,-99.151511,10.91&a=0&d=1&c=1&lt=1&f=45"
     },
     {
-      "key": "1SuJy9ei8NFQ972-lIdg4Ze9KY7dykUt8CwMLS0GDmGo",
-      "name": "BIXI bicycle sharing Montréal",
-      "query": "v=45.513266,-73.573425,12.18&a=0&d=1&c=1&col=Teal&f=45"
+      "key": "1C2Br5bAU0R6j-2C2-_ElpIu45bLFm-F3hkbe7-JOFwg",
+      "name": "Cattle livestock movements in NZ"
+    },
+    {
+      "key": "13krjWPeGx5yIauhDrQMVa0xaTER4Td5txQAw-Plh3w4",
+      "name": "Relocations in Barcelona 2017",
+      "query": "v=41.388489,2.162359,12.48&a=0&d=1&c=1&lt=1&f=45"
+    },
+    {
+      "key": "1FkOWeGgVKL1rfoJZK4fq6X0nDiWOKdv3Lcuqx3sgDu4",
+      "name": "Morning commuters in Santiago 2012"
+    },
+    {
+      "key": "1wMmN1dXjvTR7S4dv9gtFeuwJRtdMLFRm0GAORVZynCg",
+      "name": "Metro travels in Santiago, Chile"
     },
     {
       "key": "1Hy6kV4O_qqcjNvNxmDkc-WA__8wcbAjUlBX5a0zcGWY",
@@ -120,22 +130,22 @@
       "query": "v=6.611493,-52.118689,2.94&a=1&d=1&c=1&col=BluYl&f=0"
     },
     {
-      "key": "1FkOWeGgVKL1rfoJZK4fq6X0nDiWOKdv3Lcuqx3sgDu4",
-      "name": "Morning commuters in Santiago 2012"
-    },
-    {
       "key": "18eQBxQDTGVOxMicvsd5bKplhiXe5ohM_G2D7L6mVspI",
       "query": "v=43.545350,1.442510,9.14&a=0&d=1&c=1&lt=1&f=46",
       "name": "Commuters in the south of France"
     },
     {
-      "key": "1DepInNULQvNmy1x5jeQr5A1KsxWB8_4QuBnV57TtsXI",
-      "name": "Commuter flows in Cook County, Chicago"
+      "key": "1NekUlySL8_LShjOvVFenW5ed6QJNu31_6ebVCj6eGoE",
+      "name": "Commuters in New York 2015"
     },
     {
-      "key": "13krjWPeGx5yIauhDrQMVa0xaTER4Td5txQAw-Plh3w4",
-      "name": "Relocations in Barcelona 2017",
-      "query": "v=41.388489,2.162359,12.48&a=0&d=1&c=1&lt=1&f=45"
+      "key": "1H33wOmFS6OZBkRSTguqqHAHCv5MA3Ww2padz2z_9i2o",
+      "query": "v=53.075776,8.710400,8.43&a=1&b=1&c=1&d=1&lt=1&col=YlOrRd&f=0",
+      "name": "Commuters in Bremen"
+    },
+    {
+      "key": "1DepInNULQvNmy1x5jeQr5A1KsxWB8_4QuBnV57TtsXI",
+      "name": "Commuters in Cook County, Chicago"
     },
     {
       "key": "1rhsLubo_ZCjoBhP7PbX16nm-WUPvtHRguEFXhLJu1Jk",
@@ -151,17 +161,14 @@
       "query": "v=47.756469,-3.380318,10.49&a=0&d=1&c=1&col=PuRd&f=45"
     },
     {
+      "key": "18RxRi1aKytbiBL7O_lXbTx4n69JWqiGJquPGJmv7wos",
+      "name": "Commuters in New Zealand 2013",
+      "query": "v=-42.051751,173.211728,4.67&a=0&b=1&c=1&d=1&lt=1&f=45"
+    },
+    {
       "key": "1ax4J4iLZb5nFWooseKEmLXJyOb-gGpo5qYtHbr_3TOU",
       "name": "Seattle Lyft rides 2018 Q2",
       "query": "v=47.614581,-122.332389,12.36&a=0&d=1&c=0&f=45"
-    },
-    {
-      "key": "1qpqQr9TN5MVgJFQ6xmI9ut7VHy9_E9Lja84abB9Hq2Y",
-      "name": "Poultry trade and risk of HPAI endemicity in Vietnam + background data map"
-    },
-    {
-      "key": "1PVvaeeASIQV7dflQmvFRY9ztXi1Bwul8V2-v1UyRP_w",
-      "name": "Publibike bike hires, Bern, Switzerland"
     },
     {
       "key": "18C8jcLuEV9Ijx5J_-8WGqjq6HuOs7iWNbVU6XbxX9J0",
@@ -178,7 +185,8 @@
     },
     {
       "key": "1BHy69x6MbVZZSqmF53MnOe2X_B_AGGdNUqsXmmmFt0Q",
-      "name": "Commuters to Salzburg 2011"
+      "name": "Commuters to Salzburg 2011",
+      "query": "v=47.780392,13.055787,10.31&a=0&b=1&c=1&d=1&lt=1&f=45"
     },
     {
       "key": "1XQXu5-HHCVUxtJoA70qoCe7Od0kJW3TjnsRIrjaPFpg",
@@ -189,22 +197,22 @@
       "name": "Refugees resettlement 2019"
     },
     {
+      "key": "11BnSxpgE3MrogkSi1jAXd0fk2xtTH4l45DHaPviKE9U",
+      "name": "Internal migration in Georgia",
+      "query": "v=41.775920,43.291332,7.17&a=0&b=1&c=0&d=1&lt=1&col=Default&f=45"
+    },
+    {
+      "key": "10ujwLgqN_GlazlqMhyFxyM4D9Vd2V8LHR396BC-uerc",
+      "name": "Ukraine voting location changes"
+    },
+    {
       "key": "11SBtjPvJF9DwhaA8ZBGCYdMwajd4VPTGTp4AXmw1j5k",
       "name": "Migration from Greece",
       "query": "v=38.917953,21.921850,6.24&a=1&d=0&c=1&col=Teal&f=0"
     },
     {
-      "key": "1C2Br5bAU0R6j-2C2-_ElpIu45bLFm-F3hkbe7-JOFwg",
-      "name": "NZ Beef Cattle Livestock Movements"
-    },
-    {
-      "key": "11BnSxpgE3MrogkSi1jAXd0fk2xtTH4l45DHaPviKE9U",
-      "name": "Internal migration in Georgia",
-      "query": "v=42.100657,43.315967,6.46&a=0&d=1&c=0&col=Default&f=45"
-    },
-    {
-      "key": "10ujwLgqN_GlazlqMhyFxyM4D9Vd2V8LHR396BC-uerc",
-      "name": "Ukraine voting location changes"
+      "key": "1qpqQr9TN5MVgJFQ6xmI9ut7VHy9_E9Lja84abB9Hq2Y",
+      "name": "Poultry trade and risk of HPAI endemicity in Vietnam + background data map"
     }
   ]
 }
