@@ -30,6 +30,16 @@ const NewsItem = styled.div`
 export default () => (
   <Outer>
     <NewsItem>
+      <NewsDate>Jan 06, 2020</NewsDate>
+      <NewsText>
+        The flow thickness and color scales now{' '}
+        <Away href="https://twitter.com/ilyabo/status/1213968896182669312">
+          automatically adapt to the viewport
+        </Away>
+        .
+      </NewsText>
+    </NewsItem>
+    <NewsItem>
       <NewsDate>Dec 25, 2019</NewsDate>
       <NewsText>
         Added support for <a href="videos/sharing.mp4">sharing and embedding</a>.
