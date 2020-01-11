@@ -718,7 +718,7 @@ const FlowMap: React.FC<Props> = props => {
       )}
       {!embed && (
         <Absolute bottom={40} left={10}>
-          <SettingsPopover state={state} dispatch={dispatch} />
+          <SettingsPopover darkMode={darkMode} state={state} dispatch={dispatch} />
         </Absolute>
       )}
       {embed && (

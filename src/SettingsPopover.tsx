@@ -1,13 +1,12 @@
 import { Column, LegendTitle, Row } from './Boxes';
-import { HTMLSelect, Popover, Slider, Switch } from '@blueprintjs/core';
-import { COLOR_SCHEMES } from './colors';
+import { Popover, Slider, Switch } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import * as React from 'react';
+import { Dispatch, SyntheticEvent } from 'react';
 import styled from '@emotion/styled';
-import { SyntheticEvent } from 'react';
 import { Action, ActionType, State } from './FlowMap.state';
-import { Dispatch } from 'react';
 import { NoOutlineButton } from './FlowMap';
+import ColorSchemeSelector from './ColorSchemeSelector';
 
 const SettingsOuter = styled.div`
   font-size: 12px;
@@ -20,10 +19,11 @@ const StyledSwitch = styled(Switch)`
 
 interface Props {
   state: State;
+  darkMode: boolean;
   dispatch: Dispatch<Action>;
 }
 
-const SettingsPopover: React.FC<Props> = ({ dispatch, state }) => {
+const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
   const handleToggleClustering = (evt: SyntheticEvent) => {
     const value = (evt.target as HTMLInputElement).checked;
     dispatch({
@@ -55,11 +55,10 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state }) => {
     });
   };
 
-  const handleChangeColorScheme = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).value;
+  const handleChangeColorScheme = (colorSchemeKey: string) => {
     dispatch({
       type: ActionType.SET_COLOR_SCHEME,
-      colorSchemeKey: value,
+      colorSchemeKey,
     });
   };
 
@@ -88,22 +87,15 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state }) => {
           <Column spacing={10} padding="12px 20px">
             <LegendTitle>Settings</LegendTitle>
             <Row spacing={5}>
-              <div>Color scheme</div>
-              <HTMLSelect
-                style={{ fontSize: 12 }}
-                value={state.colorSchemeKey}
+              <div style={{ whiteSpace: 'nowrap' }}>Color scheme</div>
+              <ColorSchemeSelector
+                selected={state.colorSchemeKey}
+                reverse={darkMode}
                 onChange={handleChangeColorScheme}
-              >
-                <option>Default</option>
-                {Object.keys(COLOR_SCHEMES)
-                  .sort()
-                  .map(scheme => (
-                    <option key={scheme}>{scheme}</option>
-                  ))}
-              </HTMLSelect>
+              />
             </Row>
             <Row spacing={15}>
-              <div style={{ whiteSpace: 'nowrap' }}>Fade</div>
+              <div>Fade</div>
               <Slider
                 value={state.fadeAmount}
                 min={0}
