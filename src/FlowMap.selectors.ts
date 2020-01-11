@@ -44,6 +44,10 @@ export const getLocationIds: Selector<Set<string> | undefined> = createSelector(
   locations => (locations ? new Set(locations.map(getLocationId)) : undefined)
 );
 
+export const getSelectedLocationSet: Selector<
+  Set<string> | undefined
+> = createSelector(getSelectedLocations, ids => (ids && ids.length > 0 ? new Set(ids) : undefined));
+
 export const getSortedFlowsForKnownLocations: Selector<Flow[] | undefined> = createSelector(
   getFlows,
   getLocationIds,
@@ -429,15 +433,22 @@ const getSortedFlowsForZoom: Selector<Flow[] | undefined> = createSelector(
 export const getFlowsForFlowMapLayer: Selector<Flow[] | undefined> = createSelector(
   getSortedFlowsForZoom,
   getLocationIdsInViewport,
-  (flows, locationIdsInViewport) => {
+  getSelectedLocationSet,
+  (flows, locationIdsInViewport, selectedLocationsSet) => {
     if (!flows) return undefined;
     if (!locationIdsInViewport) return flows;
     const picked: Flow[] = [];
     let count = 0;
     for (const flow of flows) {
-      if (locationIdsInViewport.has(flow.origin) || locationIdsInViewport.has(flow.dest)) {
+      const { origin, dest } = flow;
+      if (
+        (locationIdsInViewport.has(origin) || locationIdsInViewport.has(dest)) &&
+        (!selectedLocationsSet ||
+          selectedLocationsSet.has(origin) ||
+          selectedLocationsSet.has(dest))
+      ) {
         picked.push(flow);
-        if (flow.origin !== flow.dest) {
+        if (origin !== dest) {
           // exclude self-loops from count
           count++;
         }
