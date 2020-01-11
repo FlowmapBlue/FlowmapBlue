@@ -115,12 +115,12 @@ export const NoOutlineButton = styled(Button)`
   outline: none;
 `;
 
-const ErrorsLocationsBlock = styled.div`
+export const ErrorsLocationsBlock = styled.div`
   font-size: 10px;
   padding: 10px;
 `;
 
-const MAX_NUM_OF_IDS_IN_ERROR = 100;
+export const MAX_NUM_OF_IDS_IN_ERROR = 100;
 
 const FlowMap: React.FC<Props> = props => {
   const { inBrowser, embed, config, spreadSheetKey, locationsFetch, flowsFetch } = props;
