@@ -119,7 +119,7 @@ const ExampleTitle = styled.div`
   bottom: 0;
   background: ${Colors.DARK_GRAY2};
   color: ${Colors.GRAY3};
-  font-size: 10pt;
+  font-size: 9pt;
   z-index: 2;
   pointer-events: none;
   transition: color 0.25s;
