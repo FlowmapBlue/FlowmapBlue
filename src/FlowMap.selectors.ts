@@ -17,7 +17,7 @@ import {
   Location,
 } from './types';
 import * as Cluster from '@flowmap.gl/cluster';
-import { ClusterNode, isCluster } from '@flowmap.gl/cluster';
+import { ClusterNode, findAppropriateZoomLevel, isCluster } from '@flowmap.gl/cluster';
 import getColors from './colors';
 import { DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp } from './config';
 import { nest } from 'd3-collection';
@@ -127,29 +127,50 @@ export const getClusterIndex: Selector<Cluster.ClusterIndex | undefined> = creat
   }
 );
 
+export const getAvailableClusterZoomLevels = createSelector(
+  getZoom,
+  getClusterIndex,
+  getSelectedLocations,
+  (mapZoom, clusterIndex, selectedLocations): number[] | undefined => {
+    if (!clusterIndex) {
+      return undefined;
+    }
+
+    let maxZoom = Number.POSITIVE_INFINITY;
+    let minZoom = Number.NEGATIVE_INFINITY;
+
+    const adjust = (zoneId: string) => {
+      const cluster = clusterIndex.getClusterById(zoneId);
+      if (cluster) {
+        minZoom = Math.max(minZoom, cluster.zoom);
+        maxZoom = Math.min(maxZoom, cluster.zoom);
+      } else {
+        const zoom = clusterIndex.getMinZoomForLocation(zoneId);
+        minZoom = Math.max(minZoom, zoom);
+      }
+    };
+
+    if (selectedLocations) {
+      for (const id of selectedLocations) {
+        adjust(id);
+      }
+    }
+
+    return clusterIndex.availableZoomLevels.filter(level => minZoom <= level && level <= maxZoom);
+  }
+);
+
 export const getClusterZoom: Selector<number | undefined> = createSelector(
   getClusterIndex,
   getZoom,
-  getSelectedLocations,
-  (clusterIndex, zoom, selectedLocations) => {
+  getAvailableClusterZoomLevels,
+  (clusterIndex, mapZoom, availableClusterZoomLevels) => {
     if (!clusterIndex) return undefined;
-    let minZoom = clusterIndex.availableZoomLevels[0];
-    const maxZoom = clusterIndex.availableZoomLevels[clusterIndex.availableZoomLevels.length - 1];
-    if (selectedLocations) {
-      for (const id of selectedLocations) {
-        let itemZoom;
-        const cluster = clusterIndex.getClusterById(id);
-        if (cluster) {
-          if (cluster) itemZoom = cluster.zoom;
-        } else {
-          itemZoom = clusterIndex.getMinZoomForLocation(id);
-        }
-        if (itemZoom !== undefined && itemZoom > minZoom) {
-          minZoom = itemZoom;
-        }
-      }
+    if (!availableClusterZoomLevels) {
+      return undefined;
     }
-    return Math.max(minZoom, Math.min(Math.floor(zoom), maxZoom));
+
+    return findAppropriateZoomLevel(availableClusterZoomLevels, mapZoom);
   }
 );
 
