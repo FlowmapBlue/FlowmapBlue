@@ -12,8 +12,35 @@ const NavBar = styled(Navbar)`
 
 const NavMenu = styled(Navbar.Group)`
   white-space: nowrap;
-  @media (max-width: 900px) {
+  @media (max-width: 850px) {
     display: none;
+  }
+`;
+
+const LinksArea = styled.div`
+  display: flex;
+  float: right;
+  align-items: center;
+  & > * + * {
+    margin-left: 20px;
+  }
+  @media (max-width: 1070px) {
+    display: none;
+  }
+`;
+
+const LinkItem = styled.div`
+  display: flex;
+  align-items: center;
+  span {
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  img {
+    width: 20px;
+  }
+  & > * + * {
+    margin-left: 5px;
   }
 `;
 
@@ -40,30 +67,6 @@ const NavItem = ({ to, children }: { to: string; children: ReactNode }) => (
     {children}
   </NavHashLink>
 );
-
-const LinksArea = styled.div`
-  display: flex;
-  float: right;
-  align-items: center;
-  & > * + * {
-    margin-left: 20px;
-  }
-`;
-
-const LinkItem = styled.div`
-  display: flex;
-  align-items: center;
-  span {
-    text-transform: uppercase;
-    font-size: 12px;
-  }
-  img {
-    width: 20px;
-  }
-  & > * + * {
-    margin-left: 5px;
-  }
-`;
 
 const Nav = () => (
   <NavBar className={Classes.DARK} fixedToTop={false}>

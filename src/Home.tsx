@@ -10,10 +10,11 @@ import Logo from './Logo';
 import MapboxLogo from './images/mapbox-logo-black.svg';
 import NycCitiBikeImage from './images/nyc-citi-bike.jpg';
 import TLLogo from './images/TL-Horizontal-Black.svg';
-import { Classes, Colors } from '@blueprintjs/core';
+import { Button, Classes, Colors } from '@blueprintjs/core';
 import Nav from './Nav';
 import News from './News';
 import ReactPlayer from 'react-player';
+import { Column, Row } from './Boxes';
 
 const ContentBody = styled.div`
   padding: 10px 20px;
@@ -179,6 +180,43 @@ const ListOfSteps = styled.ol`
   }
 `;
 
+const Newsletter = () => (
+  <form action="https://tinyletter.com/flowmap-blue" method="post" target="_blank">
+    <Column spacing={10}>
+      <Row spacing={10}>
+        <input
+          className={Classes.INPUT}
+          type="text"
+          name="email"
+          id="tlemail"
+          placeholder="your@email"
+        />
+        <input type="hidden" defaultValue={1} name="embed" />
+        <Button type="submit" text="Subscribe to news" />
+      </Row>
+    </Column>
+  </form>
+);
+
+const TitleRow = styled.div`
+  display: flex;
+  flex-wrap: wrap-reverse;
+  width: 100%;
+  align-items: center;
+  & > * + * {
+    margin-left: 30px;
+  }
+  & > :last-child {
+    justify-self: flex-end;
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    button {
+      white-space: nowrap;
+    }
+  }
+`;
+
 const Home = () => (
   <>
     <Nav />
@@ -187,9 +225,12 @@ const Home = () => (
         <link href="https://flowmap.blue/" rel="canonical" />
       </Helmet>
 
-      <LogoTitle>
-        <Logo fontSize={35} collapseWidth={300} />
-      </LogoTitle>
+      <TitleRow>
+        <LogoTitle>
+          <Logo fontSize={35} collapseWidth={300} />
+        </LogoTitle>
+        <Newsletter />
+      </TitleRow>
 
       <DemoVideo>
         <ResponsivePlayer>
