@@ -7,6 +7,7 @@ import Away from './Away';
 
 const StyledInputGroup = styled(InputGroup)`
   max-width: 50em;
+  margin-top: 0.5em;
 `;
 
 const spreadsheetKeyRegExp = new RegExp(`${SPREADSHEET_KEY_RE}`);
@@ -47,7 +48,7 @@ export default class SpreadsheetKeyExtractor extends React.Component<{}, State> 
     const { spreadsheetKey, invalid } = this.state;
     const items = [
       <li key="input">
-        <p>Copy the link to your spreadsheet and paste it here:</p>
+        <span>Copy the link to your spreadsheet and paste it here:</span>
         <StyledInputGroup
           inputRef={ref => (this.ref = ref)}
           leftIcon={IconNames.LINK}

@@ -178,42 +178,49 @@ const ListOfSteps = styled.ol`
     margin: 1em 0;
     padding-left: 0.3em;
   }
+  @media (max-width: 500px) {
+    margin: 0;
+    padding: 0;
+    list-style-position: inside;
+    & > li {
+      padding-left: 0;
+      margin-left: 0;
+    }
+  }
 `;
 
-const Newsletter = () => (
-  <form action="https://tinyletter.com/flowmap-blue" method="post" target="_blank">
-    <Column spacing={10}>
-      <Row spacing={10}>
-        <input
-          className={Classes.INPUT}
-          type="text"
-          name="email"
-          id="tlemail"
-          placeholder="your@email"
-        />
-        <input type="hidden" defaultValue={1} name="embed" />
-        <Button type="submit" text="Subscribe to news" />
-      </Row>
-    </Column>
-  </form>
-);
+const NewsletterDescription = styled(Row)`
+  font-size: 9pt;
+  color: ${Colors.GRAY4};
+`;
+
+const NewsletterOuter = styled.div`
+  justify-self: flex-end;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  button {
+    white-space: nowrap;
+  }
+  input {
+    width: 270px;
+  }
+  @media (max-width: 800px) {
+    input {
+      width: 200px;
+    }
+    margin-bottom: 2rem;
+  }
+`;
 
 const TitleRow = styled.div`
   display: flex;
-  flex-wrap: wrap-reverse;
+  flex-wrap: wrap;
   width: 100%;
   align-items: center;
-  & > * + * {
-    margin-left: 30px;
-  }
-  & > :last-child {
-    justify-self: flex-end;
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    button {
-      white-space: nowrap;
-    }
+  @media (max-width: 800px) {
+    flex-direction: column;
+    align-items: flex-start;
   }
 `;
 
@@ -229,7 +236,26 @@ const Home = () => (
         <LogoTitle>
           <Logo fontSize={35} collapseWidth={300} />
         </LogoTitle>
-        <Newsletter />
+        <NewsletterOuter>
+          <form action="https://tinyletter.com/flowmap-blue" method="post" target="_blank">
+            <Column spacing={10}>
+              <Row spacing={10}>
+                <input
+                  className={Classes.INPUT}
+                  type="text"
+                  name="email"
+                  id="tlemail"
+                  placeholder="Enter your@email.address here"
+                />
+                <input type="hidden" defaultValue={1} name="embed" />
+                <Button type="submit" text="Subscribe" />
+              </Row>
+              <NewsletterDescription>
+                Subscribe to the newsletter to learn about updates and new features.
+              </NewsletterDescription>
+            </Column>
+          </form>
+        </NewsletterOuter>
       </TitleRow>
 
       <DemoVideo>
