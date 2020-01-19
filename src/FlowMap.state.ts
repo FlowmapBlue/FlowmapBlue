@@ -4,7 +4,7 @@ import { Props as TooltipProps } from './Tooltip';
 import * as queryString from 'query-string';
 import { viewport } from '@mapbox/geo-viewport';
 import { parseBoolConfigProp, parseNumberConfigProp } from './config';
-import { COLOR_SCHEME_KEYS, COLOR_SCHEMES } from './colors';
+import { COLOR_SCHEME_KEYS } from './colors';
 import { csvFormatRows, csvParseRows } from 'd3-dsv';
 import { Reducer } from 'react';
 

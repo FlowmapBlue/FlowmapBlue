@@ -30,14 +30,42 @@ export const NUMBER_OF_FLOWS_TO_DISPLAY = 5000;
 
 export type Selector<T> = ParametricSelector<State, Props, T>;
 
-export const getFlows = (state: State, props: Props) => props.flowsFetch.value;
-export const getLocations = (state: State, props: Props) => props.locationsFetch.value;
+export const getFetchedFlows = (state: State, props: Props) => props.flowsFetch.value;
+export const getFetchedLocations = (state: State, props: Props) => props.locationsFetch.value;
 export const getSelectedLocations = (state: State, props: Props) => state.selectedLocations;
 export const getClusteringEnabled = (state: State, props: Props) => state.clusteringEnabled;
 export const getLocationTotalsEnabled = (state: State, props: Props) => state.locationTotalsEnabled;
 export const getZoom = (state: State, props: Props) => state.viewport.zoom;
 export const getConfig = (state: State, props: Props) => props.config;
 export const getViewport = (state: State, props: Props) => state.viewport;
+
+export const getInvalidLocationIds: Selector<string[] | undefined> = createSelector(
+  getFetchedLocations,
+  locations => {
+    if (!locations) return undefined;
+    const invalid = [];
+    for (const location of locations) {
+      if (
+        !(-90 <= location.lat && location.lat <= 90) ||
+        !(-180 <= location.lon && location.lon <= 180)
+      ) {
+        invalid.push(location.id);
+      }
+    }
+    return invalid.length > 0 ? invalid : undefined;
+  }
+);
+
+export const getLocations: Selector<Location[] | undefined> = createSelector(
+  getFetchedLocations,
+  getInvalidLocationIds,
+  (locations, invalidIds) => {
+    if (!locations) return undefined;
+    if (!invalidIds || invalidIds.length === 0) return locations;
+    const invalid = new Set(invalidIds);
+    return locations.filter(location => !invalid.has(getLocationId(location)));
+  }
+);
 
 export const getLocationIds: Selector<Set<string> | undefined> = createSelector(
   getLocations,
@@ -49,7 +77,7 @@ export const getSelectedLocationSet: Selector<
 > = createSelector(getSelectedLocations, ids => (ids && ids.length > 0 ? new Set(ids) : undefined));
 
 export const getSortedFlowsForKnownLocations: Selector<Flow[] | undefined> = createSelector(
-  getFlows,
+  getFetchedFlows,
   getLocationIds,
   (flows, ids) => {
     if (!ids || !flows) return undefined;
@@ -93,6 +121,7 @@ export const getClusterIndex: Selector<Cluster.ClusterIndex | undefined> = creat
       }
     );
     const clusterIndex = Cluster.buildIndex(clusterLevels);
+    console.log(clusterLevels);
 
     const locationsById = nest<Location, Location>()
       .key((d: Location) => d.id)
@@ -170,7 +199,9 @@ export const getClusterZoom: Selector<number | undefined> = createSelector(
       return undefined;
     }
 
-    return findAppropriateZoomLevel(availableClusterZoomLevels, mapZoom);
+    const clusterZoom = findAppropriateZoomLevel(availableClusterZoomLevels, mapZoom);
+    console.log(mapZoom, clusterZoom);
+    return clusterZoom;
   }
 );
 
@@ -210,7 +241,7 @@ export const getLocationsForSearchBox: Selector<
   }
 );
 
-export const getDiffMode: Selector<boolean> = createSelector(getFlows, flows => {
+export const getDiffMode: Selector<boolean> = createSelector(getFetchedFlows, flows => {
   if (flows && flows.find(f => getFlowMagnitude(f) < 0)) {
     return true;
   }
@@ -246,26 +277,9 @@ export const getMapboxMapStyle = createSelector(getConfig, getDarkMode, (config,
   return darkMode ? DEFAULT_MAP_STYLE_DARK : DEFAULT_MAP_STYLE_LIGHT;
 });
 
-export const getInvalidLocationIds: Selector<string[] | undefined> = createSelector(
-  getLocations,
-  locations => {
-    if (!locations) return undefined;
-    const invalid = [];
-    for (const location of locations) {
-      if (
-        !(-90 <= location.lat && location.lat <= 90) ||
-        !(-180 <= location.lon && location.lon <= 180)
-      ) {
-        invalid.push(location.id);
-      }
-    }
-    return invalid.length > 0 ? invalid : undefined;
-  }
-);
-
 export const getUnknownLocations: Selector<Set<string> | undefined> = createSelector(
   getLocationIds,
-  getFlows,
+  getFetchedFlows,
   getSortedFlowsForKnownLocations,
   (ids, flows, flowsForKnownLocations) => {
     if (!ids || !flows) return undefined;

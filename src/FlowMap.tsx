@@ -76,7 +76,7 @@ import {
   getDiffMode,
   getExpandedSelection,
   getFlowMapColors,
-  getFlows,
+  getFetchedFlows,
   getFlowsForFlowMapLayer,
   getSortedFlowsForKnownLocations,
   getInvalidLocationIds,
@@ -116,8 +116,10 @@ export const NoOutlineButton = styled(Button)`
 `;
 
 export const ErrorsLocationsBlock = styled.div`
-  font-size: 10px;
+  font-size: 8px;
   padding: 10px;
+  max-height: 100px;
+  overflow: auto;
 `;
 
 export const MAX_NUM_OF_IDS_IN_ERROR = 100;
@@ -152,7 +154,7 @@ const FlowMap: React.FC<Props> = props => {
   useEffect(updateQuerySearch, [history, state]);
 
   const { viewport, tooltip, animationEnabled, baseMapEnabled } = state;
-  const allFlows = getFlows(state, props);
+  const allFlows = getFetchedFlows(state, props);
   const allLocations = getLocations(state, props);
   const locationsHavingFlows = getLocationsHavingFlows(state, props);
   const locations = getLocationsForFlowMapLayer(state, props);
