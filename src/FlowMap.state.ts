@@ -40,6 +40,7 @@ export interface State {
   baseMapEnabled: boolean;
   darkMode: boolean;
   fadeAmount: number;
+  baseMapOpacity: number;
   colorSchemeKey: string | undefined;
 }
 
@@ -58,6 +59,7 @@ export enum ActionType {
   SET_DARK_MODE = 'SET_DARK_MODE',
   SET_BASE_MAP_ENABLED = 'SET_BASE_MAP_ENABLED',
   SET_FADE_AMOUNT = 'SET_FADE_AMOUNT',
+  SET_BASE_MAP_OPACITY = 'SET_BASE_MAP_OPACITY',
   SET_COLOR_SCHEME = 'SET_COLOR_SCHEME',
 }
 
@@ -115,6 +117,10 @@ export type Action =
   | {
       type: ActionType.SET_FADE_AMOUNT;
       fadeAmount: number;
+    }
+  | {
+      type: ActionType.SET_BASE_MAP_OPACITY;
+      baseMapOpacity: number;
     }
   | {
       type: ActionType.SET_COLOR_SCHEME;
@@ -257,6 +263,13 @@ function mainReducer(state: State, action: Action): State {
         fadeAmount,
       };
     }
+    case ActionType.SET_BASE_MAP_OPACITY: {
+      const { baseMapOpacity } = action;
+      return {
+        ...state,
+        baseMapOpacity,
+      };
+    }
     case ActionType.SET_COLOR_SCHEME: {
       const { colorSchemeKey } = action;
       return {
@@ -314,6 +327,7 @@ export function applyStateFromQueryString(initialState: State, query: string) {
     }
   }
   draft.fadeAmount = asNumber(params.f) ?? draft.fadeAmount;
+  draft.baseMapOpacity = asNumber(params.bo) ?? draft.baseMapOpacity;
   draft.baseMapEnabled = asBoolean(params.b) ?? draft.baseMapEnabled;
   draft.darkMode = asBoolean(params.d) ?? draft.darkMode;
   draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled;
@@ -334,6 +348,7 @@ export function stateToQueryString(state: State) {
   parts.push(`v=${csvFormatRows([[latitude.toFixed(6), longitude.toFixed(6), zoom.toFixed(2)]])}`);
   parts.push(`a=${state.animationEnabled ? 1 : 0}`);
   parts.push(`b=${state.baseMapEnabled ? 1 : 0}`);
+  parts.push(`bo=${state.baseMapOpacity}`);
   parts.push(`c=${state.clusteringEnabled ? 1 : 0}`);
   parts.push(`d=${state.darkMode ? 1 : 0}`);
   parts.push(`lt=${state.locationTotalsEnabled ? 1 : 0}`);
@@ -383,6 +398,7 @@ export function getInitialState(config: Config, queryString: string) {
     clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
     darkMode: parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
     fadeAmount: parseNumberConfigProp(config[ConfigPropName.FADE_AMOUNT], 45),
+    baseMapOpacity: parseNumberConfigProp(config[ConfigPropName.BASE_MAP_OPACITY], 50),
     colorSchemeKey: config[ConfigPropName.COLORS_SCHEME],
   };
 

@@ -15,6 +15,7 @@ export enum ConfigPropName {
   COLORS_DARK_MODE = 'colors.darkMode',
   ANIMATE_FLOWS = 'animate.flows',
   FADE_AMOUNT = 'fadeAmount',
+  BASE_MAP_OPACITY = 'baseMapOpacity',
   CLUSTER_ON_ZOOM = 'clustering',
 }
 

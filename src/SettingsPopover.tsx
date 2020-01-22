@@ -9,12 +9,14 @@ import { NoOutlineButton } from './FlowMap';
 import ColorSchemeSelector from './ColorSchemeSelector';
 
 const SettingsOuter = styled.div`
+  width: 290px;
   font-size: 12px;
 `;
 
 const StyledSwitch = styled(Switch)`
   margin-bottom: 0;
   align-self: flex-start;
+  white-space: nowrap;
 `;
 
 interface Props {
@@ -52,6 +54,13 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
     dispatch({
       type: ActionType.SET_FADE_AMOUNT,
       fadeAmount: value,
+    });
+  };
+
+  const handleChangeBaseMapOpacity = (value: number) => {
+    dispatch({
+      type: ActionType.SET_BASE_MAP_OPACITY,
+      baseMapOpacity: value,
     });
   };
 
@@ -123,15 +132,28 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
                 onChange={handleToggleClustering}
               />
               <StyledSwitch
-                checked={state.baseMapEnabled}
-                label="Base map"
-                onChange={handleToggleBaseMap}
-              />
-              <StyledSwitch
                 checked={state.locationTotalsEnabled}
                 label="Location totals"
                 onChange={handleToggleLocationTotals}
               />
+              <Row spacing={15}>
+                <StyledSwitch
+                  checked={state.baseMapEnabled}
+                  label="Base map"
+                  onChange={handleToggleBaseMap}
+                />
+                {state.baseMapEnabled && (
+                  <Slider
+                    value={state.baseMapOpacity}
+                    min={0}
+                    max={100}
+                    stepSize={1}
+                    labelRenderer={false}
+                    showTrackFill={false}
+                    onChange={handleChangeBaseMapOpacity}
+                  />
+                )}
+              </Row>
             </Column>
           </Column>
         </SettingsOuter>

@@ -664,6 +664,9 @@ const FlowMap: React.FC<Props> = props => {
           baseMapEnabled && (
             <>
               <StaticMap
+                style={{
+                  opacity: state.baseMapOpacity / 100,
+                }}
                 mapboxApiAccessToken={mapboxAccessToken}
                 mapStyle={mapboxMapStyle}
                 width={width}

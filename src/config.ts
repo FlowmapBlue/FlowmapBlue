@@ -18,6 +18,7 @@ export const DEFAULT_CONFIG: Config = {
   [ConfigPropName.ANIMATE_FLOWS]: undefined,
   [ConfigPropName.CLUSTER_ON_ZOOM]: undefined,
   [ConfigPropName.FADE_AMOUNT]: undefined,
+  [ConfigPropName.BASE_MAP_OPACITY]: undefined,
 };
 
 export function parseBoolConfigProp(value: string | undefined) {
