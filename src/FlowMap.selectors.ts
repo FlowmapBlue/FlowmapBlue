@@ -121,7 +121,6 @@ export const getClusterIndex: Selector<Cluster.ClusterIndex | undefined> = creat
       }
     );
     const clusterIndex = Cluster.buildIndex(clusterLevels);
-    console.log(clusterLevels);
 
     const locationsById = nest<Location, Location>()
       .key((d: Location) => d.id)
@@ -200,7 +199,6 @@ export const getClusterZoom: Selector<number | undefined> = createSelector(
     }
 
     const clusterZoom = findAppropriateZoomLevel(availableClusterZoomLevels, mapZoom);
-    console.log(mapZoom, clusterZoom);
     return clusterZoom;
   }
 );
