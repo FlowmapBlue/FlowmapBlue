@@ -381,7 +381,7 @@ export function getInitialViewport(bbox: [number, number, number, number]) {
     maxPitch: 0,
     bearing: 0,
     pitch: 0,
-    altitude: 0,
+    altitude: 1.5,
   };
 }
 

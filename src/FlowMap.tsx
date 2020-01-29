@@ -111,6 +111,19 @@ export type Props = {
   spreadSheetKey: string | undefined;
 };
 
+/* This is temporary until mixBlendMode style prop works in <DeckGL> as before v8 */
+const DeckGLOuter = styled.div<{ darkMode: boolean; baseMapOpacity: number }>(
+  props => `
+  & #deckgl-overlay {
+    mix-blend-mode: ${props.darkMode ? 'screen' : 'multiply'};
+    background-color: ${props.darkMode ? '#000' : '#fff'}
+  }
+  & .mapboxgl-map {
+    opacity: ${props.baseMapOpacity}
+  }
+`
+);
+
 export const NoOutlineButton = styled(Button)`
   outline: none;
 `;
@@ -315,7 +328,7 @@ const FlowMap: React.FC<Props> = props => {
           maxPitch: 0,
           bearing: 0,
           pitch: 0,
-          altitude: 0,
+          altitude: 1.5,
           // transitionDuration: 2000,
           // transitionInterpolator: new FlyToInterpolator(),
           // transitionEasing: d3ease.easeCubic,
@@ -620,7 +633,7 @@ const FlowMap: React.FC<Props> = props => {
           varyFlowColorByMagnitude: true,
           showTotals: true,
           maxLocationCircleSize: getMaxLocationCircleSize(state, props),
-          maxFlowThickness: animationEnabled ? 5 : 12,
+          maxFlowThickness: 18,
           selectedLocationIds: getExpandedSelection(state, props),
           highlightedLocationId:
             highlight && highlight.type === HighlightType.LOCATION
@@ -652,31 +665,25 @@ const FlowMap: React.FC<Props> = props => {
         background: darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5,
       }}
     >
-      <DeckGL
-        style={{ mixBlendMode: darkMode ? 'screen' : 'multiply' }}
-        controller={CONTROLLER_OPTIONS}
-        viewState={viewport}
-        onViewStateChange={handleViewStateChange}
-        layers={getLayers()}
-        ContextProvider={MapContext.Provider}
-        children={({ width, height, viewState }: any) =>
-          mapboxAccessToken &&
-          baseMapEnabled && (
-            <>
-              <StaticMap
-                style={{
-                  opacity: state.baseMapOpacity / 100,
-                }}
-                mapboxApiAccessToken={mapboxAccessToken}
-                mapStyle={mapboxMapStyle}
-                width={width}
-                height={height}
-                viewState={viewState}
-              />
-            </>
-          )
-        }
-      />
+      <DeckGLOuter darkMode={darkMode} baseMapOpacity={state.baseMapOpacity / 100}>
+        <DeckGL
+          controller={CONTROLLER_OPTIONS}
+          viewState={viewport}
+          onViewStateChange={handleViewStateChange}
+          layers={getLayers()}
+          ContextProvider={MapContext.Provider}
+        >
+          {' '}
+          {mapboxAccessToken && baseMapEnabled && (
+            <StaticMap
+              mapboxApiAccessToken={mapboxAccessToken}
+              mapStyle={mapboxMapStyle}
+              width="100%"
+              height="100%"
+            />
+          )}
+        </DeckGL>
+      </DeckGLOuter>
       {flows && (
         <>
           <Absolute top={10} right={10}>
