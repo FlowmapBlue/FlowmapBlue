@@ -12,9 +12,11 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ColorScheme } from './colors';
 import { AppToaster } from './AppToaster';
-import { Button, Classes, Colors, Intent } from '@blueprintjs/core';
+import { Button, Classes, Colors, FocusStyleManager, Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
+
+FocusStyleManager.onlyShowFocusOnTabs();
 
 const ButtonArea = styled.div({
   marginTop: 10,
@@ -58,10 +60,6 @@ const globalStyles = css`
     bottom: 30px;
     top: unset !important;
     left: 10px !important;
-  }
-
-  .${Classes.TAB} {
-    outline: none;
   }
 `;
 

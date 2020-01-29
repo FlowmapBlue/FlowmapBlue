@@ -124,10 +124,6 @@ const DeckGLOuter = styled.div<{ darkMode: boolean; baseMapOpacity: number }>(
 `
 );
 
-export const NoOutlineButton = styled(Button)`
-  outline: none;
-`;
-
 export const ErrorsLocationsBlock = styled.div`
   font-size: 8px;
   padding: 10px;
@@ -699,17 +695,13 @@ const FlowMap: React.FC<Props> = props => {
               )}
               <Column spacing={10}>
                 <ButtonGroup vertical={true}>
-                  <NoOutlineButton title="Zoom in" icon={IconNames.PLUS} onClick={handleZoomIn} />
-                  <NoOutlineButton
-                    title="Zoom out"
-                    icon={IconNames.MINUS}
-                    onClick={handleZoomOut}
-                  />
+                  <Button title="Zoom in" icon={IconNames.PLUS} onClick={handleZoomIn} />
+                  <Button title="Zoom out" icon={IconNames.MINUS} onClick={handleZoomOut} />
                 </ButtonGroup>
                 {!inBrowser && !embed && (
                   <ButtonGroup vertical={true}>
                     <SharePopover>
-                      <NoOutlineButton title="Share…" icon={IconNames.SHARE} />
+                      <Button title="Share…" icon={IconNames.SHARE} />
                     </SharePopover>
                   </ButtonGroup>
                 )}
@@ -735,7 +727,7 @@ const FlowMap: React.FC<Props> = props => {
       )}
       {embed && (
         <Absolute bottom={30} right={10}>
-          <NoOutlineButton
+          <Button
             title="Open in full-screen mode"
             onClick={handleFullScreen}
             icon={IconNames.FULLSCREEN}
