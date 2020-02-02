@@ -22,6 +22,11 @@ const ButtonArea = styled.div({
   marginTop: 10,
   '@media (min-width: 520px)': {
     marginTop: -10,
+    left: 20,
+    '& > button': {
+      position: 'relative',
+      left: 20,
+    },
   },
 });
 const globalStyles = css`
@@ -99,7 +104,10 @@ try {
             <div style={{ fontSize: 14 }}>
               We use cookies to <b>collect usage statistics</b> on this website. This really helps
               us to improve the app. If you use flowmap.blue, we assume that you agree with our{' '}
-              <b>very short</b> <a href="/#privacy">Privacy policy</a>.
+              <a href="/#privacy">
+                <b>very short privacy policy</b>
+              </a>
+              .
             </div>
             <ButtonArea>
               <Button
