@@ -626,7 +626,6 @@ const FlowMap: React.FC<Props> = props => {
           getAnimatedFlowLineStaggering: (d: Flow) =>
             // @ts-ignore
             new alea(`${d.origin}-${d.dest}`)(),
-          varyFlowColorByMagnitude: true,
           showTotals: true,
           maxLocationCircleSize: getMaxLocationCircleSize(state, props),
           maxFlowThickness: 18,
@@ -638,13 +637,12 @@ const FlowMap: React.FC<Props> = props => {
           highlightedFlow:
             highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
           onHover: handleHover,
-          // @ts-ignore
-          onClick: handleClick,
+          onClick: handleClick as any,
           visible: true,
           updateTriggers: {
             onHover: handleHover, // to avoid stale closure in the handler
             onClick: handleClick,
-          },
+          } as any,
         })
       );
     }
