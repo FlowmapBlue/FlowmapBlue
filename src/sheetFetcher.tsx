@@ -43,7 +43,7 @@ const BASE_URL = `https://docs.google.com/spreadsheets/d`;
 export const makeSheetQueryUrl = (spreadSheetKey: string, sheet: string, query: string) =>
   `${BASE_URL}/${spreadSheetKey}/gviz/tq?tq=${encodeURI(
     `${query} OPTIONS no_format`
-  )}&tqx=out:json&sheet=${sheet}`;
+  )}&tqx=out:json&sheet=${encodeURIComponent(sheet)}`;
 
 function getJson(text: string) {
   const startIdx = text.indexOf('{');

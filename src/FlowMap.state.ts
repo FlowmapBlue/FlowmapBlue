@@ -42,6 +42,7 @@ export interface State {
   fadeAmount: number;
   baseMapOpacity: number;
   colorSchemeKey: string | undefined;
+  selectedFlowsSheet: string | undefined;
 }
 
 export enum ActionType {
@@ -61,6 +62,7 @@ export enum ActionType {
   SET_FADE_AMOUNT = 'SET_FADE_AMOUNT',
   SET_BASE_MAP_OPACITY = 'SET_BASE_MAP_OPACITY',
   SET_COLOR_SCHEME = 'SET_COLOR_SCHEME',
+  SET_FLOWS_SHEET = 'SET_FLOWS_SHEET',
 }
 
 export type Action =
@@ -121,6 +123,10 @@ export type Action =
   | {
       type: ActionType.SET_BASE_MAP_OPACITY;
       baseMapOpacity: number;
+    }
+  | {
+      type: ActionType.SET_FLOWS_SHEET;
+      sheet: string;
     }
   | {
       type: ActionType.SET_COLOR_SCHEME;
@@ -277,6 +283,13 @@ function mainReducer(state: State, action: Action): State {
         colorSchemeKey,
       };
     }
+    case ActionType.SET_FLOWS_SHEET: {
+      const { sheet } = action;
+      return {
+        ...state,
+        selectedFlowsSheet: sheet,
+      };
+    }
   }
   return state;
 }
@@ -400,6 +413,7 @@ export function getInitialState(config: Config, queryString: string) {
     fadeAmount: parseNumberConfigProp(config[ConfigPropName.FADE_AMOUNT], 45),
     baseMapOpacity: parseNumberConfigProp(config[ConfigPropName.BASE_MAP_OPACITY], 55),
     colorSchemeKey: config[ConfigPropName.COLORS_SCHEME],
+    selectedFlowsSheet: undefined,
   };
 
   const bbox = config[ConfigPropName.MAP_BBOX];

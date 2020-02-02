@@ -6,6 +6,7 @@ import {
 } from 'reselect';
 import { MAX_ZOOM_LEVEL, State } from './FlowMap.state';
 import {
+  Config,
   ConfigPropName,
   Flow,
   getFlowDestId,
@@ -25,6 +26,7 @@ import { Props } from './FlowMap';
 import { bounds } from '@mapbox/geo-viewport';
 import KDBush from 'kdbush';
 import { descending } from 'd3-array';
+import { csvParseRows } from 'd3-dsv';
 
 export const NUMBER_OF_FLOWS_TO_DISPLAY = 5000;
 
@@ -462,6 +464,14 @@ const getSortedFlowsForZoom: Selector<Flow[] | undefined> = createSelector(
     }
   }
 );
+
+export const getFlowsSheets = defaultMemoize((config: Config) => {
+  const sheets = config[ConfigPropName.FLOWS_SHEETS];
+  if (sheets) {
+    return csvParseRows(sheets)[0];
+  }
+  return undefined;
+});
 
 export const getFlowsForFlowMapLayer: Selector<Flow[] | undefined> = createSelector(
   getSortedFlowsForZoom,
