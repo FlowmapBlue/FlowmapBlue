@@ -12,14 +12,21 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { ColorScheme } from './colors';
 import { AppToaster } from './AppToaster';
-import { Button, Classes, Colors, Intent } from '@blueprintjs/core';
+import { Button, Classes, Colors, FocusStyleManager, Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
+
+FocusStyleManager.onlyShowFocusOnTabs();
 
 const ButtonArea = styled.div({
   marginTop: 10,
   '@media (min-width: 520px)': {
     marginTop: -10,
+    left: 20,
+    '& > button': {
+      position: 'relative',
+      left: 20,
+    },
   },
 });
 const globalStyles = css`
@@ -59,10 +66,6 @@ const globalStyles = css`
     top: unset !important;
     left: 10px !important;
   }
-
-  .${Classes.TAB} {
-    outline: none;
-  }
 `;
 
 if (process.env.REACT_APP_SENTRY_DSN) {
@@ -101,7 +104,10 @@ try {
             <div style={{ fontSize: 14 }}>
               We use cookies to <b>collect usage statistics</b> on this website. This really helps
               us to improve the app. If you use flowmap.blue, we assume that you agree with our{' '}
-              <b>very short</b> <a href="/#privacy">Privacy policy</a>.
+              <a href="/#privacy">
+                <b>very short privacy policy</b>
+              </a>
+              .
             </div>
             <ButtonArea>
               <Button

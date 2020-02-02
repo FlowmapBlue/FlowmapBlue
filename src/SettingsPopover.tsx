@@ -1,11 +1,10 @@
 import { Column, LegendTitle, Row } from './Boxes';
-import { Popover, Slider, Switch } from '@blueprintjs/core';
+import { Button, Popover, Slider, Switch } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import * as React from 'react';
 import { Dispatch, SyntheticEvent } from 'react';
 import styled from '@emotion/styled';
 import { Action, ActionType, State } from './FlowMap.state';
-import { NoOutlineButton } from './FlowMap';
 import ColorSchemeSelector from './ColorSchemeSelector';
 
 const SettingsOuter = styled.div`
@@ -159,7 +158,7 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
         </SettingsOuter>
       }
     >
-      <NoOutlineButton title="Settings…" icon={IconNames.COG} />
+      <Button title="Settings…" icon={IconNames.COG} />
     </Popover>
   );
 };

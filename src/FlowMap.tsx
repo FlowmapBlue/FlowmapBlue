@@ -111,9 +111,18 @@ export type Props = {
   spreadSheetKey: string | undefined;
 };
 
-export const NoOutlineButton = styled(Button)`
-  outline: none;
-`;
+/* This is temporary until mixBlendMode style prop works in <DeckGL> as before v8 */
+const DeckGLOuter = styled.div<{ darkMode: boolean; baseMapOpacity: number }>(
+  props => `
+  & #deckgl-overlay {
+    mix-blend-mode: ${props.darkMode ? 'screen' : 'multiply'};
+    background-color: ${props.darkMode ? '#000' : '#fff'}
+  }
+  & .mapboxgl-map {
+    opacity: ${props.baseMapOpacity}
+  }
+`
+);
 
 export const ErrorsLocationsBlock = styled.div`
   font-size: 8px;
@@ -315,7 +324,7 @@ const FlowMap: React.FC<Props> = props => {
           maxPitch: 0,
           bearing: 0,
           pitch: 0,
-          altitude: 0,
+          altitude: 1.5,
           // transitionDuration: 2000,
           // transitionInterpolator: new FlyToInterpolator(),
           // transitionEasing: d3ease.easeCubic,
@@ -617,10 +626,9 @@ const FlowMap: React.FC<Props> = props => {
           getAnimatedFlowLineStaggering: (d: Flow) =>
             // @ts-ignore
             new alea(`${d.origin}-${d.dest}`)(),
-          varyFlowColorByMagnitude: true,
           showTotals: true,
           maxLocationCircleSize: getMaxLocationCircleSize(state, props),
-          maxFlowThickness: animationEnabled ? 5 : 12,
+          maxFlowThickness: 18,
           selectedLocationIds: getExpandedSelection(state, props),
           highlightedLocationId:
             highlight && highlight.type === HighlightType.LOCATION
@@ -629,13 +637,12 @@ const FlowMap: React.FC<Props> = props => {
           highlightedFlow:
             highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
           onHover: handleHover,
-          // @ts-ignore
-          onClick: handleClick,
+          onClick: handleClick as any,
           visible: true,
           updateTriggers: {
             onHover: handleHover, // to avoid stale closure in the handler
             onClick: handleClick,
-          },
+          } as any,
         })
       );
     }
@@ -652,31 +659,25 @@ const FlowMap: React.FC<Props> = props => {
         background: darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5,
       }}
     >
-      <DeckGL
-        style={{ mixBlendMode: darkMode ? 'screen' : 'multiply' }}
-        controller={CONTROLLER_OPTIONS}
-        viewState={viewport}
-        onViewStateChange={handleViewStateChange}
-        layers={getLayers()}
-        ContextProvider={MapContext.Provider}
-        children={({ width, height, viewState }: any) =>
-          mapboxAccessToken &&
-          baseMapEnabled && (
-            <>
-              <StaticMap
-                style={{
-                  opacity: state.baseMapOpacity / 100,
-                }}
-                mapboxApiAccessToken={mapboxAccessToken}
-                mapStyle={mapboxMapStyle}
-                width={width}
-                height={height}
-                viewState={viewState}
-              />
-            </>
-          )
-        }
-      />
+      <DeckGLOuter darkMode={darkMode} baseMapOpacity={state.baseMapOpacity / 100}>
+        <DeckGL
+          controller={CONTROLLER_OPTIONS}
+          viewState={viewport}
+          onViewStateChange={handleViewStateChange}
+          layers={getLayers()}
+          ContextProvider={MapContext.Provider}
+        >
+          {' '}
+          {mapboxAccessToken && baseMapEnabled && (
+            <StaticMap
+              mapboxApiAccessToken={mapboxAccessToken}
+              mapStyle={mapboxMapStyle}
+              width="100%"
+              height="100%"
+            />
+          )}
+        </DeckGL>
+      </DeckGLOuter>
       {flows && (
         <>
           <Absolute top={10} right={10}>
@@ -692,17 +693,13 @@ const FlowMap: React.FC<Props> = props => {
               )}
               <Column spacing={10}>
                 <ButtonGroup vertical={true}>
-                  <NoOutlineButton title="Zoom in" icon={IconNames.PLUS} onClick={handleZoomIn} />
-                  <NoOutlineButton
-                    title="Zoom out"
-                    icon={IconNames.MINUS}
-                    onClick={handleZoomOut}
-                  />
+                  <Button title="Zoom in" icon={IconNames.PLUS} onClick={handleZoomIn} />
+                  <Button title="Zoom out" icon={IconNames.MINUS} onClick={handleZoomOut} />
                 </ButtonGroup>
                 {!inBrowser && !embed && (
                   <ButtonGroup vertical={true}>
                     <SharePopover>
-                      <NoOutlineButton title="Share…" icon={IconNames.SHARE} />
+                      <Button title="Share…" icon={IconNames.SHARE} />
                     </SharePopover>
                   </ButtonGroup>
                 )}
@@ -728,7 +725,7 @@ const FlowMap: React.FC<Props> = props => {
       )}
       {embed && (
         <Absolute bottom={30} right={10}>
-          <NoOutlineButton
+          <Button
             title="Open in full-screen mode"
             onClick={handleFullScreen}
             icon={IconNames.FULLSCREEN}

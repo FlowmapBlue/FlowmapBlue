@@ -63,7 +63,6 @@ const Button = styled.button<ButtonProps>(
   border: none;
   cursor: pointer;
   align-items: center;
-  outline: none;
   font-size: 22px;
   background-color: ${darkMode ? Colors.DARK_GRAY4 : Colors.LIGHT_GRAY5};
   color: #ccc;
