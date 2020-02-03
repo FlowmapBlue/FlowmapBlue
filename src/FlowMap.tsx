@@ -649,6 +649,7 @@ const FlowMap: React.FC<Props> = props => {
               : undefined,
           highlightedFlow:
             highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
+          pickable: true,
           onHover: handleHover,
           onClick: handleClick as any,
           visible: true,
