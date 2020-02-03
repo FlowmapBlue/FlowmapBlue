@@ -47,6 +47,7 @@ const FlowMapWithData = sheetFetcher<any>(
     } as any,
     flowsFetch: {
       url: makeSheetQueryUrl(spreadSheetKey!, flowsSheet, 'SELECT A,B,C'),
+      refreshing: true,
       then: (rows: Flow[]) => {
         let dupes: Flow[] = [];
         // Sum up duplicate flows (with same origin and dest)
