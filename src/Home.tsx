@@ -372,6 +372,7 @@ const Home = () => (
             <ListOfUsesItem>Trade </ListOfUsesItem>
             <ListOfUsesItem>Bird migrations </ListOfUsesItem>
             <ListOfUsesItem>Livestock movements </ListOfUsesItem>
+            <ListOfUsesItem>Plant migration</ListOfUsesItem>
             <ListOfUsesItem>Sewer system </ListOfUsesItem>
             <ListOfUsesItem>Supply chain </ListOfUsesItem>
             <ListOfUsesItem>Fishing across borders </ListOfUsesItem>
