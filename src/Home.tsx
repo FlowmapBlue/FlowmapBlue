@@ -10,7 +10,7 @@ import Logo from './Logo';
 import MapboxLogo from './images/mapbox-logo-black.svg';
 import NycCitiBikeImage from './images/nyc-citi-bike.jpg';
 import TLLogo from './images/TL-Horizontal-Black.svg';
-import { Button, Classes, Colors } from '@blueprintjs/core';
+import { Button, Classes, Colors, Intent, Tag } from '@blueprintjs/core';
 import Nav from './Nav';
 import News from './News';
 import ReactPlayer from 'react-player';
@@ -23,9 +23,6 @@ const ContentBody = styled.div`
   }
   & h1 {
     font-size: 2rem;
-  }
-  & li {
-    margin: 0.5em 0;
   }
   margin: auto;
   max-width: 1500px;
@@ -213,6 +210,24 @@ const NewsletterOuter = styled.div`
   }
 `;
 
+const ListOfUses = styled.div`
+  display: flex;
+  // border-radius: 6px;
+  // background-color: ${Colors.DARK_GRAY3};
+  flex-wrap: wrap;
+  list-style-type: none;
+  padding: 0.5em 1em;
+  margin: 1em 0;
+`;
+
+const ListOfUsesItem = styled(({ className, children }) => (
+  <Tag className={className} minimal round interactive={false} intent={Intent.NONE}>
+    {children}
+  </Tag>
+))`
+  margin: 5px;
+`;
+
 const TitleRow = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -332,7 +347,39 @@ const Home = () => (
         <Link to="/in-browser">In-browser flow map</Link> tool.
       </section>
 
-      <section id="examples">
+      <section>
+        <h2 id="examples">Examples</h2>
+        <div>
+          Flowmap.blue is used for visualizing various kinds of datasets:
+          <ListOfUses>
+            <ListOfUsesItem>Internal migration </ListOfUsesItem>
+            <ListOfUsesItem>Commuters </ListOfUsesItem>
+            <ListOfUsesItem>Air passengers</ListOfUsesItem>
+            <ListOfUsesItem>Bus travels </ListOfUsesItem>
+            <ListOfUsesItem>Subway/metro travels </ListOfUsesItem>
+            <ListOfUsesItem>Train rides</ListOfUsesItem>
+            <ListOfUsesItem>Pedestrian movement </ListOfUsesItem>
+            <ListOfUsesItem>Bicycle sharing </ListOfUsesItem>
+            <ListOfUsesItem>Scooter sharing </ListOfUsesItem>
+            <ListOfUsesItem>Car ride sharing </ListOfUsesItem>
+            <ListOfUsesItem>Taxis rides</ListOfUsesItem>
+            <ListOfUsesItem>Relocations (census)</ListOfUsesItem>
+            <ListOfUsesItem>International migration </ListOfUsesItem>
+            <ListOfUsesItem>Refugees </ListOfUsesItem>
+            <ListOfUsesItem>Human trafficking </ListOfUsesItem>
+            <ListOfUsesItem>Drug flows </ListOfUsesItem>
+            <ListOfUsesItem>Freight transportation </ListOfUsesItem>
+            <ListOfUsesItem>Trade </ListOfUsesItem>
+            <ListOfUsesItem>Bird migrations </ListOfUsesItem>
+            <ListOfUsesItem>Livestock movements </ListOfUsesItem>
+            <ListOfUsesItem>Sewer system </ListOfUsesItem>
+            <ListOfUsesItem>Supply chain </ListOfUsesItem>
+            <ListOfUsesItem>Fishing across borders </ListOfUsesItem>
+            <ListOfUsesItem>Epidemiology data </ListOfUsesItem>
+            <ListOfUsesItem>Historical journeys </ListOfUsesItem>
+            <ListOfUsesItem>Scientific collaborations</ListOfUsesItem>
+          </ListOfUses>
+        </div>
         <ExampleGrid>
           {examples.map(({ key, name, query }) => (
             <ExampleGridHoverableLink key={key} to={`/${key}${query ? `?${query}` : ''}`}>
