@@ -354,7 +354,7 @@ const Home = () => (
           <ListOfUses>
             <ListOfUsesItem>Internal migration </ListOfUsesItem>
             <ListOfUsesItem>Commuters </ListOfUsesItem>
-            <ListOfUsesItem>Air passengers</ListOfUsesItem>
+            <ListOfUsesItem>Air travels</ListOfUsesItem>
             <ListOfUsesItem>Bus travels </ListOfUsesItem>
             <ListOfUsesItem>Subway/metro travels </ListOfUsesItem>
             <ListOfUsesItem>Train rides</ListOfUsesItem>
