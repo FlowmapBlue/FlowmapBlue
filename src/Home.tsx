@@ -350,7 +350,7 @@ const Home = () => (
       <section>
         <h2 id="examples">Examples</h2>
         <div>
-          Flowmap.blue is used for visualizing various kinds of datasets:
+          Flowmap.blue has been used for various kinds of datasets:
           <ListOfUses>
             <ListOfUsesItem>Internal migration </ListOfUsesItem>
             <ListOfUsesItem>Commuters </ListOfUsesItem>
