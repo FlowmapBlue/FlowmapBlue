@@ -398,7 +398,7 @@ export function getInitialState(config: Config, queryString: string) {
     clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
     darkMode: parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
     fadeAmount: parseNumberConfigProp(config[ConfigPropName.FADE_AMOUNT], 50),
-    baseMapOpacity: parseNumberConfigProp(config[ConfigPropName.BASE_MAP_OPACITY], 65),
+    baseMapOpacity: parseNumberConfigProp(config[ConfigPropName.BASE_MAP_OPACITY], 75),
     colorSchemeKey: config[ConfigPropName.COLORS_SCHEME],
   };
 
