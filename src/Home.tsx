@@ -352,20 +352,19 @@ const Home = () => (
         <div>
           Flowmap.blue has been used for various kinds of datasets:
           <ListOfUses>
-            <ListOfUsesItem>Internal migration </ListOfUsesItem>
+            <ListOfUsesItem>Internal migration</ListOfUsesItem>
+            <ListOfUsesItem>International migration</ListOfUsesItem>
             <ListOfUsesItem>Commuters </ListOfUsesItem>
+            <ListOfUsesItem>Pedestrian movement</ListOfUsesItem>
             <ListOfUsesItem>Air travels</ListOfUsesItem>
             <ListOfUsesItem>Bus travels </ListOfUsesItem>
-            <ListOfUsesItem>Subway/metro travels </ListOfUsesItem>
+            <ListOfUsesItem>Metro rides</ListOfUsesItem>
             <ListOfUsesItem>Train rides</ListOfUsesItem>
-            <ListOfUsesItem>Pedestrian movement </ListOfUsesItem>
             <ListOfUsesItem>Bicycle sharing </ListOfUsesItem>
             <ListOfUsesItem>Scooter sharing </ListOfUsesItem>
             <ListOfUsesItem>Car ride sharing </ListOfUsesItem>
-            <ListOfUsesItem>Taxis rides</ListOfUsesItem>
-            <ListOfUsesItem>Relocations (census)</ListOfUsesItem>
-            <ListOfUsesItem>International migration </ListOfUsesItem>
-            <ListOfUsesItem>Refugees </ListOfUsesItem>
+            <ListOfUsesItem>Taxi rides</ListOfUsesItem>
+            <ListOfUsesItem>Refugees</ListOfUsesItem>
             <ListOfUsesItem>Human trafficking </ListOfUsesItem>
             <ListOfUsesItem>Drug flows </ListOfUsesItem>
             <ListOfUsesItem>Freight transportation </ListOfUsesItem>
@@ -375,8 +374,8 @@ const Home = () => (
             <ListOfUsesItem>Plant migration</ListOfUsesItem>
             <ListOfUsesItem>Sewer system </ListOfUsesItem>
             <ListOfUsesItem>Supply chain </ListOfUsesItem>
-            <ListOfUsesItem>Fishing across borders </ListOfUsesItem>
-            <ListOfUsesItem>Epidemiology data </ListOfUsesItem>
+            <ListOfUsesItem>Fishing</ListOfUsesItem>
+            <ListOfUsesItem>Epidemiology</ListOfUsesItem>
             <ListOfUsesItem>Historical journeys </ListOfUsesItem>
             <ListOfUsesItem>Scientific collaborations</ListOfUsesItem>
           </ListOfUses>
