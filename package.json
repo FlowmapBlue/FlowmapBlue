@@ -7,6 +7,7 @@
     "@blueprintjs/select": "^3.10.0",
     "@deck.gl/core": "^8.0.14",
     "@deck.gl/layers": "^8.0.14",
+    "@deck.gl/mesh-layers": "^8.0.14",
     "@deck.gl/react": "^8.0.14",
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27",
@@ -50,6 +51,7 @@
     "husky": "^4.2.2",
     "kdbush": "^3.0.0",
     "lint-staged": "^10.0.7",
+    "@nebula.gl/layers": "^0.17.2",
     "prettier": "^1.19.1",
     "query-string": "^6.10.1",
     "react": "^16.7.0",
@@ -91,6 +93,9 @@
     "not ie <= 11",
     "not op_mini all"
   ],
+  "resolutions": {
+    "**/@turf/difference": "6.0.1"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"

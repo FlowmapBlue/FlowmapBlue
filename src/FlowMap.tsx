@@ -12,6 +12,7 @@ import {
   useState,
 } from 'react';
 import { alea } from 'seedrandom';
+import { SelectionLayer } from '@nebula.gl/layers';
 import { _MapContext as MapContext, StaticMap, ViewStateChangeInfo } from 'react-map-gl';
 import FlowMapLayer, {
   FlowLayerPickingInfo,
@@ -96,9 +97,11 @@ import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
 import SharePopover from './SharePopover';
 import SettingsPopover from './SettingsPopover';
+import { rgb } from 'd3-color';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
+  doubleClickZoom: false,
   dragRotate: true,
   touchRotate: true,
   minZoom: MIN_ZOOM_LEVEL,
@@ -115,14 +118,19 @@ export type Props = {
 };
 
 /* This is temporary until mixBlendMode style prop works in <DeckGL> as before v8 */
-const DeckGLOuter = styled.div<{ darkMode: boolean; baseMapOpacity: number }>(
-  props => `
+const DeckGLOuter = styled.div<{
+  darkMode: boolean;
+  baseMapOpacity: number;
+  cursor: 'crosshair' | 'pointer' | undefined;
+}>(
+  ({ cursor, baseMapOpacity, darkMode }) => `
   & #deckgl-overlay {
-    mix-blend-mode: ${props.darkMode ? 'screen' : 'multiply'};
+    mix-blend-mode: ${darkMode ? 'screen' : 'multiply'};
   }
   & .mapboxgl-map {
-    opacity: ${props.baseMapOpacity}
+    opacity: ${baseMapOpacity}
   }
+  ${cursor != null ? `& #view-default-view { cursor: ${cursor}; }` : ''},
 `
 );
 
@@ -147,6 +155,7 @@ const FlowMap: React.FC<Props> = props => {
   const outerRef = useRef<HTMLDivElement>(null);
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState);
+  const [mapDrawingEnabled, setMapDrawingEnabled] = useState(false);
 
   const [updateQuerySearch] = useDebounced(
     () => {
@@ -173,7 +182,11 @@ const FlowMap: React.FC<Props> = props => {
 
   const handleKeyDown = (evt: Event) => {
     if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
-      dispatch({ type: ActionType.CLEAR_SELECTION });
+      if (mapDrawingEnabled) {
+        setMapDrawingEnabled(false);
+      } else {
+        dispatch({ type: ActionType.CLEAR_SELECTION });
+      }
     }
   };
   useEffect(() => {
@@ -575,6 +588,10 @@ const FlowMap: React.FC<Props> = props => {
     });
   };
 
+  const handleToggleMapDrawing = () => {
+    setMapDrawingEnabled(!mapDrawingEnabled);
+  };
+
   const handleZoomIn = () => {
     dispatch({ type: ActionType.ZOOM_IN });
   };
@@ -641,8 +658,10 @@ const FlowMap: React.FC<Props> = props => {
           highlightedFlow:
             highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
           pickable: true,
-          onHover: handleHover,
-          onClick: handleClick as any,
+          ...(!mapDrawingEnabled && {
+            onHover: handleHover,
+            onClick: handleClick as any,
+          }),
           visible: true,
           updateTriggers: {
             onHover: handleHover, // to avoid stale closure in the handler
@@ -650,6 +669,28 @@ const FlowMap: React.FC<Props> = props => {
           } as any,
         })
       );
+
+      if (mapDrawingEnabled) {
+        layers.push(
+          new SelectionLayer({
+            id: 'selection',
+            selectionType: 'polygon',
+            onSelect: ({ pickingInfos }: { pickingInfos: Array<FlowLayerPickingInfo> }) => {
+              if (pickingInfos) {
+                handleChangeSelectLocations(
+                  pickingInfos.filter(p => p.type === PickingType.LOCATION).map(p => p.object.id)
+                );
+              }
+              setMapDrawingEnabled(false);
+            },
+            layerIds: [id],
+            getTentativeFillColor: () => colorAsRgba(Colors.ORANGE2, 0.25),
+            getTentativeLineColor: () => colorAsRgba(Colors.ORANGE4),
+            // getTentativeLineDashArray: () => [7, 4],
+            // getLineDashArray: () => [7, 4],
+          })
+        );
+      }
     }
 
     return layers;
@@ -664,7 +705,11 @@ const FlowMap: React.FC<Props> = props => {
         background: darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5,
       }}
     >
-      <DeckGLOuter darkMode={darkMode} baseMapOpacity={state.baseMapOpacity / 100}>
+      <DeckGLOuter
+        darkMode={darkMode}
+        baseMapOpacity={state.baseMapOpacity / 100}
+        cursor={mapDrawingEnabled ? 'crosshair' : undefined}
+      >
         <DeckGL
           controller={CONTROLLER_OPTIONS}
           viewState={viewport}
@@ -707,6 +752,14 @@ const FlowMap: React.FC<Props> = props => {
                     title="Reset bearing and pitch"
                     icon={IconNames.COMPASS}
                     onClick={handleResetBearingPitch}
+                  />
+                </ButtonGroup>
+                <ButtonGroup vertical={true}>
+                  <Button
+                    title="Select by drawing a polygon"
+                    icon={IconNames.POLYGON_FILTER}
+                    active={mapDrawingEnabled}
+                    onClick={handleToggleMapDrawing}
                   />
                 </ButtonGroup>
                 {!inBrowser && !embed && (
@@ -793,3 +846,14 @@ const FlowMap: React.FC<Props> = props => {
 };
 
 export default FlowMap;
+
+function colorAsRgba(color: string, opacity?: number) {
+  const col = rgb(color);
+  const rgbColor = col.rgb();
+  return [
+    Math.floor(rgbColor.r),
+    Math.floor(rgbColor.g),
+    Math.floor(rgbColor.b),
+    Math.round((opacity != null ? opacity : col.opacity) * 255),
+  ];
+}
