@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Editor, EditorModes, RenderStates } from 'react-map-gl-draw';
 import { Colors } from '@blueprintjs/core';
 import { Feature, Polygon } from 'geojson';
