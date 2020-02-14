@@ -12,7 +12,6 @@ import {
   useState,
 } from 'react';
 import { alea } from 'seedrandom';
-import { SelectionLayer } from '@nebula.gl/layers';
 import { _MapContext as MapContext, StaticMap, ViewStateChangeInfo } from 'react-map-gl';
 import FlowMapLayer, {
   FlowLayerPickingInfo,
@@ -87,6 +86,8 @@ import {
   getLocationsForFlowMapLayer,
   getLocationsForSearchBox,
   getLocationsHavingFlows,
+  getLocationsInBbox,
+  getLocationsTree,
   getMapboxMapStyle,
   getMaxLocationCircleSize,
   getSortedFlowsForKnownLocations,
@@ -97,7 +98,9 @@ import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
 import SharePopover from './SharePopover';
 import SettingsPopover from './SettingsPopover';
-import { rgb } from 'd3-color';
+import MapDrawingEditor, { MapDrawingFeature, MapDrawingMode } from './MapDrawingEditor';
+import getBbox from '@turf/bbox';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -588,6 +591,26 @@ const FlowMap: React.FC<Props> = props => {
     });
   };
 
+  const locationsTree = getLocationsTree(state, props);
+
+  const handleMapFeatureDrawn = (feature: MapDrawingFeature | undefined) => {
+    if (feature != null) {
+      const bbox = getBbox(feature) as [number, number, number, number];
+      const candidates = getLocationsInBbox(locationsTree, bbox);
+      if (candidates) {
+        const inPolygon = candidates.filter(loc =>
+          booleanPointInPolygon([loc.lon, loc.lat], feature)
+        );
+        if (inPolygon.length > 0) {
+          handleChangeSelectLocations(inPolygon.map(getLocationId));
+        } else {
+          handleChangeSelectLocations(undefined);
+        }
+      }
+    }
+    setMapDrawingEnabled(false);
+  };
+
   const handleToggleMapDrawing = () => {
     setMapDrawingEnabled(!mapDrawingEnabled);
   };
@@ -670,27 +693,27 @@ const FlowMap: React.FC<Props> = props => {
         })
       );
 
-      if (mapDrawingEnabled) {
-        layers.push(
-          new SelectionLayer({
-            id: 'selection',
-            selectionType: 'polygon',
-            onSelect: ({ pickingInfos }: { pickingInfos: Array<FlowLayerPickingInfo> }) => {
-              if (pickingInfos) {
-                handleChangeSelectLocations(
-                  pickingInfos.filter(p => p.type === PickingType.LOCATION).map(p => p.object.id)
-                );
-              }
-              setMapDrawingEnabled(false);
-            },
-            layerIds: [id],
-            getTentativeFillColor: () => colorAsRgba(Colors.ORANGE2, 0.25),
-            getTentativeLineColor: () => colorAsRgba(Colors.ORANGE4),
-            // getTentativeLineDashArray: () => [7, 4],
-            // getLineDashArray: () => [7, 4],
-          })
-        );
-      }
+      // if (mapDrawingEnabled) {
+      //   layers.push(
+      //     new SelectionLayer({
+      //       id: 'selection',
+      //       selectionType: 'polygon',
+      //       onSelect: ({ pickingInfos }: { pickingInfos: Array<FlowLayerPickingInfo> }) => {
+      //         if (pickingInfos) {
+      //           handleChangeSelectLocations(
+      //             pickingInfos.filter(p => p.type === PickingType.LOCATION).map(p => p.object.id)
+      //           );
+      //         }
+      //         setMapDrawingEnabled(false);
+      //       },
+      //       layerIds: [id],
+      //       getTentativeFillColor: () => colorAsRgba(Colors.ORANGE2, 0.25),
+      //       getTentativeLineColor: () => colorAsRgba(Colors.ORANGE4),
+      //       // getTentativeLineDashArray: () => [7, 4],
+      //       // getLineDashArray: () => [7, 4],
+      //     })
+      //   );
+      // }
     }
 
     return layers;
@@ -727,6 +750,12 @@ const FlowMap: React.FC<Props> = props => {
               mapStyle={mapboxMapStyle}
               width="100%"
               height="100%"
+            />
+          )}
+          {mapDrawingEnabled && (
+            <MapDrawingEditor
+              mapDrawingMode={MapDrawingMode.POLYGON}
+              onFeatureDrawn={handleMapFeatureDrawn}
             />
           )}
         </DeckGL>
@@ -846,14 +875,3 @@ const FlowMap: React.FC<Props> = props => {
 };
 
 export default FlowMap;
-
-function colorAsRgba(color: string, opacity?: number) {
-  const col = rgb(color);
-  const rgbColor = col.rgb();
-  return [
-    Math.floor(rgbColor.r),
-    Math.floor(rgbColor.g),
-    Math.floor(rgbColor.b),
-    Math.round((opacity != null ? opacity : col.opacity) * 255),
-  ];
-}

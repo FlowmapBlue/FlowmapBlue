@@ -379,30 +379,45 @@ const getLocationsForZoom: Selector<Location[] | ClusterNode[] | undefined> = cr
 
 type KDBushTree = any;
 
-const getLocationsTree: Selector<KDBushTree> = createSelector(getLocationsForZoom, locations => {
-  if (!locations) {
-    return undefined;
+export const getLocationsTree: Selector<KDBushTree> = createSelector(
+  getLocationsForZoom,
+  locations => {
+    if (!locations) {
+      return undefined;
+    }
+    return new KDBush(
+      locations,
+      (location: Location | Cluster.Cluster) =>
+        lngX(isLocationCluster(location) ? location.centroid[0] : location.lon),
+      (location: Location | Cluster.Cluster) =>
+        latY(isLocationCluster(location) ? location.centroid[1] : location.lat)
+    );
   }
-  return new KDBush(
-    locations,
-    (location: Location | Cluster.Cluster) =>
-      lngX(isLocationCluster(location) ? location.centroid[0] : location.lon),
-    (location: Location | Cluster.Cluster) =>
-      latY(isLocationCluster(location) ? location.centroid[1] : location.lat)
-  );
-});
+);
+
+function _getLocationsInBboxIndices(tree: KDBushTree, bbox: [number, number, number, number]) {
+  if (!tree) return undefined;
+  const [lon1, lat1, lon2, lat2] = bbox;
+  const [x1, y1, x2, y2] = [lngX(lon1), latY(lat1), lngX(lon2), latY(lat2)];
+  return tree.range(Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2));
+}
+
+export function getLocationsInBbox(tree: KDBushTree, bbox: [number, number, number, number]) {
+  if (!tree) return undefined;
+  return _getLocationsInBboxIndices(tree, bbox).map((idx: number) => tree.points[idx]) as Array<
+    Location
+  >;
+}
 
 const _getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelector(
   getLocationsTree,
   getViewportBoundingBox,
   (tree: KDBushTree, bbox: [number, number, number, number]) => {
-    if (!tree) return undefined;
-    const [lon1, lat1, lon2, lat2] = bbox;
-    const [x1, y1, x2, y2] = [lngX(lon1), latY(lat1), lngX(lon2), latY(lat2)];
-    const locationIds = tree
-      .range(Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2))
-      .map((idx: number) => tree.points[idx].id);
-    return new Set(locationIds);
+    const ids = _getLocationsInBboxIndices(tree, bbox);
+    if (ids) {
+      return new Set(ids.map((idx: number) => tree.points[idx].id) as Array<string>);
+    }
+    return undefined;
   }
 );
 
