@@ -1,7 +1,6 @@
 import { DeckGL } from '@deck.gl/react';
 import { MapController } from '@deck.gl/core';
 import * as React from 'react';
-import { alea } from 'seedrandom';
 import {
   ReactNode,
   Reducer,
@@ -12,6 +11,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { alea } from 'seedrandom';
 import { _MapContext as MapContext, StaticMap, ViewStateChangeInfo } from 'react-map-gl';
 import FlowMapLayer, {
   FlowLayerPickingInfo,
@@ -63,7 +63,10 @@ import {
   getInitialState,
   Highlight,
   HighlightType,
+  mapTransition,
+  MAX_PITCH,
   MAX_ZOOM_LEVEL,
+  MIN_PITCH,
   MIN_ZOOM_LEVEL,
   reducer,
   State,
@@ -75,10 +78,9 @@ import {
   getDarkMode,
   getDiffMode,
   getExpandedSelection,
-  getFlowMapColors,
   getFetchedFlows,
+  getFlowMapColors,
   getFlowsForFlowMapLayer,
-  getSortedFlowsForKnownLocations,
   getInvalidLocationIds,
   getLocations,
   getLocationsForFlowMapLayer,
@@ -86,6 +88,7 @@ import {
   getLocationsHavingFlows,
   getMapboxMapStyle,
   getMaxLocationCircleSize,
+  getSortedFlowsForKnownLocations,
   getUnknownLocations,
   NUMBER_OF_FLOWS_TO_DISPLAY,
 } from './FlowMap.selectors';
@@ -96,8 +99,8 @@ import SettingsPopover from './SettingsPopover';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
-  dragRotate: false,
-  touchRotate: false,
+  dragRotate: true,
+  touchRotate: true,
   minZoom: MIN_ZOOM_LEVEL,
   maxZoom: MAX_ZOOM_LEVEL,
 };
@@ -319,14 +322,12 @@ const FlowMap: React.FC<Props> = props => {
           ...draft,
           minZoom: MIN_ZOOM_LEVEL,
           maxZoom: MAX_ZOOM_LEVEL,
-          minPitch: 0,
-          maxPitch: 0,
+          minPitch: MIN_PITCH,
+          maxPitch: MAX_PITCH,
           bearing: 0,
           pitch: 0,
           altitude: 1.5,
-          // transitionDuration: 2000,
-          // transitionInterpolator: new FlyToInterpolator(),
-          // transitionEasing: d3ease.easeCubic,
+          ...mapTransition(1000),
         },
       });
     }
@@ -582,6 +583,10 @@ const FlowMap: React.FC<Props> = props => {
     dispatch({ type: ActionType.ZOOM_OUT });
   };
 
+  const handleResetBearingPitch = () => {
+    dispatch({ type: ActionType.RESET_BEARING_PITCH });
+  };
+
   const handleFullScreen = () => {
     const outer = outerRef.current;
     if (outer) {
@@ -666,7 +671,9 @@ const FlowMap: React.FC<Props> = props => {
           onViewStateChange={handleViewStateChange}
           layers={getLayers()}
           ContextProvider={MapContext.Provider}
-          parameters={{ clearColor: [0, 0, 0, 1] }}
+          parameters={{
+            clearColor: darkMode ? [0, 0, 0, 1] : [255, 255, 255, 1],
+          }}
         >
           {' '}
           {mapboxAccessToken && baseMapEnabled && (
@@ -696,6 +703,11 @@ const FlowMap: React.FC<Props> = props => {
                 <ButtonGroup vertical={true}>
                   <Button title="Zoom in" icon={IconNames.PLUS} onClick={handleZoomIn} />
                   <Button title="Zoom out" icon={IconNames.MINUS} onClick={handleZoomOut} />
+                  <Button
+                    title="Reset bearing and pitch"
+                    icon={IconNames.COMPASS}
+                    onClick={handleResetBearingPitch}
+                  />
                 </ButtonGroup>
                 {!inBrowser && !embed && (
                   <ButtonGroup vertical={true}>

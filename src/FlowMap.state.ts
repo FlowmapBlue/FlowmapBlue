@@ -1,4 +1,4 @@
-import { ViewportProps } from 'react-map-gl';
+import { FlyToInterpolator, ViewportProps } from 'react-map-gl';
 import { Config, ConfigPropName, Flow } from './types';
 import { Props as TooltipProps } from './Tooltip';
 import * as queryString from 'query-string';
@@ -7,10 +7,20 @@ import { parseBoolConfigProp, parseNumberConfigProp } from './config';
 import { COLOR_SCHEME_KEYS } from './colors';
 import { csvFormatRows, csvParseRows } from 'd3-dsv';
 import { Reducer } from 'react';
+import { easeCubic } from 'd3-ease';
 
 export const MIN_ZOOM_LEVEL = 1;
 export const MAX_ZOOM_LEVEL = 20;
+export const MIN_PITCH = 0;
+export const MAX_PITCH = +60;
 
+export function mapTransition(duration: number = 500) {
+  return {
+    transitionDuration: 500,
+    transitionInterpolator: new FlyToInterpolator(),
+    transitionEasing: easeCubic,
+  };
+}
 export enum HighlightType {
   LOCATION = 'location',
   FLOW = 'flow',
@@ -48,6 +58,7 @@ export enum ActionType {
   SET_VIEWPORT = 'SET_VIEWPORT',
   ZOOM_IN = 'ZOOM_IN',
   ZOOM_OUT = 'ZOOM_OUT',
+  RESET_BEARING_PITCH = 'RESET_BEARING_PITCH',
   SET_HIGHLIGHT = 'SET_HIGHLIGHT',
   SET_TOOLTIP = 'SET_TOOLTIP',
   CLEAR_SELECTION = 'CLEAR_SELECTION',
@@ -73,6 +84,9 @@ export type Action =
     }
   | {
       type: ActionType.ZOOM_OUT;
+    }
+  | {
+      type: ActionType.RESET_BEARING_PITCH;
     }
   | {
       type: ActionType.SET_HIGHLIGHT;
@@ -163,6 +177,18 @@ function mainReducer(state: State, action: Action): State {
         },
         tooltip: undefined,
         highlight: undefined,
+      };
+    }
+    case ActionType.RESET_BEARING_PITCH: {
+      const { viewport } = state;
+      return {
+        ...state,
+        viewport: {
+          ...viewport,
+          bearing: 0,
+          pitch: 0,
+          ...mapTransition(500),
+        },
       };
     }
     case ActionType.SET_HIGHLIGHT: {
@@ -377,8 +403,8 @@ export function getInitialViewport(bbox: [number, number, number, number]) {
     zoom,
     minZoom: MIN_ZOOM_LEVEL,
     maxZoom: MAX_ZOOM_LEVEL,
-    minPitch: 0,
-    maxPitch: 0,
+    minPitch: MIN_PITCH,
+    maxPitch: MAX_PITCH,
     bearing: 0,
     pitch: 0,
     altitude: 1.5,
