@@ -21,7 +21,7 @@ export interface Props {
   onFeatureDrawn: (feature: MapDrawingFeature | undefined) => void;
 }
 
-export const HANDLE_RADIUS = 3;
+export const HANDLE_RADIUS = 5;
 export const HANDLE_STROKE = {
   DEFAULT: Colors.WHITE,
   [RenderStates.SELECTED]: Colors.BLUE3,

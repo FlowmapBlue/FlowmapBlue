@@ -599,10 +599,11 @@ const FlowMap: React.FC<Props> = props => {
       const candidates = getLocationsInBbox(locationsTree, bbox);
       if (candidates) {
         const inPolygon = candidates.filter(loc =>
-          booleanPointInPolygon([loc.lon, loc.lat], feature)
+          booleanPointInPolygon(getLocationCentroid(loc), feature)
         );
         if (inPolygon.length > 0) {
           handleChangeSelectLocations(inPolygon.map(getLocationId));
+          // TODO: support incremental
         } else {
           handleChangeSelectLocations(undefined);
         }
