@@ -116,7 +116,6 @@ const DeckGLOuter = styled.div<{ darkMode: boolean; baseMapOpacity: number }>(
   props => `
   & #deckgl-overlay {
     mix-blend-mode: ${props.darkMode ? 'screen' : 'multiply'};
-    background-color: ${props.darkMode ? '#000' : '#fff'}
   }
   & .mapboxgl-map {
     opacity: ${props.baseMapOpacity}
@@ -628,7 +627,7 @@ const FlowMap: React.FC<Props> = props => {
             new alea(`${d.origin}-${d.dest}`)(),
           showTotals: true,
           maxLocationCircleSize: getMaxLocationCircleSize(state, props),
-          maxFlowThickness: 18,
+          maxFlowThickness: animationEnabled ? 18 : 12,
           selectedLocationIds: getExpandedSelection(state, props),
           highlightedLocationId:
             highlight && highlight.type === HighlightType.LOCATION
@@ -667,6 +666,7 @@ const FlowMap: React.FC<Props> = props => {
           onViewStateChange={handleViewStateChange}
           layers={getLayers()}
           ContextProvider={MapContext.Provider}
+          parameters={{ clearColor: [0, 0, 0, 1] }}
         >
           {' '}
           {mapboxAccessToken && baseMapEnabled && (
