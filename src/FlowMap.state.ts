@@ -341,13 +341,15 @@ export function applyStateFromQueryString(initialState: State, query: string) {
   if (typeof params.v === 'string') {
     const rows = csvParseRows(params.v);
     if (rows.length > 0) {
-      const [latitude, longitude, zoom] = rows[0].map(asNumber);
+      const [latitude, longitude, zoom, bearing, pitch] = rows[0].map(asNumber);
       if (latitude != null && longitude != null && zoom != null) {
         draft.viewport = {
           ...draft.viewport,
           latitude,
           longitude,
           zoom,
+          ...(bearing != null ? { bearing } : undefined),
+          ...(pitch != null ? { pitch } : undefined),
         };
         draft.adjustViewportToLocations = false;
       }
@@ -369,10 +371,20 @@ export function applyStateFromQueryString(initialState: State, query: string) {
 export function stateToQueryString(state: State) {
   const parts: string[] = [];
   const {
-    viewport: { latitude, longitude, zoom },
+    viewport: { latitude, longitude, zoom, bearing, pitch },
     selectedLocations,
   } = state;
-  parts.push(`v=${csvFormatRows([[latitude.toFixed(6), longitude.toFixed(6), zoom.toFixed(2)]])}`);
+  parts.push(
+    `v=${csvFormatRows([
+      [
+        latitude.toFixed(6),
+        longitude.toFixed(6),
+        zoom.toFixed(2),
+        bearing.toFixed(0),
+        pitch.toFixed(0),
+      ],
+    ])}`
+  );
   parts.push(`a=${state.animationEnabled ? 1 : 0}`);
   parts.push(`b=${state.baseMapEnabled ? 1 : 0}`);
   parts.push(`bo=${state.baseMapOpacity}`);
