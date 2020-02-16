@@ -113,6 +113,7 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
                         { value: LocationFilterMode.BETWEEN, label: 'Between selected' },
                       ].map(v => (
                         <MenuItem
+                          active={locationFilterMode === v.value}
                           icon={
                             locationFilterMode === v.value
                               ? IconNames.TICK_CIRCLE
@@ -131,7 +132,7 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
                 </ClassNames>
               }
             >
-              <Button icon={IconNames.COG} minimal={true} />
+              <Button title="Filter mode" icon={IconNames.COG} minimal={true} />
             </Popover>
           </Column>
         ) : (

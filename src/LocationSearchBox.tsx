@@ -87,6 +87,7 @@ const Outer = styled.div`
   .${Classes.TAG_INPUT_VALUES} {
     max-height: 150px;
     overflow-y: auto;
+    align-items: flex-start;
   }
   .${Classes.HTML_SELECT} {
     & > select {

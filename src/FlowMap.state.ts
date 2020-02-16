@@ -229,10 +229,17 @@ function mainReducer(state: State, action: Action): State {
     }
     case ActionType.SET_SELECTED_LOCATIONS: {
       const { selectedLocations } = action;
+      const isEmpty = !selectedLocations || selectedLocations.length === 0;
+      if (isEmpty) {
+        return {
+          ...state,
+          locationFilterMode: LocationFilterMode.ALL,
+          selectedLocations: undefined,
+        };
+      }
       return {
         ...state,
-        selectedLocations:
-          selectedLocations && selectedLocations.length > 0 ? selectedLocations : undefined,
+        selectedLocations,
       };
     }
     case ActionType.SET_LOCATION_FILTER_MODE: {
@@ -265,6 +272,9 @@ function mainReducer(state: State, action: Action): State {
       return {
         ...state,
         selectedLocations: nextSelectedLocations,
+        ...(!nextSelectedLocations && {
+          locationFilterMode: LocationFilterMode.ALL,
+        }),
         highlight: undefined,
         tooltip: undefined,
       };
