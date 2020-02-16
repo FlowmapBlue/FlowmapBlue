@@ -1,4 +1,4 @@
-import { Button, IconName, IPopoverProps, MenuItem } from '@blueprintjs/core';
+import { Button, Classes, IconName, IPopoverProps, MenuItem } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { ItemPredicate, ItemRenderer, MultiSelect } from '@blueprintjs/select';
 import React from 'react';
@@ -53,8 +53,12 @@ function filterItems<Item>(
 }
 
 const Outer = styled.div`
-  .bp3-popover-target {
+  .${Classes.POPOVER_TARGET} {
     width: 15rem;
+  }
+  .${Classes.TAG_INPUT_VALUES} {
+    max-height: 150px;
+    overflow-y: auto;
   }
 `;
 

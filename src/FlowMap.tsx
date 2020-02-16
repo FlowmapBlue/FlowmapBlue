@@ -85,6 +85,8 @@ import {
   getLocationsForFlowMapLayer,
   getLocationsForSearchBox,
   getLocationsHavingFlows,
+  getLocationsInBbox,
+  getLocationsTree,
   getMapboxMapStyle,
   getMaxLocationCircleSize,
   getSortedFlowsForKnownLocations,
@@ -95,9 +97,13 @@ import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
 import SharePopover from './SharePopover';
 import SettingsPopover from './SettingsPopover';
+import MapDrawingEditor, { MapDrawingFeature, MapDrawingMode } from './MapDrawingEditor';
+import getBbox from '@turf/bbox';
+import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
+  doubleClickZoom: false,
   dragRotate: true,
   touchRotate: true,
   minZoom: MIN_ZOOM_LEVEL,
@@ -114,14 +120,19 @@ export type Props = {
 };
 
 /* This is temporary until mixBlendMode style prop works in <DeckGL> as before v8 */
-const DeckGLOuter = styled.div<{ darkMode: boolean; baseMapOpacity: number }>(
-  props => `
+const DeckGLOuter = styled.div<{
+  darkMode: boolean;
+  baseMapOpacity: number;
+  cursor: 'crosshair' | 'pointer' | undefined;
+}>(
+  ({ cursor, baseMapOpacity, darkMode }) => `
   & #deckgl-overlay {
-    mix-blend-mode: ${props.darkMode ? 'screen' : 'multiply'};
+    mix-blend-mode: ${darkMode ? 'screen' : 'multiply'};
   }
   & .mapboxgl-map {
-    opacity: ${props.baseMapOpacity}
+    opacity: ${baseMapOpacity}
   }
+  ${cursor != null ? `& #view-default-view { cursor: ${cursor}; }` : ''},
 `
 );
 
@@ -146,6 +157,7 @@ const FlowMap: React.FC<Props> = props => {
   const outerRef = useRef<HTMLDivElement>(null);
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState);
+  const [mapDrawingEnabled, setMapDrawingEnabled] = useState(false);
 
   const [updateQuerySearch] = useDebounced(
     () => {
@@ -172,7 +184,11 @@ const FlowMap: React.FC<Props> = props => {
 
   const handleKeyDown = (evt: Event) => {
     if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
-      dispatch({ type: ActionType.CLEAR_SELECTION });
+      if (mapDrawingEnabled) {
+        setMapDrawingEnabled(false);
+      } else {
+        dispatch({ type: ActionType.CLEAR_SELECTION });
+      }
     }
   };
   useEffect(() => {
@@ -574,6 +590,31 @@ const FlowMap: React.FC<Props> = props => {
     });
   };
 
+  const locationsTree = getLocationsTree(state, props);
+
+  const handleMapFeatureDrawn = (feature: MapDrawingFeature | undefined) => {
+    if (feature != null) {
+      const bbox = getBbox(feature) as [number, number, number, number];
+      const candidates = getLocationsInBbox(locationsTree, bbox);
+      if (candidates) {
+        const inPolygon = candidates.filter(loc =>
+          booleanPointInPolygon(getLocationCentroid(loc), feature)
+        );
+        if (inPolygon.length > 0) {
+          handleChangeSelectLocations(inPolygon.map(getLocationId));
+          // TODO: support incremental
+        } else {
+          handleChangeSelectLocations(undefined);
+        }
+      }
+    }
+    setMapDrawingEnabled(false);
+  };
+
+  const handleToggleMapDrawing = () => {
+    setMapDrawingEnabled(!mapDrawingEnabled);
+  };
+
   const handleZoomIn = () => {
     dispatch({ type: ActionType.ZOOM_IN });
   };
@@ -640,8 +681,10 @@ const FlowMap: React.FC<Props> = props => {
           highlightedFlow:
             highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
           pickable: true,
-          onHover: handleHover,
-          onClick: handleClick as any,
+          ...(!mapDrawingEnabled && {
+            onHover: handleHover,
+            onClick: handleClick as any,
+          }),
           visible: true,
           updateTriggers: {
             onHover: handleHover, // to avoid stale closure in the handler
@@ -663,7 +706,11 @@ const FlowMap: React.FC<Props> = props => {
         background: darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5,
       }}
     >
-      <DeckGLOuter darkMode={darkMode} baseMapOpacity={state.baseMapOpacity / 100}>
+      <DeckGLOuter
+        darkMode={darkMode}
+        baseMapOpacity={state.baseMapOpacity / 100}
+        cursor={mapDrawingEnabled ? 'crosshair' : undefined}
+      >
         <DeckGL
           controller={CONTROLLER_OPTIONS}
           viewState={viewport}
@@ -681,6 +728,12 @@ const FlowMap: React.FC<Props> = props => {
               mapStyle={mapboxMapStyle}
               width="100%"
               height="100%"
+            />
+          )}
+          {mapDrawingEnabled && (
+            <MapDrawingEditor
+              mapDrawingMode={MapDrawingMode.POLYGON}
+              onFeatureDrawn={handleMapFeatureDrawn}
             />
           )}
         </DeckGL>
@@ -707,6 +760,14 @@ const FlowMap: React.FC<Props> = props => {
                   title="Reset bearing and pitch"
                   icon={IconNames.COMPASS}
                   onClick={handleResetBearingPitch}
+                />
+              </ButtonGroup>
+              <ButtonGroup vertical={true}>
+                <Button
+                  title="Select by drawing a polygon"
+                  icon={IconNames.POLYGON_FILTER}
+                  active={mapDrawingEnabled}
+                  onClick={handleToggleMapDrawing}
                 />
               </ButtonGroup>
               {!inBrowser && !embed && (

@@ -217,7 +217,8 @@ function mainReducer(state: State, action: Action): State {
       const { selectedLocations } = action;
       return {
         ...state,
-        selectedLocations,
+        selectedLocations:
+          selectedLocations && selectedLocations.length > 0 ? selectedLocations : undefined,
       };
     }
     case ActionType.SELECT_LOCATION: {
