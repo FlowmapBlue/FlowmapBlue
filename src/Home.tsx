@@ -280,7 +280,7 @@ const Home = () => (
             light={NycCitiBikeImage}
             width="100%"
             height="100%"
-            controls={false}
+            controls={true}
             loop={true}
             playing={true}
           />
