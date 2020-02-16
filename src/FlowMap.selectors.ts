@@ -4,7 +4,7 @@ import {
   defaultMemoize,
   ParametricSelector,
 } from 'reselect';
-import { MAX_ZOOM_LEVEL, State } from './FlowMap.state';
+import { LocationFilterMode, MAX_ZOOM_LEVEL, State } from './FlowMap.state';
 import {
   ConfigPropName,
   Flow,
@@ -33,6 +33,7 @@ export type Selector<T> = ParametricSelector<State, Props, T>;
 export const getFetchedFlows = (state: State, props: Props) => props.flowsFetch.value;
 export const getFetchedLocations = (state: State, props: Props) => props.locationsFetch.value;
 export const getSelectedLocations = (state: State, props: Props) => state.selectedLocations;
+export const getLocationFilterMode = (state: State, props: Props) => state.locationFilterMode;
 export const getClusteringEnabled = (state: State, props: Props) => state.clusteringEnabled;
 export const getLocationTotalsEnabled = (state: State, props: Props) => state.locationTotalsEnabled;
 export const getZoom = (state: State, props: Props) => state.viewport.zoom;
@@ -482,27 +483,42 @@ export const getFlowsForFlowMapLayer: Selector<Flow[] | undefined> = createSelec
   getSortedFlowsForZoom,
   getLocationIdsInViewport,
   getSelectedLocationSet,
-  (flows, locationIdsInViewport, selectedLocationsSet) => {
-    if (!flows) return undefined;
-    if (!locationIdsInViewport) return flows;
+  getLocationFilterMode,
+  (flows, locationIdsInViewport, selectedLocationsSet, locationFilterMode) => {
+    if (!flows || !locationIdsInViewport) return undefined;
     const picked: Flow[] = [];
-    let count = 0;
+    let pickedCount = 0;
     for (const flow of flows) {
       const { origin, dest } = flow;
-      if (
-        (locationIdsInViewport.has(origin) || locationIdsInViewport.has(dest)) &&
-        (!selectedLocationsSet ||
-          selectedLocationsSet.has(origin) ||
-          selectedLocationsSet.has(dest))
-      ) {
-        picked.push(flow);
-        if (origin !== dest) {
-          // exclude self-loops from count
-          count++;
+      if (locationIdsInViewport.has(origin) || locationIdsInViewport.has(dest)) {
+        let pick = true;
+        if (selectedLocationsSet) {
+          switch (locationFilterMode) {
+            case LocationFilterMode.ALL:
+              pick = selectedLocationsSet.has(origin) || selectedLocationsSet.has(dest);
+              break;
+            case LocationFilterMode.BETWEEN:
+              pick = selectedLocationsSet.has(origin) && selectedLocationsSet.has(dest);
+              break;
+            case LocationFilterMode.INCOMING:
+              pick = selectedLocationsSet.has(dest);
+              break;
+            case LocationFilterMode.OUTGOING:
+              pick = selectedLocationsSet.has(origin);
+              break;
+          }
+        }
+
+        if (pick) {
+          picked.push(flow);
+          if (origin !== dest) {
+            // exclude self-loops from count
+            pickedCount++;
+          }
         }
       }
       // Only keep top
-      if (count > NUMBER_OF_FLOWS_TO_DISPLAY) break;
+      if (pickedCount > NUMBER_OF_FLOWS_TO_DISPLAY) break;
     }
     return picked;
   }

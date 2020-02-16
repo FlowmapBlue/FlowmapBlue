@@ -1,4 +1,4 @@
-import { Intent, MenuItem } from '@blueprintjs/core';
+import { Classes, Intent, MenuItem } from '@blueprintjs/core';
 import { ItemPredicate, ItemRenderer } from '@blueprintjs/select';
 import { nest } from 'd3-collection';
 import React from 'react';
@@ -8,11 +8,14 @@ import SearchBox from './SearchBox';
 import { Location } from './types';
 import styled from '@emotion/styled';
 import { Cluster } from '@flowmap.gl/cluster';
+import { LocationFilterMode } from './FlowMap.state';
 
 export interface Props {
   selectedLocations: string[] | undefined;
   locations: (Location | Cluster)[];
+  locationFilterMode: LocationFilterMode;
   onSelectionChanged: (selectedLocations: string[] | undefined) => void;
+  onLocationFilterModeChange: (mode: LocationFilterMode) => void;
 }
 
 const LocationTag = styled.div({
@@ -73,6 +76,25 @@ function getLocationsBySelectionStatus(
   };
 }
 
+const Outer = styled.div`
+  & > * > .${Classes.POPOVER_TARGET} {
+    width: 15rem;
+  }
+  .${Classes.TAG_INPUT} {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+  .${Classes.TAG_INPUT_VALUES} {
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  .${Classes.HTML_SELECT} {
+    & > select {
+      font-size: small;
+    }
+  }
+`;
+
 const TextOverflowEllipsis = styled.span({
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
@@ -85,24 +107,33 @@ class LocationsSearchBox extends React.PureComponent<Props> {
   private getLocationsBySelectionStatus = defaultMemoize(getLocationsBySelectionStatus);
 
   render() {
-    const { locations, selectedLocations } = this.props;
+    const {
+      locations,
+      selectedLocations,
+      locationFilterMode,
+      onLocationFilterModeChange,
+    } = this.props;
     const { selected, unselected } = this.getLocationsBySelectionStatus(
       this.getSortedLocations(locations),
       selectedLocations
     );
     return (
-      <SearchBox<Location | Cluster>
-        placeholder="Search for locations…"
-        items={unselected}
-        selectedItems={selected}
-        maxItems={100}
-        itemPredicate={itemPredicate}
-        itemRenderer={this.itemRenderer}
-        tagRenderer={this.tagRenderer}
-        onCleared={this.handleSelectionCleared}
-        onRemoved={this.handleLocationRemoved}
-        onSelected={this.handleLocationSelected}
-      />
+      <Outer>
+        <SearchBox<Location | Cluster>
+          placeholder="Filter by origin and destination…"
+          items={unselected}
+          selectedItems={selected}
+          maxItems={100}
+          itemPredicate={itemPredicate}
+          itemRenderer={this.itemRenderer}
+          tagRenderer={this.tagRenderer}
+          onCleared={this.handleSelectionCleared}
+          onRemoved={this.handleLocationRemoved}
+          onSelected={this.handleLocationSelected}
+          locationFilterMode={locationFilterMode}
+          onLocationFilterModeChange={onLocationFilterModeChange}
+        />
+      </Outer>
     );
   }
 

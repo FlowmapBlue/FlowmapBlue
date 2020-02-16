@@ -62,6 +62,7 @@ import {
   getInitialState,
   Highlight,
   HighlightType,
+  LocationFilterMode,
   mapTransition,
   MAX_PITCH,
   MAX_ZOOM_LEVEL,
@@ -187,7 +188,13 @@ const FlowMap: React.FC<Props> = props => {
       if (mapDrawingEnabled) {
         setMapDrawingEnabled(false);
       } else {
-        dispatch({ type: ActionType.CLEAR_SELECTION });
+        if (tooltip) {
+          hideTooltip();
+        }
+        if (state.highlight) {
+          highlight(undefined);
+        }
+        // dispatch({ type: ActionType.CLEAR_SELECTION });
       }
     }
   };
@@ -583,6 +590,13 @@ const FlowMap: React.FC<Props> = props => {
     });
   };
 
+  const handleChangeLocationFilterMode = (mode: LocationFilterMode) => {
+    dispatch({
+      type: ActionType.SET_LOCATION_FILTER_MODE,
+      mode,
+    });
+  };
+
   const handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
     dispatch({
       type: ActionType.SET_VIEWPORT,
@@ -744,9 +758,11 @@ const FlowMap: React.FC<Props> = props => {
             <Absolute top={10} right={50}>
               <StyledBox darkMode={darkMode}>
                 <LocationsSearchBox
+                  locationFilterMode={state.locationFilterMode}
                   locations={searchBoxLocations}
                   selectedLocations={state.selectedLocations}
                   onSelectionChanged={handleChangeSelectLocations}
+                  onLocationFilterModeChange={handleChangeLocationFilterMode}
                 />
               </StyledBox>
             </Absolute>
@@ -764,7 +780,7 @@ const FlowMap: React.FC<Props> = props => {
               </ButtonGroup>
               <ButtonGroup vertical={true}>
                 <Button
-                  title="Select by drawing a polygon"
+                  title="Filter by drawing a polygon"
                   icon={IconNames.POLYGON_FILTER}
                   active={mapDrawingEnabled}
                   onClick={handleToggleMapDrawing}

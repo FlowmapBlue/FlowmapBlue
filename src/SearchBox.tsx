@@ -1,9 +1,20 @@
-import { Button, Classes, IconName, IPopoverProps, MenuItem } from '@blueprintjs/core';
+import {
+  Button,
+  IconName,
+  IPopoverProps,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  Popover,
+  Position,
+} from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { ItemPredicate, ItemRenderer, MultiSelect } from '@blueprintjs/select';
 import React from 'react';
 import { defaultMemoize } from 'reselect';
-import styled from '@emotion/styled';
+import { LocationFilterMode } from './FlowMap.state';
+import { Column } from './Boxes';
+import { ClassNames } from '@emotion/core';
 
 export interface Props<Item> {
   placeholder: string;
@@ -17,6 +28,8 @@ export interface Props<Item> {
   onRemoved: (item: Item) => void;
   onCleared: () => void;
   onQueryChange?: (query: string) => void;
+  locationFilterMode: LocationFilterMode;
+  onLocationFilterModeChange: (mode: LocationFilterMode) => void;
 }
 
 const NoResultsItem = <MenuItem disabled={true} text="No matches." />;
@@ -52,16 +65,6 @@ function filterItems<Item>(
   return matches;
 }
 
-const Outer = styled.div`
-  .${Classes.POPOVER_TARGET} {
-    width: 15rem;
-  }
-  .${Classes.TAG_INPUT_VALUES} {
-    max-height: 150px;
-    overflow-y: auto;
-  }
-`;
-
 export default class SearchBox<Item> extends React.PureComponent<Props<Item>, State> {
   state = {
     query: '',
@@ -80,6 +83,8 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
       onSelected,
       itemPredicate,
       maxItems,
+      locationFilterMode,
+      onLocationFilterModeChange,
     } = this.props;
     const { query } = this.state;
 
@@ -89,28 +94,65 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
       leftIcon: IconNames.SEARCH as IconName,
       rightElement:
         selectedItems && selectedItems.length > 0 ? (
-          <Button icon={IconNames.CROSS} minimal={true} onClick={onCleared} />
+          <Column>
+            <Button icon={IconNames.CROSS} minimal={true} onClick={onCleared} />
+            <Popover
+              position={Position.TOP_RIGHT}
+              minimal={true}
+              hoverOpenDelay={0}
+              hoverCloseDelay={0}
+              content={
+                <ClassNames>
+                  {({ css }) => (
+                    <Menu>
+                      <MenuDivider title="Filter mode" />
+                      {[
+                        { value: LocationFilterMode.ALL, label: 'All' },
+                        { value: LocationFilterMode.INCOMING, label: 'Incoming to selected' },
+                        { value: LocationFilterMode.OUTGOING, label: 'Outgoing from selected' },
+                        { value: LocationFilterMode.BETWEEN, label: 'Between selected' },
+                      ].map(v => (
+                        <MenuItem
+                          icon={
+                            locationFilterMode === v.value
+                              ? IconNames.TICK_CIRCLE
+                              : IconNames.SMALL_TICK
+                          }
+                          key={v.value}
+                          text={v.label}
+                          onClick={() => onLocationFilterModeChange(v.value)}
+                          textClassName={css({
+                            fontSize: '11px',
+                          })}
+                        />
+                      ))}
+                    </Menu>
+                  )}
+                </ClassNames>
+              }
+            >
+              <Button icon={IconNames.COG} minimal={true} />
+            </Popover>
+          </Column>
         ) : (
           undefined
         ),
     };
 
     return (
-      <Outer>
-        <MultiSelect<Item>
-          items={this.getFilteredItems<Item>(items, query, itemPredicate, maxItems)}
-          selectedItems={selectedItems}
-          itemRenderer={itemRenderer}
-          tagRenderer={tagRenderer}
-          noResults={NoResultsItem}
-          popoverProps={popoverProps}
-          tagInputProps={tagInputProps}
-          onItemSelect={onSelected}
-          resetOnSelect={true}
-          openOnKeyDown={true}
-          onQueryChange={this.handleQueryChange}
-        />
-      </Outer>
+      <MultiSelect<Item>
+        items={this.getFilteredItems<Item>(items, query, itemPredicate, maxItems)}
+        selectedItems={selectedItems}
+        itemRenderer={itemRenderer}
+        tagRenderer={tagRenderer}
+        noResults={NoResultsItem}
+        popoverProps={popoverProps}
+        tagInputProps={tagInputProps}
+        onItemSelect={onSelected}
+        resetOnSelect={true}
+        openOnKeyDown={true}
+        onQueryChange={this.handleQueryChange}
+      />
     );
   }
 

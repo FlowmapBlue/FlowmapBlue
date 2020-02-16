@@ -36,6 +36,13 @@ export interface FlowHighlight {
   flow: Flow;
 }
 
+export enum LocationFilterMode {
+  ALL = 'ALL',
+  INCOMING = 'INCOMING',
+  OUTGOING = 'OUTGOING',
+  BETWEEN = 'BETWEEN',
+}
+
 export type Highlight = LocationHighlight | FlowHighlight;
 
 export interface State {
@@ -44,6 +51,7 @@ export interface State {
   tooltip?: TooltipProps;
   highlight?: Highlight;
   selectedLocations: string[] | undefined;
+  locationFilterMode: LocationFilterMode;
   animationEnabled: boolean;
   locationTotalsEnabled: boolean;
   clusteringEnabled: boolean;
@@ -64,6 +72,7 @@ export enum ActionType {
   CLEAR_SELECTION = 'CLEAR_SELECTION',
   SELECT_LOCATION = 'SELECT_LOCATION',
   SET_SELECTED_LOCATIONS = 'SET_SELECTED_LOCATIONS',
+  SET_LOCATION_FILTER_MODE = 'SET_LOCATION_FILTER_MODE',
   SET_CLUSTERING_ENABLED = 'SET_CLUSTERING_ENABLED',
   SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED',
   SET_LOCATION_TOTALS_ENABLED = 'SET_LOCATION_TOTALS_ENABLED',
@@ -103,6 +112,10 @@ export type Action =
   | {
       type: ActionType.SET_SELECTED_LOCATIONS;
       selectedLocations: string[] | undefined;
+    }
+  | {
+      type: ActionType.SET_LOCATION_FILTER_MODE;
+      mode: LocationFilterMode;
     }
   | {
       type: ActionType.SET_TOOLTIP;
@@ -209,6 +222,7 @@ function mainReducer(state: State, action: Action): State {
       return {
         ...state,
         selectedLocations: undefined,
+        locationFilterMode: LocationFilterMode.ALL,
         highlight: undefined,
         tooltip: undefined,
       };
@@ -219,6 +233,13 @@ function mainReducer(state: State, action: Action): State {
         ...state,
         selectedLocations:
           selectedLocations && selectedLocations.length > 0 ? selectedLocations : undefined,
+      };
+    }
+    case ActionType.SET_LOCATION_FILTER_MODE: {
+      const { mode } = action;
+      return {
+        ...state,
+        locationFilterMode: mode,
       };
     }
     case ActionType.SELECT_LOCATION: {
@@ -362,6 +383,9 @@ export function applyStateFromQueryString(initialState: State, query: string) {
   draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled;
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
   draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled;
+  if (params.lfm != null && params.lfm in LocationFilterMode) {
+    draft.locationFilterMode = params.lfm as LocationFilterMode;
+  }
   if (typeof params.col === 'string' && COLOR_SCHEME_KEYS.includes(params.col)) {
     draft.colorSchemeKey = params.col;
   }
@@ -391,6 +415,7 @@ export function stateToQueryString(state: State) {
   parts.push(`c=${state.clusteringEnabled ? 1 : 0}`);
   parts.push(`d=${state.darkMode ? 1 : 0}`);
   parts.push(`lt=${state.locationTotalsEnabled ? 1 : 0}`);
+  parts.push(`lfm=${state.locationFilterMode}`);
   if (state.colorSchemeKey != null) {
     parts.push(`col=${state.colorSchemeKey}`);
   }
@@ -432,6 +457,7 @@ export function getInitialState(config: Config, queryString: string) {
     adjustViewportToLocations: true,
     selectedLocations: undefined,
     locationTotalsEnabled: true,
+    locationFilterMode: LocationFilterMode.ALL,
     baseMapEnabled: true,
     animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
     clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
