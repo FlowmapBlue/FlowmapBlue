@@ -28,7 +28,6 @@ import {
   Column,
   Description,
   LegendTitle,
-  Row,
   StyledBox,
   Title,
   TitleBox,
@@ -763,44 +762,44 @@ const FlowMap: React.FC<Props> = props => {
       </DeckGLOuter>
       {flows && (
         <>
+          {searchBoxLocations && (
+            <Absolute top={10} right={50}>
+              <StyledBox darkMode={darkMode}>
+                <LocationsSearchBox
+                  locations={searchBoxLocations}
+                  selectedLocations={state.selectedLocations}
+                  onSelectionChanged={handleChangeSelectLocations}
+                />
+              </StyledBox>
+            </Absolute>
+          )}
           <Absolute top={10} right={10}>
-            <Row spacing={10} style={{ alignItems: 'flex-start' }}>
-              {searchBoxLocations && (
-                <StyledBox darkMode={darkMode}>
-                  <LocationsSearchBox
-                    locations={searchBoxLocations}
-                    selectedLocations={state.selectedLocations}
-                    onSelectionChanged={handleChangeSelectLocations}
-                  />
-                </StyledBox>
+            <Column spacing={10}>
+              <ButtonGroup vertical={true}>
+                <Button title="Zoom in" icon={IconNames.PLUS} onClick={handleZoomIn} />
+                <Button title="Zoom out" icon={IconNames.MINUS} onClick={handleZoomOut} />
+                <Button
+                  title="Reset bearing and pitch"
+                  icon={IconNames.COMPASS}
+                  onClick={handleResetBearingPitch}
+                />
+              </ButtonGroup>
+              <ButtonGroup vertical={true}>
+                <Button
+                  title="Select by drawing a polygon"
+                  icon={IconNames.POLYGON_FILTER}
+                  active={mapDrawingEnabled}
+                  onClick={handleToggleMapDrawing}
+                />
+              </ButtonGroup>
+              {!inBrowser && !embed && (
+                <ButtonGroup vertical={true}>
+                  <SharePopover>
+                    <Button title="Share…" icon={IconNames.SHARE} />
+                  </SharePopover>
+                </ButtonGroup>
               )}
-              <Column spacing={10}>
-                <ButtonGroup vertical={true}>
-                  <Button title="Zoom in" icon={IconNames.PLUS} onClick={handleZoomIn} />
-                  <Button title="Zoom out" icon={IconNames.MINUS} onClick={handleZoomOut} />
-                  <Button
-                    title="Reset bearing and pitch"
-                    icon={IconNames.COMPASS}
-                    onClick={handleResetBearingPitch}
-                  />
-                </ButtonGroup>
-                <ButtonGroup vertical={true}>
-                  <Button
-                    title="Select by drawing a polygon"
-                    icon={IconNames.POLYGON_FILTER}
-                    active={mapDrawingEnabled}
-                    onClick={handleToggleMapDrawing}
-                  />
-                </ButtonGroup>
-                {!inBrowser && !embed && (
-                  <ButtonGroup vertical={true}>
-                    <SharePopover>
-                      <Button title="Share…" icon={IconNames.SHARE} />
-                    </SharePopover>
-                  </ButtonGroup>
-                )}
-              </Column>
-            </Row>
+            </Column>
           </Absolute>
           {state.locationTotalsEnabled && !embed && (
             <Box bottom={28} right={0} darkMode={darkMode}>
