@@ -692,28 +692,6 @@ const FlowMap: React.FC<Props> = props => {
           } as any,
         })
       );
-
-      // if (mapDrawingEnabled) {
-      //   layers.push(
-      //     new SelectionLayer({
-      //       id: 'selection',
-      //       selectionType: 'polygon',
-      //       onSelect: ({ pickingInfos }: { pickingInfos: Array<FlowLayerPickingInfo> }) => {
-      //         if (pickingInfos) {
-      //           handleChangeSelectLocations(
-      //             pickingInfos.filter(p => p.type === PickingType.LOCATION).map(p => p.object.id)
-      //           );
-      //         }
-      //         setMapDrawingEnabled(false);
-      //       },
-      //       layerIds: [id],
-      //       getTentativeFillColor: () => colorAsRgba(Colors.ORANGE2, 0.25),
-      //       getTentativeLineColor: () => colorAsRgba(Colors.ORANGE4),
-      //       // getTentativeLineDashArray: () => [7, 4],
-      //       // getLineDashArray: () => [7, 4],
-      //     })
-      //   );
-      // }
     }
 
     return layers;
