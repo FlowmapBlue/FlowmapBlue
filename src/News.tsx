@@ -30,6 +30,15 @@ const NewsItem = styled.div`
 export default () => (
   <Outer>
     <NewsItem>
+      <NewsDate>Feb 17, 2020</NewsDate>
+      <NewsText>
+        <Away href="https://tinyletter.com/flowmap-blue/letters/flowmap-blue-news-feb-2020-new-features">
+          Lasso selection, camera rotation and tilting, new location/flow filtering modes
+        </Away>
+        .
+      </NewsText>
+    </NewsItem>
+    <NewsItem>
       <NewsDate>Jan 06, 2020</NewsDate>
       <NewsText>
         The flow thickness and color scales now{' '}
