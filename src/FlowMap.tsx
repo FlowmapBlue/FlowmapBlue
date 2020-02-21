@@ -149,6 +149,7 @@ export const MAX_NUM_OF_IDS_IN_ERROR = 100;
 const FlowMap: React.FC<Props> = props => {
   const { inBrowser, embed, config, spreadSheetKey, locationsFetch, flowsFetch } = props;
 
+  const deckRef = useRef<any>();
   const history = useHistory();
   const initialState = useMemo<State>(() => getInitialState(config, history.location.search), [
     config,
@@ -623,6 +624,18 @@ const FlowMap: React.FC<Props> = props => {
       }
     }
     setMapDrawingEnabled(false);
+    if (deckRef.current && deckRef.current.deck) {
+      // This is a workaround for a deck.gl issue.
+      // Without it the following happens:
+      // 1. When finishing a map drawing and releasing the mouse over a deck.gl layer
+      //    an onClick event is generated.
+      // 2. Deck.gl sets the info of this event to _lastPointerDownInfo
+      //    which holds the last object that was clicked any time before
+      //    starting the map drawing.
+      // 3. The object info is passed to the onClick handler of the corresponding
+      //    layer which leads to selecting the object and altering the map drawing selection.
+      deckRef.current.deck._lastPointerDownInfo = null;
+    }
   };
 
   const handleToggleMapDrawing = () => {
@@ -726,6 +739,7 @@ const FlowMap: React.FC<Props> = props => {
         cursor={mapDrawingEnabled ? 'crosshair' : undefined}
       >
         <DeckGL
+          ref={deckRef}
           controller={CONTROLLER_OPTIONS}
           viewState={viewport}
           onViewStateChange={handleViewStateChange}
@@ -735,7 +749,6 @@ const FlowMap: React.FC<Props> = props => {
             clearColor: darkMode ? [0, 0, 0, 1] : [255, 255, 255, 1],
           }}
         >
-          {' '}
           {mapboxAccessToken && baseMapEnabled && (
             <StaticMap
               mapboxApiAccessToken={mapboxAccessToken}
