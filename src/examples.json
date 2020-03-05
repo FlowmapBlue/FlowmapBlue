@@ -221,6 +221,11 @@
     {
       "key": "1qpqQr9TN5MVgJFQ6xmI9ut7VHy9_E9Lja84abB9Hq2Y",
       "name": "Poultry trade and risk of HPAI endemicity in Vietnam + background data map"
+    },
+    {
+      "key": "1_SFSYKWgyo7BF1SK1TTyqFewr2nUDPfBOGnJTNh3s3k",
+      "name": "Commuters in Switzerland, Swisstopo basemap",
+      "query": "v=47.038717,8.158928,8.46,0,0&a=0&b=1&bo=100&c=1&d=0&lt=1&lfm=ALL&col=Burg&f=50"
     }
   ]
 }
