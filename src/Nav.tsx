@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
-import { Alignment, Classes, Colors, Navbar } from '@blueprintjs/core';
+import { Alignment, Classes, Colors, Icon, Navbar } from '@blueprintjs/core';
 import Away from './Away';
+import { IconNames } from '@blueprintjs/icons';
 import GitHubLogo from './images/github.svg';
 import SpectrumLogo from './images/spectrum.svg';
 import styled from '@emotion/styled';
@@ -25,7 +26,7 @@ const LinksArea = styled.div`
     margin-left: 20px;
   }
   @media (max-width: 1070px) {
-    display: none;
+    // display: none;
   }
 `;
 
@@ -86,6 +87,12 @@ const Nav = () => (
     </NavMenu>
     <Navbar.Group align={Alignment.RIGHT}>
       <LinksArea>
+        <Away href="https://github.com/sponsors/ilyabo">
+          <LinkItem>
+            <span>Sponsor</span>
+            <Icon icon={IconNames.HEART} />
+          </LinkItem>
+        </Away>
         <Away href="https://github.com/ilyabo/flowmap.blue">
           <LinkItem>
             <span>GitHub</span>
