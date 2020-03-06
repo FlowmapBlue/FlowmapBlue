@@ -2,18 +2,18 @@
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/8b9d3eee-7aa8-4b1f-9e37-2f78307e91d7/deploy-status)](https://app.netlify.com/sites/flowmap-blue/deploys)
 
+[https://flowmap.blue](http://flowmap.blue/)
+
+
 This app can render a geographic flow map visualization from a spreadsheet published on Google Sheets.
 
 It can be used to visualize numbers of movements of people or goods between pairs of geographic locations
 (Origin-Destination data).
 
-[Try online](http://flowmap.blue/)
 
-
-<a href=https://flowmap.blue/1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc><img src=https://user-images.githubusercontent.com/351828/65036043-d07a6400-d94a-11e9-87a0-39dcb5002cc4.png width=800>
+<a href=https://flowmap.blue/1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc><img src=https://user-images.githubusercontent.com/351828/76080526-5fd20d00-5fa7-11ea-939c-7abb268fde40.png width=800>
 </a>
 
-![color-schemes](https://user-images.githubusercontent.com/351828/65035296-17675a00-d949-11e9-8b12-b3b08bc76b91.png)
 
 
 ## Running locally
