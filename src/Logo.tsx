@@ -11,14 +11,6 @@ type Props = {
   collapseWidth?: number;
 };
 
-type LogoImageProps = { size: number };
-const LogoImage = styled.img<LogoImageProps>(
-  ({ size }: LogoImageProps) => `
-  width: ${size}px;
-  height: ${size}px;
-`
-);
-
 const SHADOW_COLOR = ColorScheme.primary;
 const LogoText = styled.div<Props>(({ fontSize, collapseWidth }: Props) => ({
   // fontFamily: "'Titillium Web', sans-serif",
@@ -35,6 +27,7 @@ const LogoText = styled.div<Props>(({ fontSize, collapseWidth }: Props) => ({
 }));
 
 const Logo = ({ fontSize = 25, collapseWidth = 525, embed }: Props) => {
+  const size = Math.ceil(fontSize * 1.5);
   return (
     <Link
       to="/"
@@ -43,7 +36,7 @@ const Logo = ({ fontSize = 25, collapseWidth = 525, embed }: Props) => {
       rel="noopener noreferrer"
     >
       <Row spacing={fontSize / 5}>
-        <LogoImage size={fontSize * 1.5} alt="flowmap.blue logo" src={logo} />
+        <img alt="flowmap.blue logo" src={logo} width={size} height={size} />
         <LogoText collapseWidth={collapseWidth} fontSize={fontSize}>
           flowmap.blue
         </LogoText>

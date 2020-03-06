@@ -96,13 +96,13 @@ const Nav = () => (
         <Away href="https://spectrum.chat/flowmap-blue/">
           <LinkItem>
             <span>Ask a question</span>
-            <img alt="flowmap.blue chat on Spectrum" src={SpectrumLogo} />
+            <img width={20} height={20} alt="flowmap.blue chat on Spectrum" src={SpectrumLogo} />
           </LinkItem>
         </Away>
         <Away href="https://github.com/ilyabo/flowmap.blue">
           <LinkItem>
             <span>GitHub</span>
-            <img alt="flowmap.blue on GitHub" src={GitHubLogo} />
+            <img width={20} height={20} alt="flowmap.blue on GitHub" src={GitHubLogo} />
           </LinkItem>
         </Away>
       </LinksArea>
