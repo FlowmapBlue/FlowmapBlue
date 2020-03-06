@@ -9,7 +9,7 @@ import { csvFormatRows, csvParseRows } from 'd3-dsv';
 import { Reducer } from 'react';
 import { easeCubic } from 'd3-ease';
 
-export const MIN_ZOOM_LEVEL = 1;
+export const MIN_ZOOM_LEVEL = 0;
 export const MAX_ZOOM_LEVEL = 20;
 export const MIN_PITCH = 0;
 export const MAX_PITCH = +60;
