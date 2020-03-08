@@ -463,46 +463,42 @@ export const getSortedAggregatedFlows: Selector<Flow[] | undefined> = createSele
     clusterZoom
   ) => {
     if (!clusterTree || !flows || clusterZoom == null || !locationIdsInViewport) return undefined;
-    const picked: Flow[] = [];
-    let pickedCount = 0;
-    for (const flow of flows) {
-      const { origin, dest } = flow;
-      if (locationIdsInViewport.has(origin) || locationIdsInViewport.has(dest)) {
-        let pick = true;
-        if (expandedSelectedLocationsSet) {
-          switch (locationFilterMode) {
-            case LocationFilterMode.ALL:
-              pick =
-                expandedSelectedLocationsSet.has(origin) || expandedSelectedLocationsSet.has(dest);
-              break;
-            case LocationFilterMode.BETWEEN:
-              pick =
-                expandedSelectedLocationsSet.has(origin) && expandedSelectedLocationsSet.has(dest);
-              break;
-            case LocationFilterMode.INCOMING:
-              pick = expandedSelectedLocationsSet.has(dest);
-              break;
-            case LocationFilterMode.OUTGOING:
-              pick = expandedSelectedLocationsSet.has(origin);
-              break;
-          }
-        }
 
-        if (pick) {
-          picked.push(flow);
-          if (origin !== dest) {
-            // exclude self-loops from count
-            pickedCount++;
+    const pickFlows = function*() {
+      for (const flow of flows) {
+        const { origin, dest } = flow;
+        if (locationIdsInViewport.has(origin) || locationIdsInViewport.has(dest)) {
+          let pick = true;
+          if (expandedSelectedLocationsSet) {
+            switch (locationFilterMode) {
+              case LocationFilterMode.ALL:
+                pick =
+                  expandedSelectedLocationsSet.has(origin) ||
+                  expandedSelectedLocationsSet.has(dest);
+                break;
+              case LocationFilterMode.BETWEEN:
+                pick =
+                  expandedSelectedLocationsSet.has(origin) &&
+                  expandedSelectedLocationsSet.has(dest);
+                break;
+              case LocationFilterMode.INCOMING:
+                pick = expandedSelectedLocationsSet.has(dest);
+                break;
+              case LocationFilterMode.OUTGOING:
+                pick = expandedSelectedLocationsSet.has(origin);
+                break;
+            }
+          }
+          if (pick) {
+            yield flow;
           }
         }
       }
-      // Only keep top
-      // if (pickedCount > NUMBER_OF_FLOWS_TO_DISPLAY) break;
-    }
+    };
 
     // TODO: this should accept an iterable to avoid creating a new array of picked
     const aggregatedFlows = clusterTree
-      .aggregateFlows(picked, clusterZoom, {
+      .aggregateFlows(pickFlows() as any, clusterZoom, {
         getFlowOriginId,
         getFlowDestId,
         getFlowMagnitude,
