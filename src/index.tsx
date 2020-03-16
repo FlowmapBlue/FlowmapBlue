@@ -102,12 +102,9 @@ try {
             }}
           >
             <div style={{ fontSize: 14 }}>
-              We use cookies to <b>collect usage statistics</b> on this website. This really helps
-              us to improve the app. If you use flowmap.blue, we assume that you agree with our{' '}
-              <a href="/#privacy">
-                <b>very short privacy policy</b>
-              </a>
-              .
+              We use cookies to collect usage statistics. This helps us to improve the app. If you
+              use flowmap.blue, we assume that you agree with our very short{' '}
+              <a href="/#privacy">privacy policy</a>.
             </div>
             <ButtonArea>
               <Button
