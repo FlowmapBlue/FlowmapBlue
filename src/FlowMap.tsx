@@ -740,6 +740,7 @@ const FlowMap: React.FC<Props> = props => {
       >
         <DeckGL
           ref={deckRef}
+          repeat={true}
           controller={CONTROLLER_OPTIONS}
           viewState={viewport}
           onViewStateChange={handleViewStateChange}
