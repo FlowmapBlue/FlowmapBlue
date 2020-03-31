@@ -499,6 +499,9 @@ const Home = () => (
             <SupportLogo href="https://www.mapbox.com" src={MapboxLogo} />
           </NoWrap>
         </Support>
+        <Away href="https://www.netlify.com">
+          <img src="https://www.netlify.com/img/global/badges/netlify-dark.svg" alt="Deploys by Netlify" />
+        </Away>
       </section>
       <section>
         <Away href="https://www.informationisbeautifulawards.com/showcase/3815">
