@@ -81,8 +81,7 @@ const Nav = () => (
       <NavItem to="/#examples">Gallery</NavItem>
       <NavItem to="/#tools">Tools</NavItem>
       <NavItem to="/#need-help">Need help?</NavItem>
-      <NavItem to="/#privacy">Privacy</NavItem>
-      <NavItem to="/#open-source">Open source</NavItem>
+      <NavItem to="/#privacy">Data privacy</NavItem>
       <NavItem to="/#credits">Credits</NavItem>
     </NavMenu>
     <Navbar.Group align={Alignment.RIGHT}>

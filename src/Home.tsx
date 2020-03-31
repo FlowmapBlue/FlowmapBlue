@@ -441,7 +441,7 @@ const Home = () => (
         </p>
       </section>
       <section>
-        <h2 id="privacy">Privacy policy</h2>
+        <h2 id="privacy">Data privacy</h2>
         <p>
           flowmap.blue <b>does not store any of the data</b> the users upload to Google Sheets. The
           data from the spreadsheets is loaded directly to the clients' browsers using{' '}
@@ -507,6 +507,7 @@ const Home = () => (
         </Away>
       </section>
       <section>
+        <h2 id="awards">Awards</h2>
         <Away href="https://www.informationisbeautifulawards.com/showcase/3815">
           <AwardImage
             width={100}
