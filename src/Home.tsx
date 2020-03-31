@@ -488,8 +488,9 @@ const Home = () => (
           <Away href="https://github.com/teralytics/flowmap.gl">flowmap.gl</Away>,{` `}
           <Away href="http://deck.gl">deck.gl</Away>,{` `}
           <Away href="https://github.com/mapbox/mapbox-gl-js">mapbox</Away>,{` `}
+          <Away href="https://d3js.org/">d3</Away>,{` `}
           <Away href="https://blueprintjs.com/">blueprint</Away>,{` `}
-          <Away href="https://d3js.org/">d3</Away>.
+          <Away href="https://github.com/CartoDB/cartocolor">CARTOColors</Away>.
         </p>
         <Support>
           <span>With kind support from</span>
@@ -500,7 +501,9 @@ const Home = () => (
           </NoWrap>
         </Support>
         <Away href="https://www.netlify.com">
-          <img src="https://www.netlify.com/img/global/badges/netlify-dark.svg" alt="Deploys by Netlify" />
+          <img
+            width={114} height={51}
+            src="https://www.netlify.com/img/global/badges/netlify-dark.svg" alt="Deploys by Netlify" />
         </Away>
       </section>
       <section>
