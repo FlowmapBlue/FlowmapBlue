@@ -443,27 +443,26 @@ const Home = () => (
       <section>
         <h2 id="privacy">Data privacy</h2>
         <p>
-          flowmap.blue <b>does not store any of the data</b> the users upload to Google Sheets. The
-          data from the spreadsheets is loaded directly to the clients' browsers using{' '}
+          flowmap.blue does not store any of the data the users upload to Google Sheets. The
+          data from the spreadsheets is loaded directly into the clients' browsers. We are using{' '}
           <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">
             Google Visualization API
-          </Away>
-          .
+          </Away> for that.
         </p>
         <p>
-          We <b>treat the data as private</b>, including the URLs of the spreadsheets and flow maps
+          We treat the data as private, including the URLs of the spreadsheets and flow maps
           published by the users. We do not disclose the URLs without getting an explicit consent
           from the authors (unless the authors have already disclosed them by linking from a
           publicly accessible website).
         </p>
         <p>
-          We <b>collect usage statistics</b> via Google Analytics and track errors via Sentry. We
+          We collect usage statistics via Google Analytics and track errors via Sentry. We
           want to know how flowmap.blue is used and when it fails so that we can improve it. The use
           of Google Analytics involves setting cookies in the users' browsers for detecting
           recurring visits and working sessions.
         </p>
         <p>
-          We <b>may try to contact you</b> asking for a permission to add your flow map to the list
+          We may try to contact you asking for a permission to add your flow map to the list
           of examples on the homepage of flowmap.blue.
         </p>
       </section>
