@@ -1,5 +1,6 @@
 # flowmap.blue
 
+  
 [![Netlify Status](https://api.netlify.com/api/v1/badges/8b9d3eee-7aa8-4b1f-9e37-2f78307e91d7/deploy-status)](https://app.netlify.com/sites/flowmap-blue/deploys)
 
 [https://flowmap.blue](http://flowmap.blue/)
@@ -33,3 +34,8 @@ Add `.env` file to the project root with a [Mapbox access token](https://www.map
 Then run:
 
     npm start
+
+
+<a href="https://www.netlify.com">
+    <img src="https://www.netlify.com/img/global/badges/netlify-dark.svg" alt="Deploys by Netlify" />
+</a>
