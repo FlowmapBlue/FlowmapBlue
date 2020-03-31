@@ -481,6 +481,15 @@ const Home = () => (
         </p>
       </section>
       <section>
+        <h2 id="awards">Awards</h2>
+        <Away href="https://www.informationisbeautifulawards.com/showcase/3815">
+          <AwardImage
+            width={100}
+            src="https://infobawards.s3.amazonaws.com/2019/badges/w-2019.png"
+          />
+        </Away>
+      </section>
+      <section>
         <h2 id="credits">Credits</h2>
         <p>
           Developed by <Away href="https://ilya.boyandin.me">Ilya Boyandin</Away> using {` `}
@@ -503,15 +512,6 @@ const Home = () => (
           <img
             width={114} height={51}
             src="https://www.netlify.com/img/global/badges/netlify-dark.svg" alt="Deploys by Netlify" />
-        </Away>
-      </section>
-      <section>
-        <h2 id="awards">Awards</h2>
-        <Away href="https://www.informationisbeautifulawards.com/showcase/3815">
-          <AwardImage
-            width={100}
-            src="https://infobawards.s3.amazonaws.com/2019/badges/w-2019.png"
-          />
         </Away>
       </section>
     </ContentBody>
