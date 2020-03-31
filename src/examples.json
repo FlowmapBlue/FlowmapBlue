@@ -54,6 +54,11 @@
       "name": "Migration in Austria 2018"
     },
     {
+      "key": "1gDrYiVk4jNhmqkBhFwKOYhBTHfOU_GNsjDUHV5vpuVE",
+      "name": "Commuters in Palermo, Italy",
+      "query": "v=38.075220,13.339093,10.03,0,0&a=1&b=1&bo=50&c=1&d=1&lt=1&lfm=ALL&col=YlOrRd&f=17"
+    },
+    {
       "key": "1icUMT7Q3V0DOPHBahXJlz7Mz_BYOgLv9InZUHX_5xIE",
       "name": "Bird migration model",
       "query": "v=49.272478,5.910396,5.91&a=1&d=1&c=0&lt=0&col=Sunset&f=24"
