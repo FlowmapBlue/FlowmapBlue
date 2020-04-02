@@ -297,7 +297,7 @@ const Home = () => (
         {/*How to make a flow map*/}
         <h2 id="how-to">How to visualize your data</h2>
         <p>
-          To visualize and publish a data set you need to have a Google account.{' '}
+          To publish a data set you need to have a Google account.{' '}
           <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don't.
         </p>
         <p>Follow these steps:</p>
@@ -335,7 +335,7 @@ const Home = () => (
             then choosing “Anyone with the link can view”.{' '}
             <ReadMore>
               This step is required so that flowmap.blue can access the data in your spreadsheet.
-              The spreadsheet and the flow map will be private effectively as long as you don't send
+              The spreadsheet and the flow map will be effectively private as long as you don't send
               their URLs to anyone and don't publish them online. We'll treat your data as private
               by default and will not disclose the URLs without getting an explicit consent from you
               (unless you disclose them yourself first by linking from a publicly accessible
