@@ -294,7 +294,8 @@ const Home = () => (
       </section>
 
       <section>
-        <h2 id="how-to">Visualize your own data</h2>
+        {/*How to make a flow map*/}
+        <h2 id="how-to">How to visualize your data</h2>
         <p>
           To visualize and publish a data set you need to have a Google account.{' '}
           <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don't.
