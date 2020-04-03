@@ -33,7 +33,7 @@ export enum ColorScheme {
 }
 
 const FLOW_MIN_COLOR = 'rgba(240,240,240,0.5)';
-const DEFAULT_COLOR_SCHEME = [FLOW_MIN_COLOR, ColorScheme.primary];
+export const DEFAULT_COLOR_SCHEME = [FLOW_MIN_COLOR, ColorScheme.primary];
 
 export const COLOR_SCHEMES: { [key: string]: string[] } = {
   Default: DEFAULT_COLOR_SCHEME,
