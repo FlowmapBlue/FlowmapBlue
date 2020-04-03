@@ -83,14 +83,14 @@
       "query": "v=48.379110,-94.389853,3.79&a=0&b=1&c=1&d=1&lt=1&col=Default&f=28"
     },
     {
+      "key": "1jhDwRoMv12lEzdNyldmGTNbWJ11YgIb-TbuC9qJ6SQs",
+      "name": "King County sewer system",
+      "query": "v=47.569243,-122.273770,11.01&a=0&d=1&c=1&col=SunsetDark&f=45"
+    },
+    {
       "key": "15_pAF6byVzfM4XWjVMryfirY6Lyo_rhJa7M7LADaveQ",
       "name": "Travel in the Greater Toronto Area",
       "query": "v=43.647088,-79.432299,8.91&a=0&b=1&c=1&d=1&lt=1&f=45"
-    },
-    {
-      "key": "1k-GPUBh334sXxKg3-bY-MAiH0wgiM7A6rE1px9T0hKA",
-      "name": "World refugees 2017",
-      "query": "v=27.125172,31.789959,3.19&a=0&b=1&c=1&d=1&lt=1&col=SunsetDark&f=30"
     },
     {
       "key": "1xl5VCFJvx1wjtBTRhH-QzULIojiTORauFRqREnQkJN4",
@@ -111,9 +111,9 @@
       "name": "Commuters in Milan 2020"
     },
     {
-      "key": "1jhDwRoMv12lEzdNyldmGTNbWJ11YgIb-TbuC9qJ6SQs",
-      "name": "King County sewer system",
-      "query": "v=47.569243,-122.273770,11.01&a=0&d=1&c=1&col=SunsetDark&f=45"
+      "key": "1j15DwdAvGg21z47dJ1wBWCB_oxKwKqzuuwQbMD4cGNk",
+      "query": "v=63.520513,10.767703,7.36,0,0&a=0&b=1&bo=75&c=0&d=1&lt=1&lfm=ALL&col=BluYl&f=33",
+      "name": "Commuters in Trøndelag, Norway"
     },
     {
       "key": "1Tlj2e6Kha7SZgIxwcghIqJiCyWXv7VMtgHw20VSjyIE",
@@ -141,6 +141,11 @@
       "key": "1IYzuqRDlBbXKWFKiJ-XQ7dRsHOHxQcdSHdfC23vKfac",
       "name": "Philadelphia bike sharing 2019 Q4",
       "query": "v=39.951751,-75.167605,12.51,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=DarkMint&f=50"
+    },
+    {
+      "key": "1k-GPUBh334sXxKg3-bY-MAiH0wgiM7A6rE1px9T0hKA",
+      "name": "World refugees 2017",
+      "query": "v=27.125172,31.789959,3.19&a=0&b=1&c=1&d=1&lt=1&col=SunsetDark&f=30"
     },
     {
       "key": "1Hy6kV4O_qqcjNvNxmDkc-WA__8wcbAjUlBX5a0zcGWY",
