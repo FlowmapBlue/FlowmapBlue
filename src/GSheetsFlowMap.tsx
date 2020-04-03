@@ -142,7 +142,7 @@ const GSheetsFlowMap = sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
       )}
       {configFetch.fulfilled && configFetch.value[ConfigPropName.TITLE] && (
         <Helmet>
-          <title>{`${configFetch.value[ConfigPropName.TITLE]} - flowmap.blue`}</title>
+          <title>{`${configFetch.value[ConfigPropName.TITLE]} - Flowmap.blue`}</title>
           <link href={`https://flowmap.blue/${spreadSheetKey}`} rel="canonical" />
         </Helmet>
       )}

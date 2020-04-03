@@ -36,7 +36,7 @@ const Logo = ({ fontSize = 25, collapseWidth = 525, embed }: Props) => {
       rel="noopener noreferrer"
     >
       <Row spacing={fontSize / 5}>
-        <img alt="flowmap.blue logo" src={logo} width={size} height={size} />
+        <img alt="Flowmap.blue logo" src={logo} width={size} height={size} />
         <LogoText collapseWidth={collapseWidth} fontSize={fontSize}>
           flowmap.blue
         </LogoText>

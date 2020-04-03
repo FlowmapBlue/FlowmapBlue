@@ -127,7 +127,7 @@ export default () => (
         <Away href="https://ilya.boyandin.me/talks/2019-10-11-urban-mobility-symp/">
           “Scalability of OD-data visualizations”
         </Away>{' '}
-        about flowmap.blue and{' '}
+        about Flowmap.blue and{' '}
         <Away href="https://github.com/teralytics/flowmap.query">flowmap.query</Away> at the{' '}
         <Away href="https://www.citylab-berlin.org/events/mobilitysymposium_en/">
           Urban Mobility Symposium
@@ -151,7 +151,7 @@ export default () => (
       <NewsDate>Mar 03, 2019</NewsDate>
       <NewsText>
         <Away href="https://ilya.boyandin.me/talks/2019-03-03-clisel/">
-          Talk about flowmap.blue
+          Talk about Flowmap.blue
         </Away>{' '}
         at the workshop on{' '}
         <Away href="https://clisel.eu/Ascona">Environmental Changes and Human Mobility</Away> in

@@ -75,7 +75,7 @@ const ODMatrixConverter = () => {
           </p>
           <p>
             This utility can help you converting an OD-matrix dataset into the form suitable for
-            flowmap.blue by unpivoting the destinations.
+            Flowmap.blue by unpivoting the destinations.
           </p>
         </section>
         <ConverterContainer>

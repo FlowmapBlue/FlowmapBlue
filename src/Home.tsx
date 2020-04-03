@@ -334,7 +334,7 @@ const Home = () => (
             Share the spreadsheet by going to “File” / “Share with others”, clicking “Advanced”, and
             then choosing “Anyone with the link can view”.{' '}
             <ReadMore>
-              This step is required so that flowmap.blue can access the data in your spreadsheet.
+              This step is required so that Flowmap.blue can access the data in your spreadsheet.
               The spreadsheet and the flow map will be effectively private as long as you don't send
               their URLs to anyone and don't publish them online. We'll treat your data as private
               by default and will not disclose the URLs without getting an explicit consent from you
@@ -351,7 +351,7 @@ const Home = () => (
       <section>
         <h2 id="examples">Examples</h2>
         <div>
-          Flowmap.blue has been used for various kinds of datasets:
+          Flowmap.blue is used for various kinds of datasets:
           <ListOfUses>
             <ListOfUsesItem>Internal migration</ListOfUsesItem>
             <ListOfUsesItem>International migration</ListOfUsesItem>
@@ -438,17 +438,18 @@ const Home = () => (
           ,{` `}
           <Away href="https://github.com/ilyabo/flowmap.blue/issues">submit an issue</Away>
           {` or `}
-          <a href="mailto:ilya@boyandin.me?subject=flowmap.blue">write me an email</a>.
+          <a href="mailto:ilya@boyandin.me?subject=Flowmap.blue">write me an email</a>.
         </p>
       </section>
       <section>
         <h2 id="privacy">Data privacy</h2>
         <p>
-          flowmap.blue does not store any of the data the users upload to Google Sheets. The
-          data from the spreadsheets is loaded directly into the clients' browsers. We are using{' '}
+          Flowmap.blue does not store any of the data the users upload to Google Sheets. The data
+          from the spreadsheets is loaded directly into the clients' browsers. We are using{' '}
           <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">
             Google Visualization API
-          </Away> for that.
+          </Away>{' '}
+          for that.
         </p>
         <p>
           We treat the data as private, including the URLs of the spreadsheets and flow maps
@@ -457,27 +458,27 @@ const Home = () => (
           publicly accessible website).
         </p>
         <p>
-          We collect usage statistics via Google Analytics and track errors via Sentry. We
-          want to know how flowmap.blue is used and when it fails so that we can improve it. The use
-          of Google Analytics involves setting cookies in the users' browsers for detecting
-          recurring visits and working sessions.
+          We collect usage statistics via Google Analytics and track errors via Sentry. We want to
+          know how Flowmap.blue is used and when it fails so that we can improve it. The use of
+          Google Analytics involves setting cookies in the users' browsers for detecting recurring
+          visits and working sessions.
         </p>
         <p>
-          We may try to contact you asking for a permission to add your flow map to the list
-          of examples on the homepage of flowmap.blue.
+          We may try to contact you asking for a permission to add your flow map to the list of
+          examples on the homepage of Flowmap.blue.
         </p>
       </section>
       <section>
         <h2 id="open-source">Open source</h2>
         <p>
-          {`The source code of flowmap.blue `}
+          {`The source code of Flowmap.blue `}
           <Away href="https://github.com/ilyabo/flowmap.blue">is freely available</Away>
           {` under the  `}
           <Away href="https://github.com/ilyabo/flowmap.blue/blob/master/LICENSE">MIT license</Away>
           .
         </p>
         <p>
-          Make sure to include a proper attribution (URL of flowmap.blue, the original author) if
+          Make sure to include a proper attribution (URL of Flowmap.blue, the original author) if
           you use it in a different project.
         </p>
       </section>
@@ -502,8 +503,11 @@ const Home = () => (
         </Support>
         <Away href="https://www.netlify.com">
           <img
-            width={114} height={51}
-            src="https://www.netlify.com/img/global/badges/netlify-dark.svg" alt="Deploys by Netlify" />
+            width={114}
+            height={51}
+            src="https://www.netlify.com/img/global/badges/netlify-dark.svg"
+            alt="Deploys by Netlify"
+          />
         </Away>
       </section>
       <section>

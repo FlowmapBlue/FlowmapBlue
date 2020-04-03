@@ -6,8 +6,8 @@ const OUTPUT_PATH = path.resolve(__dirname, '../public/');
 const INDEX_HTML_TEMPLATE = path.resolve(__dirname, '../index.template.html');
 const CONFIG = {
     path: "/",                                // Path for overriding default icons path. `string`
-    appName: "flowmap.blue",                            // Your application's name. `string`
-    appShortName: "flowmap.blue",                       // Your application's short_name. `string`. Optional. If not set, appName will be used
+    appName: "Flowmap.blue",                            // Your application's name. `string`
+    appShortName: "Flowmap.blue",                       // Your application's short_name. `string`. Optional. If not set, appName will be used
     appDescription: "Create geographic flow maps representing your data published in Google Sheets. Visualize numbers of movements between locations (origin-destination data). Explore the data interactively.",                     // Your application's description. `string`
     developerName: "Ilya Boyandin",                      // Your (or your developer's) name. `string`
     developerURL: "http://ilya.boyandin.me",                       // Your (or your developer's) URL. `string`

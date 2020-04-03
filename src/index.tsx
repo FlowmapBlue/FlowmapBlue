@@ -103,7 +103,7 @@ try {
           >
             <div style={{ fontSize: 14 }}>
               We use cookies to collect usage statistics. This helps us to improve the app. If you
-              use flowmap.blue, we assume that you agree with our very short{' '}
+              use Flowmap.blue, we assume that you agree with our very short{' '}
               <a href="/#privacy">privacy policy</a>.
             </div>
             <ButtonArea>

@@ -1,4 +1,4 @@
-# flowmap.blue
+# Flowmap.blue
 
   
 [![Netlify Status](https://api.netlify.com/api/v1/badges/8b9d3eee-7aa8-4b1f-9e37-2f78307e91d7/deploy-status)](https://app.netlify.com/sites/flowmap-blue/deploys)
