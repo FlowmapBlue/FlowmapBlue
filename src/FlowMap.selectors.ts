@@ -484,7 +484,7 @@ const getSortedFlowsForZoom: Selector<Flow[] | undefined> = createSelector(
 export const getFlowsSheets = defaultMemoize((config: Config) => {
   const sheets = config[ConfigPropName.FLOWS_SHEETS];
   if (sheets) {
-    return csvParseRows(sheets)[0];
+    return csvParseRows(sheets)[0].map(s => s.trim());
   }
   return undefined;
 });
