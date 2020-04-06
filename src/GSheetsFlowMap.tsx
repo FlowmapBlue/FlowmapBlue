@@ -17,6 +17,8 @@ import { AppToaster } from './AppToaster';
 import { Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { ToastContent } from './Boxes';
+import { useEffect, useState } from 'react';
+import { getFlowsSheets } from './FlowMap.selectors';
 
 interface Props {
   spreadSheetKey: string;
@@ -27,87 +29,90 @@ type PropsWithData = Props & {
   configFetch: PromiseState<Config>;
 };
 
-const FlowMapWithData = sheetFetcher<any>(({ spreadSheetKey, config }: FlowMapProps) => ({
-  locationsFetch: {
-    url: makeSheetQueryUrl(spreadSheetKey!, 'locations', 'SELECT A,B,C,D'),
-    then: (rows: any[]) => ({
-      value: rows.map(
-        ({ id, name, lon, lat }: any) =>
-          ({
-            id: `${id}`,
-            name: name ?? id,
-            lon: +lon,
-            lat: +lat,
-          } as Location)
-      ),
-    }),
-  } as any,
-  flowsFetch: {
-    url: makeSheetQueryUrl(spreadSheetKey!, 'flows', 'SELECT A,B,C'),
-    then: (rows: Flow[]) => {
-      let dupes: Flow[] = [];
-      // Sum up duplicate flows (with same origin and dest)
-      const grouped = nest<Flow, Flow>()
-        .key((d: Flow) => d.origin)
-        .key((d: Flow) => d.dest)
-        .rollup(dd => {
-          const { origin, dest } = dd[0];
-          if (dd.length > 1) {
-            dupes.push(dd[0]);
-          }
-          return {
-            origin,
-            dest,
-            count: dd.reduce((m, d) => {
-              if (d.count != null) {
-                const c = +d.count;
-                if (!isNaN(c) && isFinite(c)) return m + c;
-              }
-              return m;
-            }, 0),
-          };
-        })
-        .entries(rows);
-      const rv: Flow[] = [];
-      for (const { values } of grouped) {
-        for (const { value } of values) {
-          if (value.origin != null && value.dest != null) {
-            rv.push(value);
+const FlowMapWithData = sheetFetcher<any>(
+  ({ spreadSheetKey, config, flowsSheet = 'flows' }: FlowMapProps) => ({
+    locationsFetch: {
+      url: makeSheetQueryUrl(spreadSheetKey!, 'locations', 'SELECT A,B,C,D'),
+      then: (rows: any[]) => ({
+        value: rows.map(
+          ({ id, name, lon, lat }: any) =>
+            ({
+              id: `${id}`,
+              name: name ?? id,
+              lon: +lon,
+              lat: +lat,
+            } as Location)
+        ),
+      }),
+    } as any,
+    flowsFetch: {
+      url: makeSheetQueryUrl(spreadSheetKey!, flowsSheet, 'SELECT A,B,C'),
+      refreshing: true,
+      then: (rows: Flow[]) => {
+        let dupes: Flow[] = [];
+        // Sum up duplicate flows (with same origin and dest)
+        const grouped = nest<Flow, Flow>()
+          .key((d: Flow) => d.origin)
+          .key((d: Flow) => d.dest)
+          .rollup(dd => {
+            const { origin, dest } = dd[0];
+            if (dd.length > 1) {
+              dupes.push(dd[0]);
+            }
+            return {
+              origin,
+              dest,
+              count: dd.reduce((m, d) => {
+                if (d.count != null) {
+                  const c = +d.count;
+                  if (!isNaN(c) && isFinite(c)) return m + c;
+                }
+                return m;
+              }, 0),
+            };
+          })
+          .entries(rows);
+        const rv: Flow[] = [];
+        for (const { values } of grouped) {
+          for (const { value } of values) {
+            if (value.origin != null && value.dest != null) {
+              rv.push(value);
+            }
           }
         }
-      }
-      if (dupes.length > 0) {
-        if (config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
-          AppToaster.show({
-            intent: Intent.WARNING,
-            icon: IconNames.WARNING_SIGN,
-            timeout: 0,
-            message: (
-              <ToastContent>
-                The following flows (origin → dest pairs) were encountered more than once in the
-                dataset:
-                <ErrorsLocationsBlock>
-                  {(dupes.length > MAX_NUM_OF_IDS_IN_ERROR
-                    ? dupes.slice(0, MAX_NUM_OF_IDS_IN_ERROR)
-                    : dupes
-                  )
-                    .map(({ origin, dest }) => `${origin} → ${dest}`)
-                    .join(', ')}
-                  {dupes.length > MAX_NUM_OF_IDS_IN_ERROR &&
-                    ` … and ${dupes.length - MAX_NUM_OF_IDS_IN_ERROR} others`}
-                </ErrorsLocationsBlock>
-                Their counts were summed up.
-              </ToastContent>
-            ),
-          });
+        if (dupes.length > 0) {
+          if (config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
+            AppToaster.show({
+              intent: Intent.WARNING,
+              icon: IconNames.WARNING_SIGN,
+              timeout: 0,
+              message: (
+                <ToastContent>
+                  The following flows (origin → dest pairs) were encountered more than once in the
+                  dataset:
+                  <ErrorsLocationsBlock>
+                    {(dupes.length > MAX_NUM_OF_IDS_IN_ERROR
+                      ? dupes.slice(0, MAX_NUM_OF_IDS_IN_ERROR)
+                      : dupes
+                    )
+                      .map(({ origin, dest }) => `${origin} → ${dest}`)
+                      .join(', ')}
+                    {dupes.length > MAX_NUM_OF_IDS_IN_ERROR &&
+                      ` … and ${dupes.length - MAX_NUM_OF_IDS_IN_ERROR} others`}
+                  </ErrorsLocationsBlock>
+                  Their counts were summed up.
+                </ToastContent>
+              ),
+            });
+          }
         }
-      }
-      return {
-        value: rv,
-      };
-    },
-  } as any,
-}))(FlowMap as any);
+        return {
+          value: rv,
+        };
+      },
+    } as any,
+  })
+)(FlowMap as any);
 
 const GSheetsFlowMap = sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
   configFetch: {
@@ -128,6 +133,18 @@ const GSheetsFlowMap = sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
     },
   } as any,
 }))(({ spreadSheetKey, embed, configFetch }: PropsWithData) => {
+  const flowsSheets = configFetch.fulfilled ? getFlowsSheets(configFetch.value) : undefined;
+  const [flowsSheet, setFlowsSheet] = useState();
+  useEffect(() => {
+    if (flowsSheet == null) {
+      if (flowsSheets && flowsSheets.length > 0) {
+        setFlowsSheet(flowsSheets[0]);
+      }
+    }
+  }, [flowsSheets, flowsSheet]);
+  const handleSetFlowsSheet = (sheet: string) => {
+    setFlowsSheet(sheet);
+  };
   return (
     <MapContainer embed={embed}>
       {configFetch.pending || configFetch.refreshing ? (
@@ -138,6 +155,8 @@ const GSheetsFlowMap = sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
           spreadSheetKey={spreadSheetKey}
           embed={embed}
           config={configFetch.fulfilled ? configFetch.value : DEFAULT_CONFIG}
+          flowsSheet={flowsSheet}
+          onSetFlowsSheet={handleSetFlowsSheet}
         />
       )}
       {configFetch.fulfilled && configFetch.value[ConfigPropName.TITLE] && (

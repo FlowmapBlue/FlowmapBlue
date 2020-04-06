@@ -17,6 +17,7 @@ export enum ConfigPropName {
   FADE_AMOUNT = 'fadeAmount',
   BASE_MAP_OPACITY = 'baseMapOpacity',
   CLUSTER_ON_ZOOM = 'clustering',
+  FLOWS_SHEETS = 'flows.sheets',
 }
 
 export interface ConfigProp {

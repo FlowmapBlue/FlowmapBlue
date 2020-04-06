@@ -29,6 +29,7 @@ const FlowMapContainer = (props: Props) => {
         locationsFetch={PromiseState.resolve(locations)}
         config={DEFAULT_CONFIG}
         spreadSheetKey={undefined}
+        flowsSheet={undefined}
       />
     </MapContainer>
   );

@@ -1,10 +1,25 @@
 import { connect } from 'react-refetch';
 
+// TODO: use LRU cache
+const cache = new Map();
+
 const sheetFetcher = connect.defaults({
   fetch: ((input: RequestInfo, init: RequestInit) => {
     const req = new Request(input, init);
+
+    const key = `${req.url}`; // TODO: add body for POST requests
+    const cached = cache.get(key);
+
+    if (cached) {
+      return new Promise(resolve => resolve(cached.response.clone()));
+    }
     req.headers.set('Content-Type', 'text/plain'); // to avoid slow CORS pre-flight requests
-    return fetch(req);
+    return fetch(req).then(response => {
+      cache.set(key, {
+        response: response.clone(),
+      });
+      return response;
+    });
   }) as any,
 
   handleResponse: function(response) {
@@ -43,7 +58,7 @@ const BASE_URL = `https://docs.google.com/spreadsheets/d`;
 export const makeSheetQueryUrl = (spreadSheetKey: string, sheet: string, query: string) =>
   `${BASE_URL}/${spreadSheetKey}/gviz/tq?tq=${encodeURI(
     `${query} OPTIONS no_format`
-  )}&tqx=out:json&sheet=${sheet}`;
+  )}&tqx=out:json&sheet=${encodeURIComponent(sheet)}`;
 
 function getJson(text: string) {
   const startIdx = text.indexOf('{');

@@ -19,7 +19,7 @@ import FlowMapLayer, {
   LocationPickingInfo,
   PickingType,
 } from '@flowmap.gl/core';
-import { Button, ButtonGroup, Classes, Colors, Intent } from '@blueprintjs/core';
+import { Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent } from '@blueprintjs/core';
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react';
 import WebMercatorViewport from 'viewport-mercator-project';
 import {
@@ -93,6 +93,7 @@ import {
   getSortedFlowsForKnownLocations,
   getUnknownLocations,
   NUMBER_OF_FLOWS_TO_DISPLAY,
+  getFlowsSheets,
 } from './FlowMap.selectors';
 import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
@@ -118,6 +119,8 @@ export type Props = {
   locationsFetch: PromiseState<Location[]>;
   flowsFetch: PromiseState<Flow[]>;
   spreadSheetKey: string | undefined;
+  flowsSheet: string | undefined;
+  onSetFlowsSheet?: (sheet: string) => void;
 };
 
 /* This is temporary until mixBlendMode style prop works in <DeckGL> as before v8 */
@@ -183,6 +186,7 @@ const FlowMap: React.FC<Props> = props => {
   const locationsHavingFlows = getLocationsHavingFlows(state, props);
   const locations = getLocationsForFlowMapLayer(state, props);
   const flows = getFlowsForFlowMapLayer(state, props);
+  const flowsSheets = getFlowsSheets(config);
 
   const handleKeyDown = (evt: Event) => {
     if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
@@ -654,6 +658,15 @@ const FlowMap: React.FC<Props> = props => {
     dispatch({ type: ActionType.RESET_BEARING_PITCH });
   };
 
+  const handleSelectFlowsSheet: React.ChangeEventHandler<HTMLSelectElement> = event => {
+    const sheet = event.currentTarget.value;
+    const { onSetFlowsSheet } = props;
+    if (onSetFlowsSheet) {
+      onSetFlowsSheet(sheet);
+      // dispatch({ type: ActionType.SET_FLOWS_SHEET, sheet });
+    }
+  };
+
   const handleFullScreen = () => {
     const outer = outerRef.current;
     if (outer) {
@@ -843,6 +856,16 @@ const FlowMap: React.FC<Props> = props => {
                   <Title>{title}</Title>
                   <Description>{description}</Description>
                 </div>
+              )}
+              {flowsSheets && (
+                <HTMLSelect
+                  value={props.flowsSheet}
+                  onChange={handleSelectFlowsSheet}
+                  options={flowsSheets.map(sheet => ({
+                    label: sheet,
+                    value: sheet,
+                  }))}
+                />
               )}
               {authorUrl ? (
                 <div>
