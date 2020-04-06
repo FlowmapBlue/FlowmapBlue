@@ -8,6 +8,11 @@
       "query": "v=46.719075,7.817990,7.51&a=0&d=1&c=0&lt=1&col=Default&f=45"
     },
     {
+      "key": "1mK1ZMxNmGtSSxMhtoKO5h7nxyDMXFC_3_u4eo4rtucg",
+      "name": "BIXI bicycle sharing Montréal",
+      "query": "v=45.513266,-73.573425,12.18&a=0&d=1&c=1&col=Teal&f=45"
+    },
+    {
       "key": "1B75NgT4vzOW86HZdIgKRv4lxE_GXDHalJW-0vGfFqQY",
       "name": "Commuters in France 2016"
     },
@@ -99,11 +104,6 @@
     {
       "key": "1qPnZV0wYv9SKh1HInREh_KwuRRgV496nnoKEu6BT8ug",
       "name": "Commuters in Switzerland 2014"
-    },
-    {
-      "key": "1SuJy9ei8NFQ972-lIdg4Ze9KY7dykUt8CwMLS0GDmGo",
-      "name": "BIXI bicycle sharing Montréal",
-      "query": "v=45.513266,-73.573425,12.18&a=0&d=1&c=1&col=Teal&f=45"
     },
     {
       "key": "12OpNobFWMLRFuBhCxP-hJIGMA3iqDwA3P6fwkDqfQms",

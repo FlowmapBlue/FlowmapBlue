@@ -86,7 +86,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "favicons": "node scripts/favicons.js",
-    "screenshots": "node scripts/screenshots.js",
+    "shots": "node scripts/screenshots.js",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
