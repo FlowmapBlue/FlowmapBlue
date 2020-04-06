@@ -58,6 +58,7 @@
     "react": "^16.7.0",
     "react-app-polyfill": "^1.0.6",
     "react-dom": "^16.7.0",
+    "react-fetch-hook": "^1.8.2",
     "react-helmet": "^5.2.0",
     "react-map-gl": "^5.2.3",
     "react-map-gl-draw": "^0.17.2",
