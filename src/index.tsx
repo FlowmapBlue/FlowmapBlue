@@ -35,7 +35,7 @@ const globalStyles = css`
   button,
   select {
     margin: 0;
-    background: ${Colors.DARK_GRAY4};
+    background-color: ${'#2d3a4c'};
     font-family: 'Sarabun', sans-serif;
     font-size: 13pt;
   }

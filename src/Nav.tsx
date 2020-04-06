@@ -8,7 +8,7 @@ import styled from '@emotion/styled';
 import { NavHashLink } from 'react-router-hash-link';
 
 const NavBar = styled(Navbar)`
-  background-color: ${Colors.DARK_GRAY3} !important;
+  background-color: ${'#2c384d'} !important;;
 `;
 
 const NavMenu = styled(Navbar.Group)`
