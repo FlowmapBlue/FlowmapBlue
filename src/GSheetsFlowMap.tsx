@@ -134,7 +134,7 @@ const GSheetsFlowMap = sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
   } as any,
 }))(({ spreadSheetKey, embed, configFetch }: PropsWithData) => {
   const flowsSheets = configFetch.fulfilled ? getFlowsSheets(configFetch.value) : undefined;
-  const [flowsSheet, setFlowsSheet] = useState();
+  const [flowsSheet, setFlowsSheet] = useState<string>();
   useEffect(() => {
     if (flowsSheet == null) {
       if (flowsSheets && flowsSheets.length > 0) {

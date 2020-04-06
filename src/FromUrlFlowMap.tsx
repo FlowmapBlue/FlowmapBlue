@@ -64,6 +64,7 @@ const FromUrlFlowMap = (props: {}) => {
     <MapContainer>
       <FlowMap
         inBrowser={true}
+        flowsSheet={undefined}
         flowsFetch={PromiseState.resolve(fetchFlows.data)}
         locationsFetch={PromiseState.resolve(fetchLocations.data)}
         config={DEFAULT_CONFIG}

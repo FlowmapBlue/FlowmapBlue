@@ -663,6 +663,7 @@ const FlowMap: React.FC<Props> = props => {
     const { onSetFlowsSheet } = props;
     if (onSetFlowsSheet) {
       onSetFlowsSheet(sheet);
+      handleChangeSelectLocations(undefined);
       // dispatch({ type: ActionType.SET_FLOWS_SHEET, sheet });
     }
   };
