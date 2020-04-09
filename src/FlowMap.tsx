@@ -149,7 +149,7 @@ export const ErrorsLocationsBlock = styled.div`
 
 export const MAX_NUM_OF_IDS_IN_ERROR = 100;
 
-const FlowMap: React.FC<Props> = props => {
+const FlowMap: React.FC<Props> = (props) => {
   const { inBrowser, embed, config, spreadSheetKey, locationsFetch, flowsFetch } = props;
 
   const deckRef = useRef<any>();
@@ -270,7 +270,7 @@ const FlowMap: React.FC<Props> = props => {
               ? invalidLocations.slice(0, MAX_NUM_OF_IDS_IN_ERROR)
               : invalidLocations
             )
-              .map(id => `${id}`)
+              .map((id) => `${id}`)
               .join(', ')}
             {invalidLocations.length > MAX_NUM_OF_IDS_IN_ERROR &&
               `… and ${invalidLocations.length - MAX_NUM_OF_IDS_IN_ERROR} others`}
@@ -298,7 +298,7 @@ const FlowMap: React.FC<Props> = props => {
             Locations with the following IDs couldn't be found in the locations sheet:
             <ErrorsLocationsBlock>
               {(ids.length > MAX_NUM_OF_IDS_IN_ERROR ? ids.slice(0, MAX_NUM_OF_IDS_IN_ERROR) : ids)
-                .map(id => `${id}`)
+                .map((id) => `${id}`)
                 .join(', ')}
               {ids.length > MAX_NUM_OF_IDS_IN_ERROR &&
                 `… and ${ids.length - MAX_NUM_OF_IDS_IN_ERROR} others`}
@@ -445,7 +445,7 @@ const FlowMap: React.FC<Props> = props => {
         locationInfo={info}
         isSelectionEmpty={!selectedLocations}
         isSelected={
-          selectedLocations && selectedLocations.find(id => id === location.id) ? true : false
+          selectedLocations && selectedLocations.find((id) => id === location.id) ? true : false
         }
       />
     );
@@ -616,7 +616,7 @@ const FlowMap: React.FC<Props> = props => {
       const bbox = getBbox(feature) as [number, number, number, number];
       const candidates = getLocationsInBbox(locationsTree, bbox);
       if (candidates) {
-        const inPolygon = candidates.filter(loc =>
+        const inPolygon = candidates.filter((loc) =>
           booleanPointInPolygon(getLocationCentroid(loc), feature)
         );
         if (inPolygon.length > 0) {
@@ -658,7 +658,7 @@ const FlowMap: React.FC<Props> = props => {
     dispatch({ type: ActionType.RESET_BEARING_PITCH });
   };
 
-  const handleSelectFlowsSheet: React.ChangeEventHandler<HTMLSelectElement> = event => {
+  const handleSelectFlowsSheet: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     const sheet = event.currentTarget.value;
     const { onSetFlowsSheet } = props;
     if (onSetFlowsSheet) {
@@ -858,11 +858,11 @@ const FlowMap: React.FC<Props> = props => {
                   <Description>{description}</Description>
                 </div>
               )}
-              {flowsSheets && (
+              {flowsSheets && flowsSheets.length > 1 && (
                 <HTMLSelect
                   value={props.flowsSheet}
                   onChange={handleSelectFlowsSheet}
-                  options={flowsSheets.map(sheet => ({
+                  options={flowsSheets.map((sheet) => ({
                     label: sheet,
                     value: sheet,
                   }))}
