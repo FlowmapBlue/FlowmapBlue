@@ -1,64 +1,78 @@
 import { connect } from 'react-refetch';
+import { csvParse, csvParseRows } from 'd3-dsv';
 
 // TODO: use LRU cache
 const cache = new Map();
 
-const sheetFetcher = connect.defaults({
-  fetch: ((input: RequestInfo, init: RequestInit) => {
-    const req = new Request(input, init);
+const sheetFetcher = (format: 'csv' | 'json') =>
+  connect.defaults({
+    fetch: ((input: RequestInfo, init: RequestInit) => {
+      const req = new Request(input, init);
 
-    const key = `${req.url}`; // TODO: add body for POST requests
-    const cached = cache.get(key);
+      const key = `${req.url}`; // TODO: add body for POST requests
+      const cached = cache.get(key);
 
-    if (cached) {
-      return new Promise(resolve => resolve(cached.response.clone()));
-    }
-    req.headers.set('Content-Type', 'text/plain'); // to avoid slow CORS pre-flight requests
-    return fetch(req).then(response => {
-      cache.set(key, {
-        response: response.clone(),
+      if (cached) {
+        return new Promise((resolve) => resolve(cached.response.clone()));
+      }
+      req.headers.set('Content-Type', 'text/plain'); // to avoid slow CORS pre-flight requests
+      return fetch(req).then((response) => {
+        cache.set(key, {
+          response: response.clone(),
+        });
+        return response;
       });
-      return response;
-    });
-  }) as any,
+    }) as any,
 
-  handleResponse: function(response) {
-    if (response.headers.get('content-length') === '0' || response.status === 204) {
-      return;
-    }
-    const text = response.text();
-    if (response.status >= 200 && response.status < 300) {
-      return text.then(
-        (text: string) =>
-          new Promise((resolve, reject) => {
-            let rows;
-            try {
-              const json = getJson(text) as SheetData;
-              rows = getSheetDataAsArray(json);
-              if (json.status !== 'ok') {
-                throw new Error(`Error loading data from Google Sheets`);
+    handleResponse: function (response) {
+      if (response.headers.get('content-length') === '0' || response.status === 204) {
+        return;
+      }
+      const text = response.text();
+      if (response.status >= 200 && response.status < 300) {
+        return text.then(
+          (text: string) =>
+            new Promise((resolve, reject) => {
+              let rows;
+              try {
+                switch (format) {
+                  case 'json':
+                    const json = getJson(text) as SheetData;
+                    rows = getSheetDataAsArray(json);
+                    if (json.status !== 'ok') {
+                      throw new Error(`Error loading data from Google Sheets`);
+                    }
+                    break;
+                  case 'csv':
+                    rows = csvParse(text);
+                    break;
+                }
+                resolve(rows);
+              } catch (err) {
+                console.error(err);
+                reject(err);
               }
-              resolve(rows);
-            } catch (err) {
-              console.error(err);
-              reject(err);
-            }
-          })
-      );
-    } else {
-      return text.then((cause: any) => Promise.reject(new Error(cause)));
-    }
-  },
-});
+            })
+        );
+      } else {
+        return text.then((cause: any) => Promise.reject(new Error(cause)));
+      }
+    },
+  });
 
 export default sheetFetcher;
 
 const BASE_URL = `https://docs.google.com/spreadsheets/d`;
 
-export const makeSheetQueryUrl = (spreadSheetKey: string, sheet: string, query: string) =>
+export const makeSheetQueryUrl = (
+  spreadSheetKey: string,
+  sheet: string,
+  query: string,
+  format: 'csv' | 'json' = 'json'
+) =>
   `${BASE_URL}/${spreadSheetKey}/gviz/tq?tq=${encodeURI(
     `${query} OPTIONS no_format`
-  )}&tqx=out:json&sheet=${encodeURIComponent(sheet)}`;
+  )}&tqx=out:${format}&sheet=${encodeURIComponent(sheet)}`;
 
 function getJson(text: string) {
   const startIdx = text.indexOf('{');
@@ -99,7 +113,7 @@ function getSheetDataAsArray(data: SheetData) {
   };
 
   let rows, colNames: (string | undefined)[];
-  if (!data.table.cols.find(col => col.label != null && col.label.length > 0)) {
+  if (!data.table.cols.find((col) => col.label != null && col.label.length > 0)) {
     // header row was not properly recognized
     rows = data.table.rows.slice(1);
     colNames = data.table.rows[0].c.map(getValue);
@@ -107,7 +121,7 @@ function getSheetDataAsArray(data: SheetData) {
     rows = data.table.rows;
     colNames = data.table.cols.map(({ label }) => `${label}`.trim());
   }
-  return rows.map(row => {
+  return rows.map((row) => {
     const obj: { [key: string]: string | number | undefined } = {};
     for (let i = 0; i < numCols; i++) {
       try {

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Alignment, Classes, Colors, Icon, Navbar } from '@blueprintjs/core';
+import { Alignment, Classes, Icon, Navbar } from '@blueprintjs/core';
 import Away from './Away';
 import { IconNames } from '@blueprintjs/icons';
 import GitHubLogo from './images/github.svg';

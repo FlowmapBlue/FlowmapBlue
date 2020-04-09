@@ -29,7 +29,7 @@ type PropsWithData = Props & {
   configFetch: PromiseState<Config>;
 };
 
-const FlowMapWithData = sheetFetcher<any>(
+const FlowMapWithData = sheetFetcher('json')<any>(
   ({ spreadSheetKey, config, flowsSheet = 'flows' }: FlowMapProps) => ({
     locationsFetch: {
       url: makeSheetQueryUrl(spreadSheetKey!, 'locations', 'SELECT A,B,C,D'),
@@ -54,7 +54,7 @@ const FlowMapWithData = sheetFetcher<any>(
         const grouped = nest<Flow, Flow>()
           .key((d: Flow) => d.origin)
           .key((d: Flow) => d.dest)
-          .rollup(dd => {
+          .rollup((dd) => {
             const { origin, dest } = dd[0];
             if (dd.length > 1) {
               dupes.push(dd[0]);
@@ -114,9 +114,9 @@ const FlowMapWithData = sheetFetcher<any>(
   })
 )(FlowMap as any);
 
-const GSheetsFlowMap = sheetFetcher<any>(({ spreadSheetKey }: Props) => ({
+const GSheetsFlowMap = sheetFetcher('csv')<any>(({ spreadSheetKey }: Props) => ({
   configFetch: {
-    url: makeSheetQueryUrl(spreadSheetKey, 'properties', 'SELECT A,B'),
+    url: makeSheetQueryUrl(spreadSheetKey, 'properties', 'SELECT A,B', 'csv'),
     then: (props: ConfigProp[]) => {
       const value = { ...DEFAULT_CONFIG };
       for (const prop of props) {
