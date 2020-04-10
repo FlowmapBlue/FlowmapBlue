@@ -8,7 +8,10 @@ import { ascending } from 'd3-array';
 import { connect, PromiseState } from 'react-refetch';
 import md5 from 'blueimp-md5';
 import COUNTRIES from './countries.json';
+import { AppToaster } from './AppToaster';
+import { ToastContent } from './Boxes';
 
+const MAX_GEOCODING_ROWS = 1000;
 const countries = COUNTRIES as { [key: string]: string };
 
 const ContentBody = styled.div`
@@ -115,7 +118,7 @@ const GeoCoder = connect(({ names, country, locationType }: GeoCoderProps) => {
   return fetches;
 })((props: GeoCoderProps) => {
   const output = prepareOutput(
-    props.names.map(name => ({
+    props.names.map((name) => ({
       name,
       fetchState: (props as any)[md5(name)] as PromiseState<GeoCodingResult>,
     })),
@@ -144,8 +147,23 @@ const Geocoding = () => {
     delimiter: '\t',
   });
   const handleStart = useCallback(() => {
+    const names = input.split('\n');
+    if (names.length > MAX_GEOCODING_ROWS) {
+      AppToaster.show({
+        intent: Intent.DANGER,
+        icon: IconNames.WARNING_SIGN,
+        timeout: 7000,
+        message: (
+          <ToastContent>
+            {`Sorry, the geocoding requests are not free for us, hence, we
+           have to limit them to ${MAX_GEOCODING_ROWS} max.`}
+          </ToastContent>
+        ),
+      });
+      return null;
+    }
     setGeoCoderParams({
-      names: input.split('\n'),
+      names,
       country,
       locationType,
       delimiter: outputDelimiter,
@@ -174,13 +192,13 @@ const Geocoding = () => {
                     label: 'any country',
                   },
                   ...Object.keys(countries)
-                    .map(key => ({
+                    .map((key) => ({
                       label: countries[key],
                       value: key,
                     }))
                     .sort((a, b) => ascending(a.label, b.label)),
                 ]}
-                onChange={event => setCountry(event.currentTarget.value)}
+                onChange={(event) => setCountry(event.currentTarget.value)}
               />
               <HTMLSelect
                 fill={false}
@@ -200,12 +218,12 @@ const Geocoding = () => {
                     'neighborhood',
                     'address',
                     'poi',
-                  ].map(key => ({
+                  ].map((key) => ({
                     label: key,
                     value: key,
                   })),
                 ]}
-                onChange={event => setLocationType(event.currentTarget.value)}
+                onChange={(event) => setLocationType(event.currentTarget.value)}
               />
               <span>as</span>
               <HTMLSelect
@@ -221,7 +239,7 @@ const Geocoding = () => {
                     label: 'CSV',
                   },
                 ]}
-                onChange={event => setOutputDelimiter(event.currentTarget.value)}
+                onChange={(event) => setOutputDelimiter(event.currentTarget.value)}
               />
             </SearchOptions>
           </div>
@@ -229,7 +247,7 @@ const Geocoding = () => {
             growVertically={false}
             large={true}
             intent={Intent.PRIMARY}
-            onChange={event => setInput(event.target.value)}
+            onChange={(event) => setInput(event.target.value)}
             value={input}
           />
           <Button
