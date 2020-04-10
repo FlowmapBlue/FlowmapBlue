@@ -245,6 +245,7 @@ const Home = () => (
     <ContentBody className={Classes.DARK}>
       <Helmet>
         <link href="https://flowmap.blue/" rel="canonical" />
+        <title>Flowmap.blue - Flow map visualization tool</title>
       </Helmet>
 
       <TitleRow>
