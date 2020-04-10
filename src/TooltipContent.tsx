@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { getFlowMagnitude } from './types';
+import { Config, getFlowMagnitude } from './types';
 import { Location } from './types';
 import styled from '@emotion/styled';
 import * as d3Format from 'd3-format';
@@ -55,24 +55,30 @@ interface Props {
   locationInfo: LocationPickingInfo;
   isSelected: boolean;
   isSelectionEmpty: boolean;
+  config: Config;
 }
 
-export const LocationTooltipContent = ({ locationInfo, isSelected, isSelectionEmpty }: Props) => {
+export const LocationTooltipContent = ({
+  locationInfo,
+  isSelected,
+  isSelectionEmpty,
+  config,
+}: Props) => {
   const { object: location, totalIn, totalOut, totalWithin } = locationInfo;
 
   return (
     <Outer width={150}>
       <Title>{location.name || location.id}</Title>
       <Row>
-        <Label>Incoming trips</Label>
+        <Label>{config['msg.locationTooltip.incoming']}</Label>
         <Value>{formatCount(totalIn)}</Value>
       </Row>
       <Row>
-        <Label>Outgoing trips</Label>
+        <Label>{config['msg.locationTooltip.outgoing']}</Label>
         <Value>{formatCount(totalOut)}</Value>
       </Row>
       <Row>
-        <Label>Internal & round trips</Label>
+        <Label>{config['msg.locationTooltip.internal']}</Label>
         <Value>{formatCount(totalWithin)}</Value>
       </Row>
       <Comment>
@@ -90,10 +96,12 @@ export const FlowTooltipContent = ({
   flow,
   origin,
   dest,
+  config,
 }: {
   flow: Flow;
   origin: Location;
   dest: Location;
+  config: Config;
 }) => {
   return (
     <Outer width={150}>
@@ -101,7 +109,7 @@ export const FlowTooltipContent = ({
         {origin.name || origin.id} → {dest.name || dest.id}
       </Title>
       <Row>
-        <Label>Number of trips</Label>
+        <Label>{config['msg.flowTooltip.numOfTrips']}</Label>
         <Value>{formatCount(getFlowMagnitude(flow))}</Value>
       </Row>
     </Outer>

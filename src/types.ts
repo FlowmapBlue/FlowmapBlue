@@ -25,9 +25,7 @@ export interface ConfigProp {
   value: string | undefined;
 }
 
-export type Config = {
-  [prop in ConfigPropName]: string | undefined;
-};
+export type Config = Record<string | ConfigPropName, string | undefined>;
 
 export const getFlowMagnitude = (flow: Flow) => flow.count || 0;
 export const getFlowOriginId = (flow: Flow) => flow.origin;
