@@ -346,7 +346,12 @@ const Home = () => (
           <SpreadsheetKeyExtractor />
         </ListOfSteps>
         If you are not comfortable uploading your data to Google Sheets, consider using our{' '}
-        <Link to="/in-browser">In-browser flow map</Link> tool.
+        <Link to="/in-browser">In-browser flow map</Link> tool or pass the URLs to load the CSV
+        files from as{' '}
+        <Away href="https://github.com/ilyabo/flowmap.blue/issues/18#issuecomment-610063627">
+          described here
+        </Away>
+        .
       </section>
 
       <section>
