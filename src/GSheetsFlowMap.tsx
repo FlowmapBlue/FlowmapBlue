@@ -19,6 +19,7 @@ import { IconNames } from '@blueprintjs/icons';
 import { ToastContent } from './Boxes';
 import { useEffect, useState } from 'react';
 import { getFlowsSheets } from './FlowMap.selectors';
+import { parseTime } from './time';
 
 interface Props {
   spreadSheetKey: string;
@@ -32,10 +33,10 @@ type PropsWithData = Props & {
 const FlowMapWithData = sheetFetcher('json')<any>(
   ({ spreadSheetKey, config, flowsSheet = 'flows' }: FlowMapProps) => ({
     locationsFetch: {
-      url: makeSheetQueryUrl(spreadSheetKey!, 'locations', 'SELECT A,B,C,D'),
+      url: makeSheetQueryUrl(spreadSheetKey!, 'locations', 'SELECT A,B,C,D', 'json'),
       then: (rows: any[]) => ({
         value: rows.map(
-          ({ id, name, lon, lat }: any) =>
+          ({ id, time, name, lon, lat }: any) =>
             ({
               id: `${id}`,
               name: name ?? id,
@@ -46,22 +47,24 @@ const FlowMapWithData = sheetFetcher('json')<any>(
       }),
     } as any,
     flowsFetch: {
-      url: makeSheetQueryUrl(spreadSheetKey!, flowsSheet, 'SELECT A,B,C'),
+      url: makeSheetQueryUrl(spreadSheetKey!, flowsSheet, 'SELECT *', 'json'),
       refreshing: true,
       then: (rows: Flow[]) => {
         let dupes: Flow[] = [];
-        // Sum up duplicate flows (with same origin and dest)
-        const grouped = nest<Flow, Flow>()
-          .key((d: Flow) => d.origin)
-          .key((d: Flow) => d.dest)
+        // Sum up duplicate flows (with same origin, dest and time)
+        const byOriginDestTime = nest<any, Flow>()
+          .key((d: any) => d.origin)
+          .key((d: any) => d.dest)
+          .key((d: any) => parseTime(d.time)?.toISOString() || 'unknown')
           .rollup((dd) => {
-            const { origin, dest } = dd[0];
+            const { origin, dest, time } = dd[0];
             if (dd.length > 1) {
               dupes.push(dd[0]);
             }
             return {
               origin,
               dest,
+              time: parseTime(time),
               count: dd.reduce((m, d) => {
                 if (d.count != null) {
                   const c = +d.count;
@@ -73,13 +76,16 @@ const FlowMapWithData = sheetFetcher('json')<any>(
           })
           .entries(rows);
         const rv: Flow[] = [];
-        for (const { values } of grouped) {
-          for (const { value } of values) {
-            if (value.origin != null && value.dest != null) {
-              rv.push(value);
+        for (const byDestTime of byOriginDestTime) {
+          for (const byTime of byDestTime.values) {
+            for (const { value } of byTime.values) {
+              if (value.origin != null && value.dest != null) {
+                rv.push(value);
+              }
             }
           }
         }
+        console.log(dupes, byOriginDestTime);
         if (dupes.length > 0) {
           if (config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
             AppToaster.show({

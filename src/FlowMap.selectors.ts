@@ -44,7 +44,7 @@ export const getViewport = (state: State, props: Props) => state.viewport;
 
 export const getInvalidLocationIds: Selector<string[] | undefined> = createSelector(
   getFetchedLocations,
-  locations => {
+  (locations) => {
     if (!locations) return undefined;
     const invalid = [];
     for (const location of locations) {
@@ -66,18 +66,20 @@ export const getLocations: Selector<Location[] | undefined> = createSelector(
     if (!locations) return undefined;
     if (!invalidIds || invalidIds.length === 0) return locations;
     const invalid = new Set(invalidIds);
-    return locations.filter(location => !invalid.has(getLocationId(location)));
+    return locations.filter((location) => !invalid.has(getLocationId(location)));
   }
 );
 
 export const getLocationIds: Selector<Set<string> | undefined> = createSelector(
   getLocations,
-  locations => (locations ? new Set(locations.map(getLocationId)) : undefined)
+  (locations) => (locations ? new Set(locations.map(getLocationId)) : undefined)
 );
 
 export const getSelectedLocationSet: Selector<
   Set<string> | undefined
-> = createSelector(getSelectedLocations, ids => (ids && ids.length > 0 ? new Set(ids) : undefined));
+> = createSelector(getSelectedLocations, (ids) =>
+  ids && ids.length > 0 ? new Set(ids) : undefined
+);
 
 export const getSortedFlowsForKnownLocations: Selector<Flow[] | undefined> = createSelector(
   getFetchedFlows,
@@ -85,8 +87,25 @@ export const getSortedFlowsForKnownLocations: Selector<Flow[] | undefined> = cre
   (flows, ids) => {
     if (!ids || !flows) return undefined;
     return flows
-      .filter(flow => ids.has(getFlowOriginId(flow)) && ids.has(getFlowDestId(flow)))
+      .filter((flow) => ids.has(getFlowOriginId(flow)) && ids.has(getFlowDestId(flow)))
       .sort((a, b) => descending(Math.abs(getFlowMagnitude(a)), Math.abs(getFlowMagnitude(b))));
+  }
+);
+
+export const getTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
+  getSortedFlowsForKnownLocations,
+  (flows) => {
+    if (!flows) return undefined;
+    let start = null;
+    let end = null;
+    for (const { time } of flows) {
+      if (time) {
+        if (start == null || start > time) start = time;
+        if (end == null || end < time) end = time;
+      }
+    }
+    if (!start || !end) return undefined;
+    return [start, end];
   }
 );
 
@@ -144,7 +163,7 @@ export const getClusterIndex: Selector<Cluster.ClusterIndex | undefined> = creat
           const topId = leaves.reduce((m: string | undefined, d: string) =>
             !m || getLocationWeight(d) > getLocationWeight(m) ? d : m
           );
-          const otherId = leaves.length === 2 && leaves.find(id => id !== topId);
+          const otherId = leaves.length === 2 && leaves.find((id) => id !== topId);
           node.name = `"${getName(topId)}" and ${
             otherId ? `"${getName(otherId)}"` : `${leaves.length - 1} others`
           }`;
@@ -187,7 +206,7 @@ export const getAvailableClusterZoomLevels = createSelector(
       }
     }
 
-    return clusterIndex.availableZoomLevels.filter(level => minZoom <= level && level <= maxZoom);
+    return clusterIndex.availableZoomLevels.filter((level) => minZoom <= level && level <= maxZoom);
   }
 );
 
@@ -230,7 +249,7 @@ export const getLocationsForSearchBox: Selector<
       const toAppend = [];
       for (const id of selectedLocations) {
         const cluster = clusterIndex.getClusterById(id);
-        if (cluster && !result.find(d => d.id === id)) {
+        if (cluster && !result.find((d) => d.id === id)) {
           toAppend.push(cluster);
         }
       }
@@ -242,8 +261,8 @@ export const getLocationsForSearchBox: Selector<
   }
 );
 
-export const getDiffMode: Selector<boolean> = createSelector(getFetchedFlows, flows => {
-  if (flows && flows.find(f => getFlowMagnitude(f) < 0)) {
+export const getDiffMode: Selector<boolean> = createSelector(getFetchedFlows, (flows) => {
+  if (flows && flows.find((f) => getFlowMagnitude(f) < 0)) {
     return true;
   }
   return false;
@@ -312,7 +331,7 @@ export const getSortedAggregatedFlows: Selector<Flow[] | undefined> = createSele
 
 export const getMaxClusterZoom: Selector<number | undefined> = createSelector(
   getClusterIndex,
-  clusterIndex => {
+  (clusterIndex) => {
     if (!clusterIndex) return undefined;
     return Math.max.apply(null, clusterIndex.availableZoomLevels);
   }
@@ -349,7 +368,7 @@ export const getExpandedSelection: Selector<Array<string> | undefined> = createS
 
 export const getMaxLocationCircleSize: Selector<number> = createSelector(
   getLocationTotalsEnabled,
-  locationTotalsEnabled => (locationTotalsEnabled ? 15 : 0)
+  (locationTotalsEnabled) => (locationTotalsEnabled ? 15 : 0)
 );
 
 const getViewportBoundingBox: Selector<[number, number, number, number]> = createSelector(
@@ -384,7 +403,7 @@ type KDBushTree = any;
 
 export const getLocationsTree: Selector<KDBushTree> = createSelector(
   getLocationsForZoom,
-  locations => {
+  (locations) => {
     if (!locations) {
       return undefined;
     }
@@ -484,7 +503,7 @@ const getSortedFlowsForZoom: Selector<Flow[] | undefined> = createSelector(
 export const getFlowsSheets = defaultMemoize((config: Config) => {
   const sheets = config[ConfigPropName.FLOWS_SHEETS];
   if (sheets) {
-    return csvParseRows(sheets)[0].map(s => s.trim());
+    return csvParseRows(sheets)[0].map((s) => s.trim());
   }
   return undefined;
 });

@@ -53,4 +53,5 @@ export interface Flow {
   origin: string;
   dest: string;
   count: number;
+  time: Date | undefined;
 }

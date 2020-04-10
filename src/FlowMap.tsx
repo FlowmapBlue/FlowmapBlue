@@ -1,6 +1,7 @@
 import { DeckGL } from '@deck.gl/react';
 import { MapController } from '@deck.gl/core';
 import * as React from 'react';
+import { timeHour } from 'd3-time';
 import {
   ReactNode,
   Reducer,
@@ -94,6 +95,7 @@ import {
   getUnknownLocations,
   NUMBER_OF_FLOWS_TO_DISPLAY,
   getFlowsSheets,
+  getTimeExtent,
 } from './FlowMap.selectors';
 import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
@@ -102,6 +104,8 @@ import SettingsPopover from './SettingsPopover';
 import MapDrawingEditor, { MapDrawingFeature, MapDrawingMode } from './MapDrawingEditor';
 import getBbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+import Timeline from './Timeline';
+import { multiScaleTimeFormat } from './time';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -147,6 +151,14 @@ export const ErrorsLocationsBlock = styled.div`
   overflow: auto;
 `;
 
+const TimelineBox = styled(Box)({
+  display: 'block',
+  width: 300,
+  boxShadow: '0 0 5px #aaa',
+  borderTop: '1px solid #999',
+  zIndex: 2,
+});
+
 export const MAX_NUM_OF_IDS_IN_ERROR = 100;
 
 const FlowMap: React.FC<Props> = (props) => {
@@ -187,6 +199,7 @@ const FlowMap: React.FC<Props> = (props) => {
   const locations = getLocationsForFlowMapLayer(state, props);
   const flows = getFlowsForFlowMapLayer(state, props);
   const flowsSheets = getFlowsSheets(config);
+  const timeExtent = getTimeExtent(state, props);
 
   const handleKeyDown = (evt: Event) => {
     if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
@@ -847,6 +860,23 @@ const FlowMap: React.FC<Props> = (props) => {
             icon={IconNames.FULLSCREEN}
           />
         </Absolute>
+      )}
+      {timeExtent && (
+        <TimelineBox bottom={20} left={100}>
+          <Timeline
+            start={timeExtent[0]}
+            end={timeExtent[1]}
+            current={timeExtent[0]}
+            formatDate={multiScaleTimeFormat}
+            timeInterval={timeHour}
+            minTickWidth={60}
+            stepDuration={500}
+            onChange={(t) => {
+              console.log(t);
+            }}
+          />
+          Hello
+        </TimelineBox>
       )}
       {spreadSheetKey && !embed && (
         <TitleBox top={60} left={0} darkMode={darkMode}>

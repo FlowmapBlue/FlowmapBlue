@@ -1,5 +1,6 @@
 import { connect } from 'react-refetch';
-import { csvParse, csvParseRows } from 'd3-dsv';
+import { csvParse } from 'd3-dsv';
+import { isGSheetsTime, parseGSheetsTime } from './time';
 
 // TODO: use LRU cache
 const cache = new Map();
@@ -122,12 +123,23 @@ function getSheetDataAsArray(data: SheetData) {
     colNames = data.table.cols.map(({ label }) => `${label}`.trim());
   }
   return rows.map((row) => {
-    const obj: { [key: string]: string | number | undefined } = {};
+    const obj: { [key: string]: string | number | Date | undefined } = {};
     for (let i = 0; i < numCols; i++) {
       try {
         const colName = `${colNames[i]}`.trim();
         if (row.c && row.c[i]) {
-          obj[colName] = getValue(row.c[i]);
+          const value = getValue(row.c[i]);
+          if (value != null && isGSheetsTime(value)) {
+            const date = parseGSheetsTime(value);
+            if (!date) {
+              console.warn(`Couldn't parse date ${value}`);
+              obj[colName] = value;
+            } else {
+              obj[colName] = date;
+            }
+          } else {
+            obj[colName] = value;
+          }
         }
       } catch (err) {
         console.warn(`Couldn't parse row ${i} from sheet`);
