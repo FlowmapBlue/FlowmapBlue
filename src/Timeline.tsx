@@ -90,14 +90,36 @@ const TickText = styled.text({
   // textTransform: 'uppercase',
 });
 
-const eventManager = new EventManager();
+interface HandleProps {
+  onMove: (pos: number) => void;
+}
+const TimelineHandle: React.FC<HandleProps> = (props) => {
+  const { onMove } = props;
+  const handleMove = ({ center }: any) => {
+    onMove(center.x);
+  };
+  const ref = useRef<SVGPathElement>(null);
+  useEffect(() => {
+    const eventManager = new EventManager(ref.current);
+    eventManager.on('panstart', handleMove);
+    eventManager.on('panmove', handleMove);
+    eventManager.on('panend', handleMove);
+    return () => {
+      // eventManager.off('panstart', handleMove);
+      // eventManager.off('panmove', handleMove);
+      // eventManager.off('panend', handleMove);
+      eventManager.destroy();
+    };
+  }, []);
 
-const Handle = () => <TrianglePath transform="translate(0,-14)" d="M-10,0 0,13 10,0 z" />;
+  return <TrianglePath ref={ref} transform="translate(0,-14)" d="M-10,0 0,13 10,0 z" />;
+};
 
 interface TimelineChartProps extends Props {
   width: number;
 }
 
+type MoveHandler = (pos: number, kind: 'start' | 'end') => void;
 const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   const { width, extent, selectedRange, formatDate, timeInterval, minTickWidth, onChange } = props;
 
@@ -107,37 +129,41 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   x.range([0, chartWidth]);
 
   const svgRef = useRef<SVGSVGElement>(null);
-
-  const _handleMove = useRef<(evt: any) => void>();
-  _handleMove.current = (evt: any) => {
+  const _handleMove = useRef<MoveHandler>();
+  _handleMove.current = (pos, kind) => {
     const { current } = svgRef;
     if (current != null) {
       const { left } = current.getBoundingClientRect();
-      const { center } = evt;
-      let date = timeInterval.round(x.invert(center.x - left - innerMargin.left));
+      let date = x.invert(pos - left - innerMargin.left);
       if (date < extent[0]) date = extent[0];
       if (date > extent[1]) date = extent[1];
-      onChange([date, selectedRange[1]]);
+      if (kind === 'start') {
+        onChange([date < selectedRange[1] ? date : selectedRange[1], selectedRange[1]]);
+      } else {
+        onChange([selectedRange[0], date > selectedRange[0] ? date : selectedRange[0]]);
+      }
     }
   };
 
-  const handleMove = (evt: any) => {
+  const handleMove: MoveHandler = (pos, kind) => {
     if (_handleMove.current) {
-      _handleMove.current(evt);
+      _handleMove.current(pos, kind);
     }
   };
 
   useEffect(() => {
-    eventManager.setElement(svgRef.current);
-    eventManager.on('click', handleMove);
-    eventManager.on('panstart', handleMove);
-    eventManager.on('panmove', handleMove);
-    eventManager.on('panend', handleMove);
+    const eventManager = new EventManager(svgRef.current);
+    // eventManager.on('click', handleMove);
+    // eventManager.on('panstart', handleMove);
+    // eventManager.on('panmove', handleMove);
+    // eventManager.on('panend', handleMove);
     return () => {
-      eventManager.setElement(null);
-      eventManager.off('panstart', handleMove);
-      eventManager.off('panmove', handleMove);
-      eventManager.off('panend', handleMove);
+      // eventManager.setElement(null);
+      // eventManager.off('click', handleMove);
+      // eventManager.off('panstart', handleMove);
+      // eventManager.off('panmove', handleMove);
+      // eventManager.off('panend', handleMove);
+      eventManager.destroy();
     };
   }, []);
 
@@ -155,10 +181,10 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     <TimelineSvg width={width} height={SVG_HEIGHT} ref={svgRef}>
       <g transform={`translate(${innerMargin.left},${innerMargin.top})`}>
         <g transform={`translate(${x(selectedRange[0])},7)`}>
-          <Handle />
+          <TimelineHandle onMove={(pos) => handleMove(pos, 'start')} />
         </g>
         <g transform={`translate(${x(selectedRange[1])},7)`}>
-          <Handle />
+          <TimelineHandle onMove={(pos) => handleMove(pos, 'end')} />
         </g>
         <g transform={`translate(0,10)`}>
           {ticks.map((t, i) => (

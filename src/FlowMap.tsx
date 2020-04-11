@@ -636,7 +636,7 @@ const FlowMap: React.FC<Props> = (props) => {
   const locationsTree = getLocationsTree(state, props);
 
   const handleTimeRangeChanged = (range: [Date, Date]) => {
-    console.log(range.map((r) => r.toISOString()));
+    // console.log(range.map((r) => r.toISOString()));
     dispatch({
       type: ActionType.SET_TIME_RANGE,
       range,
