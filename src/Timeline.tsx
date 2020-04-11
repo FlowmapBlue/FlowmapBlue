@@ -7,14 +7,13 @@ import { EventManager } from 'mjolnir.js';
 import PlayControl from './PlayControl';
 
 interface Props {
-  current: Date | undefined;
-  start: Date | undefined;
-  end: Date | undefined;
+  selectedRange: [Date, Date];
+  extent: [Date, Date];
   formatDate: (d: Date) => string;
   timeInterval: TimeInterval;
   minTickWidth: number;
   stepDuration: number;
-  onChange: (date: Date) => void;
+  onChange: (range: [Date, Date]) => void;
 }
 
 interface Dimensions {
@@ -22,7 +21,7 @@ interface Dimensions {
   height: number;
 }
 
-const SVG_HEIGHT = 60;
+const SVG_HEIGHT = 70;
 const TICK_HEIGHT = 5;
 
 const innerMargin = {
@@ -93,12 +92,18 @@ const TickText = styled.text({
 
 const eventManager = new EventManager();
 
-const TimelineChart: React.FC<any> = (props) => {
-  const { width, start, end, current, formatDate, timeInterval, minTickWidth, onChange } = props;
+const Handle = () => <TrianglePath transform="translate(0,-14)" d="M-10,0 0,13 10,0 z" />;
+
+interface TimelineChartProps extends Props {
+  width: number;
+}
+
+const TimelineChart: React.FC<TimelineChartProps> = (props) => {
+  const { width, extent, selectedRange, formatDate, timeInterval, minTickWidth, onChange } = props;
 
   const chartWidth = width - innerMargin.left - innerMargin.right;
   const x = scaleTime();
-  x.domain([start, end]);
+  x.domain(extent);
   x.range([0, chartWidth]);
 
   const svgRef = useRef<SVGSVGElement>(null);
@@ -110,9 +115,9 @@ const TimelineChart: React.FC<any> = (props) => {
       const { left } = current.getBoundingClientRect();
       const { center } = evt;
       let date = timeInterval.round(x.invert(center.x - left - innerMargin.left));
-      if (date < start) date = start;
-      if (date > end) date = end;
-      onChange(date);
+      if (date < extent[0]) date = extent[0];
+      if (date > extent[1]) date = extent[1];
+      onChange([date, selectedRange[1]]);
     }
   };
 
@@ -139,9 +144,9 @@ const TimelineChart: React.FC<any> = (props) => {
   const ticks = x.ticks(timeInterval);
   const tickLabels: Date[] = [];
 
-  let nextTick = end;
+  let nextTick = extent[1];
   const step = -Math.ceil(ticks.length / (chartWidth / minTickWidth));
-  while (nextTick >= start) {
+  while (nextTick >= extent[0]) {
     tickLabels.push(nextTick);
     nextTick = timeInterval.offset(nextTick, step);
   }
@@ -149,8 +154,11 @@ const TimelineChart: React.FC<any> = (props) => {
   return (
     <TimelineSvg width={width} height={SVG_HEIGHT} ref={svgRef}>
       <g transform={`translate(${innerMargin.left},${innerMargin.top})`}>
-        <g transform={`translate(${x(current)},7)`}>
-          <TrianglePath transform="translate(0,-14)" d="M-10,0 0,13 10,0 z" />
+        <g transform={`translate(${x(selectedRange[0])},7)`}>
+          <Handle />
+        </g>
+        <g transform={`translate(${x(selectedRange[1])},7)`}>
+          <Handle />
         </g>
         <g transform={`translate(0,10)`}>
           {ticks.map((t, i) => (
@@ -158,18 +166,19 @@ const TimelineChart: React.FC<any> = (props) => {
           ))}
           {tickLabels.map((t, i) => (
             <g key={i} transform={`translate(${x(t)},${0})`}>
-              <rect
-                x={(-minTickWidth * 0.7) / 2}
-                width={minTickWidth * 0.7}
-                y={7}
-                height={20}
-                fill="#fff"
-              />
               <TickText y={20}>{formatDate(t)}</TickText>
             </g>
           ))}
           <AxisPath
             d={`M0,${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},${TICK_HEIGHT * 1.5}`}
+          />
+        </g>
+        <g transform={`translate(0,${40})`}>
+          {ticks.map((t, i) => (
+            <TickLine key={i} transform={`translate(${x(t)},${0})`} y1={0} y2={-TICK_HEIGHT} />
+          ))}
+          <AxisPath
+            d={`M0,-${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},-${TICK_HEIGHT * 1.5}`}
           />
         </g>
       </g>
@@ -180,22 +189,26 @@ const TimelineChart: React.FC<any> = (props) => {
 const Timeline: React.FC<Props> = (props) => {
   const [dimensions, setDimensions] = useState<Dimensions>();
 
-  const { start, end, current, timeInterval, stepDuration, onChange } = props;
+  const { extent, selectedRange, timeInterval, stepDuration, onChange } = props;
 
-  if (!start || !end || !current) {
-    return <Outer />;
-  }
+  const handleChange = (start: Date) => {
+    const length = selectedRange[1].getTime() - selectedRange[0].getTime();
+    const end = new Date(start.getTime() + length);
+    if (end > extent[1]) {
+      return [new Date(end.getTime() - length), end];
+    }
+    onChange([start, end]);
+  };
 
   return (
     <Outer>
       <PlayControl
-        autoplay={true}
-        start={start}
-        end={end}
-        current={current}
+        autoplay={false}
+        extent={extent}
+        current={selectedRange[0]}
         timeStep={timeInterval}
         stepDuration={stepDuration}
-        onChange={onChange}
+        onChange={handleChange}
       />
       <Measure bounds={true} onResize={(contentRect) => setDimensions(contentRect.bounds)}>
         {({ measureRef }) => {

@@ -4,8 +4,7 @@ import { TimeInterval } from 'd3-time';
 
 interface Props {
   current: Date;
-  start: Date;
-  end: Date;
+  extent: [Date, Date];
   timeStep: TimeInterval;
   autoplay: boolean;
   stepDuration: number;
@@ -60,13 +59,13 @@ class PlayControl extends React.Component<Props, State> {
   start = () => {
     const { isPlaying } = this.state;
     if (!isPlaying) {
-      const { start, current, end, onChange } = this.props;
+      const { extent, current, onChange } = this.props;
       this.setState({ isPlaying: true }, () => {
         this.scheduleNextStep();
       });
-      if (current >= end) {
+      if (current >= extent[1]) {
         // rewind
-        onChange(start);
+        onChange(extent[0]);
       }
     }
   };
@@ -95,9 +94,9 @@ class PlayControl extends React.Component<Props, State> {
   nextStep = () => {
     const { isPlaying } = this.state;
     if (isPlaying) {
-      const { timeStep, end, current, onChange } = this.props;
+      const { timeStep, extent, current, onChange } = this.props;
       const next = timeStep.offset(current, 1);
-      if (next > end) {
+      if (next > extent[1]) {
         this.stop();
       } else {
         onChange(next);

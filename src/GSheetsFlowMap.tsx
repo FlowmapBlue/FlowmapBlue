@@ -85,7 +85,6 @@ const FlowMapWithData = sheetFetcher('json')<any>(
             }
           }
         }
-        console.log(dupes, byOriginDestTime);
         if (dupes.length > 0) {
           if (config[ConfigPropName.IGNORE_ERRORS] !== 'yes') {
             AppToaster.show({

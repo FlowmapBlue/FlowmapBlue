@@ -51,6 +51,7 @@ export interface State {
   tooltip?: TooltipProps;
   highlight?: Highlight;
   selectedLocations: string[] | undefined;
+  selectedTimeRange: [Date, Date] | undefined;
   locationFilterMode: LocationFilterMode;
   animationEnabled: boolean;
   locationTotalsEnabled: boolean;
@@ -74,6 +75,7 @@ export enum ActionType {
   SELECT_LOCATION = 'SELECT_LOCATION',
   SET_SELECTED_LOCATIONS = 'SET_SELECTED_LOCATIONS',
   SET_LOCATION_FILTER_MODE = 'SET_LOCATION_FILTER_MODE',
+  SET_TIME_RANGE = 'SET_TIME_RANGE',
   SET_CLUSTERING_ENABLED = 'SET_CLUSTERING_ENABLED',
   SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED',
   SET_LOCATION_TOTALS_ENABLED = 'SET_LOCATION_TOTALS_ENABLED',
@@ -118,6 +120,10 @@ export type Action =
   | {
       type: ActionType.SET_LOCATION_FILTER_MODE;
       mode: LocationFilterMode;
+    }
+  | {
+      type: ActionType.SET_TIME_RANGE;
+      range: [Date, Date];
     }
   | {
       type: ActionType.SET_TOOLTIP;
@@ -255,12 +261,19 @@ function mainReducer(state: State, action: Action): State {
         locationFilterMode: mode,
       };
     }
+    case ActionType.SET_TIME_RANGE: {
+      const { range } = action;
+      return {
+        ...state,
+        selectedTimeRange: range,
+      };
+    }
     case ActionType.SELECT_LOCATION: {
       const { selectedLocations } = state;
       const { locationId, incremental } = action;
       let nextSelectedLocations;
       if (selectedLocations) {
-        const idx = selectedLocations.findIndex(id => id === locationId);
+        const idx = selectedLocations.findIndex((id) => id === locationId);
         if (idx >= 0) {
           nextSelectedLocations = selectedLocations.slice();
           nextSelectedLocations.splice(idx, 1);
@@ -489,6 +502,7 @@ export function getInitialState(config: Config, queryString: string) {
     baseMapOpacity: parseNumberConfigProp(config[ConfigPropName.BASE_MAP_OPACITY], 75),
     colorSchemeKey: config[ConfigPropName.COLORS_SCHEME],
     selectedFlowsSheet: undefined,
+    selectedTimeRange: undefined,
   };
 
   const bbox = config[ConfigPropName.MAP_BBOX];
@@ -496,7 +510,7 @@ export function getInitialState(config: Config, queryString: string) {
     const bounds = bbox
       .split(',')
       .map(asNumber)
-      .filter(v => v != null) as number[];
+      .filter((v) => v != null) as number[];
     if (bounds.length === 4) {
       draft.viewport = getInitialViewport(bounds as [number, number, number, number]);
       draft.adjustViewportToLocations = false;

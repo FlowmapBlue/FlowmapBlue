@@ -152,11 +152,13 @@ export const ErrorsLocationsBlock = styled.div`
 `;
 
 const TimelineBox = styled(Box)({
+  bottom: 20,
+  left: 100,
+  right: 100,
+  minWidth: 400,
   display: 'block',
-  width: 300,
   boxShadow: '0 0 5px #aaa',
   borderTop: '1px solid #999',
-  zIndex: 2,
 });
 
 export const MAX_NUM_OF_IDS_IN_ERROR = 100;
@@ -175,6 +177,16 @@ const FlowMap: React.FC<Props> = (props) => {
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState);
   const [mapDrawingEnabled, setMapDrawingEnabled] = useState(false);
+
+  const timeExtent = getTimeExtent(state, props);
+  useEffect(() => {
+    if (timeExtent) {
+      dispatch({
+        type: ActionType.SET_TIME_RANGE,
+        range: [timeExtent[0], timeExtent[1]],
+      });
+    }
+  }, [timeExtent]);
 
   const [updateQuerySearch] = useDebounced(
     () => {
@@ -199,7 +211,6 @@ const FlowMap: React.FC<Props> = (props) => {
   const locations = getLocationsForFlowMapLayer(state, props);
   const flows = getFlowsForFlowMapLayer(state, props);
   const flowsSheets = getFlowsSheets(config);
-  const timeExtent = getTimeExtent(state, props);
 
   const handleKeyDown = (evt: Event) => {
     if (evt instanceof KeyboardEvent && evt.key === 'Escape') {
@@ -624,6 +635,14 @@ const FlowMap: React.FC<Props> = (props) => {
 
   const locationsTree = getLocationsTree(state, props);
 
+  const handleTimeRangeChanged = (range: [Date, Date]) => {
+    console.log(range.map((r) => r.toISOString()));
+    dispatch({
+      type: ActionType.SET_TIME_RANGE,
+      range,
+    });
+  };
+
   const handleMapFeatureDrawn = (feature: MapDrawingFeature | undefined) => {
     if (feature != null) {
       const bbox = getBbox(feature) as [number, number, number, number];
@@ -792,6 +811,19 @@ const FlowMap: React.FC<Props> = (props) => {
           )}
         </DeckGL>
       </DeckGLOuter>
+      {timeExtent && state.selectedTimeRange && (
+        <TimelineBox darkMode={darkMode}>
+          <Timeline
+            extent={timeExtent}
+            selectedRange={state.selectedTimeRange}
+            formatDate={multiScaleTimeFormat}
+            timeInterval={timeHour}
+            minTickWidth={60}
+            stepDuration={500}
+            onChange={handleTimeRangeChanged}
+          />
+        </TimelineBox>
+      )}
       {flows && (
         <>
           {searchBoxLocations && (
@@ -860,23 +892,6 @@ const FlowMap: React.FC<Props> = (props) => {
             icon={IconNames.FULLSCREEN}
           />
         </Absolute>
-      )}
-      {timeExtent && (
-        <TimelineBox bottom={20} left={100}>
-          <Timeline
-            start={timeExtent[0]}
-            end={timeExtent[1]}
-            current={timeExtent[0]}
-            formatDate={multiScaleTimeFormat}
-            timeInterval={timeHour}
-            minTickWidth={60}
-            stepDuration={500}
-            onChange={(t) => {
-              console.log(t);
-            }}
-          />
-          Hello
-        </TimelineBox>
       )}
       {spreadSheetKey && !embed && (
         <TitleBox top={60} left={0} darkMode={darkMode}>
