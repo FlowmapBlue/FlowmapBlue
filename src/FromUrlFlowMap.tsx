@@ -9,6 +9,7 @@ import LoadingSpinner from './LoadingSpinner';
 import { useLocation } from 'react-router-dom';
 import * as queryString from 'query-string';
 import ErrorFallback from './ErrorFallback';
+import { prepareFlows } from './prepareFlows';
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -27,25 +28,25 @@ const FromUrlFlowMap = (props: {}) => {
     throw new Error(`Invalid flows URL`);
   }
 
-  const fetchFlows = useFetch(
-    flowsUrl,
-    { formatter: (response) =>
-        response.text().then(text => csvParse(text, (row: any) => ({
+  const fetchFlows = useFetch(flowsUrl, {
+    formatter: (response) =>
+      response.text().then((text) =>
+        csvParse(text, (row: any) => ({
           ...row,
           count: +row.count,
-        })))
-    }
-  );
-  const fetchLocations = useFetch(
-    locationsUrl,
-    { formatter: (response) =>
-        response.text().then(text => csvParse(text, (row: any) => ({
+        }))
+      ),
+  });
+  const fetchLocations = useFetch(locationsUrl, {
+    formatter: (response) =>
+      response.text().then((text) =>
+        csvParse(text, (row: any) => ({
           ...row,
           lat: +row.lat,
           lon: +row.lon,
-        })))
-    }
-  );
+        }))
+      ),
+  });
 
   if (fetchLocations.error) {
     return <ErrorFallback error={fetchLocations.error} />;
@@ -59,13 +60,12 @@ const FromUrlFlowMap = (props: {}) => {
     return <LoadingSpinner />;
   }
 
-
   return (
     <MapContainer>
       <FlowMap
         inBrowser={true}
         flowsSheet={undefined}
-        flowsFetch={PromiseState.resolve(fetchFlows.data)}
+        flowsFetch={PromiseState.resolve(prepareFlows(fetchFlows.data as any[]))}
         locationsFetch={PromiseState.resolve(fetchLocations.data)}
         config={DEFAULT_CONFIG}
         spreadSheetKey={undefined}

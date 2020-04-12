@@ -11,6 +11,8 @@ import FlowMap from './FlowMap';
 import { PromiseState } from 'react-refetch';
 import { DEFAULT_CONFIG } from './config';
 import MapContainer from './MapContainer';
+import { prepareFlows } from './prepareFlows';
+import { parseTime } from './time';
 
 interface Props {
   location: HistoryLocation<{
@@ -91,10 +93,7 @@ const InBrowserFlowMap = () => {
         lat: +row.lat,
         lon: +row.lon,
       })),
-      flows: dsvFormat(',').parse(flowsCsv, (row: any) => ({
-        ...row,
-        count: +row.count,
-      })),
+      flows: prepareFlows(dsvFormat(',').parse(flowsCsv)),
     });
   };
   return (
@@ -120,14 +119,14 @@ const InBrowserFlowMap = () => {
               growVertically={false}
               large={true}
               intent={Intent.PRIMARY}
-              onChange={event => setLocationsCsv(event.target.value)}
+              onChange={(event) => setLocationsCsv(event.target.value)}
               value={locationsCsv}
             />
             <TextArea
               growVertically={false}
               large={true}
               intent={Intent.PRIMARY}
-              onChange={event => setFlowsCsv(event.target.value)}
+              onChange={(event) => setFlowsCsv(event.target.value)}
               value={flowsCsv}
             />
           </Container>
