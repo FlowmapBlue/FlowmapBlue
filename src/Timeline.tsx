@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import Measure from 'react-measure';
 import { scaleTime } from 'd3-scale';
 import { TimeInterval } from 'd3-time';
 import { EventManager } from 'mjolnir.js';
 import PlayControl from './PlayControl';
 import { Colors } from '@blueprintjs/core';
-import { useThrottle } from 'react-use';
+import { useMeasure, useThrottle } from 'react-use';
 
 interface Props {
   selectedRange: [Date, Date];
@@ -16,11 +15,6 @@ interface Props {
   timeInterval: TimeInterval;
   minTickWidth: number;
   onChange: (range: [Date, Date]) => void;
-}
-
-interface Dimensions {
-  width: number;
-  height: number;
 }
 
 const SVG_HEIGHT = 60;
@@ -324,7 +318,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
 };
 
 const Timeline: React.FC<Props> = (props) => {
-  const [dimensions, setDimensions] = useState<Dimensions>();
+  const [measureRef, dimensions] = useMeasure();
 
   const { extent, selectedRange, timeInterval, onChange } = props;
 
@@ -360,22 +354,14 @@ const Timeline: React.FC<Props> = (props) => {
         stepDuration={100}
         onChange={handlePlayChange}
       />
-      <Measure bounds={true} onResize={(contentRect) => setDimensions(contentRect.bounds)}>
-        {({ measureRef }) => {
-          return (
-            <MeasureTarget ref={measureRef}>
-              {dimensions && (
-                <TimelineChart
-                  {...props}
-                  selectedRange={internalRange}
-                  width={dimensions.width}
-                  onChange={handleMove}
-                />
-              )}
-            </MeasureTarget>
-          );
-        }}
-      </Measure>
+      <MeasureTarget ref={measureRef}>
+        <TimelineChart
+          {...props}
+          selectedRange={internalRange}
+          width={dimensions.width}
+          onChange={handleMove}
+        />
+      </MeasureTarget>
     </Outer>
   );
 };
