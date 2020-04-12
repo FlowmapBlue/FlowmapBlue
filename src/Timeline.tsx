@@ -331,6 +331,10 @@ const Timeline: React.FC<Props> = (props) => {
     if (current) current(throttledRange);
   }, [throttledRange, onChangeRef]);
 
+  useEffect(() => {
+    setInternalRange(selectedRange);
+  }, [selectedRange]);
+
   const handlePlayChange = (start: Date) => {
     const length = selectedRange[1].getTime() - selectedRange[0].getTime();
     const end = new Date(start.getTime() + length);
