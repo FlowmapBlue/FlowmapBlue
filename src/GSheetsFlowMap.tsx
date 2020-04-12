@@ -1,25 +1,15 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
 import { PromiseState } from 'react-refetch';
-import { Config, ConfigProp, ConfigPropName, Flow, Location } from './types';
+import { Config, ConfigProp, ConfigPropName, Location } from './types';
 import LoadingSpinner from './LoadingSpinner';
 import { Helmet } from 'react-helmet';
 import sendEvent from './ga';
 import { DEFAULT_CONFIG } from './config';
-import FlowMap, {
-  ErrorsLocationsBlock,
-  MAX_NUM_OF_IDS_IN_ERROR,
-  Props as FlowMapProps,
-} from './FlowMap';
+import FlowMap, { Props as FlowMapProps } from './FlowMap';
 import MapContainer from './MapContainer';
-import { nest } from 'd3-collection';
-import { AppToaster } from './AppToaster';
-import { Intent } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
-import { ToastContent } from './Boxes';
-import { useEffect, useState } from 'react';
 import { getFlowsSheets } from './FlowMap.selectors';
-import { parseTime } from './time';
 import { prepareFlows } from './prepareFlows';
 
 interface Props {

@@ -820,7 +820,6 @@ const FlowMap: React.FC<Props> = (props) => {
             formatDate={multiScaleTimeFormat}
             timeInterval={timeHour}
             minTickWidth={60}
-            stepDuration={500}
             onChange={handleTimeRangeChanged}
           />
         </TimelineBox>

@@ -6,6 +6,7 @@ import { TimeInterval } from 'd3-time';
 import { EventManager } from 'mjolnir.js';
 import PlayControl from './PlayControl';
 import { Colors } from '@blueprintjs/core';
+import { useThrottle } from 'react-use';
 
 interface Props {
   selectedRange: [Date, Date];
@@ -14,7 +15,6 @@ interface Props {
   formatDate: (d: Date) => string;
   timeInterval: TimeInterval;
   minTickWidth: number;
-  stepDuration: number;
   onChange: (range: [Date, Date]) => void;
 }
 
@@ -113,22 +113,25 @@ interface HandleProps {
 }
 const TimelineHandle: React.FC<HandleProps> = (props) => {
   const { width, height, side, onMove } = props;
-  const handleMove = ({ center }: any) => {
+  const handleMoveRef = useRef<any>();
+  handleMoveRef.current = ({ center }: any) => {
     onMove(center.x, side);
   };
   const ref = useRef<SVGRectElement>(null);
   useEffect(() => {
     const eventManager = new EventManager(ref.current);
-    eventManager.on('panstart', handleMove);
-    eventManager.on('panmove', handleMove);
-    eventManager.on('panend', handleMove);
+    if (handleMoveRef.current) {
+      eventManager.on('panstart', handleMoveRef.current);
+      eventManager.on('panmove', handleMoveRef.current);
+      eventManager.on('panend', handleMoveRef.current);
+    }
     return () => {
       // eventManager.off('panstart', handleMove);
       // eventManager.off('panmove', handleMove);
       // eventManager.off('panend', handleMove);
       eventManager.destroy();
     };
-  }, []);
+  }, [handleMoveRef]);
 
   const [w, h] = [width, width];
   return (
@@ -323,15 +326,30 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
 const Timeline: React.FC<Props> = (props) => {
   const [dimensions, setDimensions] = useState<Dimensions>();
 
-  const { extent, selectedRange, timeInterval, stepDuration, onChange } = props;
+  const { extent, selectedRange, timeInterval, onChange } = props;
 
-  const handleChange = (start: Date) => {
+  const [internalRange, setInternalRange] = useState<[Date, Date]>(selectedRange);
+  const throttledRange = useThrottle(internalRange, 100);
+  const handleChangeRef = useRef<(range: [Date, Date]) => void>();
+  handleChangeRef.current = (range: [Date, Date]) => {
+    onChange(range);
+  };
+  useEffect(() => {
+    const { current } = handleChangeRef;
+    if (current) current(throttledRange);
+  }, [throttledRange, handleChangeRef]);
+
+  const handlePlayChange = (start: Date) => {
     const length = selectedRange[1].getTime() - selectedRange[0].getTime();
     const end = new Date(start.getTime() + length);
     if (end > extent[1]) {
       return [new Date(end.getTime() - length), end];
     }
-    onChange([start, end]);
+    setInternalRange([start, end]);
+  };
+
+  const handleMove = (range: [Date, Date]) => {
+    setInternalRange(range);
   };
 
   return (
@@ -339,16 +357,23 @@ const Timeline: React.FC<Props> = (props) => {
       <PlayControl
         autoplay={false}
         extent={extent}
-        current={selectedRange[0]}
+        current={internalRange[0]}
         timeStep={timeInterval}
-        stepDuration={stepDuration}
-        onChange={handleChange}
+        stepDuration={100}
+        onChange={handlePlayChange}
       />
       <Measure bounds={true} onResize={(contentRect) => setDimensions(contentRect.bounds)}>
         {({ measureRef }) => {
           return (
             <MeasureTarget ref={measureRef}>
-              {dimensions && <TimelineChart {...props} width={dimensions.width} />}
+              {dimensions && (
+                <TimelineChart
+                  {...props}
+                  selectedRange={internalRange}
+                  width={dimensions.width}
+                  onChange={handleMove}
+                />
+              )}
             </MeasureTarget>
           );
         }}
