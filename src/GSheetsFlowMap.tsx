@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
-import { PromiseState } from 'react-refetch';
-import { Config, ConfigProp, ConfigPropName, Location } from './types';
+import { ConfigProp, ConfigPropName, Location } from './types';
 import LoadingSpinner from './LoadingSpinner';
 import { Helmet } from 'react-helmet';
 import sendEvent from './ga';
@@ -11,15 +10,17 @@ import FlowMap, { Props as FlowMapProps } from './FlowMap';
 import MapContainer from './MapContainer';
 import { getFlowsSheets } from './FlowMap.selectors';
 import { prepareFlows } from './prepareFlows';
+import { useAsync } from 'react-use';
+import { csvParse } from 'd3-dsv';
+import { AppToaster } from './AppToaster';
+import { Intent } from '@blueprintjs/core';
+import { IconNames } from '@blueprintjs/icons';
+import { ToastContent } from './Boxes';
 
 interface Props {
   spreadSheetKey: string;
   embed: boolean;
 }
-
-type PropsWithData = Props & {
-  configFetch: PromiseState<Config>;
-};
 
 const FlowMapWithData = sheetFetcher('json')<any>(
   ({ spreadSheetKey, config, flowsSheet = 'flows' }: FlowMapProps) => ({
@@ -47,52 +48,65 @@ const FlowMapWithData = sheetFetcher('json')<any>(
   })
 )(FlowMap as any);
 
-const GSheetsFlowMap = sheetFetcher('csv')<any>(({ spreadSheetKey }: Props) => ({
-  configFetch: {
-    url: makeSheetQueryUrl(spreadSheetKey, 'properties', 'SELECT A,B', 'csv'),
-    then: (props: ConfigProp[]) => {
-      const value = { ...DEFAULT_CONFIG };
-      for (const prop of props) {
-        if (prop.value != null && `${prop.value}`.length > 0) {
-          value[prop.property] = prop.value;
-        }
-      }
-      sendEvent(
-        `${spreadSheetKey} "${value[ConfigPropName.TITLE] || 'Untitled'}"`,
-        `Load config`,
-        `Load config "${value[ConfigPropName.TITLE] || 'Untitled'}"`
-      );
-      return { value };
-    },
-  } as any,
-}))(({ spreadSheetKey, embed, configFetch }: PropsWithData) => {
-  const flowsSheets = configFetch.fulfilled ? getFlowsSheets(configFetch.value) : undefined;
+const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, embed }) => {
+  const url = makeSheetQueryUrl(spreadSheetKey, 'properties', 'SELECT A,B', 'csv');
   const [flowsSheet, setFlowsSheet] = useState<string>();
-  useEffect(() => {
-    if (flowsSheet == null) {
-      if (flowsSheets && flowsSheets.length > 0) {
-        setFlowsSheet(flowsSheets[0]);
+
+  const configFetch = useAsync(async () => {
+    const response = await fetch(url);
+    const rows = csvParse(await response.text()) as ConfigProp[];
+    const configProps = { ...DEFAULT_CONFIG };
+    for (const prop of rows) {
+      if (prop.value != null && `${prop.value}`.length > 0) {
+        configProps[prop.property] = prop.value;
       }
     }
-  }, [flowsSheets, flowsSheet]);
+    sendEvent(
+      `${spreadSheetKey} "${configProps[ConfigPropName.TITLE] || 'Untitled'}"`,
+      `Load config`,
+      `Load config "${configProps[ConfigPropName.TITLE] || 'Untitled'}"`
+    );
+    const flowsSheets = getFlowsSheets(configProps);
+    if (flowsSheets && flowsSheets.length > 0) {
+      setFlowsSheet(flowsSheets[0]);
+    }
+    return configProps;
+  }, [url]);
+
+  useEffect(() => {
+    if (configFetch.error) {
+      AppToaster.show({
+        intent: Intent.WARNING,
+        icon: IconNames.WARNING_SIGN,
+        timeout: 0,
+        message: (
+          <ToastContent>
+            Oops… The properties sheet couldn't be loaded:
+            <br />
+            {configFetch.error.message}
+          </ToastContent>
+        ),
+      });
+    }
+  }, [configFetch.error]);
+
   const handleSetFlowsSheet = (sheet: string) => {
     setFlowsSheet(sheet);
   };
   return (
     <MapContainer embed={embed}>
-      {configFetch.pending || configFetch.refreshing ? (
+      {configFetch.loading ? (
         <LoadingSpinner />
       ) : (
         <FlowMapWithData
-          animate={true}
           spreadSheetKey={spreadSheetKey}
           embed={embed}
-          config={configFetch.fulfilled ? configFetch.value : DEFAULT_CONFIG}
+          config={configFetch.value ? configFetch.value : DEFAULT_CONFIG}
           flowsSheet={flowsSheet}
           onSetFlowsSheet={handleSetFlowsSheet}
         />
       )}
-      {configFetch.fulfilled && configFetch.value[ConfigPropName.TITLE] && (
+      {configFetch.value && configFetch.value[ConfigPropName.TITLE] && (
         <Helmet>
           <title>{`${configFetch.value[ConfigPropName.TITLE]} - Flowmap.blue`}</title>
           <link href={`https://flowmap.blue/${spreadSheetKey}`} rel="canonical" />
@@ -100,6 +114,6 @@ const GSheetsFlowMap = sheetFetcher('csv')<any>(({ spreadSheetKey }: Props) => (
       )}
     </MapContainer>
   );
-});
+};
 
 export default GSheetsFlowMap;
