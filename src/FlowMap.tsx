@@ -183,7 +183,7 @@ const FlowMap: React.FC<Props> = (props) => {
     if (timeExtent) {
       dispatch({
         type: ActionType.SET_TIME_RANGE,
-        range: [timeExtent[0], timeExtent[1]],
+        range: timeExtent,
       });
     }
   }, [timeExtent]);

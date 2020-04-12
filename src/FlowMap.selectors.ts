@@ -41,6 +41,7 @@ export const getLocationTotalsEnabled = (state: State, props: Props) => state.lo
 export const getZoom = (state: State, props: Props) => state.viewport.zoom;
 export const getConfig = (state: State, props: Props) => props.config;
 export const getViewport = (state: State, props: Props) => state.viewport;
+export const getSelectedTimeRange = (state: State, props: Props) => state.selectedTimeRange;
 
 export const getInvalidLocationIds: Selector<string[] | undefined> = createSelector(
   getFetchedLocations,
@@ -106,6 +107,27 @@ export const getTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
     }
     if (!start || !end) return undefined;
     return [start, end];
+  }
+);
+
+export const getSortedFlowsForKnownLocationsFilteredByTime: Selector<
+  Flow[] | undefined
+> = createSelector(
+  getSortedFlowsForKnownLocations,
+  getTimeExtent,
+  getSelectedTimeRange,
+  (flows, timeExtent, timeRange) => {
+    if (!flows) return undefined;
+    if (
+      !timeExtent ||
+      !timeRange ||
+      (timeExtent[0] === timeRange[0] && timeExtent[1] === timeRange[1])
+    ) {
+      return flows;
+    }
+    return flows.filter(
+      (flow) => flow.time && timeRange[0] <= flow.time && flow.time <= timeRange[1]
+    );
   }
 );
 
@@ -313,19 +335,60 @@ export const getUnknownLocations: Selector<Set<string> | undefined> = createSele
   }
 );
 
+function aggregateFlows(flows: Flow[]) {
+  // Sum up flows with same origin, dest
+  const byOriginDest = nest<Flow, Flow>()
+    .key(getFlowOriginId)
+    .key(getFlowDestId)
+    .rollup((ff: Flow[]) => {
+      const origin = getFlowOriginId(ff[0]);
+      const dest = getFlowDestId(ff[0]);
+      return {
+        origin,
+        dest,
+        count: ff.reduce((m, f) => {
+          const count = getFlowMagnitude(f);
+          if (count) {
+            if (!isNaN(count) && isFinite(count)) return m + count;
+          }
+          return m;
+        }, 0),
+        time: undefined,
+      };
+    })
+    .entries(flows);
+  const rv: Flow[] = [];
+  for (const { values } of byOriginDest) {
+    for (const { value } of values) {
+      rv.push(value);
+    }
+  }
+  return rv;
+}
+
 export const getSortedAggregatedFlows: Selector<Flow[] | undefined> = createSelector(
   getClusterIndex,
-  getSortedFlowsForKnownLocations,
+  getClusteringEnabled,
+  getSortedFlowsForKnownLocationsFilteredByTime,
   getClusterZoom,
-  (clusterTree, flows, clusterZoom) => {
-    if (!clusterTree || !flows || clusterZoom == null) return undefined;
-    return clusterTree
-      .aggregateFlows(flows, clusterZoom, {
+  (clusterTree, isClusteringEnabled, flows, clusterZoom) => {
+    if (!flows) return undefined;
+    let aggregated;
+    if (isClusteringEnabled && clusterTree && clusterZoom != null) {
+      aggregated = clusterTree.aggregateFlows(flows, clusterZoom, {
         getFlowOriginId,
         getFlowDestId,
         getFlowMagnitude,
-      })
-      .sort((a, b) => descending(Math.abs(getFlowMagnitude(a)), Math.abs(getFlowMagnitude(b))));
+      });
+
+      // TODO: there might still be unaggregated flows with same O/D
+    } else {
+      aggregated = aggregateFlows(flows);
+    }
+    aggregated.sort((a, b) =>
+      descending(Math.abs(getFlowMagnitude(a)), Math.abs(getFlowMagnitude(b)))
+    );
+    return aggregated;
   }
 );
 
@@ -485,21 +548,6 @@ export const getLocationsForFlowMapLayer: Selector<
   }
 );
 
-const getSortedFlowsForZoom: Selector<Flow[] | undefined> = createSelector(
-  getClusteringEnabled,
-  getSortedFlowsForKnownLocations,
-  getSortedAggregatedFlows,
-  getClusterIndex,
-  getClusterZoom,
-  (clusteringEnabled, flows, aggregatedFlows, clusterIndex, clusterZoom) => {
-    if (clusteringEnabled && aggregatedFlows) {
-      return aggregatedFlows;
-    } else {
-      return flows;
-    }
-  }
-);
-
 export const getFlowsSheets = defaultMemoize((config: Config) => {
   const sheets = config[ConfigPropName.FLOWS_SHEETS];
   if (sheets) {
@@ -509,7 +557,7 @@ export const getFlowsSheets = defaultMemoize((config: Config) => {
 });
 
 export const getFlowsForFlowMapLayer: Selector<Flow[] | undefined> = createSelector(
-  getSortedFlowsForZoom,
+  getSortedAggregatedFlows,
   getLocationIdsInViewport,
   getSelectedLocationSet,
   getLocationFilterMode,

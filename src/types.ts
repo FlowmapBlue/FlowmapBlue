@@ -29,7 +29,7 @@ export type Config = {
   [prop in ConfigPropName]: string | undefined;
 };
 
-export const getFlowMagnitude = (flow: Flow) => flow.count || 0;
+export const getFlowMagnitude = (flow: Flow) => +flow.count || 0;
 export const getFlowOriginId = (flow: Flow) => flow.origin;
 export const getFlowDestId = (flow: Flow) => flow.dest;
 export const getLocationId = (loc: Location) => loc.id;
@@ -53,5 +53,5 @@ export interface Flow {
   origin: string;
   dest: string;
   count: number;
-  time: Date | undefined;
+  time?: Date;
 }
