@@ -371,17 +371,22 @@ export const getSortedAggregatedFlows: Selector<Flow[] | undefined> = createSele
   getClusteringEnabled,
   getSortedFlowsForKnownLocationsFilteredByTime,
   getClusterZoom,
-  (clusterTree, isClusteringEnabled, flows, clusterZoom) => {
+  getTimeExtent,
+  (clusterTree, isClusteringEnabled, flows, clusterZoom, timeExtent) => {
     if (!flows) return undefined;
     let aggregated;
     if (isClusteringEnabled && clusterTree && clusterZoom != null) {
-      aggregated = clusterTree.aggregateFlows(flows, clusterZoom, {
-        getFlowOriginId,
-        getFlowDestId,
-        getFlowMagnitude,
-      });
-
-      // TODO: there might still be unaggregated flows with same O/D
+      aggregated = clusterTree.aggregateFlows(
+        timeExtent != null
+          ? aggregateFlows(flows) // clusterTree.aggregateFlows won't aggregate unclustered across time
+          : flows,
+        clusterZoom,
+        {
+          getFlowOriginId,
+          getFlowDestId,
+          getFlowMagnitude,
+        }
+      );
     } else {
       aggregated = aggregateFlows(flows);
     }
