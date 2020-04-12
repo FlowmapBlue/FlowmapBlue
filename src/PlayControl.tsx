@@ -7,9 +7,11 @@ interface Props {
   current: Date;
   extent: [Date, Date];
   timeStep: TimeInterval;
-  autoplay: boolean;
   stepDuration: number;
-  onChange: (date: Date) => void;
+  isPlaying: boolean;
+  onPlay: () => void;
+  onPause: () => void;
+  onAdvance: (date: Date) => void;
 }
 
 const width = 40,
@@ -35,47 +37,31 @@ const OuterCircle = styled.circle({
   fill: '#fff',
 });
 
-interface State {
-  isPlaying: boolean;
-}
-
-class PlayControl extends React.Component<Props, State> {
+class PlayControl extends React.Component<Props> {
   playTimeout: NodeJS.Timeout | undefined;
-
-  state = {
-    isPlaying: false,
-  };
-
-  componentDidMount(): void {
-    const { autoplay } = this.props;
-    if (autoplay) {
-      this.start();
-    }
-  }
 
   componentWillUnmount(): void {
     this.clearPlayTimeOut();
   }
 
   start = () => {
-    const { isPlaying } = this.state;
+    const { isPlaying, onPlay } = this.props;
     if (!isPlaying) {
-      const { extent, current, onChange } = this.props;
-      this.setState({ isPlaying: true }, () => {
-        this.scheduleNextStep();
-      });
+      const { extent, current, onAdvance } = this.props;
+      onPlay();
+      this.scheduleNextStep();
       if (current >= extent[1]) {
         // rewind
-        onChange(extent[0]);
+        onAdvance(extent[0]);
       }
     }
   };
 
   stop = () => {
     this.clearPlayTimeOut();
-    const { isPlaying } = this.state;
+    const { isPlaying, onPause } = this.props;
     if (isPlaying) {
-      this.setState({ isPlaying: false });
+      onPause();
     }
   };
 
@@ -93,21 +79,21 @@ class PlayControl extends React.Component<Props, State> {
   };
 
   nextStep = () => {
-    const { isPlaying } = this.state;
+    const { isPlaying } = this.props;
     if (isPlaying) {
-      const { timeStep, extent, current, onChange } = this.props;
+      const { timeStep, extent, current, onAdvance } = this.props;
       const next = timeStep.offset(current, 1);
       if (next > extent[1]) {
         this.stop();
       } else {
-        onChange(next);
+        onAdvance(next);
         this.scheduleNextStep();
       }
     }
   };
 
   render() {
-    const { isPlaying } = this.state;
+    const { isPlaying } = this.props;
     const handleTogglePlay = () => {
       if (isPlaying) {
         this.stop();

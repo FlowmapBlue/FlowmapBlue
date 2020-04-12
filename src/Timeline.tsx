@@ -319,9 +319,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
 
 const Timeline: React.FC<Props> = (props) => {
   const [measureRef, dimensions] = useMeasure();
-
   const { extent, selectedRange, timeInterval, onChange } = props;
-
   const [internalRange, setInternalRange] = useState<[Date, Date]>(selectedRange);
   const throttledRange = useThrottle(internalRange, 100);
   const onChangeRef = useRef<(range: [Date, Date]) => void>();
@@ -335,10 +333,13 @@ const Timeline: React.FC<Props> = (props) => {
     setInternalRange(selectedRange);
   }, [selectedRange]);
 
-  const handlePlayChange = (start: Date) => {
+  const [isPlaying, setPlaying] = useState(false);
+
+  const handlePlayAdvance = (start: Date) => {
     const length = selectedRange[1].getTime() - selectedRange[0].getTime();
     const end = new Date(start.getTime() + length);
     if (end > extent[1]) {
+      setPlaying(false);
       return [new Date(end.getTime() - length), end];
     }
     setInternalRange([start, end]);
@@ -351,12 +352,14 @@ const Timeline: React.FC<Props> = (props) => {
   return (
     <Outer>
       <PlayControl
-        autoplay={false}
         extent={extent}
         current={internalRange[0]}
         timeStep={timeInterval}
         stepDuration={100}
-        onChange={handlePlayChange}
+        isPlaying={isPlaying}
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onAdvance={handlePlayAdvance}
       />
       <MeasureTarget ref={measureRef}>
         <TimelineChart
