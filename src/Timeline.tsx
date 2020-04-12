@@ -330,14 +330,12 @@ const Timeline: React.FC<Props> = (props) => {
 
   const [internalRange, setInternalRange] = useState<[Date, Date]>(selectedRange);
   const throttledRange = useThrottle(internalRange, 100);
-  const handleChangeRef = useRef<(range: [Date, Date]) => void>();
-  handleChangeRef.current = (range: [Date, Date]) => {
-    onChange(range);
-  };
+  const onChangeRef = useRef<(range: [Date, Date]) => void>();
+  onChangeRef.current = (range) => onChange(range);
   useEffect(() => {
-    const { current } = handleChangeRef;
+    const { current } = onChangeRef;
     if (current) current(throttledRange);
-  }, [throttledRange, handleChangeRef]);
+  }, [throttledRange, onChangeRef]);
 
   const handlePlayChange = (start: Date) => {
     const length = selectedRange[1].getTime() - selectedRange[0].getTime();
