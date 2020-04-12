@@ -5,10 +5,12 @@ import { scaleTime } from 'd3-scale';
 import { TimeInterval } from 'd3-time';
 import { EventManager } from 'mjolnir.js';
 import PlayControl from './PlayControl';
+import { Colors } from '@blueprintjs/core';
 
 interface Props {
   selectedRange: [Date, Date];
   extent: [Date, Date];
+  darkMode: boolean;
   formatDate: (d: Date) => string;
   timeInterval: TimeInterval;
   minTickWidth: number;
@@ -21,13 +23,13 @@ interface Dimensions {
   height: number;
 }
 
-const SVG_HEIGHT = 70;
+const SVG_HEIGHT = 60;
 const TICK_HEIGHT = 5;
 
 const innerMargin = {
   top: 15,
-  left: 30,
-  right: 30,
+  left: 1,
+  right: 1,
   bottom: 20,
 };
 
@@ -35,22 +37,11 @@ const Outer = styled.div({
   display: 'flex',
   padding: '5px 20px',
   alignItems: 'center',
+  userSelect: 'none',
   '&>*+*': {
     marginLeft: 10,
   },
 });
-
-// const PlayButton = styled.img({
-//   border: '1px solid #000',
-//   borderRadius: '50%',
-//   padding: 10,
-//   cursor: 'pointer',
-//   opacity: 0.65,
-//   transition: 'opacity 0.2s',
-//   '&:hover': {
-//     opacity: 1.0,
-//   }
-// });
 
 const MeasureTarget = styled.div({
   display: 'flex',
@@ -62,43 +53,68 @@ const TimelineSvg = styled.svg({
   cursor: 'pointer',
 });
 
-const TickLine = styled.line({
-  fill: 'none',
-  stroke: '#333',
+const HandleOuter = styled.g({
+  cursor: 'ew-resize',
+  '& > path': {
+    stroke: Colors.DARK_GRAY1,
+    fill: Colors.GRAY5,
+  },
+  '&:hover path': {
+    fill: Colors.BLUE4,
+  },
 });
 
-const TrianglePath = styled.path({
+const HandlePath = styled.path({
   strokeWidth: 1,
-  stroke: 'none',
-  fill: '#333',
-  // opacity: 0.65,
-  // transition: 'opacity 0.2s',
-  // '&:hover': {
-  //   opacity: 1.0,
-  // }
+  shapeRendering: 'crisp-edges',
+} as any);
+
+const HandleHoverTarget = styled.rect({
+  fill: Colors.WHITE,
+  fillOpacity: 0,
+});
+
+const SelectedRangeRect = styled.rect({
+  fill: Colors.BLUE5,
+  cursor: 'move',
+  fillOpacity: 0.3,
+  '&:hover': {
+    fillOpacity: 0.4,
+  },
 });
 
 const AxisPath = styled.path({
   fill: 'none',
-  stroke: '#333',
-});
+  stroke: Colors.GRAY1,
+  shapeRendering: 'crisp-edges',
+} as any);
 
-const TickText = styled.text({
-  fill: '#333',
+const TickText = styled.text<{ darkMode: boolean }>((props) => ({
+  fill: props.darkMode ? Colors.LIGHT_GRAY1 : Colors.DARK_GRAY1,
   fontSize: 11,
   textAnchor: 'middle',
-  // textTransform: 'uppercase',
-});
+}));
+
+const TickLine = styled.line({
+  fill: 'none',
+  stroke: Colors.GRAY1,
+  shapeRendering: 'crisp-edges',
+} as any);
+
+type Side = 'start' | 'end';
 
 interface HandleProps {
-  onMove: (pos: number) => void;
+  width: number;
+  height: number;
+  side: Side;
+  onMove: (pos: number, side: Side) => void;
 }
 const TimelineHandle: React.FC<HandleProps> = (props) => {
-  const { onMove } = props;
+  const { width, height, side, onMove } = props;
   const handleMove = ({ center }: any) => {
-    onMove(center.x);
+    onMove(center.x, side);
   };
-  const ref = useRef<SVGPathElement>(null);
+  const ref = useRef<SVGRectElement>(null);
   useEffect(() => {
     const eventManager = new EventManager(ref.current);
     eventManager.on('panstart', handleMove);
@@ -112,60 +128,134 @@ const TimelineHandle: React.FC<HandleProps> = (props) => {
     };
   }, []);
 
-  return <TrianglePath ref={ref} transform="translate(0,-14)" d="M-10,0 0,13 10,0 z" />;
+  const [w, h] = [width * 0.7, width * 0.7];
+  return (
+    <HandleOuter>
+      <HandlePath
+        transform={`translate(${side === 'start' ? 0 : width - w},-1)`}
+        d={side === 'start' ? `M0,0 0,${h} ${w},0 z` : `M0,0 ${w},${h} ${w},0 z`}
+      />
+      ;
+      <HandlePath
+        transform={`translate(${side === 'start' ? 0 : width - w},${height - h + 1})`}
+        d={side === 'start' ? `M0,${h} 0,0 ${w},${h} z` : `M0,${h} ${w},${h} ${w},0 z`}
+      />
+      ;
+      <HandleHoverTarget ref={ref} height={height} width={width} />
+    </HandleOuter>
+  );
 };
 
 interface TimelineChartProps extends Props {
   width: number;
 }
 
-type MoveHandler = (pos: number, kind: 'start' | 'end') => void;
+type MoveSideHandler = (pos: number, side: Side) => void;
+
 const TimelineChart: React.FC<TimelineChartProps> = (props) => {
-  const { width, extent, selectedRange, formatDate, timeInterval, minTickWidth, onChange } = props;
+  const {
+    width,
+    extent,
+    selectedRange,
+    formatDate,
+    timeInterval,
+    minTickWidth,
+    darkMode,
+    onChange,
+  } = props;
+
+  const stripeHeight = 30;
+  const handleWidth = 15;
+  const handleHGap = 10;
+  const handleHeight = stripeHeight + handleHGap * 2;
 
   const chartWidth = width - innerMargin.left - innerMargin.right;
   const x = scaleTime();
   x.domain(extent);
   x.range([0, chartWidth]);
 
+  const [prevPos, setPrevPos] = useState<number>();
+
   const svgRef = useRef<SVGSVGElement>(null);
-  const _handleMove = useRef<MoveHandler>();
-  _handleMove.current = (pos, kind) => {
-    const { current } = svgRef;
-    if (current != null) {
-      const { left } = current.getBoundingClientRect();
-      let date = x.invert(pos - left - innerMargin.left);
-      if (date < extent[0]) date = extent[0];
-      if (date > extent[1]) date = extent[1];
-      if (kind === 'start') {
-        onChange([date < selectedRange[1] ? date : selectedRange[1], selectedRange[1]]);
-      } else {
-        onChange([selectedRange[0], date > selectedRange[0] ? date : selectedRange[0]]);
+  const rectRef = useRef<SVGRectElement>(null);
+
+  const handleMoveRef = useRef<any>();
+  handleMoveRef.current = ({ center }: any) => {
+    if (prevPos != null) {
+      const delta = center.x - prevPos;
+      let nextStart = x.invert(x(selectedRange[0]) + delta);
+      let nextEnd = x.invert(x(selectedRange[1]) + delta);
+      if (nextStart && nextEnd) {
+        if (nextStart < extent[0]) {
+          onChange([
+            extent[0],
+            new Date(
+              extent[0].getTime() + (selectedRange[1].getTime() - selectedRange[0].getTime())
+            ),
+          ]);
+        } else if (nextEnd > extent[1]) {
+          onChange([
+            new Date(
+              extent[1].getTime() - (selectedRange[1].getTime() - selectedRange[0].getTime())
+            ),
+            extent[1],
+          ]);
+        } else {
+          onChange([nextStart, nextEnd]);
+        }
       }
     }
   };
-
-  const handleMove: MoveHandler = (pos, kind) => {
-    if (_handleMove.current) {
-      _handleMove.current(pos, kind);
+  const handleMove = (evt: any) => {
+    if (handleMoveRef.current) {
+      handleMoveRef.current(evt);
+      setPrevPos(evt.center.x);
     }
+  };
+  const handleMoveEnd = (evt: any) => {
+    if (handleMoveRef.current) {
+      handleMoveRef.current(evt);
+    }
+    setPrevPos(undefined);
   };
 
   useEffect(() => {
-    const eventManager = new EventManager(svgRef.current);
-    // eventManager.on('click', handleMove);
-    // eventManager.on('panstart', handleMove);
-    // eventManager.on('panmove', handleMove);
-    // eventManager.on('panend', handleMove);
+    const eventManager = new EventManager(rectRef.current);
+    eventManager.on('panstart', handleMove);
+    eventManager.on('panmove', handleMove);
+    eventManager.on('panend', handleMoveEnd);
     return () => {
-      // eventManager.setElement(null);
-      // eventManager.off('click', handleMove);
-      // eventManager.off('panstart', handleMove);
-      // eventManager.off('panmove', handleMove);
-      // eventManager.off('panend', handleMove);
       eventManager.destroy();
     };
   }, []);
+
+  const timeFromPos = (pos: number) => {
+    const { current } = svgRef;
+    if (current != null) {
+      const { left } = current.getBoundingClientRect();
+      return x.invert(pos - left - innerMargin.left);
+    }
+    return undefined;
+  };
+
+  const handleMoveSideRef = useRef<MoveSideHandler>();
+  handleMoveSideRef.current = (pos, side) => {
+    let t = timeFromPos(pos);
+    if (t) {
+      if (t < extent[0]) t = extent[0];
+      if (t > extent[1]) t = extent[1];
+      if (side === 'start') {
+        onChange([t < selectedRange[1] ? t : selectedRange[1], selectedRange[1]]);
+      } else {
+        onChange([selectedRange[0], t > selectedRange[0] ? t : selectedRange[0]]);
+      }
+    }
+  };
+  const handleMoveSide: MoveSideHandler = (pos, kind) => {
+    if (handleMoveSideRef.current) {
+      handleMoveSideRef.current(pos, kind);
+    }
+  };
 
   const ticks = x.ticks(timeInterval);
   const tickLabels: Date[] = [];
@@ -180,31 +270,49 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   return (
     <TimelineSvg width={width} height={SVG_HEIGHT} ref={svgRef}>
       <g transform={`translate(${innerMargin.left},${innerMargin.top})`}>
-        <g transform={`translate(${x(selectedRange[0])},7)`}>
-          <TimelineHandle onMove={(pos) => handleMove(pos, 'start')} />
-        </g>
-        <g transform={`translate(${x(selectedRange[1])},7)`}>
-          <TimelineHandle onMove={(pos) => handleMove(pos, 'end')} />
-        </g>
-        <g transform={`translate(0,10)`}>
+        <g transform={`translate(0,0)`}>
           {ticks.map((t, i) => (
             <TickLine key={i} transform={`translate(${x(t)},${0})`} y1={0} y2={TICK_HEIGHT} />
           ))}
           {tickLabels.map((t, i) => (
             <g key={i} transform={`translate(${x(t)},${0})`}>
-              <TickText y={20}>{formatDate(t)}</TickText>
+              <TickText darkMode={darkMode} y={20}>
+                {formatDate(t)}
+              </TickText>
             </g>
           ))}
           <AxisPath
             d={`M0,${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},${TICK_HEIGHT * 1.5}`}
           />
         </g>
-        <g transform={`translate(0,${40})`}>
+        <g transform={`translate(0,${stripeHeight})`}>
           {ticks.map((t, i) => (
             <TickLine key={i} transform={`translate(${x(t)},${0})`} y1={0} y2={-TICK_HEIGHT} />
           ))}
           <AxisPath
             d={`M0,-${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},-${TICK_HEIGHT * 1.5}`}
+          />
+        </g>
+
+        <g transform={`translate(${x(selectedRange[0])},${-handleHGap})`}>
+          <SelectedRangeRect
+            ref={rectRef}
+            height={handleHeight}
+            width={x(selectedRange[1]) - x(selectedRange[0])}
+          />
+          <TimelineHandle
+            width={handleWidth}
+            height={handleHeight}
+            side="start"
+            onMove={handleMoveSide}
+          />
+        </g>
+        <g transform={`translate(${x(selectedRange[1]) - handleWidth},${-handleHGap})`}>
+          <TimelineHandle
+            width={handleWidth}
+            height={handleHeight}
+            side="end"
+            onMove={handleMoveSide}
           />
         </g>
       </g>

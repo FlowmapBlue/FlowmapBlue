@@ -154,7 +154,7 @@ export const ErrorsLocationsBlock = styled.div`
 const TimelineBox = styled(Box)({
   bottom: 20,
   left: 100,
-  right: 100,
+  right: 200,
   minWidth: 400,
   display: 'block',
   boxShadow: '0 0 5px #aaa',
@@ -814,6 +814,7 @@ const FlowMap: React.FC<Props> = (props) => {
       {timeExtent && state.selectedTimeRange && (
         <TimelineBox darkMode={darkMode}>
           <Timeline
+            darkMode={darkMode}
             extent={timeExtent}
             selectedRange={state.selectedTimeRange}
             formatDate={multiScaleTimeFormat}
