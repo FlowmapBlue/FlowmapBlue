@@ -26,10 +26,10 @@ interface Dimensions {
 const SVG_HEIGHT = 60;
 const TICK_HEIGHT = 5;
 
-const innerMargin = {
+const margin = {
   top: 15,
-  left: 1,
-  right: 1,
+  left: 10,
+  right: 10,
   bottom: 20,
 };
 
@@ -57,10 +57,11 @@ const HandleOuter = styled.g({
   cursor: 'ew-resize',
   '& > path': {
     stroke: Colors.DARK_GRAY1,
-    fill: Colors.GRAY5,
+    transition: 'fill 0.3s',
+    fill: Colors.GRAY2,
   },
   '&:hover path': {
-    fill: Colors.BLUE4,
+    fill: Colors.WHITE,
   },
 });
 
@@ -77,6 +78,7 @@ const HandleHoverTarget = styled.rect({
 const SelectedRangeRect = styled.rect({
   fill: Colors.BLUE5,
   cursor: 'move',
+  transition: 'fill-opacity 0.3s',
   fillOpacity: 0.3,
   '&:hover': {
     fillOpacity: 0.4,
@@ -92,7 +94,7 @@ const AxisPath = styled.path({
 const TickText = styled.text<{ darkMode: boolean }>((props) => ({
   fill: props.darkMode ? Colors.LIGHT_GRAY1 : Colors.DARK_GRAY1,
   fontSize: 11,
-  textAnchor: 'middle',
+  // textAnchor: 'middle',
 }));
 
 const TickLine = styled.line({
@@ -128,19 +130,21 @@ const TimelineHandle: React.FC<HandleProps> = (props) => {
     };
   }, []);
 
-  const [w, h] = [width * 0.7, width * 0.7];
+  const [w, h] = [width, width];
   return (
-    <HandleOuter>
+    <HandleOuter transform={`translate(${side === 'start' ? -w : +w},0)`}>
+      <HandlePath
+        transform={`translate(${side === 'start' ? w : width - w},0)`}
+        d={`M0,0 0,${height}`}
+      />
       <HandlePath
         transform={`translate(${side === 'start' ? 0 : width - w},-1)`}
-        d={side === 'start' ? `M0,0 0,${h} ${w},0 z` : `M0,0 ${w},${h} ${w},0 z`}
+        d={side === 'end' ? `M0,0 0,${h} ${w},0 z` : `M0,0 ${w},${h} ${w},0 z`}
       />
-      ;
       <HandlePath
         transform={`translate(${side === 'start' ? 0 : width - w},${height - h + 1})`}
-        d={side === 'start' ? `M0,${h} 0,0 ${w},${h} z` : `M0,${h} ${w},${h} ${w},0 z`}
+        d={side === 'end' ? `M0,${h} 0,0 ${w},${h} z` : `M0,${h} ${w},${h} ${w},0 z`}
       />
-      ;
       <HandleHoverTarget ref={ref} height={height} width={width} />
     </HandleOuter>
   );
@@ -165,11 +169,11 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   } = props;
 
   const stripeHeight = 30;
-  const handleWidth = 15;
+  const handleWidth = 9;
   const handleHGap = 10;
   const handleHeight = stripeHeight + handleHGap * 2;
 
-  const chartWidth = width - innerMargin.left - innerMargin.right;
+  const chartWidth = width - margin.left - margin.right;
   const x = scaleTime();
   x.domain(extent);
   x.range([0, chartWidth]);
@@ -233,7 +237,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     const { current } = svgRef;
     if (current != null) {
       const { left } = current.getBoundingClientRect();
-      return x.invert(pos - left - innerMargin.left);
+      return x.invert(pos - left - margin.left);
     }
     return undefined;
   };
@@ -258,25 +262,26 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   };
 
   const ticks = x.ticks(timeInterval);
-  const tickLabels: Date[] = [];
-
-  let nextTick = extent[1];
-  const step = -Math.ceil(ticks.length / (chartWidth / minTickWidth));
-  while (nextTick >= extent[0]) {
-    tickLabels.push(nextTick);
-    nextTick = timeInterval.offset(nextTick, step);
-  }
+  // const tickLabels: Date[] = [];
+  // let nextTick = extent[1];
+  // const step = -Math.ceil(ticks.length / (chartWidth / minTickWidth));
+  // while (nextTick >= extent[0]) {
+  //   tickLabels.push(nextTick);
+  //   nextTick = timeInterval.offset(nextTick, step);
+  // }
+  const tickLabels = x.ticks(ticks.length / (chartWidth / minTickWidth));
 
   return (
     <TimelineSvg width={width} height={SVG_HEIGHT} ref={svgRef}>
-      <g transform={`translate(${innerMargin.left},${innerMargin.top})`}>
+      <g transform={`translate(${margin.left},${margin.top})`}>
         <g transform={`translate(0,0)`}>
           {ticks.map((t, i) => (
             <TickLine key={i} transform={`translate(${x(t)},${0})`} y1={0} y2={TICK_HEIGHT} />
           ))}
           {tickLabels.map((t, i) => (
             <g key={i} transform={`translate(${x(t)},${0})`}>
-              <TickText darkMode={darkMode} y={20}>
+              <TickLine y1={0} y2={stripeHeight} />
+              <TickText darkMode={darkMode} x={3} y={20}>
                 {formatDate(t)}
               </TickText>
             </g>
