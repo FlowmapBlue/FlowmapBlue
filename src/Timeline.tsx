@@ -57,8 +57,8 @@ const HandleOuter = styled.g({
   cursor: 'ew-resize',
   '& > path': {
     stroke: Colors.DARK_GRAY1,
-    transition: 'fill 0.3s',
-    fill: Colors.GRAY2,
+    transition: 'fill 0.2s',
+    fill: Colors.GRAY4,
   },
   '&:hover path': {
     fill: Colors.WHITE,
@@ -67,7 +67,7 @@ const HandleOuter = styled.g({
 
 const HandlePath = styled.path({
   strokeWidth: 1,
-  shapeRendering: 'crisp-edges',
+  shapeRendering: 'crispEdges',
 } as any);
 
 const HandleHoverTarget = styled.rect({
@@ -78,7 +78,7 @@ const HandleHoverTarget = styled.rect({
 const SelectedRangeRect = styled.rect({
   fill: Colors.BLUE5,
   cursor: 'move',
-  transition: 'fill-opacity 0.3s',
+  transition: 'fill-opacity 0.2s',
   fillOpacity: 0.3,
   '&:hover': {
     fillOpacity: 0.4,
@@ -88,7 +88,7 @@ const SelectedRangeRect = styled.rect({
 const AxisPath = styled.path({
   fill: 'none',
   stroke: Colors.GRAY1,
-  shapeRendering: 'crisp-edges',
+  shapeRendering: 'crispEdges',
 } as any);
 
 const TickText = styled.text<{ darkMode: boolean }>((props) => ({
@@ -100,7 +100,7 @@ const TickText = styled.text<{ darkMode: boolean }>((props) => ({
 const TickLine = styled.line({
   fill: 'none',
   stroke: Colors.GRAY1,
-  shapeRendering: 'crisp-edges',
+  shapeRendering: 'crispEdges',
 } as any);
 
 type Side = 'start' | 'end';
@@ -132,18 +132,13 @@ const TimelineHandle: React.FC<HandleProps> = (props) => {
 
   const [w, h] = [width, width];
   return (
-    <HandleOuter transform={`translate(${side === 'start' ? -w : +w},0)`}>
+    <HandleOuter transform={`translate(${side === 'start' ? 0 : width},0)`}>
       <HandlePath
-        transform={`translate(${side === 'start' ? w : width - w},0)`}
-        d={`M0,0 0,${height}`}
-      />
-      <HandlePath
-        transform={`translate(${side === 'start' ? 0 : width - w},-1)`}
-        d={side === 'end' ? `M0,0 0,${h} ${w},0 z` : `M0,0 ${w},${h} ${w},0 z`}
-      />
-      <HandlePath
-        transform={`translate(${side === 'start' ? 0 : width - w},${height - h + 1})`}
-        d={side === 'end' ? `M0,${h} 0,0 ${w},${h} z` : `M0,${h} ${w},${h} ${w},0 z`}
+        d={
+          side === 'start'
+            ? `M0,${h} ${-w},0 0,0 0,${height} ${-w},${height} 0,${height - h} z`
+            : `M0,${h} ${w},0 0,0 0,${height} ${w},${height} 0,${height - h} z`
+        }
       />
       <HandleHoverTarget ref={ref} height={height} width={width} />
     </HandleOuter>
@@ -169,7 +164,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   } = props;
 
   const stripeHeight = 30;
-  const handleWidth = 9;
+  const handleWidth = 10;
   const handleHGap = 10;
   const handleHeight = stripeHeight + handleHGap * 2;
 

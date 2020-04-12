@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { TimeInterval } from 'd3-time';
+import { Colors } from '@blueprintjs/core';
 
 interface Props {
   current: Date;
@@ -17,12 +18,12 @@ const width = 40,
 const OuterSvg = styled.svg({
   cursor: 'pointer',
   '& > circle': {
-    transition: 'opacity 0.2s',
-    opacity: 0.25,
+    transition: 'fill 0.2s',
+    fill: Colors.GRAY4,
   },
   '&:hover': {
     '& > circle': {
-      opacity: 1.0,
+      fill: Colors.WHITE,
     },
   },
 });
