@@ -96,6 +96,7 @@ import {
   NUMBER_OF_FLOWS_TO_DISPLAY,
   getFlowsSheets,
   getTimeExtent,
+  getTimeStepInterval,
 } from './FlowMap.selectors';
 import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
@@ -178,15 +179,16 @@ const FlowMap: React.FC<Props> = (props) => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState);
   const [mapDrawingEnabled, setMapDrawingEnabled] = useState(false);
 
+  const timeStepInterval = getTimeStepInterval(state, props);
   const timeExtent = getTimeExtent(state, props);
   useEffect(() => {
-    if (timeExtent) {
+    if (timeExtent && timeStepInterval) {
       dispatch({
         type: ActionType.SET_TIME_RANGE,
-        range: timeExtent,
+        range: [timeExtent[0], timeStepInterval.offset(timeExtent[0], 1)],
       });
     }
-  }, [timeExtent]);
+  }, [timeExtent, timeStepInterval]);
 
   const [updateQuerySearch] = useDebounced(
     () => {
@@ -811,14 +813,14 @@ const FlowMap: React.FC<Props> = (props) => {
           )}
         </DeckGL>
       </DeckGLOuter>
-      {timeExtent && state.selectedTimeRange && (
+      {timeExtent && timeStepInterval && state.selectedTimeRange && (
         <TimelineBox darkMode={darkMode}>
           <Timeline
             darkMode={darkMode}
             extent={timeExtent}
             selectedRange={state.selectedTimeRange}
             formatDate={multiScaleTimeFormat}
-            timeInterval={timeHour}
+            timeInterval={timeStepInterval}
             minTickWidth={60}
             onChange={handleTimeRangeChanged}
           />

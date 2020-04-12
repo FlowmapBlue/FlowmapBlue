@@ -65,7 +65,7 @@ const HandlePath = styled.path({
 } as any);
 
 const HandleHoverTarget = styled.rect({
-  fill: Colors.WHITE,
+  fill: Colors.GRAY5,
   fillOpacity: 0,
 });
 
@@ -129,15 +129,16 @@ const TimelineHandle: React.FC<HandleProps> = (props) => {
 
   const [w, h] = [width, width];
   return (
-    <HandleOuter transform={`translate(${side === 'start' ? 0 : width},0)`}>
+    <HandleOuter>
       <HandlePath
+        transform={`translate(${side === 'start' ? 0 : width},0)`}
         d={
           side === 'start'
             ? `M0,${h} ${-w},0 0,0 0,${height} ${-w},${height} 0,${height - h} z`
             : `M0,${h} ${w},0 0,0 0,${height} ${w},${height} 0,${height - h} z`
         }
       />
-      <HandleHoverTarget ref={ref} height={height} width={width} />
+      <HandleHoverTarget x={side === 'start' ? -w : w} ref={ref} height={height} width={width} />
     </HandleOuter>
   );
 };
@@ -179,8 +180,8 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   handleMoveRef.current = ({ center }: any) => {
     if (prevPos != null) {
       const delta = center.x - prevPos;
-      let nextStart = x.invert(x(selectedRange[0]) + delta);
-      let nextEnd = x.invert(x(selectedRange[1]) + delta);
+      let nextStart = timeInterval.round(x.invert(x(selectedRange[0]) + delta));
+      let nextEnd = timeInterval.round(x.invert(x(selectedRange[1]) + delta));
       if (nextStart && nextEnd) {
         if (nextStart < extent[0]) {
           onChange([
@@ -205,8 +206,8 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   const handleMove = (evt: any) => {
     if (handleMoveRef.current) {
       handleMoveRef.current(evt);
-      setPrevPos(evt.center.x);
     }
+    setPrevPos(evt.center.x);
   };
   const handleMoveEnd = (evt: any) => {
     if (handleMoveRef.current) {
@@ -229,7 +230,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     const { current } = svgRef;
     if (current != null) {
       const { left } = current.getBoundingClientRect();
-      return x.invert(pos - left - margin.left);
+      return timeInterval.round(x.invert(pos - left - margin.left));
     }
     return undefined;
   };

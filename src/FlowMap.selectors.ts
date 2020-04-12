@@ -25,8 +25,10 @@ import { nest } from 'd3-collection';
 import { Props } from './FlowMap';
 import { bounds } from '@mapbox/geo-viewport';
 import KDBush from 'kdbush';
-import { descending } from 'd3-array';
+import { descending, min } from 'd3-array';
 import { csvParseRows } from 'd3-dsv';
+import { CountableTimeInterval } from 'd3-time';
+import { getTimePrecisionIntervalIndex, TIME_INTERVALS } from './time';
 
 export const NUMBER_OF_FLOWS_TO_DISPLAY = 5000;
 
@@ -107,6 +109,37 @@ export const getTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
     }
     if (!start || !end) return undefined;
     return [start, end];
+  }
+);
+
+// function _getTimeStep(flows: Flow[]) {
+//   const times = Array.from(flows.reduce(
+//     (m, d) => {
+//       if (d.time) m.add(d.time.getTime());
+//       return m;
+//     }, new Set<number>())).sort();
+//
+//   let minDiff = null;
+//   for (let i = 1; i < times.length; i++) {
+//     const diff = times[i] - times[i - 1];
+//     if (minDiff == null || diff < minDiff) {
+//       minDiff = diff;
+//     }
+//   }
+//
+//   if (!minDiff) return undefined;
+//   ..
+// }
+
+export const getTimeStepInterval: Selector<CountableTimeInterval | undefined> = createSelector(
+  getSortedFlowsForKnownLocations,
+  getTimeExtent,
+  (flows, timeExtent) => {
+    if (!flows || !timeExtent) return undefined;
+
+    const minIndex = min(flows, (d) => getTimePrecisionIntervalIndex(d.time!));
+    if (minIndex == null) return undefined;
+    return TIME_INTERVALS[minIndex];
   }
 );
 

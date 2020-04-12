@@ -1,7 +1,23 @@
-import { isoParse, timeFormat, timeParse } from 'd3-time-format';
-import { timeSecond, timeMinute, timeHour, timeDay, timeMonth, timeYear, timeWeek } from 'd3-time';
+import { isoParse, utcFormat, utcParse } from 'd3-time-format';
+import {
+  timeDay,
+  timeHour,
+  timeMinute,
+  timeMonth,
+  timeSecond,
+  timeWeek,
+  timeYear,
+  utcDay,
+  utcHour,
+  utcMillisecond,
+  utcMinute,
+  utcMonth,
+  utcSecond,
+  utcWeek,
+  utcYear,
+} from 'd3-time';
 
-const dateParsers = [isoParse, timeParse('%Y-%m-%d %H:%M:%S'), timeParse('%Y-%m-%d %H:%M')];
+const dateParsers = [isoParse, utcParse('%Y-%m-%d %H:%M:%S'), utcParse('%Y-%m-%d %H:%M')];
 
 export function parseTime(input: string | Date | undefined): Date | undefined {
   if (input != null) {
@@ -34,14 +50,14 @@ export function parseGSheetsTime(input: string | undefined): Date | undefined {
   return undefined;
 }
 
-const formatMillisecond = timeFormat('.%L'),
-  formatSecond = timeFormat(':%S'),
-  formatMinute = timeFormat('%I:%M'),
-  formatHour = timeFormat('%I %p'),
-  formatDay = timeFormat('%a %d'),
-  formatWeek = timeFormat('%b %d'),
-  formatMonth = timeFormat('%B'),
-  formatYear = timeFormat('%Y');
+const formatMillisecond = utcFormat('.%L'),
+  formatSecond = utcFormat(':%S'),
+  formatMinute = utcFormat('%I:%M'),
+  formatHour = utcFormat('%I %p'),
+  formatDay = utcFormat('%a %d'),
+  formatWeek = utcFormat('%b %d'),
+  formatMonth = utcFormat('%B'),
+  formatYear = utcFormat('%Y');
 
 export function multiScaleTimeFormat(date: Date) {
   return (timeSecond(date) < date
@@ -59,4 +75,24 @@ export function multiScaleTimeFormat(date: Date) {
     : timeYear(date) < date
     ? formatMonth
     : formatYear)(date);
+}
+
+export const TIME_INTERVALS = [
+  utcMillisecond,
+  utcSecond,
+  utcMinute,
+  utcHour,
+  utcDay,
+  utcWeek,
+  utcMonth,
+  utcYear,
+];
+
+export function getTimePrecisionIntervalIndex(date: Date) {
+  for (let i = 0; i < TIME_INTERVALS.length - 1; i++) {
+    if (TIME_INTERVALS[i + 1](date) < date) {
+      return i;
+    }
+  }
+  return TIME_INTERVALS.length - 1;
 }
