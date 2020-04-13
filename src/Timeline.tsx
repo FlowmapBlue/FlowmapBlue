@@ -248,14 +248,14 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     }
   };
 
-  // @ts-ignore
   const ticks =
+    // @ts-ignore
     timeStep.interval.count(extent[0], extent[1]) <= chartWidth / 10
       ? x.ticks(timeStep.interval)
       : x.ticks(chartWidth / 10);
   const minLabelWidth = 60;
-  // @ts-ignore
   const tickLabels =
+    // @ts-ignore
     timeStep.interval.count(extent[0], extent[1]) <= chartWidth / minLabelWidth
       ? x.ticks(timeStep.interval)
       : x.ticks(chartWidth / minLabelWidth);
