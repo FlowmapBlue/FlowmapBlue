@@ -27,8 +27,7 @@ import { bounds } from '@mapbox/geo-viewport';
 import KDBush from 'kdbush';
 import { descending, min } from 'd3-array';
 import { csvParseRows } from 'd3-dsv';
-import { CountableTimeInterval } from 'd3-time';
-import { getTimePrecisionIntervalIndex, TIME_INTERVALS } from './time';
+import { getTimeStepForDate, getTimeStepByOrder, TimeStep } from './time';
 
 export const NUMBER_OF_FLOWS_TO_DISPLAY = 5000;
 
@@ -95,7 +94,7 @@ export const getSortedFlowsForKnownLocations: Selector<Flow[] | undefined> = cre
   }
 );
 
-export const getTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
+const getActualTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
   getSortedFlowsForKnownLocations,
   (flows) => {
     if (!flows) return undefined;
@@ -131,15 +130,25 @@ export const getTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
 //   ..
 // }
 
-export const getTimeStepInterval: Selector<CountableTimeInterval | undefined> = createSelector(
+export const getTimeStep: Selector<TimeStep | undefined> = createSelector(
   getSortedFlowsForKnownLocations,
-  getTimeExtent,
+  getActualTimeExtent,
   (flows, timeExtent) => {
     if (!flows || !timeExtent) return undefined;
 
-    const minIndex = min(flows, (d) => getTimePrecisionIntervalIndex(d.time!));
-    if (minIndex == null) return undefined;
-    return TIME_INTERVALS[minIndex];
+    const minOrder = min(flows, (d) => getTimeStepForDate(d.time!).order);
+    if (minOrder == null) return undefined;
+    return getTimeStepByOrder(minOrder);
+  }
+);
+
+export const getTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
+  getActualTimeExtent,
+  getTimeStep,
+  (timeExtent, timeStep) => {
+    if (!timeExtent || !timeStep?.interval) return undefined;
+    const { interval } = timeStep;
+    return [timeExtent[0], interval.offset(interval.floor(timeExtent[1]), 1)];
   }
 );
 

@@ -1,19 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { scaleTime } from 'd3-scale';
-import { TimeInterval } from 'd3-time';
 import { EventManager } from 'mjolnir.js';
 import PlayControl from './PlayControl';
 import { Colors } from '@blueprintjs/core';
 import { useMeasure, useThrottle } from 'react-use';
+import { multiScaleTimeFormat, TimeStep } from './time';
 
 interface Props {
   selectedRange: [Date, Date];
   extent: [Date, Date];
   darkMode: boolean;
-  formatDate: (d: Date) => string;
-  timeInterval: TimeInterval;
-  minTickWidth: number;
+  timeStep: TimeStep;
   onChange: (range: [Date, Date]) => void;
 }
 
@@ -150,16 +148,7 @@ interface TimelineChartProps extends Props {
 type MoveSideHandler = (pos: number, side: Side) => void;
 
 const TimelineChart: React.FC<TimelineChartProps> = (props) => {
-  const {
-    width,
-    extent,
-    selectedRange,
-    formatDate,
-    timeInterval,
-    minTickWidth,
-    darkMode,
-    onChange,
-  } = props;
+  const { width, extent, selectedRange, timeStep, darkMode, onChange } = props;
 
   const stripeHeight = 30;
   const handleWidth = 10;
@@ -201,7 +190,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     } else {
       let nextStart = timeFromPos(center.x + offset);
       if (nextStart) {
-        nextStart = timeInterval.round(nextStart);
+        nextStart = timeStep.interval.round(nextStart);
         const length = selectedRange[1].getTime() - selectedRange[0].getTime();
         let nextEnd = new Date(nextStart.getTime() + length);
         if (nextStart < extent[0]) {
@@ -243,7 +232,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   handleMoveSideRef.current = (pos, side) => {
     let t = timeFromPos(pos);
     if (t) {
-      t = timeInterval.round(t);
+      t = timeStep.interval.round(t);
       if (t < extent[0]) t = extent[0];
       if (t > extent[1]) t = extent[1];
       if (side === 'start') {
@@ -259,15 +248,17 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     }
   };
 
-  const ticks = x.ticks(timeInterval);
-  // const tickLabels: Date[] = [];
-  // let nextTick = extent[1];
-  // const step = -Math.ceil(ticks.length / (chartWidth / minTickWidth));
-  // while (nextTick >= extent[0]) {
-  //   tickLabels.push(nextTick);
-  //   nextTick = timeInterval.offset(nextTick, step);
-  // }
-  const tickLabels = x.ticks(ticks.length / (chartWidth / minTickWidth));
+  // @ts-ignore
+  const ticks =
+    timeStep.interval.count(extent[0], extent[1]) <= chartWidth / 10
+      ? x.ticks(timeStep.interval)
+      : x.ticks(chartWidth / 10);
+  const minLabelWidth = 60;
+  // @ts-ignore
+  const tickLabels =
+    timeStep.interval.count(extent[0], extent[1]) <= chartWidth / minLabelWidth
+      ? x.ticks(timeStep.interval)
+      : x.ticks(chartWidth / minLabelWidth);
 
   return (
     <TimelineSvg width={width} height={SVG_HEIGHT} ref={svgRef}>
@@ -280,7 +271,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
             <g key={i} transform={`translate(${x(t)},${0})`}>
               <TickLine y1={0} y2={stripeHeight} />
               <TickText darkMode={darkMode} x={3} y={20}>
-                {formatDate(t)}
+                {multiScaleTimeFormat(t)}
               </TickText>
             </g>
           ))}
@@ -325,7 +316,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
 
 const Timeline: React.FC<Props> = (props) => {
   const [measureRef, dimensions] = useMeasure();
-  const { extent, selectedRange, timeInterval, onChange } = props;
+  const { extent, selectedRange, timeStep, onChange } = props;
   const [internalRange, setInternalRange] = useState<[Date, Date]>(selectedRange);
   const throttledRange = useThrottle(internalRange, 100);
   const onChangeRef = useRef<(range: [Date, Date]) => void>();
@@ -360,7 +351,7 @@ const Timeline: React.FC<Props> = (props) => {
       <PlayControl
         extent={extent}
         current={internalRange[0]}
-        timeStep={timeInterval}
+        timeStep={timeStep.interval}
         stepDuration={100}
         isPlaying={isPlaying}
         onPlay={() => setPlaying(true)}

@@ -1,7 +1,6 @@
 import { DeckGL } from '@deck.gl/react';
 import { MapController } from '@deck.gl/core';
 import * as React from 'react';
-import { timeHour } from 'd3-time';
 import {
   ReactNode,
   Reducer,
@@ -82,6 +81,7 @@ import {
   getFetchedFlows,
   getFlowMapColors,
   getFlowsForFlowMapLayer,
+  getFlowsSheets,
   getInvalidLocationIds,
   getLocations,
   getLocationsForFlowMapLayer,
@@ -92,11 +92,10 @@ import {
   getMapboxMapStyle,
   getMaxLocationCircleSize,
   getSortedFlowsForKnownLocations,
+  getTimeExtent,
+  getTimeStep,
   getUnknownLocations,
   NUMBER_OF_FLOWS_TO_DISPLAY,
-  getFlowsSheets,
-  getTimeExtent,
-  getTimeStepInterval,
 } from './FlowMap.selectors';
 import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
@@ -106,7 +105,6 @@ import MapDrawingEditor, { MapDrawingFeature, MapDrawingMode } from './MapDrawin
 import getBbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import Timeline from './Timeline';
-import { multiScaleTimeFormat } from './time';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -179,17 +177,16 @@ const FlowMap: React.FC<Props> = (props) => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState);
   const [mapDrawingEnabled, setMapDrawingEnabled] = useState(false);
 
-  const timeStepInterval = getTimeStepInterval(state, props);
+  const timeStep = getTimeStep(state, props);
   const timeExtent = getTimeExtent(state, props);
   useEffect(() => {
-    if (timeExtent && timeStepInterval) {
+    if (timeExtent) {
       dispatch({
         type: ActionType.SET_TIME_RANGE,
-        // range: [timeExtent[0], timeStepInterval.offset(timeExtent[0], 1)],
         range: timeExtent,
       });
     }
-  }, [timeExtent, timeStepInterval]);
+  }, [timeExtent]);
 
   const [updateQuerySearch] = useDebounced(
     () => {
@@ -814,15 +811,13 @@ const FlowMap: React.FC<Props> = (props) => {
           )}
         </DeckGL>
       </DeckGLOuter>
-      {timeExtent && timeStepInterval && state.selectedTimeRange && (
+      {timeExtent && timeStep && state.selectedTimeRange && (
         <TimelineBox darkMode={darkMode}>
           <Timeline
             darkMode={darkMode}
             extent={timeExtent}
             selectedRange={state.selectedTimeRange}
-            formatDate={multiScaleTimeFormat}
-            timeInterval={timeStepInterval}
-            minTickWidth={60}
+            timeStep={timeStep}
             onChange={handleTimeRangeChanged}
           />
         </TimelineBox>
