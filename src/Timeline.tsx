@@ -171,49 +171,62 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   x.domain(extent);
   x.range([0, chartWidth]);
 
-  const [prevPos, setPrevPos] = useState<number>();
+  const [offset, setOffset] = useState<number>();
 
   const svgRef = useRef<SVGSVGElement>(null);
   const rectRef = useRef<SVGRectElement>(null);
 
+  const mousePosition = (absPos: number) => {
+    const { current } = svgRef;
+    if (current != null) {
+      const { left } = current.getBoundingClientRect();
+      return absPos - left - margin.left;
+    }
+    return undefined;
+  };
+
+  const timeFromPos = (pos: number) => {
+    const relPos = mousePosition(pos);
+    if (relPos != null) return x.invert(relPos);
+    return undefined;
+  };
+
   const handleMoveRef = useRef<any>();
   handleMoveRef.current = ({ center }: any) => {
-    if (prevPos != null) {
-      const delta = center.x - prevPos;
-      let nextStart = timeInterval.round(x.invert(x(selectedRange[0]) + delta));
-      let nextEnd = timeInterval.round(x.invert(x(selectedRange[1]) + delta));
-      if (nextStart && nextEnd) {
+    if (offset == null) {
+      const pos = mousePosition(center.x);
+      if (pos != null) {
+        setOffset(x(selectedRange[0]) - pos);
+      }
+    } else {
+      let nextStart = timeFromPos(center.x + offset);
+      if (nextStart) {
+        nextStart = timeInterval.round(nextStart);
+        const length = selectedRange[1].getTime() - selectedRange[0].getTime();
+        let nextEnd = new Date(nextStart.getTime() + length);
         if (nextStart < extent[0]) {
-          onChange([
-            extent[0],
-            new Date(
-              extent[0].getTime() + (selectedRange[1].getTime() - selectedRange[0].getTime())
-            ),
-          ]);
-        } else if (nextEnd > extent[1]) {
-          onChange([
-            new Date(
-              extent[1].getTime() - (selectedRange[1].getTime() - selectedRange[0].getTime())
-            ),
-            extent[1],
-          ]);
-        } else {
-          onChange([nextStart, nextEnd]);
+          nextStart = extent[0];
+          nextEnd = new Date(extent[0].getTime() + length);
         }
+        if (nextEnd > extent[1]) {
+          nextStart = new Date(extent[1].getTime() - length);
+          nextEnd = extent[1];
+        }
+        onChange([nextStart, nextEnd]);
       }
     }
   };
+
   const handleMove = (evt: any) => {
     if (handleMoveRef.current) {
       handleMoveRef.current(evt);
     }
-    setPrevPos(evt.center.x);
   };
   const handleMoveEnd = (evt: any) => {
     if (handleMoveRef.current) {
       handleMoveRef.current(evt);
     }
-    setPrevPos(undefined);
+    setOffset(undefined);
   };
 
   useEffect(() => {
@@ -226,19 +239,11 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     };
   }, []);
 
-  const timeFromPos = (pos: number) => {
-    const { current } = svgRef;
-    if (current != null) {
-      const { left } = current.getBoundingClientRect();
-      return timeInterval.round(x.invert(pos - left - margin.left));
-    }
-    return undefined;
-  };
-
   const handleMoveSideRef = useRef<MoveSideHandler>();
   handleMoveSideRef.current = (pos, side) => {
     let t = timeFromPos(pos);
     if (t) {
+      t = timeInterval.round(t);
       if (t < extent[0]) t = extent[0];
       if (t > extent[1]) t = extent[1];
       if (side === 'start') {

@@ -185,7 +185,8 @@ const FlowMap: React.FC<Props> = (props) => {
     if (timeExtent && timeStepInterval) {
       dispatch({
         type: ActionType.SET_TIME_RANGE,
-        range: [timeExtent[0], timeStepInterval.offset(timeExtent[0], 1)],
+        // range: [timeExtent[0], timeStepInterval.offset(timeExtent[0], 1)],
+        range: timeExtent,
       });
     }
   }, [timeExtent, timeStepInterval]);
