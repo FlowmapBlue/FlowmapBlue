@@ -59,7 +59,6 @@ const HandleOuter = styled.g({
 
 const HandlePath = styled.path({
   strokeWidth: 1,
-  shapeRendering: 'crispEdges',
 } as any);
 
 const HandleHoverTarget = styled.rect({
@@ -132,8 +131,12 @@ const TimelineHandle: React.FC<HandleProps> = (props) => {
         transform={`translate(${side === 'start' ? 0 : width},0)`}
         d={
           side === 'start'
-            ? `M0,${h} ${-w},0 0,0 0,${height} ${-w},${height} 0,${height - h} z`
-            : `M0,${h} ${w},0 0,0 0,${height} ${w},${height} 0,${height - h} z`
+            ? `M0,${h} Q${-w},${h} ${-w},0 L0,0 0,${height} ${-w},${height} Q${-w},${
+                height - h
+              } 0,${height - h} z`
+            : `M0,${h} Q${w},${h} ${w},0 L0,0 0,${height} ${w},${height} Q${w},${height - h} 0,${
+                height - h
+              } z`
         }
       />
       <HandleHoverTarget x={side === 'start' ? -w : w} ref={ref} height={height} width={width} />
@@ -151,7 +154,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   const { width, extent, selectedRange, timeStep, darkMode, onChange } = props;
 
   const stripeHeight = 30;
-  const handleWidth = 10;
+  const handleWidth = 9;
   const handleHGap = 10;
   const handleHeight = stripeHeight + handleHGap * 2;
 
