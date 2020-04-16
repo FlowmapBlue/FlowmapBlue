@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { scaleTime } from 'd3-scale';
 import { EventManager } from 'mjolnir.js';
@@ -329,9 +329,9 @@ const Timeline: React.FC<Props> = (props) => {
     if (current) current(throttledRange);
   }, [throttledRange, onChangeRef]);
 
-  useEffect(() => {
-    setInternalRange(selectedRange);
-  }, [selectedRange]);
+  // useLayoutEffect(() => {
+  //   setInternalRange(selectedRange);
+  // }, [selectedRange]);
 
   const [isPlaying, setPlaying] = useState(false);
 
