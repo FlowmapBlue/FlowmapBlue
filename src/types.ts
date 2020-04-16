@@ -29,6 +29,7 @@ export type Config = {
   [prop in ConfigPropName]: string | undefined;
 };
 
+export const getFlowTime = (flow: Flow) => flow.time;
 export const getFlowMagnitude = (flow: Flow) => +flow.count || 0;
 export const getFlowOriginId = (flow: Flow) => flow.origin;
 export const getFlowDestId = (flow: Flow) => flow.dest;
@@ -54,4 +55,9 @@ export interface Flow {
   dest: string;
   count: number;
   time?: Date;
+}
+
+export interface CountByTime {
+  time: Date;
+  count: number;
 }

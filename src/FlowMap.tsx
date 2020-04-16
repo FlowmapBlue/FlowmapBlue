@@ -94,6 +94,7 @@ import {
   getSortedFlowsForKnownLocations,
   getTimeExtent,
   getTimeStep,
+  getTotalCountsByTime,
   getUnknownLocations,
   NUMBER_OF_FLOWS_TO_DISPLAY,
 } from './FlowMap.selectors';
@@ -179,6 +180,8 @@ const FlowMap: React.FC<Props> = (props) => {
 
   const timeStep = getTimeStep(state, props);
   const timeExtent = getTimeExtent(state, props);
+  const totalCountsByTime = getTotalCountsByTime(state, props);
+
   useEffect(() => {
     if (timeExtent) {
       dispatch({
@@ -811,13 +814,14 @@ const FlowMap: React.FC<Props> = (props) => {
           )}
         </DeckGL>
       </DeckGLOuter>
-      {timeExtent && timeStep && state.selectedTimeRange && (
+      {timeExtent && timeStep && totalCountsByTime && state.selectedTimeRange && (
         <TimelineBox darkMode={darkMode}>
           <Timeline
             darkMode={darkMode}
             extent={timeExtent}
             selectedRange={state.selectedTimeRange}
             timeStep={timeStep}
+            totalCountsByTime={totalCountsByTime}
             onChange={handleTimeRangeChanged}
           />
         </TimelineBox>

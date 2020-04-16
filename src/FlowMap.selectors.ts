@@ -8,10 +8,12 @@ import { LocationFilterMode, MAX_ZOOM_LEVEL, State } from './FlowMap.state';
 import {
   Config,
   ConfigPropName,
+  CountByTime,
   Flow,
   getFlowDestId,
   getFlowMagnitude,
   getFlowOriginId,
+  getFlowTime,
   getLocationCentroid,
   getLocationId,
   isLocationCluster,
@@ -27,7 +29,7 @@ import { bounds } from '@mapbox/geo-viewport';
 import KDBush from 'kdbush';
 import { descending, min } from 'd3-array';
 import { csvParseRows } from 'd3-dsv';
-import { getTimeStepForDate, getTimeStepByOrder, TimeStep } from './time';
+import { getTimeStepByOrder, getTimeStepForDate, TimeStep } from './time';
 
 export const NUMBER_OF_FLOWS_TO_DISPLAY = 5000;
 
@@ -136,7 +138,7 @@ export const getTimeStep: Selector<TimeStep | undefined> = createSelector(
   (flows, timeExtent) => {
     if (!flows || !timeExtent) return undefined;
 
-    const minOrder = min(flows, (d) => getTimeStepForDate(d.time!).order);
+    const minOrder = min(flows, (d) => getTimeStepForDate(getFlowTime(d)!).order);
     if (minOrder == null) return undefined;
     return getTimeStepByOrder(minOrder);
   }
@@ -149,6 +151,25 @@ export const getTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
     if (!timeExtent || !timeStep?.interval) return undefined;
     const { interval } = timeStep;
     return [timeExtent[0], interval.offset(interval.floor(timeExtent[1]), 1)];
+  }
+);
+
+export const getTotalCountsByTime: Selector<CountByTime[] | undefined> = createSelector(
+  getSortedFlowsForKnownLocations,
+  getTimeStep,
+  getTimeExtent,
+  (flows, timeStep, timeExtent) => {
+    if (!flows || !timeStep || !timeExtent) return undefined;
+    const byTime = flows.reduce((m, f) => {
+      const key = timeStep.interval(getFlowTime(f)!).getTime();
+      m.set(key, (m.get(key) ?? 0) + getFlowMagnitude(f));
+      return m;
+    }, new Map<number, number>());
+
+    return Array.from(byTime.entries()).map(([millis, count]) => ({
+      time: new Date(millis),
+      count,
+    }));
   }
 );
 
@@ -167,9 +188,10 @@ export const getSortedFlowsForKnownLocationsFilteredByTime: Selector<
     ) {
       return flows;
     }
-    return flows.filter(
-      (flow) => flow.time && timeRange[0] <= flow.time && flow.time <= timeRange[1]
-    );
+    return flows.filter((flow) => {
+      const time = getFlowTime(flow);
+      return time && timeRange[0] <= time && time <= timeRange[1];
+    });
   }
 );
 

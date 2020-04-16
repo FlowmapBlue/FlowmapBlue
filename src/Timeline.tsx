@@ -1,22 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import { scaleTime } from 'd3-scale';
+import { scaleLinear, scaleTime } from 'd3-scale';
+import { max } from 'd3-array';
 import { EventManager } from 'mjolnir.js';
 import PlayControl from './PlayControl';
 import { Colors } from '@blueprintjs/core';
 import { useMeasure, useThrottle } from 'react-use';
 import { areRangesEqual, multiScaleTimeFormat, TimeStep } from './time';
+import { CountByTime } from './types';
 
 interface Props {
   selectedRange: [Date, Date];
   extent: [Date, Date];
+  totalCountsByTime: CountByTime[];
   darkMode: boolean;
   timeStep: TimeStep;
   onChange: (range: [Date, Date]) => void;
 }
 
-const SVG_HEIGHT = 60;
+const SVG_HEIGHT = 90;
 const TICK_HEIGHT = 5;
+const TOTAL_COUNT_CHART_HEIGHT = 30;
 
 const margin = {
   top: 15,
@@ -151,12 +155,12 @@ interface TimelineChartProps extends Props {
 type MoveSideHandler = (pos: number, side: Side) => void;
 
 const TimelineChart: React.FC<TimelineChartProps> = (props) => {
-  const { width, extent, selectedRange, timeStep, darkMode, onChange } = props;
+  const { width, extent, selectedRange, timeStep, totalCountsByTime, darkMode, onChange } = props;
 
   const stripeHeight = 30;
   const handleWidth = 10;
   const handleHGap = 10;
-  const handleHeight = stripeHeight + handleHGap * 2;
+  const handleHeight = TOTAL_COUNT_CHART_HEIGHT + stripeHeight + handleHGap * 2;
 
   const chartWidth = width - margin.left - margin.right;
   const x = scaleTime();
@@ -263,34 +267,53 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
       ? x.ticks(timeStep.interval)
       : x.ticks(chartWidth / minLabelWidth);
 
+  const totalCountBarWidth = x(timeStep.interval.offset(extent[0])) - x(extent[0]);
+  const totalCountScale = scaleLinear()
+    .domain([0, max(totalCountsByTime, (d) => d.count) ?? 0])
+    .range([0, TOTAL_COUNT_CHART_HEIGHT]);
+
   return (
     <TimelineSvg width={width} height={SVG_HEIGHT} ref={svgRef}>
       <g transform={`translate(${margin.left},${margin.top})`}>
         <g transform={`translate(0,0)`}>
-          {ticks.map((t, i) => (
-            <TickLine key={i} transform={`translate(${x(t)},${0})`} y1={0} y2={TICK_HEIGHT} />
+          {totalCountsByTime.map(({ time, count }) => (
+            <rect
+              key={time.getTime()}
+              x={x(time)}
+              y={TOTAL_COUNT_CHART_HEIGHT - totalCountScale(count)}
+              width={totalCountBarWidth}
+              height={totalCountScale(count)}
+              fill={Colors.LIGHT_GRAY1}
+              stroke={Colors.GRAY4}
+            />
           ))}
-          {tickLabels.map((t, i) => (
-            <g key={i} transform={`translate(${x(t)},${0})`}>
-              <TickLine y1={0} y2={stripeHeight} />
-              <TickText darkMode={darkMode} x={3} y={20}>
-                {multiScaleTimeFormat(t)}
-              </TickText>
-            </g>
-          ))}
-          <AxisPath
-            d={`M0,${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},${TICK_HEIGHT * 1.5}`}
-          />
         </g>
-        <g transform={`translate(0,${stripeHeight})`}>
-          {ticks.map((t, i) => (
-            <TickLine key={i} transform={`translate(${x(t)},${0})`} y1={0} y2={-TICK_HEIGHT} />
-          ))}
-          <AxisPath
-            d={`M0,-${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},-${TICK_HEIGHT * 1.5}`}
-          />
+        <g transform={`translate(0,${TOTAL_COUNT_CHART_HEIGHT})`}>
+          <g>
+            {ticks.map((t, i) => (
+              <TickLine key={i} transform={`translate(${x(t)},${0})`} y1={0} y2={TICK_HEIGHT} />
+            ))}
+            {tickLabels.map((t, i) => (
+              <g key={i} transform={`translate(${x(t)},${0})`}>
+                <TickLine y1={0} y2={stripeHeight} />
+                <TickText darkMode={darkMode} x={3} y={20}>
+                  {multiScaleTimeFormat(t)}
+                </TickText>
+              </g>
+            ))}
+            <AxisPath
+              d={`M0,${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},${TICK_HEIGHT * 1.5}`}
+            />
+          </g>
+          <g transform={`translate(0,${stripeHeight})`}>
+            {ticks.map((t, i) => (
+              <TickLine key={i} transform={`translate(${x(t)},${0})`} y1={0} y2={-TICK_HEIGHT} />
+            ))}
+            <AxisPath
+              d={`M0,-${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},-${TICK_HEIGHT * 1.5}`}
+            />
+          </g>
         </g>
-
         <g transform={`translate(${x(selectedRange[0])},${-handleHGap})`}>
           <SelectedRangeRect
             ref={rectRef}
@@ -304,6 +327,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
             onMove={handleMoveSide}
           />
         </g>
+        s{' '}
         <g transform={`translate(${x(selectedRange[1]) - handleWidth},${-handleHGap})`}>
           <TimelineHandle
             width={handleWidth}
