@@ -1,11 +1,11 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { scaleTime } from 'd3-scale';
 import { EventManager } from 'mjolnir.js';
 import PlayControl from './PlayControl';
 import { Colors } from '@blueprintjs/core';
 import { useMeasure, useThrottle } from 'react-use';
-import { multiScaleTimeFormat, TimeStep } from './time';
+import { areRangesEqual, multiScaleTimeFormat, TimeStep } from './time';
 
 interface Props {
   selectedRange: [Date, Date];
@@ -329,9 +329,11 @@ const Timeline: React.FC<Props> = (props) => {
     if (current) current(throttledRange);
   }, [throttledRange, onChangeRef]);
 
-  // useLayoutEffect(() => {
-  //   setInternalRange(selectedRange);
-  // }, [selectedRange]);
+  const [prevSelectedRange, setPrevSelectedRange] = useState(selectedRange);
+  if (!areRangesEqual(selectedRange, prevSelectedRange)) {
+    setInternalRange(selectedRange);
+    setPrevSelectedRange(selectedRange);
+  }
 
   const [isPlaying, setPlaying] = useState(false);
 

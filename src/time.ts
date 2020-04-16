@@ -118,3 +118,9 @@ export function getTimeStepForDate(date: Date) {
   }
   return TIME_STEPS[TIME_STEPS.length - 1];
 }
+
+export function areRangesEqual(a: [Date, Date] | undefined, b: [Date, Date] | undefined): boolean {
+  if (!a && !b) return true;
+  if (!a || !b) return false;
+  return a[0] === b[0] && a[1] === b[1];
+}
