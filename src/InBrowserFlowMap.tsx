@@ -3,16 +3,15 @@ import Nav from './Nav';
 import styled from '@emotion/styled';
 import { Button, Classes, H5, Intent, TextArea } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import { dsvFormat } from 'd3-dsv';
 import { Location as HistoryLocation } from 'history';
-import { Location, Flow } from './types';
+import { Flow, Location } from './types';
 import FlowMap from './FlowMap';
 import { PromiseState } from 'react-refetch';
 import { DEFAULT_CONFIG } from './config';
 import MapContainer from './MapContainer';
 import { prepareFlows } from './prepareFlows';
-import { parseTime } from './time';
 
 interface Props {
   location: HistoryLocation<{
