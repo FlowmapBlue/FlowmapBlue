@@ -154,7 +154,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   const { width, extent, selectedRange, timeStep, darkMode, onChange } = props;
 
   const stripeHeight = 30;
-  const handleWidth = 9;
+  const handleWidth = 10;
   const handleHGap = 10;
   const handleHeight = stripeHeight + handleHGap * 2;
 
@@ -347,6 +347,7 @@ const Timeline: React.FC<Props> = (props) => {
 
   const handleMove = (range: [Date, Date]) => {
     setInternalRange(range);
+    setPlaying(false);
   };
 
   return (
