@@ -79,7 +79,7 @@ export const getLocationIds: Selector<Set<string> | undefined> = createSelector(
   (locations) => (locations ? new Set(locations.map(getLocationId)) : undefined)
 );
 
-export const getSelectedLocationSet: Selector<
+export const getSelectedLocationsSet: Selector<
   Set<string> | undefined
 > = createSelector(getSelectedLocations, (ids) =>
   ids && ids.length > 0 ? new Set(ids) : undefined
@@ -151,25 +151,6 @@ export const getTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
     if (!timeExtent || !timeStep?.interval) return undefined;
     const { interval } = timeStep;
     return [timeExtent[0], interval.offset(interval.floor(timeExtent[1]), 1)];
-  }
-);
-
-export const getTotalCountsByTime: Selector<CountByTime[] | undefined> = createSelector(
-  getSortedFlowsForKnownLocations,
-  getTimeStep,
-  getTimeExtent,
-  (flows, timeStep, timeExtent) => {
-    if (!flows || !timeStep || !timeExtent) return undefined;
-    const byTime = flows.reduce((m, f) => {
-      const key = timeStep.interval(getFlowTime(f)!).getTime();
-      m.set(key, (m.get(key) ?? 0) + getFlowMagnitude(f));
-      return m;
-    }, new Map<number, number>());
-
-    return Array.from(byTime.entries()).map(([millis, count]) => ({
-      time: new Date(millis),
-      count,
-    }));
   }
 );
 
@@ -461,32 +442,20 @@ export const getSortedAggregatedFlows: Selector<Flow[] | undefined> = createSele
   }
 );
 
-export const getMaxClusterZoom: Selector<number | undefined> = createSelector(
-  getClusterIndex,
-  (clusterIndex) => {
-    if (!clusterIndex) return undefined;
-    return Math.max.apply(null, clusterIndex.availableZoomLevels);
-  }
-);
-
-export const getExpandedSelection: Selector<Array<string> | undefined> = createSelector(
+export const getExpandedSelectedLocationsSet: Selector<Set<string> | undefined> = createSelector(
   getClusteringEnabled,
-  getSelectedLocations,
-  getClusterZoom,
+  getSelectedLocationsSet,
   getClusterIndex,
-  getMaxClusterZoom,
-  (clusteringEnabled, selectedLocations, clusterZoom, clusterIndex, maxClusterZoom) => {
-    if (!selectedLocations || !clusterIndex || clusterZoom === undefined) {
-      return undefined;
+  (clusteringEnabled, selectedLocations, clusterIndex) => {
+    if (!selectedLocations || !clusterIndex) {
+      return selectedLocations;
     }
-
-    const targetZoom = clusteringEnabled ? clusterZoom : maxClusterZoom;
 
     const result = new Set<string>();
     for (const locationId of selectedLocations) {
       const cluster = clusterIndex.getClusterById(locationId);
       if (cluster) {
-        const expanded = clusterIndex.expandCluster(cluster, targetZoom);
+        const expanded = clusterIndex.expandCluster(cluster);
         for (const id of expanded) {
           result.add(id);
         }
@@ -494,7 +463,30 @@ export const getExpandedSelection: Selector<Array<string> | undefined> = createS
         result.add(locationId);
       }
     }
-    return Array.from(result);
+    return result;
+  }
+);
+
+export const getTotalCountsByTime: Selector<CountByTime[] | undefined> = createSelector(
+  getSortedFlowsForKnownLocations,
+  getTimeStep,
+  getTimeExtent,
+  getExpandedSelectedLocationsSet,
+  getLocationFilterMode,
+  (flows, timeStep, timeExtent, selectedLocationSet, locationFilterMode) => {
+    if (!flows || !timeStep || !timeExtent) return undefined;
+    const byTime = flows.reduce((m, flow) => {
+      if (isFlowInSelection(flow, selectedLocationSet, locationFilterMode)) {
+        const key = timeStep.interval(getFlowTime(flow)!).getTime();
+        m.set(key, (m.get(key) ?? 0) + getFlowMagnitude(flow));
+      }
+      return m;
+    }, new Map<number, number>());
+
+    return Array.from(byTime.entries()).map(([millis, count]) => ({
+      time: new Date(millis),
+      count,
+    }));
   }
 );
 
@@ -625,10 +617,31 @@ export const getFlowsSheets = defaultMemoize((config: Config) => {
   return undefined;
 });
 
+function isFlowInSelection(
+  flow: Flow,
+  selectedLocationsSet: Set<string> | undefined,
+  locationFilterMode: LocationFilterMode
+) {
+  const { origin, dest } = flow;
+  if (selectedLocationsSet) {
+    switch (locationFilterMode) {
+      case LocationFilterMode.ALL:
+        return selectedLocationsSet.has(origin) || selectedLocationsSet.has(dest);
+      case LocationFilterMode.BETWEEN:
+        return selectedLocationsSet.has(origin) && selectedLocationsSet.has(dest);
+      case LocationFilterMode.INCOMING:
+        return selectedLocationsSet.has(dest);
+      case LocationFilterMode.OUTGOING:
+        return selectedLocationsSet.has(origin);
+    }
+  }
+  return true;
+}
+
 export const getFlowsForFlowMapLayer: Selector<Flow[] | undefined> = createSelector(
   getSortedAggregatedFlows,
   getLocationIdsInViewport,
-  getSelectedLocationSet,
+  getSelectedLocationsSet,
   getLocationFilterMode,
   (flows, locationIdsInViewport, selectedLocationsSet, locationFilterMode) => {
     if (!flows || !locationIdsInViewport) return undefined;
@@ -637,24 +650,7 @@ export const getFlowsForFlowMapLayer: Selector<Flow[] | undefined> = createSelec
     for (const flow of flows) {
       const { origin, dest } = flow;
       if (locationIdsInViewport.has(origin) || locationIdsInViewport.has(dest)) {
-        let pick = true;
-        if (selectedLocationsSet) {
-          switch (locationFilterMode) {
-            case LocationFilterMode.ALL:
-              pick = selectedLocationsSet.has(origin) || selectedLocationsSet.has(dest);
-              break;
-            case LocationFilterMode.BETWEEN:
-              pick = selectedLocationsSet.has(origin) && selectedLocationsSet.has(dest);
-              break;
-            case LocationFilterMode.INCOMING:
-              pick = selectedLocationsSet.has(dest);
-              break;
-            case LocationFilterMode.OUTGOING:
-              pick = selectedLocationsSet.has(origin);
-              break;
-          }
-        }
-
+        let pick = isFlowInSelection(flow, selectedLocationsSet, locationFilterMode);
         if (pick) {
           picked.push(flow);
           if (origin !== dest) {

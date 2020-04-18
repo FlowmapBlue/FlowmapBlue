@@ -77,7 +77,6 @@ import {
   getClusterZoom,
   getDarkMode,
   getDiffMode,
-  getExpandedSelection,
   getFetchedFlows,
   getFlowMapColors,
   getFlowsForFlowMapLayer,
@@ -749,7 +748,7 @@ const FlowMap: React.FC<Props> = (props) => {
           showTotals: true,
           maxLocationCircleSize: getMaxLocationCircleSize(state, props),
           maxFlowThickness: animationEnabled ? 18 : 12,
-          selectedLocationIds: getExpandedSelection(state, props),
+          // selectedLocationIds: getExpandedSelection(state, props),
           highlightedLocationId:
             highlight && highlight.type === HighlightType.LOCATION
               ? highlight.locationId
