@@ -92,7 +92,7 @@ import {
   getMaxLocationCircleSize,
   getSortedFlowsForKnownLocations,
   getTimeExtent,
-  getTimeStep,
+  getTimeGranularity,
   getTotalCountsByTime,
   getUnknownLocations,
   NUMBER_OF_FLOWS_TO_DISPLAY,
@@ -177,7 +177,7 @@ const FlowMap: React.FC<Props> = (props) => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState);
   const [mapDrawingEnabled, setMapDrawingEnabled] = useState(false);
 
-  const timeStep = getTimeStep(state, props);
+  const timeGranularity = getTimeGranularity(state, props);
   const timeExtent = getTimeExtent(state, props);
   const totalCountsByTime = getTotalCountsByTime(state, props);
 
@@ -813,13 +813,13 @@ const FlowMap: React.FC<Props> = (props) => {
           )}
         </DeckGL>
       </DeckGLOuter>
-      {timeExtent && timeStep && totalCountsByTime && state.selectedTimeRange && (
+      {timeExtent && timeGranularity && totalCountsByTime && state.selectedTimeRange && (
         <TimelineBox darkMode={darkMode}>
           <Timeline
             darkMode={darkMode}
             extent={timeExtent}
             selectedRange={state.selectedTimeRange}
-            timeStep={timeStep}
+            timeGranularity={timeGranularity}
             totalCountsByTime={totalCountsByTime}
             onChange={handleTimeRangeChanged}
           />

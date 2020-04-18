@@ -76,7 +76,7 @@ export function multiScaleTimeFormat(date: Date) {
     : formatYear)(date);
 }
 
-export enum TimeStepKey {
+export enum TimeGranularityKey {
   SECOND = 'SECOND',
   MINUTE = 'MINUTE',
   HOUR = 'HOUR',
@@ -85,29 +85,29 @@ export enum TimeStepKey {
   YEAR = 'YEAR',
 }
 
-export interface TimeStep {
-  key: TimeStepKey;
+export interface TimeGranularity {
+  key: TimeGranularityKey;
   order: number;
   interval: TimeInterval;
   format: (date: Date) => string;
 }
 
-export const TIME_STEPS: TimeStep[] = [
-  { order: 0, key: TimeStepKey.SECOND, interval: timeSecond, format: formatSecond },
-  { order: 1, key: TimeStepKey.MINUTE, interval: timeMinute, format: formatMinute },
-  { order: 2, key: TimeStepKey.HOUR, interval: timeHour, format: formatHour },
-  { order: 3, key: TimeStepKey.DAY, interval: timeDay, format: formatDay },
-  { order: 4, key: TimeStepKey.MONTH, interval: timeMonth, format: formatMonth },
-  { order: 5, key: TimeStepKey.YEAR, interval: timeYear, format: formatYear },
+export const TIME_GRANULARITIES: TimeGranularity[] = [
+  { order: 0, key: TimeGranularityKey.SECOND, interval: timeSecond, format: formatSecond },
+  { order: 1, key: TimeGranularityKey.MINUTE, interval: timeMinute, format: formatMinute },
+  { order: 2, key: TimeGranularityKey.HOUR, interval: timeHour, format: formatHour },
+  { order: 3, key: TimeGranularityKey.DAY, interval: timeDay, format: formatDay },
+  { order: 4, key: TimeGranularityKey.MONTH, interval: timeMonth, format: formatMonth },
+  { order: 5, key: TimeGranularityKey.YEAR, interval: timeYear, format: formatYear },
 ];
 
-export function getTimeStepByOrder(order: number) {
-  return TIME_STEPS.find((s) => s.order === order);
+export function getTimeGranularityByOrder(order: number) {
+  return TIME_GRANULARITIES.find((s) => s.order === order);
 }
 
-export function getTimeStepForDate(date: Date) {
+export function getTimeGranularityForDate(date: Date) {
   let prev = undefined;
-  for (const current of TIME_STEPS) {
+  for (const current of TIME_GRANULARITIES) {
     const { interval } = current;
     const floored = interval(date);
     if (floored < date) {
@@ -116,7 +116,7 @@ export function getTimeStepForDate(date: Date) {
     }
     prev = current;
   }
-  return TIME_STEPS[TIME_STEPS.length - 1];
+  return TIME_GRANULARITIES[TIME_GRANULARITIES.length - 1];
 }
 
 export function areRangesEqual(a: [Date, Date] | undefined, b: [Date, Date] | undefined): boolean {

@@ -29,7 +29,7 @@ import { bounds } from '@mapbox/geo-viewport';
 import KDBush from 'kdbush';
 import { descending, min } from 'd3-array';
 import { csvParseRows } from 'd3-dsv';
-import { getTimeStepByOrder, getTimeStepForDate, TimeStep } from './time';
+import { getTimeGranularityByOrder, getTimeGranularityForDate, TimeGranularity } from './time';
 
 export const NUMBER_OF_FLOWS_TO_DISPLAY = 5000;
 
@@ -113,7 +113,7 @@ const getActualTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
   }
 );
 
-// function _getTimeStep(flows: Flow[]) {
+// function _getTimeGranularity(flows: Flow[]) {
 //   const times = Array.from(flows.reduce(
 //     (m, d) => {
 //       if (d.time) m.add(d.time.getTime());
@@ -132,24 +132,24 @@ const getActualTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
 //   ..
 // }
 
-export const getTimeStep: Selector<TimeStep | undefined> = createSelector(
+export const getTimeGranularity: Selector<TimeGranularity | undefined> = createSelector(
   getSortedFlowsForKnownLocations,
   getActualTimeExtent,
   (flows, timeExtent) => {
     if (!flows || !timeExtent) return undefined;
 
-    const minOrder = min(flows, (d) => getTimeStepForDate(getFlowTime(d)!).order);
+    const minOrder = min(flows, (d) => getTimeGranularityForDate(getFlowTime(d)!).order);
     if (minOrder == null) return undefined;
-    return getTimeStepByOrder(minOrder);
+    return getTimeGranularityByOrder(minOrder);
   }
 );
 
 export const getTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
   getActualTimeExtent,
-  getTimeStep,
-  (timeExtent, timeStep) => {
-    if (!timeExtent || !timeStep?.interval) return undefined;
-    const { interval } = timeStep;
+  getTimeGranularity,
+  (timeExtent, timeGranularity) => {
+    if (!timeExtent || !timeGranularity?.interval) return undefined;
+    const { interval } = timeGranularity;
     return [timeExtent[0], interval.offset(interval.floor(timeExtent[1]), 1)];
   }
 );
@@ -469,15 +469,15 @@ export const getExpandedSelectedLocationsSet: Selector<Set<string> | undefined> 
 
 export const getTotalCountsByTime: Selector<CountByTime[] | undefined> = createSelector(
   getSortedFlowsForKnownLocations,
-  getTimeStep,
+  getTimeGranularity,
   getTimeExtent,
   getExpandedSelectedLocationsSet,
   getLocationFilterMode,
-  (flows, timeStep, timeExtent, selectedLocationSet, locationFilterMode) => {
-    if (!flows || !timeStep || !timeExtent) return undefined;
+  (flows, timeGranularity, timeExtent, selectedLocationSet, locationFilterMode) => {
+    if (!flows || !timeGranularity || !timeExtent) return undefined;
     const byTime = flows.reduce((m, flow) => {
       if (isFlowInSelection(flow, selectedLocationSet, locationFilterMode)) {
-        const key = timeStep.interval(getFlowTime(flow)!).getTime();
+        const key = timeGranularity.interval(getFlowTime(flow)!).getTime();
         m.set(key, (m.get(key) ?? 0) + getFlowMagnitude(flow));
       }
       return m;

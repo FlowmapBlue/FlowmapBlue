@@ -6,7 +6,7 @@ import { Colors } from '@blueprintjs/core';
 interface Props {
   current: Date;
   extent: [Date, Date];
-  timeStep: TimeInterval;
+  interval: TimeInterval;
   stepDuration: number;
   isPlaying: boolean;
   onPlay: () => void;
@@ -81,8 +81,8 @@ class PlayControl extends React.Component<Props> {
   nextStep = () => {
     const { isPlaying } = this.props;
     if (isPlaying) {
-      const { timeStep, extent, current, onAdvance } = this.props;
-      const next = timeStep.offset(current, 1);
+      const { interval, extent, current, onAdvance } = this.props;
+      const next = interval.offset(current, 1);
       if (next > extent[1]) {
         this.stop();
       } else {

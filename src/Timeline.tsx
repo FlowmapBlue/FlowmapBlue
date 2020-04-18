@@ -6,7 +6,7 @@ import { EventManager } from 'mjolnir.js';
 import PlayControl from './PlayControl';
 import { Colors } from '@blueprintjs/core';
 import { useMeasure, useThrottle } from 'react-use';
-import { areRangesEqual, multiScaleTimeFormat, TimeStep } from './time';
+import { areRangesEqual, multiScaleTimeFormat, TimeGranularity } from './time';
 import { CountByTime } from './types';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
   extent: [Date, Date];
   totalCountsByTime: CountByTime[];
   darkMode: boolean;
-  timeStep: TimeStep;
+  timeGranularity: TimeGranularity;
   onChange: (range: [Date, Date]) => void;
 }
 
@@ -155,7 +155,15 @@ interface TimelineChartProps extends Props {
 type MoveSideHandler = (pos: number, side: Side) => void;
 
 const TimelineChart: React.FC<TimelineChartProps> = (props) => {
-  const { width, extent, selectedRange, timeStep, totalCountsByTime, darkMode, onChange } = props;
+  const {
+    width,
+    extent,
+    selectedRange,
+    timeGranularity,
+    totalCountsByTime,
+    darkMode,
+    onChange,
+  } = props;
 
   const stripeHeight = 30;
   const handleWidth = 10;
@@ -197,7 +205,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     } else {
       let nextStart = timeFromPos(center.x + offset);
       if (nextStart) {
-        nextStart = timeStep.interval.round(nextStart);
+        nextStart = timeGranularity.interval.round(nextStart);
         const length = selectedRange[1].getTime() - selectedRange[0].getTime();
         let nextEnd = new Date(nextStart.getTime() + length);
         if (nextStart < extent[0]) {
@@ -239,7 +247,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   handleMoveSideRef.current = (pos, side) => {
     let t = timeFromPos(pos);
     if (t) {
-      t = timeStep.interval.round(t);
+      t = timeGranularity.interval.round(t);
       if (t < extent[0]) t = extent[0];
       if (t > extent[1]) t = extent[1];
       if (side === 'start') {
@@ -257,17 +265,17 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
 
   const ticks =
     // @ts-ignore
-    timeStep.interval.count(extent[0], extent[1]) <= chartWidth / 10
-      ? x.ticks(timeStep.interval)
+    timeGranularity.interval.count(extent[0], extent[1]) <= chartWidth / 10
+      ? x.ticks(timeGranularity.interval)
       : x.ticks(chartWidth / 10);
   const minLabelWidth = 60;
   const tickLabels =
     // @ts-ignore
-    timeStep.interval.count(extent[0], extent[1]) <= chartWidth / minLabelWidth
-      ? x.ticks(timeStep.interval)
+    timeGranularity.interval.count(extent[0], extent[1]) <= chartWidth / minLabelWidth
+      ? x.ticks(timeGranularity.interval)
       : x.ticks(chartWidth / minLabelWidth);
 
-  const totalCountBarWidth = x(timeStep.interval.offset(extent[0])) - x(extent[0]);
+  const totalCountBarWidth = x(timeGranularity.interval.offset(extent[0])) - x(extent[0]);
   const totalCountScale = scaleLinear()
     .domain([0, max(totalCountsByTime, (d) => d.count) ?? 0])
     .range([0, TOTAL_COUNT_CHART_HEIGHT]);
@@ -343,7 +351,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
 
 const Timeline: React.FC<Props> = (props) => {
   const [measureRef, dimensions] = useMeasure();
-  const { extent, selectedRange, timeStep, onChange } = props;
+  const { extent, selectedRange, timeGranularity, onChange } = props;
   const [internalRange, setInternalRange] = useState<[Date, Date]>(selectedRange);
   const throttledRange = useThrottle(internalRange, 100);
   const onChangeRef = useRef<(range: [Date, Date]) => void>();
@@ -381,7 +389,7 @@ const Timeline: React.FC<Props> = (props) => {
       <PlayControl
         extent={extent}
         current={internalRange[0]}
-        timeStep={timeStep.interval}
+        interval={timeGranularity.interval}
         stepDuration={100}
         isPlaying={isPlaying}
         onPlay={() => setPlaying(true)}
