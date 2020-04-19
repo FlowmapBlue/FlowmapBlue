@@ -92,10 +92,17 @@ export interface TimeGranularity {
   format: (date: Date) => string;
 }
 
+const preferredLocale = navigator.languages ? navigator.languages[0] : 'en';
+
 export const TIME_GRANULARITIES: TimeGranularity[] = [
   { order: 0, key: TimeGranularityKey.SECOND, interval: timeSecond, format: formatSecond },
   { order: 1, key: TimeGranularityKey.MINUTE, interval: timeMinute, format: formatMinute },
-  { order: 2, key: TimeGranularityKey.HOUR, interval: timeHour, format: formatHour },
+  {
+    order: 2,
+    key: TimeGranularityKey.HOUR,
+    interval: timeHour,
+    format: (d: Date) => d.toLocaleString(preferredLocale, { hour: 'numeric', minute: '2-digit' }),
+  },
   { order: 3, key: TimeGranularityKey.DAY, interval: timeDay, format: formatDay },
   { order: 4, key: TimeGranularityKey.MONTH, interval: timeMonth, format: formatMonth },
   { order: 5, key: TimeGranularityKey.YEAR, interval: timeYear, format: formatYear },
