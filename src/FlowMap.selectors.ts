@@ -113,25 +113,6 @@ const getActualTimeExtent: Selector<[Date, Date] | undefined> = createSelector(
   }
 );
 
-// function _getTimeGranularity(flows: Flow[]) {
-//   const times = Array.from(flows.reduce(
-//     (m, d) => {
-//       if (d.time) m.add(d.time.getTime());
-//       return m;
-//     }, new Set<number>())).sort();
-//
-//   let minDiff = null;
-//   for (let i = 1; i < times.length; i++) {
-//     const diff = times[i] - times[i - 1];
-//     if (minDiff == null || diff < minDiff) {
-//       minDiff = diff;
-//     }
-//   }
-//
-//   if (!minDiff) return undefined;
-//   ..
-// }
-
 export const getTimeGranularity: Selector<TimeGranularity | undefined> = createSelector(
   getSortedFlowsForKnownLocations,
   getActualTimeExtent,

@@ -1,4 +1,4 @@
-import { timeFormat, timeParse } from 'd3-time-format';
+import { timeParse } from 'd3-time-format';
 import {
   timeDay,
   timeHour,
@@ -6,7 +6,6 @@ import {
   timeMinute,
   timeMonth,
   timeSecond,
-  timeWeek,
   timeYear,
 } from 'd3-time';
 
@@ -49,33 +48,6 @@ export function parseGSheetsTime(input: string | undefined): Date | undefined {
   return undefined;
 }
 
-const formatMillisecond = timeFormat('.%L'),
-  formatSecond = timeFormat(':%S'),
-  formatMinute = timeFormat('%I:%M'),
-  formatHour = timeFormat('%I %p'),
-  formatDay = timeFormat('%a %d'),
-  formatWeek = timeFormat('%b %d'),
-  formatMonth = timeFormat('%b'),
-  formatYear = timeFormat('%Y');
-
-export function multiScaleTimeFormat(date: Date) {
-  return (timeSecond(date) < date
-    ? formatMillisecond
-    : timeMinute(date) < date
-    ? formatSecond
-    : timeHour(date) < date
-    ? formatMinute
-    : timeDay(date) < date
-    ? formatHour
-    : timeMonth(date) < date
-    ? timeWeek(date) < date
-      ? formatDay
-      : formatWeek
-    : timeYear(date) < date
-    ? formatMonth
-    : formatYear)(date);
-}
-
 export enum TimeGranularityKey {
   SECOND = 'SECOND',
   MINUTE = 'MINUTE',
@@ -89,23 +61,19 @@ export interface TimeGranularity {
   key: TimeGranularityKey;
   order: number;
   interval: TimeInterval;
-  format: (date: Date) => string;
 }
 
-const preferredLocale = navigator.languages ? navigator.languages[0] : 'en';
-
 export const TIME_GRANULARITIES: TimeGranularity[] = [
-  { order: 0, key: TimeGranularityKey.SECOND, interval: timeSecond, format: formatSecond },
-  { order: 1, key: TimeGranularityKey.MINUTE, interval: timeMinute, format: formatMinute },
+  { order: 0, key: TimeGranularityKey.SECOND, interval: timeSecond },
+  { order: 1, key: TimeGranularityKey.MINUTE, interval: timeMinute },
   {
     order: 2,
     key: TimeGranularityKey.HOUR,
     interval: timeHour,
-    format: (d: Date) => d.toLocaleString(preferredLocale, { hour: 'numeric', minute: '2-digit' }),
   },
-  { order: 3, key: TimeGranularityKey.DAY, interval: timeDay, format: formatDay },
-  { order: 4, key: TimeGranularityKey.MONTH, interval: timeMonth, format: formatMonth },
-  { order: 5, key: TimeGranularityKey.YEAR, interval: timeYear, format: formatYear },
+  { order: 3, key: TimeGranularityKey.DAY, interval: timeDay },
+  { order: 4, key: TimeGranularityKey.MONTH, interval: timeMonth },
+  { order: 5, key: TimeGranularityKey.YEAR, interval: timeYear },
 ];
 
 export function getTimeGranularityByOrder(order: number) {

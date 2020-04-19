@@ -6,7 +6,7 @@ import { EventManager } from 'mjolnir.js';
 import PlayControl from './PlayControl';
 import { Colors } from '@blueprintjs/core';
 import { useMeasure, useThrottle } from 'react-use';
-import { areRangesEqual, multiScaleTimeFormat, TimeGranularity } from './time';
+import { areRangesEqual, TimeGranularity } from './time';
 import { CountByTime } from './types';
 
 interface Props {
@@ -18,14 +18,15 @@ interface Props {
   onChange: (range: [Date, Date]) => void;
 }
 
-const SVG_HEIGHT = 90;
-const TICK_HEIGHT = 5;
+const SVG_HEIGHT = 80;
+const AXIS_AREA_HEIGHT = 20;
 const TOTAL_COUNT_CHART_HEIGHT = 30;
+const TICK_HEIGHT = 5;
 
 const margin = {
   top: 15,
-  left: 10,
-  right: 10,
+  left: 20,
+  right: 20,
   bottom: 20,
 };
 
@@ -88,8 +89,8 @@ const AxisPath = styled.path({
 
 const TickText = styled.text<{ darkMode: boolean }>((props) => ({
   fill: props.darkMode ? Colors.LIGHT_GRAY1 : Colors.DARK_GRAY1,
-  fontSize: 11,
-  // textAnchor: 'middle',
+  fontSize: 10,
+  textAnchor: 'middle',
 }));
 
 const TickLine = styled.line({
@@ -165,15 +166,14 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     onChange,
   } = props;
 
-  const stripeHeight = 30;
   const handleWidth = 10;
   const handleHGap = 10;
-  const handleHeight = TOTAL_COUNT_CHART_HEIGHT + stripeHeight + handleHGap * 2;
+  const handleHeight = TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT + handleHGap * 2;
 
   const chartWidth = width - margin.left - margin.right;
-  const x = scaleTime();
-  x.domain(extent);
-  x.range([0, chartWidth]);
+  const timeScale = scaleTime();
+  timeScale.domain(extent);
+  timeScale.range([0, chartWidth]);
 
   const [offset, setOffset] = useState<number>();
 
@@ -191,7 +191,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
 
   const timeFromPos = (pos: number) => {
     const relPos = mousePosition(pos);
-    if (relPos != null) return x.invert(relPos);
+    if (relPos != null) return timeScale.invert(relPos);
     return undefined;
   };
 
@@ -200,7 +200,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     if (offset == null) {
       const pos = mousePosition(center.x);
       if (pos != null) {
-        setOffset(x(selectedRange[0]) - pos);
+        setOffset(timeScale(selectedRange[0]) - pos);
       }
     } else {
       let nextStart = timeFromPos(center.x + offset);
@@ -246,7 +246,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   const handleMoveSideRef = useRef<MoveSideHandler>();
   handleMoveSideRef.current = (pos, side) => {
     let t = timeFromPos(pos);
-    if (t) {
+    if (t != null) {
       t = timeGranularity.interval.round(t);
       if (t < extent[0]) t = extent[0];
       if (t > extent[1]) t = extent[1];
@@ -263,23 +263,21 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     }
   };
 
-  const ticks =
-    // @ts-ignore
-    timeGranularity.interval.count(extent[0], extent[1]) <= chartWidth / 10
-      ? x.ticks(timeGranularity.interval)
-      : x.ticks(chartWidth / 10);
-  const minLabelWidth = 60;
-  const tickLabels =
-    // @ts-ignore
-    timeGranularity.interval.count(extent[0], extent[1]) <= chartWidth / minLabelWidth
-      ? x.ticks(timeGranularity.interval)
-      : x.ticks(chartWidth / minLabelWidth);
+  const minLabelWidth = 70;
+  const ticks = timeScale.ticks(
+    Math.min(
+      (timeGranularity.interval as any).count(extent[0], extent[1]),
+      chartWidth / minLabelWidth
+    )
+  );
 
-  const totalCountBarWidth = x(timeGranularity.interval.offset(extent[0])) - x(extent[0]);
+  const totalCountBarWidth =
+    timeScale(timeGranularity.interval.offset(extent[0])) - timeScale(extent[0]) - 1;
   const totalCountScale = scaleLinear()
     .domain([0, max(totalCountsByTime, (d) => d.count) ?? 0])
     .range([0, TOTAL_COUNT_CHART_HEIGHT]);
 
+  const tickLabelFormat = timeScale.tickFormat();
   return (
     <TimelineSvg width={width} height={SVG_HEIGHT} ref={svgRef}>
       <g transform={`translate(${margin.left},${margin.top})`}>
@@ -287,7 +285,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
           {totalCountsByTime.map(({ time, count }) => (
             <rect
               key={time.getTime()}
-              x={x(time)}
+              x={timeScale(time)}
               y={TOTAL_COUNT_CHART_HEIGHT - totalCountScale(count)}
               width={totalCountBarWidth}
               height={totalCountScale(count)}
@@ -299,13 +297,13 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
         <g transform={`translate(0,${TOTAL_COUNT_CHART_HEIGHT})`}>
           <g>
             {ticks.map((t, i) => (
-              <TickLine key={i} transform={`translate(${x(t)},${0})`} y1={0} y2={TICK_HEIGHT} />
-            ))}
-            {tickLabels.map((t, i) => (
-              <g key={i} transform={`translate(${x(t)},${0})`}>
-                <TickLine y1={0} y2={stripeHeight} />
-                <TickText darkMode={darkMode} x={3} y={20}>
-                  {multiScaleTimeFormat(t)}
+              <g key={i} transform={`translate(${timeScale(t)},${0})`}>
+                <TickLine y1={0} y2={TICK_HEIGHT} />
+                <TickText darkMode={darkMode} x={3} y={15}>
+                  {
+                    // timeGranularity.format(t)
+                    tickLabelFormat(t)
+                  }
                 </TickText>
               </g>
             ))}
@@ -313,20 +311,20 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
               d={`M0,${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},${TICK_HEIGHT * 1.5}`}
             />
           </g>
-          <g transform={`translate(0,${stripeHeight})`}>
-            {ticks.map((t, i) => (
-              <TickLine key={i} transform={`translate(${x(t)},${0})`} y1={0} y2={-TICK_HEIGHT} />
-            ))}
-            <AxisPath
-              d={`M0,-${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},-${TICK_HEIGHT * 1.5}`}
-            />
-          </g>
+          {/*<g transform={`translate(0,${AXIS_AREA_HEIGHT})`}>*/}
+          {/*  {ticks.map((t, i) => (*/}
+          {/*    <TickLine key={i} transform={`translate(${timeScale(t)},${0})`} y1={0} y2={-TICK_HEIGHT} />*/}
+          {/*  ))}*/}
+          {/*  <AxisPath*/}
+          {/*    d={`M0,-${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},-${TICK_HEIGHT * 1.5}`}*/}
+          {/*  />*/}
+          {/*</g>*/}
         </g>
-        <g transform={`translate(${x(selectedRange[0])},${-handleHGap})`}>
+        <g transform={`translate(${timeScale(selectedRange[0])},${-handleHGap})`}>
           <SelectedRangeRect
             ref={rectRef}
             height={handleHeight}
-            width={x(selectedRange[1]) - x(selectedRange[0])}
+            width={timeScale(selectedRange[1]) - timeScale(selectedRange[0])}
           />
           <TimelineHandle
             width={handleWidth}
@@ -336,7 +334,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
           />
         </g>
         s{' '}
-        <g transform={`translate(${x(selectedRange[1]) - handleWidth},${-handleHGap})`}>
+        <g transform={`translate(${timeScale(selectedRange[1]) - handleWidth},${-handleHGap})`}>
           <TimelineHandle
             width={handleWidth}
             height={handleHeight}
@@ -397,12 +395,14 @@ const Timeline: React.FC<Props> = (props) => {
         onAdvance={handlePlayAdvance}
       />
       <MeasureTarget ref={measureRef}>
-        <TimelineChart
-          {...props}
-          selectedRange={internalRange}
-          width={dimensions.width}
-          onChange={handleMove}
-        />
+        {dimensions.width > 0 && (
+          <TimelineChart
+            {...props}
+            selectedRange={internalRange}
+            width={dimensions.width}
+            onChange={handleMove}
+          />
+        )}
       </MeasureTarget>
     </Outer>
   );
