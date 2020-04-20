@@ -27,8 +27,9 @@ import {
   Box,
   Column,
   Description,
+  getBoxStyle,
   LegendTitle,
-  StyledBox,
+  BoxStyle,
   Title,
   TitleBox,
   ToastContent,
@@ -105,6 +106,7 @@ import MapDrawingEditor, { MapDrawingFeature, MapDrawingMode } from './MapDrawin
 import getBbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import Timeline from './Timeline';
+import { TimeGranularity } from './time';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -150,10 +152,15 @@ export const ErrorsLocationsBlock = styled.div`
   overflow: auto;
 `;
 
-const TimelineBox = styled(Box)({
-  bottom: 20,
-  left: 100,
-  right: 200,
+const SelectedTimeRangeBox = styled(BoxStyle)({
+  display: 'flex',
+  alignSelf: 'center',
+  padding: 10,
+  fontWeight: 'bold',
+  fontSize: 13,
+});
+
+const TimelineBox = styled(BoxStyle)({
   minWidth: 400,
   display: 'block',
   boxShadow: '0 0 5px #aaa',
@@ -164,7 +171,6 @@ export const MAX_NUM_OF_IDS_IN_ERROR = 100;
 
 const FlowMap: React.FC<Props> = (props) => {
   const { inBrowser, embed, config, spreadSheetKey, locationsFetch, flowsFetch } = props;
-
   const deckRef = useRef<any>();
   const history = useHistory();
   const initialState = useMemo<State>(() => getInitialState(config, history.location.search), [
@@ -176,6 +182,7 @@ const FlowMap: React.FC<Props> = (props) => {
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState);
   const [mapDrawingEnabled, setMapDrawingEnabled] = useState(false);
+  const { selectedTimeRange } = state;
 
   const timeGranularity = getTimeGranularity(state, props);
   const timeExtent = getTimeExtent(state, props);
@@ -813,23 +820,30 @@ const FlowMap: React.FC<Props> = (props) => {
           )}
         </DeckGL>
       </DeckGLOuter>
-      {timeExtent && timeGranularity && totalCountsByTime && state.selectedTimeRange && (
-        <TimelineBox darkMode={darkMode}>
-          <Timeline
-            darkMode={darkMode}
-            extent={timeExtent}
-            selectedRange={state.selectedTimeRange}
-            timeGranularity={timeGranularity}
-            totalCountsByTime={totalCountsByTime}
-            onChange={handleTimeRangeChanged}
-          />
-        </TimelineBox>
+      {timeExtent && timeGranularity && totalCountsByTime && selectedTimeRange && (
+        <Absolute bottom={20} left={100} right={200}>
+          <Column spacing={10}>
+            <SelectedTimeRangeBox darkMode={darkMode}>
+              {selectedTimeRangeToString(selectedTimeRange, timeGranularity)}
+            </SelectedTimeRangeBox>
+            <TimelineBox darkMode={darkMode}>
+              <Timeline
+                darkMode={darkMode}
+                extent={timeExtent}
+                selectedRange={selectedTimeRange}
+                timeGranularity={timeGranularity}
+                totalCountsByTime={totalCountsByTime}
+                onChange={handleTimeRangeChanged}
+              />
+            </TimelineBox>
+          </Column>
+        </Absolute>
       )}
       {flows && (
         <>
           {searchBoxLocations && (
             <Absolute top={10} right={50}>
-              <StyledBox darkMode={darkMode}>
+              <BoxStyle darkMode={darkMode}>
                 <LocationsSearchBox
                   locationFilterMode={state.locationFilterMode}
                   locations={searchBoxLocations}
@@ -837,7 +851,7 @@ const FlowMap: React.FC<Props> = (props) => {
                   onSelectionChanged={handleChangeSelectLocations}
                   onLocationFilterModeChange={handleChangeLocationFilterMode}
                 />
-              </StyledBox>
+              </BoxStyle>
             </Absolute>
           )}
           <Absolute top={10} right={10}>
@@ -951,4 +965,33 @@ const FlowMap: React.FC<Props> = (props) => {
   );
 };
 
+function selectedTimeRangeToString(
+  selectedTimeRange: [Date, Date],
+  timeGranularity: TimeGranularity
+) {
+  const { interval, formatFull, order } = timeGranularity;
+  const start = selectedTimeRange[0];
+  let end = selectedTimeRange[1];
+  if (order >= 3) {
+    end = interval.offset(end, -1);
+  }
+  if (end <= start) end = start;
+  const startStr = formatFull(start);
+  const endStr = formatFull(end);
+  if (startStr === endStr) return startStr;
+
+  // TODO: split by words, only remove common words
+  // let i = 0;
+  // while (i < Math.min(startStr.length, endStr.length)) {
+  //   if (startStr.charAt(startStr.length - i - 1) !== endStr.charAt(endStr.length - i - 1)) {
+  //     break;
+  //   }
+  //   i++;
+  // }
+  // if (i > 0) {
+  //   return `${startStr.substring(0, startStr.length - i - 1)} - ${endStr}`;
+  // }
+
+  return `${startStr} – ${endStr}`;
+}
 export default FlowMap;

@@ -1,4 +1,4 @@
-import { timeParse } from 'd3-time-format';
+import { timeFormat, timeParse } from 'd3-time-format';
 import {
   timeDay,
   timeHour,
@@ -6,6 +6,7 @@ import {
   timeMinute,
   timeMonth,
   timeSecond,
+  timeWeek,
   timeYear,
 } from 'd3-time';
 
@@ -61,19 +62,84 @@ export interface TimeGranularity {
   key: TimeGranularityKey;
   order: number;
   interval: TimeInterval;
+  format: (date: Date) => string;
+  formatFull: (date: Date) => string;
+}
+
+// const preferredLocale = navigator.languages ? navigator.languages[0] : 'en';
+
+const formatMillisecond = timeFormat('.%L'),
+  formatSecond = timeFormat(':%S'),
+  formatMinute = timeFormat('%I:%M'),
+  // formatHour = (d: Date) => d.toLocaleString(preferredLocale, { hour: 'numeric' }),
+  formatHour = timeFormat('%I %p'),
+  formatDay = timeFormat('%a %d'),
+  formatWeek = timeFormat('%b %d'),
+  formatMonth = timeFormat('%b'),
+  formatYear = timeFormat('%Y');
+
+export function tickMultiFormat(date: Date) {
+  return (timeSecond(date) < date
+    ? formatMillisecond
+    : timeMinute(date) < date
+    ? formatSecond
+    : timeHour(date) < date
+    ? formatMinute
+    : timeDay(date) < date
+    ? formatHour
+    : timeMonth(date) < date
+    ? timeWeek(date) < date
+      ? formatDay
+      : formatWeek
+    : timeYear(date) < date
+    ? formatMonth
+    : formatYear)(date);
 }
 
 export const TIME_GRANULARITIES: TimeGranularity[] = [
-  { order: 0, key: TimeGranularityKey.SECOND, interval: timeSecond },
-  { order: 1, key: TimeGranularityKey.MINUTE, interval: timeMinute },
+  {
+    order: 0,
+    key: TimeGranularityKey.SECOND,
+    interval: timeSecond,
+    format: formatSecond,
+    formatFull: timeFormat('%Y-%m-%d %H:%M:%S'),
+  },
+  {
+    order: 1,
+    key: TimeGranularityKey.MINUTE,
+    interval: timeMinute,
+    format: formatMinute,
+    formatFull: timeFormat('%Y-%m-%d %H:%M'),
+  },
   {
     order: 2,
     key: TimeGranularityKey.HOUR,
     interval: timeHour,
+    // format: (d: Date) => d.toLocaleString(preferredLocale, { hour: 'numeric', minute: '2-digit' }),
+    format: formatHour,
+    formatFull: timeFormat('%I %p, %a %d %b %Y'),
   },
-  { order: 3, key: TimeGranularityKey.DAY, interval: timeDay },
-  { order: 4, key: TimeGranularityKey.MONTH, interval: timeMonth },
-  { order: 5, key: TimeGranularityKey.YEAR, interval: timeYear },
+  {
+    order: 3,
+    key: TimeGranularityKey.DAY,
+    interval: timeDay,
+    format: formatDay,
+    formatFull: timeFormat('%a %d %b %Y'),
+  },
+  {
+    order: 4,
+    key: TimeGranularityKey.MONTH,
+    interval: timeMonth,
+    format: formatMonth,
+    formatFull: timeFormat('%b %Y'),
+  },
+  {
+    order: 5,
+    key: TimeGranularityKey.YEAR,
+    interval: timeYear,
+    format: formatYear,
+    formatFull: timeFormat('%Y'),
+  },
 ];
 
 export function getTimeGranularityByOrder(order: number) {

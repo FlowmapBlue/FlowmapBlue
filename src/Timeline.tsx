@@ -6,7 +6,7 @@ import { EventManager } from 'mjolnir.js';
 import PlayControl from './PlayControl';
 import { Colors } from '@blueprintjs/core';
 import { useMeasure, useThrottle } from 'react-use';
-import { areRangesEqual, TimeGranularity } from './time';
+import { areRangesEqual, tickMultiFormat, TimeGranularity } from './time';
 import { CountByTime } from './types';
 
 interface Props {
@@ -205,15 +205,16 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     } else {
       let nextStart = timeFromPos(center.x + offset);
       if (nextStart) {
-        nextStart = timeGranularity.interval.round(nextStart);
-        const length = selectedRange[1].getTime() - selectedRange[0].getTime();
-        let nextEnd = new Date(nextStart.getTime() + length);
+        const { interval } = timeGranularity;
+        nextStart = interval.round(nextStart);
+        const length = (interval as any).count(selectedRange[0], selectedRange[1]);
+        let nextEnd = interval.offset(nextStart, length);
         if (nextStart < extent[0]) {
           nextStart = extent[0];
-          nextEnd = new Date(extent[0].getTime() + length);
+          nextEnd = interval.offset(extent[0], length);
         }
         if (nextEnd > extent[1]) {
-          nextStart = new Date(extent[1].getTime() - length);
+          nextStart = interval.offset(extent[1], -length);
           nextEnd = extent[1];
         }
         onChange([nextStart, nextEnd]);
@@ -271,13 +272,11 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     )
   );
 
-  const totalCountBarWidth =
-    timeScale(timeGranularity.interval.offset(extent[0])) - timeScale(extent[0]) - 1;
   const totalCountScale = scaleLinear()
     .domain([0, max(totalCountsByTime, (d) => d.count) ?? 0])
     .range([0, TOTAL_COUNT_CHART_HEIGHT]);
 
-  const tickLabelFormat = timeScale.tickFormat();
+  const tickLabelFormat = tickMultiFormat; // timeScale.tickFormat();
   return (
     <TimelineSvg width={width} height={SVG_HEIGHT} ref={svgRef}>
       <g transform={`translate(${margin.left},${margin.top})`}>
@@ -287,7 +286,10 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
               key={time.getTime()}
               x={timeScale(time)}
               y={TOTAL_COUNT_CHART_HEIGHT - totalCountScale(count)}
-              width={totalCountBarWidth}
+              width={Math.max(
+                timeScale(timeGranularity.interval.offset(time)) - timeScale(time) - 1,
+                1
+              )}
               height={totalCountScale(count)}
               fill={Colors.LIGHT_GRAY1}
               stroke={Colors.GRAY4}
@@ -367,14 +369,25 @@ const Timeline: React.FC<Props> = (props) => {
 
   const [isPlaying, setPlaying] = useState(false);
 
-  const handlePlayAdvance = (start: Date) => {
-    const length = selectedRange[1].getTime() - selectedRange[0].getTime();
-    const end = new Date(start.getTime() + length);
-    if (end > extent[1]) {
-      setPlaying(false);
-      return [new Date(end.getTime() - length), end];
+  const handlePlay = () => {
+    const { interval } = timeGranularity;
+    if (selectedRange[1] >= extent[1]) {
+      const length = (interval as any).count(selectedRange[0], selectedRange[1]);
+      setInternalRange([extent[0], interval.offset(extent[0], length)]);
     }
-    setInternalRange([start, end]);
+    setPlaying(true);
+  };
+
+  const handlePlayAdvance = (start: Date) => {
+    const { interval } = timeGranularity;
+    const length = (interval as any).count(selectedRange[0], selectedRange[1]);
+    const end = interval.offset(start, length);
+    if (end >= extent[1]) {
+      setPlaying(false);
+      setInternalRange([interval.offset(end, -length), end]);
+    } else {
+      setInternalRange([start, end]);
+    }
   };
 
   const handleMove = (range: [Date, Date]) => {
@@ -390,7 +403,7 @@ const Timeline: React.FC<Props> = (props) => {
         interval={timeGranularity.interval}
         stepDuration={100}
         isPlaying={isPlaying}
-        onPlay={() => setPlaying(true)}
+        onPlay={handlePlay}
         onPause={() => setPlaying(false)}
         onAdvance={handlePlayAdvance}
       />

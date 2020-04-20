@@ -43,13 +43,13 @@ export const Absolute = styled.div<AbsoluteProps>(
 );
 
 export type BoxProps = { darkMode?: boolean };
-const getBoxStyle = (props: BoxProps) => `
+export const getBoxStyle = (props: BoxProps) => `
   background: ${props.darkMode ? Colors.DARK_GRAY5 : `rgba(255, 255, 255, 0.9)`};
   border-radius: 4px;
   font-size: 11px;
   box-shadow: 0 0 5px #aaa; 
 `;
-export const StyledBox = styled.div<BoxProps>(getBoxStyle);
+export const BoxStyle = styled.div<BoxProps>(getBoxStyle);
 
 export const Box = styled(Absolute)<BoxProps>(getBoxStyle);
 
