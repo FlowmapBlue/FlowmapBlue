@@ -170,7 +170,6 @@ const TimelineBox = styled(BoxStyle)({
 });
 
 const TotalCount = styled.div({
-  fontWeight: 'bold',
   padding: 5,
   borderRadius: 5,
   backgroundColor: Colors.DARK_GRAY4,
@@ -979,9 +978,12 @@ const FlowMap: React.FC<Props> = (props) => {
               {totalFilteredCount != null && totalUnfilteredCount != null && (
                 <TotalCount>
                   {Math.round(totalFilteredCount) === Math.round(totalUnfilteredCount)
-                    ? `{0} trips`.replace('{0}', formatCount(totalUnfilteredCount))
-                    : `{0} of {1} trips`
-                        .replace('{0}', formatCount(totalFilteredCount))
+                    ? config['msg.totalCount.allTrips']?.replace(
+                        '{0}',
+                        formatCount(totalUnfilteredCount)
+                      )
+                    : config['msg.totalCount.countOfTrips']
+                        ?.replace('{0}', formatCount(totalFilteredCount))
                         .replace('{1}', formatCount(totalUnfilteredCount))}
                 </TotalCount>
               )}
