@@ -392,7 +392,7 @@ function aggregateFlows(flows: Flow[]) {
   return rv;
 }
 
-export const getSortedAggregatedFlows: Selector<Flow[] | undefined> = createSelector(
+export const getSortedAggregatedFilteredFlows: Selector<Flow[] | undefined> = createSelector(
   getClusterIndex,
   getClusteringEnabled,
   getSortedFlowsForKnownLocationsFilteredByTime,
@@ -619,8 +619,32 @@ function isFlowInSelection(
   return true;
 }
 
+export const getTotalUnfilteredCount: Selector<number | undefined> = createSelector(
+  getSortedFlowsForKnownLocations,
+  (flows) => {
+    if (!flows) return undefined;
+    return flows.reduce((m, flow) => m + getFlowMagnitude(flow), 0);
+  }
+);
+
+export const getTotalFilteredCount: Selector<number | undefined> = createSelector(
+  getSortedAggregatedFilteredFlows,
+  getSelectedLocationsSet,
+  getLocationFilterMode,
+  (flows, selectedLocationSet, locationFilterMode) => {
+    if (!flows) return undefined;
+    const count = flows.reduce((m, flow) => {
+      if (isFlowInSelection(flow, selectedLocationSet, locationFilterMode)) {
+        return m + getFlowMagnitude(flow);
+      }
+      return m;
+    }, 0);
+    return count;
+  }
+);
+
 export const getFlowsForFlowMapLayer: Selector<Flow[] | undefined> = createSelector(
-  getSortedAggregatedFlows,
+  getSortedAggregatedFilteredFlows,
   getLocationIdsInViewport,
   getSelectedLocationsSet,
   getLocationFilterMode,

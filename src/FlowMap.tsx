@@ -94,7 +94,9 @@ import {
   getSortedFlowsForKnownLocations,
   getTimeExtent,
   getTimeGranularity,
+  getTotalFilteredCount,
   getTotalCountsByTime,
+  getTotalUnfilteredCount,
   getUnknownLocations,
   NUMBER_OF_FLOWS_TO_DISPLAY,
 } from './FlowMap.selectors';
@@ -167,6 +169,14 @@ const TimelineBox = styled(BoxStyle)({
   borderTop: '1px solid #999',
 });
 
+const TotalCount = styled.div({
+  fontWeight: 'bold',
+  padding: 5,
+  borderRadius: 5,
+  backgroundColor: Colors.DARK_GRAY4,
+  textAlign: 'center',
+});
+
 export const MAX_NUM_OF_IDS_IN_ERROR = 100;
 
 const FlowMap: React.FC<Props> = (props) => {
@@ -187,6 +197,8 @@ const FlowMap: React.FC<Props> = (props) => {
   const timeGranularity = getTimeGranularity(state, props);
   const timeExtent = getTimeExtent(state, props);
   const totalCountsByTime = getTotalCountsByTime(state, props);
+  const totalFilteredCount = getTotalFilteredCount(state, props);
+  const totalUnfilteredCount = getTotalUnfilteredCount(state, props);
 
   useEffect(() => {
     if (timeExtent) {
@@ -955,6 +967,16 @@ const FlowMap: React.FC<Props> = (props) => {
                 </Away>
                 . You can <Link to="/">publish your own</Link> too.
               </div>
+
+              {totalFilteredCount != null && totalUnfilteredCount != null && (
+                <TotalCount>
+                  {Math.round(totalFilteredCount) === Math.round(totalUnfilteredCount)
+                    ? `{0} trips`.replace('{0}', formatCount(totalUnfilteredCount))
+                    : `{0} of {1} trips`
+                        .replace('{0}', formatCount(totalFilteredCount))
+                        .replace('{1}', formatCount(totalUnfilteredCount))}
+                </TotalCount>
+              )}
             </Column>
           </Collapsible>
         </TitleBox>
