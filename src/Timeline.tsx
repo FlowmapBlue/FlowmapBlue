@@ -402,6 +402,7 @@ const Timeline: React.FC<Props> = (props) => {
         current={internalRange[0]}
         interval={timeGranularity.interval}
         stepDuration={100}
+        speed={1}
         isPlaying={isPlaying}
         onPlay={handlePlay}
         onPause={() => setPlaying(false)}

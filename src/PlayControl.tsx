@@ -8,6 +8,7 @@ interface Props {
   extent: [Date, Date];
   interval: TimeInterval;
   stepDuration: number;
+  speed: number;
   isPlaying: boolean;
   onPlay: () => void;
   onPause: () => void;
@@ -39,6 +40,9 @@ const OuterCircle = styled.circle({
 
 class PlayControl extends React.Component<Props> {
   playTimeout: NodeJS.Timeout | undefined;
+  static defaultProps = {
+    speed: 1,
+  };
 
   componentWillUnmount(): void {
     this.clearPlayTimeOut();
@@ -79,10 +83,12 @@ class PlayControl extends React.Component<Props> {
   };
 
   nextStep = () => {
-    const { isPlaying } = this.props;
+    const { isPlaying, speed } = this.props;
     if (isPlaying) {
       const { interval, extent, current, onAdvance } = this.props;
-      const next = interval.offset(current, 1);
+      // @ts-ignore
+      const numSteps = interval.count(extent[0], extent[1]);
+      const next = interval.offset(current, speed * Math.max(1, Math.floor(numSteps / 60)));
       if (next > extent[1]) {
         this.stop();
       } else {
