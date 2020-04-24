@@ -463,7 +463,14 @@ const FlowMap: React.FC<Props> = (props) => {
       width: r * 2,
       height: r * 2,
     };
-    const content = <FlowTooltipContent flow={info.object} origin={info.origin} dest={info.dest} />;
+    const content = (
+      <FlowTooltipContent
+        flow={info.object}
+        origin={info.origin}
+        dest={info.dest}
+        config={config}
+      />
+    );
     if (state.tooltip) {
       showTooltip(bounds, content);
       cancelShowTooltipDebounced();
@@ -492,6 +499,7 @@ const FlowMap: React.FC<Props> = (props) => {
         isSelected={
           selectedLocations && selectedLocations.find((id) => id === location.id) ? true : false
         }
+        config={config}
       />
     );
     if (state.tooltip) {
