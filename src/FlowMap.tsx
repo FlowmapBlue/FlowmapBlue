@@ -154,13 +154,15 @@ export const ErrorsLocationsBlock = styled.div`
   overflow: auto;
 `;
 
-const SelectedTimeRangeBox = styled(BoxStyle)({
+const SelectedTimeRangeBox = styled(BoxStyle)<{ darkMode: boolean }>((props) => ({
   display: 'flex',
   alignSelf: 'center',
-  padding: 10,
-  fontWeight: 'bold',
-  fontSize: 13,
-});
+  fontSize: 12,
+  padding: '5px 10px',
+  borderRadius: 5,
+  backgroundColor: props.darkMode ? Colors.DARK_GRAY4 : Colors.LIGHT_GRAY4,
+  textAlign: 'center',
+}));
 
 const TimelineBox = styled(BoxStyle)({
   minWidth: 400,

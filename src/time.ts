@@ -117,7 +117,7 @@ export const TIME_GRANULARITIES: TimeGranularity[] = [
     interval: timeHour,
     // format: (d: Date) => d.toLocaleString(preferredLocale, { hour: 'numeric', minute: '2-digit' }),
     format: formatHour,
-    formatFull: timeFormat('%I %p, %a %d %b %Y'),
+    formatFull: timeFormat('%a %d %b %Y, %I %p'),
   },
   {
     order: 3,

@@ -254,6 +254,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   handlePanStartRef.current = ({ center }: any) => {
     let start = timeFromPos(center.x);
     if (start) {
+      start = timeGranularity.interval.round(start);
       if (start < extent[0]) start = extent[0];
       if (start > extent[1]) start = extent[1];
       setPanStart(start);
@@ -266,6 +267,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   handlePanMoveRef.current = ({ center }: any) => {
     let end = timeFromPos(center.x);
     if (panStart && end) {
+      end = timeGranularity.interval.round(end);
       if (end < extent[0]) end = extent[0];
       if (end > extent[1]) end = extent[1];
       const range: [Date, Date] = panStart < end ? [panStart, end] : [end, panStart];
