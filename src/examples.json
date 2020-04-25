@@ -13,6 +13,11 @@
       "query": "v=45.513266,-73.573425,12.18&a=0&d=1&c=1&col=Teal&f=45"
     },
     {
+      "key": "1qTVOzkPB7U1ySI4g4uPtVBzzEDCI8n1WXAmQeZL15fE",
+      "name": "BIXI bicycle sharing, by hour",
+      "query": "v=45.495056,-73.564832,11.84,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20190701T050000,20190702T020000&col=Default&f=50"
+    },
+    {
       "key": "1B75NgT4vzOW86HZdIgKRv4lxE_GXDHalJW-0vGfFqQY",
       "name": "Commuters in France 2016"
     },
