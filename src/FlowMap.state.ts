@@ -8,11 +8,16 @@ import { COLOR_SCHEME_KEYS } from './colors';
 import { csvFormatRows, csvParseRows } from 'd3-dsv';
 import { Reducer } from 'react';
 import { easeCubic } from 'd3-ease';
+import { timeFormat, timeParse } from 'd3-time-format';
 
 export const MIN_ZOOM_LEVEL = 0;
 export const MAX_ZOOM_LEVEL = 20;
 export const MIN_PITCH = 0;
 export const MAX_PITCH = +60;
+
+const TIME_QUERY_FORMAT = '%Y%m%dT%H%M%S';
+const timeToQuery = timeFormat(TIME_QUERY_FORMAT);
+const timeFromQuery = timeParse(TIME_QUERY_FORMAT);
 
 export function mapTransition(duration: number = 500) {
   return {
@@ -367,7 +372,7 @@ function mainReducer(state: State, action: Action): State {
 
 export const reducer: Reducer<State, Action> = (state: State, action: Action) => {
   const nextState = mainReducer(state, action);
-  //console.log(type, rest);
+  // console.log(action.type, action);
   return nextState;
 };
 
@@ -386,8 +391,7 @@ export function asBoolean(v: string | string[] | null | undefined): boolean | un
   return undefined;
 }
 
-export function applyStateFromQueryString(initialState: State, query: string) {
-  const draft = { ...initialState };
+export function applyStateFromQueryString(draft: State, query: string) {
   const params = queryString.parse(query.substr(1));
   if (typeof params.s === 'string') {
     const rows = csvParseRows(params.s);
@@ -422,10 +426,17 @@ export function applyStateFromQueryString(initialState: State, query: string) {
   if (params.lfm != null && params.lfm in LocationFilterMode) {
     draft.locationFilterMode = params.lfm as LocationFilterMode;
   }
+  if (typeof params.t === 'string') {
+    const parts = params.t.split(',');
+    const t1 = timeFromQuery(parts[0]);
+    const t2 = timeFromQuery(parts[1]);
+    if (t1 && t2) {
+      draft.selectedTimeRange = [t1, t2];
+    }
+  }
   if (typeof params.col === 'string' && COLOR_SCHEME_KEYS.includes(params.col)) {
     draft.colorSchemeKey = params.col;
   }
-  return draft;
 }
 
 export function stateToQueryString(state: State) {
@@ -452,6 +463,9 @@ export function stateToQueryString(state: State) {
   parts.push(`d=${state.darkMode ? 1 : 0}`);
   parts.push(`lt=${state.locationTotalsEnabled ? 1 : 0}`);
   parts.push(`lfm=${state.locationFilterMode}`);
+  if (state.selectedTimeRange) {
+    parts.push(`t=${state.selectedTimeRange.map(timeToQuery)}`);
+  }
   if (state.colorSchemeKey != null) {
     parts.push(`col=${state.colorSchemeKey}`);
   }
@@ -518,7 +532,7 @@ export function getInitialState(config: Config, queryString: string) {
   }
 
   if (queryString && queryString.length > 1) {
-    return applyStateFromQueryString(draft, queryString);
+    applyStateFromQueryString(draft, queryString);
   }
   return draft;
 }

@@ -25,11 +25,10 @@ import WebMercatorViewport from 'viewport-mercator-project';
 import {
   Absolute,
   Box,
+  BoxStyle,
   Column,
   Description,
-  getBoxStyle,
   LegendTitle,
-  BoxStyle,
   Title,
   TitleBox,
   ToastContent,
@@ -94,8 +93,8 @@ import {
   getSortedFlowsForKnownLocations,
   getTimeExtent,
   getTimeGranularity,
-  getTotalFilteredCount,
   getTotalCountsByTime,
+  getTotalFilteredCount,
   getTotalUnfilteredCount,
   getUnknownLocations,
   NUMBER_OF_FLOWS_TO_DISPLAY,
@@ -186,7 +185,7 @@ const FlowMap: React.FC<Props> = (props) => {
   const history = useHistory();
   const initialState = useMemo<State>(() => getInitialState(config, history.location.search), [
     config,
-    history.location.search,
+    // history.location.search,  // this leads to initial state being recomputed on every change
   ]);
 
   const outerRef = useRef<HTMLDivElement>(null);
@@ -202,13 +201,13 @@ const FlowMap: React.FC<Props> = (props) => {
   const totalUnfilteredCount = getTotalUnfilteredCount(state, props);
 
   useEffect(() => {
-    if (timeExtent) {
+    if (timeExtent && !selectedTimeRange) {
       dispatch({
         type: ActionType.SET_TIME_RANGE,
         range: timeExtent,
       });
     }
-  }, [timeExtent]);
+  }, [timeExtent, selectedTimeRange]);
 
   const [updateQuerySearch] = useDebounced(
     () => {
@@ -666,7 +665,6 @@ const FlowMap: React.FC<Props> = (props) => {
   const locationsTree = getLocationsTree(state, props);
 
   const handleTimeRangeChanged = (range: [Date, Date]) => {
-    // console.log(range.map((r) => r.toISOString()));
     dispatch({
       type: ActionType.SET_TIME_RANGE,
       range,
