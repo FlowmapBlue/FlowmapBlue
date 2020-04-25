@@ -4,6 +4,7 @@ import { TimeInterval } from 'd3-time';
 import { Colors } from '@blueprintjs/core';
 
 interface Props {
+  darkMode: boolean;
   current: Date;
   extent: [Date, Date];
   interval: TimeInterval;
@@ -18,24 +19,23 @@ interface Props {
 const width = 40,
   height = 40;
 
-const OuterSvg = styled.svg({
+const OuterSvg = styled.svg<{ darkMode: boolean }>((props) => ({
   cursor: 'pointer',
   '& > circle': {
     transition: 'fill 0.2s',
-    fill: Colors.GRAY4,
+    fill: props.darkMode ? Colors.GRAY4 : Colors.WHITE,
   },
   '&:hover': {
     '& > circle': {
-      fill: Colors.WHITE,
+      fill: props.darkMode ? Colors.WHITE : Colors.GRAY4,
     },
   },
-});
+}));
 
 const OuterCircle = styled.circle({
   cursor: 'pointer',
   strokeWidth: 1,
   stroke: '#000',
-  fill: '#fff',
 });
 
 class PlayControl extends React.Component<Props> {
@@ -99,7 +99,7 @@ class PlayControl extends React.Component<Props> {
   };
 
   render() {
-    const { isPlaying } = this.props;
+    const { isPlaying, darkMode } = this.props;
     const handleTogglePlay = () => {
       if (isPlaying) {
         this.stop();
@@ -128,7 +128,7 @@ class PlayControl extends React.Component<Props> {
 
     const r = Math.min(width, height) * 0.48;
     return (
-      <OuterSvg width={width} height={height} onClick={handleTogglePlay}>
+      <OuterSvg darkMode={darkMode} width={width} height={height} onClick={handleTogglePlay}>
         <OuterCircle cx={width / 2} cy={height / 2} r={r} />
         <g transform={`translate(${width / 2 - 10},${height / 2 - 10})`}>{icon}</g>
       </OuterSvg>
