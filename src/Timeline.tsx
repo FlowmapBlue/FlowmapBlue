@@ -20,16 +20,16 @@ interface Props {
   onChange: (range: [Date, Date]) => void;
 }
 
-const SVG_HEIGHT = 80;
+const SVG_HEIGHT = 100;
 const AXIS_AREA_HEIGHT = 20;
 const TOTAL_COUNT_CHART_HEIGHT = 30;
 const TICK_HEIGHT = 5;
 
 const margin = {
-  top: 15,
-  left: 20,
-  right: 20,
-  bottom: 20,
+  top: 25,
+  left: 25,
+  right: 25,
+  bottom: 25,
 };
 
 const Outer = styled.div({
@@ -48,8 +48,15 @@ const MeasureTarget = styled.div({
   overflow: 'hidden',
 });
 
-const TimelineSvg = styled.svg({
+const TimelineSvg = styled.svg<{ darkMode: boolean }>((props) => ({
   cursor: 'pointer',
+  backgroundColor: props.darkMode ? Colors.DARK_GRAY4 : Colors.LIGHT_GRAY4,
+}));
+
+const OuterRect = styled.rect({
+  cursor: 'crosshair',
+  fill: 'rgba(255,255,255,0)',
+  stroke: 'none',
 });
 
 const HandleOuter = styled.g<{ darkMode: boolean }>((props) => ({
@@ -93,10 +100,6 @@ const TickText = styled.text<{ darkMode: boolean }>((props) => ({
   fill: props.darkMode ? Colors.LIGHT_GRAY1 : Colors.DARK_GRAY1,
   fontSize: 10,
   textAnchor: 'middle',
-}));
-
-const OuterRect = styled.rect<{ darkMode: boolean }>((props) => ({
-  fill: props.darkMode ? Colors.DARK_GRAY4 : Colors.LIGHT_GRAY4,
 }));
 
 const Bar = styled.rect<{ darkMode: boolean }>((props) => ({
@@ -188,8 +191,10 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   timeScale.range([0, chartWidth]);
 
   const [offset, setOffset] = useState<number>();
+  const [panStart, setPanStart] = useState<Date>();
 
   const svgRef = useRef<SVGSVGElement>(null);
+  const outerRectRef = useRef<SVGRectElement>(null);
   const selectedRangeRectRef = useRef<SVGRectElement>(null);
 
   const mousePosition = (absPos: number) => {
@@ -233,26 +238,59 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
       }
     }
   };
-
-  const handleMove = (evt: any) => {
-    if (handleMoveRef.current) {
-      handleMoveRef.current(evt);
-    }
-  };
+  const handleMove = (evt: any) => handleMoveRef.current(evt);
   const handleMoveEnd = (evt: any) => {
-    if (handleMoveRef.current) {
-      handleMoveRef.current(evt);
-    }
+    handleMoveRef.current(evt);
     setOffset(undefined);
   };
 
+  const handleClickRef = useRef<any>();
+  handleClickRef.current = (evt: any) => {
+    onChange(extent);
+  };
+  const handleClick = (evt: any) => handleClickRef.current(evt);
+
+  const handlePanStartRef = useRef<any>();
+  handlePanStartRef.current = ({ center }: any) => {
+    let start = timeFromPos(center.x);
+    if (start) {
+      if (start < extent[0]) start = extent[0];
+      if (start > extent[1]) start = extent[1];
+      setPanStart(start);
+      onChange([start, start]);
+    }
+  };
+  const handlePanStart = (evt: any) => handlePanStartRef.current(evt);
+
+  const handlePanMoveRef = useRef<any>();
+  handlePanMoveRef.current = ({ center }: any) => {
+    let end = timeFromPos(center.x);
+    if (panStart && end) {
+      if (end < extent[0]) end = extent[0];
+      if (end > extent[1]) end = extent[1];
+      const range: [Date, Date] = panStart < end ? [panStart, end] : [end, panStart];
+      onChange(range);
+    }
+  };
+  const handlePanMove = (evt: any) => handlePanMoveRef.current(evt);
+  const handlePanEnd = (evt: any) => {
+    handlePanMoveRef.current(evt);
+    setPanStart(undefined);
+  };
+
   useEffect(() => {
-    const eventManager = new EventManager(selectedRangeRectRef.current);
-    eventManager.on('panstart', handleMove);
-    eventManager.on('panmove', handleMove);
-    eventManager.on('panend', handleMoveEnd);
+    const outerEvents = new EventManager(outerRectRef.current);
+    outerEvents.on('click', handleClick);
+    outerEvents.on('panstart', handlePanStart);
+    outerEvents.on('panmove', handlePanMove);
+    outerEvents.on('panend', handlePanEnd);
+    const selectedRangeEvents = new EventManager(selectedRangeRectRef.current);
+    selectedRangeEvents.on('panstart', handleMove);
+    selectedRangeEvents.on('panmove', handleMove);
+    selectedRangeEvents.on('panend', handleMoveEnd);
     return () => {
-      eventManager.destroy();
+      outerEvents.destroy();
+      selectedRangeEvents.destroy();
     };
   }, []);
 
@@ -290,50 +328,40 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
 
   const tickLabelFormat = tickMultiFormat; // timeScale.tickFormat();
   return (
-    <TimelineSvg width={width} height={SVG_HEIGHT} ref={svgRef}>
-      <OuterRect darkMode={darkMode} width={width} height={SVG_HEIGHT} />
+    <TimelineSvg ref={svgRef} darkMode={darkMode} width={width} height={SVG_HEIGHT}>
       <g transform={`translate(${margin.left},${margin.top})`}>
-        <g transform={`translate(0,0)`}>
-          {totalCountsByTime.map(({ time, count }) => (
-            <Bar
-              darkMode={darkMode}
-              key={time.getTime()}
-              x={timeScale(time)}
-              y={TOTAL_COUNT_CHART_HEIGHT - totalCountScale(count)}
-              width={Math.max(
-                timeScale(timeGranularity.interval.offset(time)) - timeScale(time) - 1,
-                1
-              )}
-              height={totalCountScale(count)}
-            />
-          ))}
-        </g>
+        {totalCountsByTime.map(({ time, count }) => (
+          <Bar
+            darkMode={darkMode}
+            key={time.getTime()}
+            x={timeScale(time)}
+            y={TOTAL_COUNT_CHART_HEIGHT - totalCountScale(count)}
+            width={Math.max(
+              timeScale(timeGranularity.interval.offset(time)) - timeScale(time) - 1,
+              1
+            )}
+            height={totalCountScale(count)}
+          />
+        ))}
         <g transform={`translate(0,${TOTAL_COUNT_CHART_HEIGHT})`}>
-          <g>
-            {ticks.map((t, i) => (
-              <g key={i} transform={`translate(${timeScale(t)},${0})`}>
-                <TickLine y1={0} y2={TICK_HEIGHT} />
-                <TickText darkMode={darkMode} x={3} y={15}>
-                  {
-                    // timeGranularity.format(t)
-                    tickLabelFormat(t)
-                  }
-                </TickText>
-              </g>
-            ))}
-            <AxisPath
-              d={`M0,${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},${TICK_HEIGHT * 1.5}`}
-            />
-          </g>
-          {/*<g transform={`translate(0,${AXIS_AREA_HEIGHT})`}>*/}
-          {/*  {ticks.map((t, i) => (*/}
-          {/*    <TickLine key={i} transform={`translate(${timeScale(t)},${0})`} y1={0} y2={-TICK_HEIGHT} />*/}
-          {/*  ))}*/}
-          {/*  <AxisPath*/}
-          {/*    d={`M0,-${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},-${TICK_HEIGHT * 1.5}`}*/}
-          {/*  />*/}
-          {/*</g>*/}
+          {ticks.map((t, i) => (
+            <g key={i} transform={`translate(${timeScale(t)},${0})`}>
+              <TickLine y1={0} y2={TICK_HEIGHT} />
+              <TickText darkMode={darkMode} x={3} y={15}>
+                {
+                  // timeGranularity.format(t)
+                  tickLabelFormat(t)
+                }
+              </TickText>
+            </g>
+          ))}
+          <AxisPath
+            d={`M0,${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},${TICK_HEIGHT * 1.5}`}
+          />
         </g>
+      </g>
+      <OuterRect ref={outerRectRef} width={width} height={SVG_HEIGHT} />
+      <g transform={`translate(${margin.left},${margin.top})`}>
         <g transform={`translate(${timeScale(selectedRange[0])},${-handleHGap})`}>
           <SelectedRangeRect
             ref={selectedRangeRectRef}
@@ -348,7 +376,6 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
             onMove={handleMoveSide}
           />
         </g>
-        s{' '}
         <g transform={`translate(${timeScale(selectedRange[1]) - handleWidth},${-handleHGap})`}>
           <TimelineHandle
             darkMode={darkMode}
