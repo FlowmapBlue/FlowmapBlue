@@ -3,11 +3,19 @@ import Fallback from './Fallback';
 import { ColorScheme } from './colors';
 import * as Sentry from '@sentry/browser';
 
- const ErrorFallback: React.FC<{ error?: any }> = ({ error }) =>
+const ErrorFallback: React.FC<{ error?: any }> = ({ error }) => (
   <Fallback>
     <>
       Oops… Sorry, but something went wrong.
-      {error && <div style={{ margin: '10px 0'}}>{error.toString()}</div>}
+      {error && (
+        <div
+          style={{
+            margin: '10px 0',
+          }}
+        >
+          {error.toString()}
+        </div>
+      )}
       <p>
         <button
           style={{
@@ -24,6 +32,7 @@ import * as Sentry from '@sentry/browser';
         </button>
       </p>
     </>
-  </Fallback>;
+  </Fallback>
+);
 
 export default ErrorFallback;

@@ -16,6 +16,13 @@ export default ({ children }: { children: React.ReactChild }) => (
     }}
   >
     <Logo fontSize={30} />
-    <div style={{ marginTop: 20 }}>{children}</div>
+    <div
+      style={{
+        margin: '20px auto 0 auto',
+        maxWidth: '70%',
+      }}
+    >
+      {children}
+    </div>
   </div>
 );

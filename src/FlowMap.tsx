@@ -25,10 +25,10 @@ import WebMercatorViewport from 'viewport-mercator-project';
 import {
   Absolute,
   Box,
+  BoxStyle,
   Column,
   Description,
   LegendTitle,
-  StyledBox,
   Title,
   TitleBox,
   ToastContent,
@@ -77,10 +77,10 @@ import {
   getClusterZoom,
   getDarkMode,
   getDiffMode,
-  getExpandedSelection,
   getFetchedFlows,
   getFlowMapColors,
   getFlowsForFlowMapLayer,
+  getFlowsSheets,
   getInvalidLocationIds,
   getLocations,
   getLocationsForFlowMapLayer,
@@ -91,9 +91,13 @@ import {
   getMapboxMapStyle,
   getMaxLocationCircleSize,
   getSortedFlowsForKnownLocations,
+  getTimeExtent,
+  getTimeGranularity,
+  getTotalCountsByTime,
+  getTotalFilteredCount,
+  getTotalUnfilteredCount,
   getUnknownLocations,
   NUMBER_OF_FLOWS_TO_DISPLAY,
-  getFlowsSheets,
 } from './FlowMap.selectors';
 import { AppToaster } from './AppToaster';
 import useDebounced from './hooks';
@@ -102,6 +106,8 @@ import SettingsPopover from './SettingsPopover';
 import MapDrawingEditor, { MapDrawingFeature, MapDrawingMode } from './MapDrawingEditor';
 import getBbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
+import Timeline from './Timeline';
+import { TimeGranularity } from './time';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -147,22 +153,61 @@ export const ErrorsLocationsBlock = styled.div`
   overflow: auto;
 `;
 
+const SelectedTimeRangeBox = styled(BoxStyle)<{ darkMode: boolean }>((props) => ({
+  display: 'flex',
+  alignSelf: 'center',
+  fontSize: 12,
+  padding: '5px 10px',
+  borderRadius: 5,
+  backgroundColor: props.darkMode ? Colors.DARK_GRAY4 : Colors.LIGHT_GRAY4,
+  textAlign: 'center',
+}));
+
+const TimelineBox = styled(BoxStyle)({
+  minWidth: 400,
+  display: 'block',
+  boxShadow: '0 0 5px #aaa',
+  borderTop: '1px solid #999',
+});
+
+const TotalCount = styled.div<{ darkMode: boolean }>((props) => ({
+  padding: 5,
+  borderRadius: 5,
+  backgroundColor: props.darkMode ? Colors.DARK_GRAY4 : Colors.LIGHT_GRAY4,
+  textAlign: 'center',
+}));
+
 export const MAX_NUM_OF_IDS_IN_ERROR = 100;
 
 const FlowMap: React.FC<Props> = (props) => {
   const { inBrowser, embed, config, spreadSheetKey, locationsFetch, flowsFetch } = props;
-
   const deckRef = useRef<any>();
   const history = useHistory();
   const initialState = useMemo<State>(() => getInitialState(config, history.location.search), [
     config,
-    history.location.search,
+    // history.location.search,  // this leads to initial state being recomputed on every change
   ]);
 
   const outerRef = useRef<HTMLDivElement>(null);
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState);
   const [mapDrawingEnabled, setMapDrawingEnabled] = useState(false);
+  const { selectedTimeRange } = state;
+
+  const timeGranularity = getTimeGranularity(state, props);
+  const timeExtent = getTimeExtent(state, props);
+  const totalCountsByTime = getTotalCountsByTime(state, props);
+  const totalFilteredCount = getTotalFilteredCount(state, props);
+  const totalUnfilteredCount = getTotalUnfilteredCount(state, props);
+
+  useEffect(() => {
+    if (timeExtent && !selectedTimeRange) {
+      dispatch({
+        type: ActionType.SET_TIME_RANGE,
+        range: timeExtent,
+      });
+    }
+  }, [timeExtent, selectedTimeRange]);
 
   const [updateQuerySearch] = useDebounced(
     () => {
@@ -619,6 +664,13 @@ const FlowMap: React.FC<Props> = (props) => {
 
   const locationsTree = getLocationsTree(state, props);
 
+  const handleTimeRangeChanged = (range: [Date, Date]) => {
+    dispatch({
+      type: ActionType.SET_TIME_RANGE,
+      range,
+    });
+  };
+
   const handleMapFeatureDrawn = (feature: MapDrawingFeature | undefined) => {
     if (feature != null) {
       const bbox = getBbox(feature) as [number, number, number, number];
@@ -722,7 +774,7 @@ const FlowMap: React.FC<Props> = (props) => {
           showTotals: true,
           maxLocationCircleSize: getMaxLocationCircleSize(state, props),
           maxFlowThickness: animationEnabled ? 18 : 12,
-          selectedLocationIds: getExpandedSelection(state, props),
+          // selectedLocationIds: getExpandedSelection(state, props),
           highlightedLocationId:
             highlight && highlight.type === HighlightType.LOCATION
               ? highlight.locationId
@@ -787,11 +839,30 @@ const FlowMap: React.FC<Props> = (props) => {
           )}
         </DeckGL>
       </DeckGLOuter>
+      {timeExtent && timeGranularity && totalCountsByTime && selectedTimeRange && (
+        <Absolute bottom={20} left={100} right={200}>
+          <Column spacing={10}>
+            <SelectedTimeRangeBox darkMode={darkMode}>
+              {selectedTimeRangeToString(selectedTimeRange, timeGranularity)}
+            </SelectedTimeRangeBox>
+            <TimelineBox darkMode={darkMode}>
+              <Timeline
+                darkMode={darkMode}
+                extent={timeExtent}
+                selectedRange={selectedTimeRange}
+                timeGranularity={timeGranularity}
+                totalCountsByTime={totalCountsByTime}
+                onChange={handleTimeRangeChanged}
+              />
+            </TimelineBox>
+          </Column>
+        </Absolute>
+      )}
       {flows && (
         <>
           {searchBoxLocations && (
             <Absolute top={10} right={50}>
-              <StyledBox darkMode={darkMode}>
+              <BoxStyle darkMode={darkMode}>
                 <LocationsSearchBox
                   locationFilterMode={state.locationFilterMode}
                   locations={searchBoxLocations}
@@ -799,7 +870,7 @@ const FlowMap: React.FC<Props> = (props) => {
                   onSelectionChanged={handleChangeSelectLocations}
                   onLocationFilterModeChange={handleChangeLocationFilterMode}
                 />
-              </StyledBox>
+              </BoxStyle>
             </Absolute>
           )}
           <Absolute top={10} right={10}>
@@ -903,6 +974,19 @@ const FlowMap: React.FC<Props> = (props) => {
                 </Away>
                 . You can <Link to="/">publish your own</Link> too.
               </div>
+
+              {totalFilteredCount != null && totalUnfilteredCount != null && (
+                <TotalCount darkMode={darkMode}>
+                  {Math.round(totalFilteredCount) === Math.round(totalUnfilteredCount)
+                    ? config['msg.totalCount.allTrips']?.replace(
+                        '{0}',
+                        formatCount(totalUnfilteredCount)
+                      )
+                    : config['msg.totalCount.countOfTrips']
+                        ?.replace('{0}', formatCount(totalFilteredCount))
+                        .replace('{1}', formatCount(totalUnfilteredCount))}
+                </TotalCount>
+              )}
             </Column>
           </Collapsible>
         </TitleBox>
@@ -913,4 +997,33 @@ const FlowMap: React.FC<Props> = (props) => {
   );
 };
 
+function selectedTimeRangeToString(
+  selectedTimeRange: [Date, Date],
+  timeGranularity: TimeGranularity
+) {
+  const { interval, formatFull, order } = timeGranularity;
+  const start = selectedTimeRange[0];
+  let end = selectedTimeRange[1];
+  if (order >= 3) {
+    end = interval.offset(end, -1);
+  }
+  if (end <= start) end = start;
+  const startStr = formatFull(start);
+  const endStr = formatFull(end);
+  if (startStr === endStr) return startStr;
+
+  // TODO: split by words, only remove common words
+  // let i = 0;
+  // while (i < Math.min(startStr.length, endStr.length)) {
+  //   if (startStr.charAt(startStr.length - i - 1) !== endStr.charAt(endStr.length - i - 1)) {
+  //     break;
+  //   }
+  //   i++;
+  // }
+  // if (i > 0) {
+  //   return `${startStr.substring(0, startStr.length - i - 1)} - ${endStr}`;
+  // }
+
+  return `${startStr} – ${endStr}`;
+}
 export default FlowMap;

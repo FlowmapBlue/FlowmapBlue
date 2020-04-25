@@ -3,14 +3,15 @@ import Nav from './Nav';
 import styled from '@emotion/styled';
 import { Button, Classes, H5, Intent, TextArea } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import { dsvFormat } from 'd3-dsv';
 import { Location as HistoryLocation } from 'history';
-import { Location, Flow } from './types';
+import { Flow, Location } from './types';
 import FlowMap from './FlowMap';
 import { PromiseState } from 'react-refetch';
 import { DEFAULT_CONFIG } from './config';
 import MapContainer from './MapContainer';
+import { prepareFlows } from './prepareFlows';
 
 interface Props {
   location: HistoryLocation<{
@@ -91,10 +92,7 @@ const InBrowserFlowMap = () => {
         lat: +row.lat,
         lon: +row.lon,
       })),
-      flows: dsvFormat(',').parse(flowsCsv, (row: any) => ({
-        ...row,
-        count: +row.count,
-      })),
+      flows: prepareFlows(dsvFormat(',').parse(flowsCsv)),
     });
   };
   return (
@@ -120,14 +118,14 @@ const InBrowserFlowMap = () => {
               growVertically={false}
               large={true}
               intent={Intent.PRIMARY}
-              onChange={event => setLocationsCsv(event.target.value)}
+              onChange={(event) => setLocationsCsv(event.target.value)}
               value={locationsCsv}
             />
             <TextArea
               growVertically={false}
               large={true}
               intent={Intent.PRIMARY}
-              onChange={event => setFlowsCsv(event.target.value)}
+              onChange={(event) => setFlowsCsv(event.target.value)}
               value={flowsCsv}
             />
           </Container>

@@ -27,7 +27,8 @@ export interface ConfigProp {
 
 export type Config = Record<string | ConfigPropName, string | undefined>;
 
-export const getFlowMagnitude = (flow: Flow) => flow.count || 0;
+export const getFlowTime = (flow: Flow) => flow.time;
+export const getFlowMagnitude = (flow: Flow) => +flow.count || 0;
 export const getFlowOriginId = (flow: Flow) => flow.origin;
 export const getFlowDestId = (flow: Flow) => flow.dest;
 export const getLocationId = (loc: Location) => loc.id;
@@ -50,5 +51,11 @@ export function isLocationCluster(l: Location | Cluster.Cluster): l is Cluster.C
 export interface Flow {
   origin: string;
   dest: string;
+  count: number;
+  time?: Date;
+}
+
+export interface CountByTime {
+  time: Date;
   count: number;
 }

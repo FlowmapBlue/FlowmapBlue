@@ -8,6 +8,8 @@ export const DEFAULT_CONFIG: Config = {
   'msg.locationTooltip.outgoing': 'Outgoing trips',
   'msg.locationTooltip.internal': 'Internal & round trips',
   'msg.flowTooltip.numOfTrips': 'Number of trips',
+  'msg.totalCount.allTrips': '{0} trips',
+  'msg.totalCount.countOfTrips': '{0} of {1} trips',
 };
 
 export function parseBoolConfigProp(value: string | undefined) {
