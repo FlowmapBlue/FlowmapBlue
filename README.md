@@ -12,7 +12,7 @@ It can be used to visualize numbers of movements of people or goods between pair
 (Origin-Destination data).
 
 
-<a href=https://flowmap.blue/1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc><img src=https://user-images.githubusercontent.com/351828/76080526-5fd20d00-5fa7-11ea-939c-7abb268fde40.png width=800>
+<a href=https://flowmap.blue/><img src=https://user-images.githubusercontent.com/351828/80291366-3767c300-874d-11ea-9a73-b1f76e0ed554.png width=800>
 </a>
 
 
