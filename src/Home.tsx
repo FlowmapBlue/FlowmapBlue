@@ -318,9 +318,9 @@ const Home = () => (
                 <b>locations</b>” and “<b>flows</b>”. The <b>properties</b> sheet has the title and
                 the description for your data set and a few other configuration parameters. The{' '}
                 <b>locations</b> sheet has the columns <b>id</b>, <b>lat</b>, <b>lon</b> and the
-                optional <b>name</b>. The <b>flows</b> sheet has <b>origin</b>, <b>dest</b> and{' '}
-                <b>count</b>. The values in the <b>origin</b> and <b>dest</b> columns must be the
-                respective locations' <b>id</b>s.
+                optional <b>name</b>. The <b>flows</b> sheet has <b>origin</b>, <b>dest</b>,{' '}
+                <b>count</b> and optional <b>time</b>. The values in the <b>origin</b> and{' '}
+                <b>dest</b> columns must be the respective locations' <b>id</b>s.
               </p>
               <p>
                 Use the <Link to="/od-matrix-converter">OD-matrix converter</Link> if your movement

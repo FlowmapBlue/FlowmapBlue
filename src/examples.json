@@ -14,8 +14,13 @@
     },
     {
       "key": "1qTVOzkPB7U1ySI4g4uPtVBzzEDCI8n1WXAmQeZL15fE",
-      "name": "BIXI bicycle sharing, by hour",
+      "name": "Hourly BIXI rides Montréal",
       "query": "v=45.495056,-73.564832,11.84,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20190701T050000,20190702T020000&col=Default&f=50"
+    },
+    {
+      "key": "1LoeL7i9GHl67Y4SPyp5fiyex6lRqxOuib_mfmg978q4",
+      "name": "Hourly NYC Uber trips 2019-12-02",
+      "query": "v=40.731554,-73.969132,11.96,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20191202T150000,20191202T170000&col=Default&f=50"
     },
     {
       "key": "1B75NgT4vzOW86HZdIgKRv4lxE_GXDHalJW-0vGfFqQY",
