@@ -186,7 +186,7 @@ const ListOfSteps = styled.ol`
   }
 `;
 
-const NewsletterDescription = styled(Row)`
+const NewsletterDescription = styled.div`
   font-size: 9pt;
   color: ${Colors.GRAY4};
 `;
@@ -267,7 +267,11 @@ const Home = () => (
                 <Button type="submit" text="Subscribe" />
               </Row>
               <NewsletterDescription>
-                Subscribe to the newsletter to learn about updates and new features.
+                Subscribe to the newsletter to learn about{' '}
+                <Away href="https://tinyletter.com/flowmap-blue/archive">
+                  updates and new features
+                </Away>
+                .
               </NewsletterDescription>
             </Column>
           </form>

@@ -30,6 +30,16 @@ const NewsItem = styled.div`
 export default () => (
   <Outer>
     <NewsItem>
+      <NewsDate>Apr 26, 2020</NewsDate>
+      <NewsText>
+        <Away href="https://tinyletter.com/flowmap-blue/letters/flowmap-blue-news-april-2020-timeline-support">
+          Timeline support, splitting datasets in parts, customising tooltips, fetching data from
+          another server
+        </Away>
+        .
+      </NewsText>
+    </NewsItem>
+    <NewsItem>
       <NewsDate>Feb 17, 2020</NewsDate>
       <NewsText>
         <Away href="https://tinyletter.com/flowmap-blue/letters/flowmap-blue-news-feb-2020-new-features">
