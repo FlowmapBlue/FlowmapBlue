@@ -152,7 +152,7 @@ export const getSortedFlowsForKnownLocationsFilteredByTime: Selector<
     }
     return flows.filter((flow) => {
       const time = getFlowTime(flow);
-      return time && timeRange[0] <= time && time <= timeRange[1];
+      return time && timeRange[0] <= time && time < timeRange[1];
     });
   }
 );
