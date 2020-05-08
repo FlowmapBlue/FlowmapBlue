@@ -183,8 +183,8 @@
     },
     {
       "key": "1ND0cLhnGYNdlloWArsVw_LSlj1eOablas_COwLsNjC0",
-      "name": "Coffee exports in 2017",
-      "query": "v=7.318013,10.942728,1.08,0,0&a=1&b=1&bo=76&c=1&d=0&lt=1&lfm=ALL&col=Oranges&f=36"
+      "name": "Global coffee exports in 2017",
+      "query": "v=7.318013,10.942728,1.08,0,0&a=0&b=1&bo=76&c=1&d=0&lt=1&lfm=ALL&col=Oranges&f=36"
     },
     {
       "key": "1DepInNULQvNmy1x5jeQr5A1KsxWB8_4QuBnV57TtsXI",
