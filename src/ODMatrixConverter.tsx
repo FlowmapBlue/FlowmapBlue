@@ -42,7 +42,10 @@ function convert(inputTsv: string) {
       const row = inputRows[i];
       if (row.length > 0) {
         for (let j = 1; j < row.length; j++) {
-          outputRows.push([row[0], header.length > j ? header[j] : `col${j + 1}`, row[j]]);
+          const count = +row[j];
+          if (count > 0 || count < 0) {
+            outputRows.push([row[0], header.length > j ? header[j] : `col${j + 1}`, row[j]]);
+          }
         }
       }
     }
@@ -86,7 +89,7 @@ const ODMatrixConverter = () => {
             growVertically={false}
             large={true}
             intent={Intent.PRIMARY}
-            onChange={event => setInput(event.target.value)}
+            onChange={(event) => setInput(event.target.value)}
             value={input}
           />
           <Button
