@@ -336,8 +336,8 @@ const Home = () => (
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
           <li>
-            Share the spreadsheet by going to “File” / “Share with others”, clicking “Advanced”, and
-            then choosing “Anyone with the link can view”.{' '}
+            Click the “Share” button, then change the selection from “Restricted” to “Anyone with
+            the link” in the drop-down under “Get link”.{' '}
             <ReadMore>
               This step is required so that Flowmap.blue can access the data in your spreadsheet.
               The spreadsheet and the flow map will be effectively private as long as you don't send
