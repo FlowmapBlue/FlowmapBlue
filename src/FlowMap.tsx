@@ -562,9 +562,15 @@ const FlowMap: React.FC<Props> = (props) => {
           {` `}
         </p>
         <p>
-          If you are the owner of this spreadsheet, make sure you have shared it by going to "File"
-          / "Share with others", clicking "Advanced", and then choosing "Anyone with the link can
-          view".
+          If you are the owner of this spreadsheet, make sure you have shared it by doing the
+          following:
+          <ol>
+            <li>Click the “Share” button in the spreadsheet</li>
+            <li>
+              Change the selection from “Restricted” to “Anyone with the link” in the drop-down
+              under “Get link”
+            </li>
+          </ol>
         </p>
       </Message>
     );
