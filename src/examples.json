@@ -98,6 +98,11 @@
       "name": "International migrant stock 2019"
     },
     {
+      "key": "1hIfHz5LNmiizMAbnUbzCOYt-QqORI4hChUE4dZUQgfs",
+      "query": "v=-27.469948,153.026140,11.65,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50",
+      "name": "Public transport trips in South East Queensland"
+    },
+    {
       "key": "1Wz6ohj-PTWIQ7X9nu5dpdliqp9azSLWVPOCQoOpLvKQ",
       "name": "Commuters in Canada 2016",
       "query": "v=48.379110,-94.389853,3.79&a=0&b=1&c=1&d=1&lt=1&col=Default&f=28"
