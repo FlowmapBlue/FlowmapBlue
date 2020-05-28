@@ -51,6 +51,11 @@
       "query": "v=37.544353,126.987414,11.37,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50"
     },
     {
+      "key": "1snSJx8zPZQStNEmN0qN10VRpf3acjRRJHLxH1yUCPws",
+      "name": "Taipei metro travels by hour 2019",
+      "query": "v=25.033034,121.499924,11.14,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20190101T080000,20190101T090000&col=Default&f=50"
+    },
+    {
       "key": "1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc",
       "name": "Commuters in the Netherlands 2016",
       "query": "v=52.098668,4.658308,8.60&a=0&d=1&c=1&lt=1&col=Default&f=45"
@@ -59,6 +64,11 @@
       "key": "1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA",
       "name": "17 million New York Citi Bike trips 2018",
       "query": "v=40.733700,-73.985072,12.47&a=0&d=1&c=1&f=45"
+    },
+    {
+      "key": "1xHK2xcxyXPP8FV5NHCjcByx9kTenbNY75yY00PHqqAc",
+      "name": "Edinburgh's bike sharing 2020",
+      "query": "v=55.943846,-3.206758,11.94,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20200101T000000,20200102T000000&col=Sunset&f=50"
     },
     {
       "key": "1IRBIOBywJ9nNqBOf6VX0KXOmkMAc8c1dEr5qiu84TN8",
