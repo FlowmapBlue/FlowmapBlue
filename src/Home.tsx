@@ -300,9 +300,9 @@ const Home = () => (
 
       <section>
         {/*How to make a flow map*/}
-        <h2 id="how-to">How to visualize your data</h2>
+        <h2 id="how-to">How to make a flow map</h2>
         <p>
-          To publish a data set you need to have a Google account.{' '}
+          To visualize and publish a data set as a flow map you need to have a Google account.{' '}
           <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don't.
         </p>
         <p>Follow these steps:</p>
@@ -350,8 +350,8 @@ const Home = () => (
           <SpreadsheetKeyExtractor />
         </ListOfSteps>
         If you are not comfortable uploading your data to Google Sheets, consider using our{' '}
-        <Link to="/in-browser">In-browser flow map</Link> tool or pass the URLs to load the CSV
-        files from as{' '}
+        <Link to="/in-browser">In-browser flow map</Link> or load CSV files from any specific URLs
+        as{' '}
         <Away href="https://github.com/ilyabo/flowmap.blue/issues/18#issuecomment-610063627">
           described here
         </Away>
