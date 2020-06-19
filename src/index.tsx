@@ -114,7 +114,7 @@ try {
                   AppToaster.dismiss('privacy');
                 }}
               >
-                Accept
+                OK, don't show it again
               </Button>
             </ButtonArea>
           </div>
