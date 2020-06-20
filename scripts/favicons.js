@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const favicons = require('favicons');
-const SOURCE_ICON = path.resolve(__dirname, '../favicon-source.png');
-const OUTPUT_PATH = path.resolve(__dirname, '../public/');
+const SOURCE_ICON = path.resolve(__dirname, '../app/favicon-source.png');
+const OUTPUT_PATH = path.resolve(__dirname, '../app/public/');
 const INDEX_HTML_TEMPLATE = path.resolve(__dirname, '../index.template.html');
 const CONFIG = {
     path: "/",                                // Path for overriding default icons path. `string`
