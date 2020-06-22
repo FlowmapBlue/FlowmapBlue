@@ -2,6 +2,9 @@
   "private": true,
   "scripts": {
     "start": "cd app && yarn start",
+    "build-flowmap.blue": "cd packages/flowmap.blue && yarn build",
+    "build-app": "cd app && yarn build",
+    "build": "yarn build-flowmap.blue && yarn build-app",
     "flowmap.blue": "cd packages/flowmap.blue && yarn dev",
     "version-bump": "lerna version --no-push --force-publish",
     "publish-prerelease": "lerna publish --dist-tag next from-package",
