@@ -33,22 +33,6 @@ export function parseTime(input: string | Date | undefined): Date | undefined {
   return undefined;
 }
 
-const GSHEETS_TIME_VALUE_PATTERN = /^Date\((\d{4}),(\d+),(\d+),(\d+),(\d+),(\d+)\)$/;
-
-export function isGSheetsTime(input: string | undefined): boolean {
-  return input != null && input.startsWith('Date') && GSHEETS_TIME_VALUE_PATTERN.test(input);
-}
-
-export function parseGSheetsTime(input: string | undefined): Date | undefined {
-  if (input != null) {
-    const m = GSHEETS_TIME_VALUE_PATTERN.exec(input);
-    if (m) {
-      return new Date(+m[1], +m[2], +m[3], +m[4], +m[5], +m[6]);
-    }
-  }
-  return undefined;
-}
-
 export enum TimeGranularityKey {
   SECOND = 'SECOND',
   MINUTE = 'MINUTE',

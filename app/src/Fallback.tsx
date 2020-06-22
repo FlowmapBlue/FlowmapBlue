@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Logo from './Logo';
+import { Logo } from 'flowmap.blue';
 import { Classes } from '@blueprintjs/core';
 
 export default ({ children }: { children: React.ReactChild }) => (

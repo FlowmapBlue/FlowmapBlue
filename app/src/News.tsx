@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import Away from './Away';
+import { Away } from 'flowmap.blue';
 import * as React from 'react';
 import styled from '@emotion/styled';
 import { Colors } from '@blueprintjs/core';

@@ -1,9 +1,7 @@
 import React, { ReactNode } from 'react';
-import NoScrollContainer from './NoScrollContainer';
 import Fallback from './Fallback';
 import checkWebglSupport from './checkWebglSupport';
-import { Absolute } from './Boxes';
-import Logo from './Logo';
+import { Absolute, Logo, NoScrollContainer } from 'flowmap.blue';
 
 interface Props {
   embed?: boolean;

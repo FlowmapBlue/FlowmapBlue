@@ -3,7 +3,7 @@ import { InputGroup, Button, Intent, Tooltip } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
 import { SPREADSHEET_KEY_RE } from './constants';
-import Away from './Away';
+import { Away } from 'flowmap.blue';
 
 const StyledInputGroup = styled(InputGroup)`
   max-width: 50em;

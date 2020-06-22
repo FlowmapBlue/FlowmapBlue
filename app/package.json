@@ -5,59 +5,21 @@
   "dependencies": {
     "@blueprintjs/core": "^3.23.1",
     "@blueprintjs/select": "^3.10.0",
-    "@deck.gl/core": "^8.1.1",
-    "@deck.gl/layers": "^8.1.1",
-    "@deck.gl/mesh-layers": "^8.1.1",
-    "@deck.gl/react": "^8.1.1",
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27",
-    "@flowmap.gl/cluster": "7.2.2",
-    "@flowmap.gl/core": "7.2.2",
-    "@flowmap.gl/react": "7.2.2",
-    "@luma.gl/constants": "^8.1.0",
-    "@luma.gl/core": "^8.1.0",
     "@mapbox/geo-viewport": "^0.4.0",
     "@sentry/browser": "^5.15.4",
-    "@turf/bbox": "^6.0.1",
-    "@turf/boolean-point-in-polygon": "^6.0.1",
-    "@types/d3-collection": "^1.0.7",
-    "@types/d3-color": "^1.2.1",
     "@types/d3-dsv": "^1.0.35",
-    "@types/d3-ease": "^1.0.7",
-    "@types/d3-format": "^1.3.0",
-    "@types/d3-geo": "^1.10.3",
-    "@types/d3-interpolate": "^1.3.1",
-    "@types/d3-scale": "^2.1.1",
-    "@types/d3-scale-chromatic": "^1.3.1",
-    "@types/d3-time": "^1.0.10",
-    "@types/d3-time-format": "^2.1.1",
     "@types/jest": "^25.2.1",
-    "@types/lodash.debounce": "^4.0.4",
-    "@types/mapbox__geo-viewport": "^0.4.0",
     "@types/node": "^13.11.0",
-    "@types/react": "^16.9.32",
-    "@types/react-dom": "^16.9.6",
+    "@types/react": "^16.9.38",
+    "@types/react-dom": "^16.9.8",
     "@types/react-helmet": "^5.0.15",
-    "@types/react-map-gl": "^5.2.2",
     "@types/react-router-dom": "^5.1.0",
-    "@types/seedrandom": "^2.4.28",
-    "@types/viewport-mercator-project": "^6.1.0",
     "blueimp-md5": "^2.13.0",
-    "d3-collection": "^1.0.7",
-    "d3-color": "^1.2.3",
     "d3-dsv": "^1.0.10",
-    "d3-ease": "^1.0.5",
-    "d3-format": "^1.4.4",
-    "d3-geo": "^1.11.3",
-    "d3-interpolate": "^1.3.2",
-    "d3-scale": "^3.0.0",
-    "d3-scale-chromatic": "^1.3.3",
-    "d3-time": "^1.1.0",
-    "d3-time-format": "^2.2.3",
     "husky": "^4.2.2",
-    "kdbush": "^3.0.0",
     "lint-staged": "^10.1.2",
-    "mjolnir.js": "^2.4.0",
     "prettier": "^2.0.4",
     "query-string": "^6.12.0",
     "react": "^16.13.1",
@@ -65,19 +27,14 @@
     "react-dom": "^16.13.1",
     "react-fetch-hook": "^1.8.2",
     "react-helmet": "^5.2.0",
-    "react-map-gl": "^5.2.3",
-    "react-map-gl-draw": "^0.17.6",
     "react-player": "^1.15.3",
-    "react-popper": "^1.3.2",
     "react-refetch": "^3.0.0",
     "react-router-dom": "^5.1.2",
     "react-router-hash-link": "^1.2.2",
     "react-scripts": "^3.4.1",
     "react-use": "^14.1.1",
-    "seedrandom": "^3.0.5",
     "source-map-explorer": "^2.4.2",
-    "typescript": "^3.7.5",
-    "viewport-mercator-project": "^7.0.1"
+    "typescript": "^3.7.5"
   },
   "devDependencies": {
     "@types/blueimp-md5": "^2.7.0",
@@ -103,26 +60,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "resolutions": {
-    "**/@turf/difference": "6.0.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "prettier": {
-    "trailingComma": "es5",
-    "tabWidth": 2,
-    "semi": true,
-    "singleQuote": true,
-    "printWidth": 100
-  }
+  ]
 }

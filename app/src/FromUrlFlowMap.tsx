@@ -1,15 +1,12 @@
 import React from 'react';
 import useFetch from 'react-fetch-hook';
-import FlowMap from './FlowMap';
 import { PromiseState } from 'react-refetch';
-import { DEFAULT_CONFIG } from './config';
+import FlowMap, { DEFAULT_CONFIG, LoadingSpinner, prepareFlows } from 'flowmap.blue';
 import MapContainer from './MapContainer';
 import { csvParse } from 'd3-dsv';
-import LoadingSpinner from './LoadingSpinner';
 import { useLocation } from 'react-router-dom';
 import * as queryString from 'query-string';
 import ErrorFallback from './ErrorFallback';
-import { prepareFlows } from './prepareFlows';
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.

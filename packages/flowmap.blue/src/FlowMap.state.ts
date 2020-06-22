@@ -1,5 +1,5 @@
-import { FlyToInterpolator, ViewportProps } from 'react-map-gl';
-import { Config, ConfigPropName, Flow } from './types';
+import { FlyToInterpolator } from 'react-map-gl';
+import { Config, ConfigPropName, Flow, ViewportProps } from './types';
 import { Props as TooltipProps } from './Tooltip';
 import * as queryString from 'query-string';
 import { viewport } from '@mapbox/geo-viewport';

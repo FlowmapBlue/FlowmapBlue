@@ -8,8 +8,7 @@ import { ascending } from 'd3-array';
 import { connect, PromiseState } from 'react-refetch';
 import md5 from 'blueimp-md5';
 import COUNTRIES from './countries.json';
-import { AppToaster } from './AppToaster';
-import { ToastContent } from './Boxes';
+import { AppToaster, ToastContent } from 'flowmap.blue';
 
 const MAX_GEOCODING_ROWS = 1000;
 const countries = COUNTRIES as { [key: string]: string };

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Alignment, Classes, Icon, Navbar } from '@blueprintjs/core';
-import Away from './Away';
+import { Away } from 'flowmap.blue';
 import { IconNames } from '@blueprintjs/icons';
 import GitHubLogo from './images/github.svg';
 import SpectrumLogo from './images/spectrum.svg';

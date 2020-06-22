@@ -1,18 +1,9 @@
 import { DeckGL } from '@deck.gl/react';
 import { MapController } from '@deck.gl/core';
 import * as React from 'react';
-import {
-  ReactNode,
-  Reducer,
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, Reducer, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { alea } from 'seedrandom';
-import { _MapContext as MapContext, StaticMap, ViewStateChangeInfo } from 'react-map-gl';
+import { _MapContext as MapContext, StaticMap } from 'react-map-gl';
 import FlowMapLayer, {
   FlowLayerPickingInfo,
   FlowPickingInfo,
@@ -21,18 +12,8 @@ import FlowMapLayer, {
 } from '@flowmap.gl/core';
 import { Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent } from '@blueprintjs/core';
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react';
-import WebMercatorViewport from 'viewport-mercator-project';
-import {
-  Absolute,
-  Box,
-  BoxStyle,
-  Column,
-  Description,
-  LegendTitle,
-  Title,
-  TitleBox,
-  ToastContent,
-} from './Boxes';
+import WebMercatorViewport from '@math.gl/web-mercator';
+import { Absolute, Box, BoxStyle, Column, Description, LegendTitle, Title, TitleBox, ToastContent, } from './Boxes';
 import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { TargetBounds } from './Tooltip';
 import { Link, useHistory } from 'react-router-dom';
@@ -47,6 +28,7 @@ import {
   getLocationCentroid,
   getLocationId,
   Location,
+  ViewportProps,
 } from './types';
 import Message from './Message';
 import LoadingSpinner from './LoadingSpinner';
@@ -661,7 +643,7 @@ const FlowMap: React.FC<Props> = (props) => {
     });
   };
 
-  const handleViewStateChange = ({ viewState }: ViewStateChangeInfo) => {
+  const handleViewStateChange = ({ viewState }: { viewState: ViewportProps }) => {
     dispatch({
       type: ActionType.SET_VIEWPORT,
       viewport: viewState,

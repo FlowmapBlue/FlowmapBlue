@@ -1,21 +1,25 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
-import { ConfigProp, ConfigPropName, Location } from './types';
-import LoadingSpinner from './LoadingSpinner';
+import FlowMap, {
+  AppToaster,
+  ConfigProp,
+  ConfigPropName,
+  DEFAULT_CONFIG,
+  getFlowsSheets,
+  LoadingSpinner,
+  Location,
+  prepareFlows,
+  Props as FlowMapProps,
+  ToastContent
+} from 'flowmap.blue';
 import { Helmet } from 'react-helmet';
 import sendEvent from './ga';
-import { DEFAULT_CONFIG } from './config';
-import FlowMap, { Props as FlowMapProps } from './FlowMap';
 import MapContainer from './MapContainer';
-import { getFlowsSheets } from './FlowMap.selectors';
-import { prepareFlows } from './prepareFlows';
 import { useAsync } from 'react-use';
 import { csvParse } from 'd3-dsv';
-import { AppToaster } from './AppToaster';
 import { Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
-import { ToastContent } from './Boxes';
 
 interface Props {
   spreadSheetKey: string;

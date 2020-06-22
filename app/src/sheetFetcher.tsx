@@ -1,6 +1,5 @@
 import { connect } from 'react-refetch';
 import { csvParse } from 'd3-dsv';
-import { isGSheetsTime, parseGSheetsTime } from './time';
 
 // TODO: use LRU cache
 const cache = new Map();
@@ -147,4 +146,20 @@ function getSheetDataAsArray(data: SheetData) {
     }
     return obj;
   });
+}
+
+const GSHEETS_TIME_VALUE_PATTERN = /^Date\((\d{4}),(\d+),(\d+),(\d+),(\d+),(\d+)\)$/;
+
+function isGSheetsTime(input: string | undefined): boolean {
+  return input != null && input.startsWith('Date') && GSHEETS_TIME_VALUE_PATTERN.test(input);
+}
+
+function parseGSheetsTime(input: string | undefined): Date | undefined {
+  if (input != null) {
+    const m = GSHEETS_TIME_VALUE_PATTERN.exec(input);
+    if (m) {
+      return new Date(+m[1], +m[2], +m[3], +m[4], +m[5], +m[6]);
+    }
+  }
+  return undefined;
 }

@@ -6,12 +6,9 @@ import { IconNames } from '@blueprintjs/icons';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { dsvFormat } from 'd3-dsv';
 import { Location as HistoryLocation } from 'history';
-import { Flow, Location } from './types';
-import FlowMap from './FlowMap';
+import FlowMap, { DEFAULT_CONFIG, Flow, Location, prepareFlows } from 'flowmap.blue';
 import { PromiseState } from 'react-refetch';
-import { DEFAULT_CONFIG } from './config';
 import MapContainer from './MapContainer';
-import { prepareFlows } from './prepareFlows';
 
 interface Props {
   location: HistoryLocation<{

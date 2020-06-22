@@ -59,3 +59,22 @@ export interface CountByTime {
   time: Date;
   count: number;
 }
+
+export interface ViewportProps {
+  width: number;
+  height: number;
+  latitude: number;
+  longitude: number;
+  zoom: number;
+  bearing: number;
+  pitch: number;
+  altitude: number;
+  maxZoom: number;
+  minZoom: number;
+  maxPitch: number;
+  minPitch: number;
+  transitionDuration?: number | 'auto';
+  transitionInterpolator?: any;
+  transitionInterruption?: any;
+  transitionEasing?: any;
+}

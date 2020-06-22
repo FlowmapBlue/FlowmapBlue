@@ -2,11 +2,10 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
-import { examples, aspectRatio, screenshotSizes } from './examples.json';
+import { aspectRatio, examples, screenshotSizes } from './examples.json';
 import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
-import Away from './Away';
+import { Away, Column, Logo, Row } from 'flowmap.blue';
 import { Helmet } from 'react-helmet';
-import Logo from './Logo';
 import MapboxLogo from './images/mapbox-logo-black.svg';
 import NycCitiBikeImage from './images/nyc-citi-bike.jpg';
 import TLLogo from './images/TL-Horizontal-Black.svg';
@@ -14,7 +13,6 @@ import { Button, Classes, Colors, Intent, Tag } from '@blueprintjs/core';
 import Nav from './Nav';
 import News from './News';
 import ReactPlayer from 'react-player';
-import { Column, Row } from './Boxes';
 
 const ContentBody = styled.div`
   padding: 10px 20px;
