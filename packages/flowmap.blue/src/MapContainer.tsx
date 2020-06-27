@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
-import Fallback from 'app/src/Fallback';
 import checkWebglSupport from './checkWebglSupport';
 import NoScrollContainer from './NoScrollContainer';
 import { Absolute } from './Boxes';
 import Logo from './Logo';
+import { Fallback } from './index';
 
 interface Props {
   embed?: boolean;

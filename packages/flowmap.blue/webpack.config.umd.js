@@ -7,7 +7,7 @@ const OUTPUT_DIR = resolve(__dirname, './dist-umd');
 
 module.exports = {
   entry: {
-    flowmapBlue: join(SRC_DIR, 'index-standalone.tsx')
+    flowmapBlue: join(SRC_DIR, 'index.standalone.tsx')
   },
 
   optimization: {
