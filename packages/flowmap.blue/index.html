@@ -3,7 +3,7 @@
   <div id="container"></div>
   <script src="dist-umd/flowmap-blue.min.js"></script>
   <script>
-    flowmapBlue.render(
+    flowmapBlue.default(
       [
         {id: 1,name:'New York',lat:40.713543,lon:-74.011219},
         {id: 2,name:'London',lat:51.507425,lon:-0.127738},
@@ -17,7 +17,7 @@
         {origin:1,dest:3,count:22},
         {origin:3,dest:2,count:42},
       ],
-      document.getElementById('#container'),
+      document.getElementById('container'),
     );
   </script>
 </body>
