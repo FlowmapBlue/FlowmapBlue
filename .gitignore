@@ -9,7 +9,9 @@ node_modules
 # production
 build
 dist
+dist-es5
 dist-esm
+dist-umd
 
 # misc
 .DS_Store

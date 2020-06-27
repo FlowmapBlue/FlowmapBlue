@@ -3,5 +3,8 @@
   "include": [
     "src/**/*",
     "../../typings/*"
-  ]
+  ],
+  "compilerOptions": {
+    "outDir": "dist"
+  }
 }

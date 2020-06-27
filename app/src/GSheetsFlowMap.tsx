@@ -9,13 +9,13 @@ import FlowMap, {
   getFlowsSheets,
   LoadingSpinner,
   Location,
+  MapContainer,
   prepareFlows,
   Props as FlowMapProps,
-  ToastContent
+  ToastContent,
 } from 'flowmap.blue';
 import { Helmet } from 'react-helmet';
 import sendEvent from './ga';
-import MapContainer from './MapContainer';
 import { useAsync } from 'react-use';
 import { csvParse } from 'd3-dsv';
 import { Intent } from '@blueprintjs/core';

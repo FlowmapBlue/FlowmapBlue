@@ -1,8 +1,7 @@
 import React from 'react';
 import useFetch from 'react-fetch-hook';
 import { PromiseState } from 'react-refetch';
-import FlowMap, { DEFAULT_CONFIG, LoadingSpinner, prepareFlows } from 'flowmap.blue';
-import MapContainer from './MapContainer';
+import FlowMap, { DEFAULT_CONFIG, LoadingSpinner, MapContainer, prepareFlows } from 'flowmap.blue';
 import { csvParse } from 'd3-dsv';
 import { useLocation } from 'react-router-dom';
 import * as queryString from 'query-string';

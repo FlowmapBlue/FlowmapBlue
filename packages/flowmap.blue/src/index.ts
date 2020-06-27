@@ -10,5 +10,7 @@ export { default as Away } from './Away';
 export { default as LoadingSpinner } from './LoadingSpinner';
 export { default as NoScrollContainer } from './NoScrollContainer';
 export { default as Logo } from './Logo';
+export { default as checkWebglSupport } from './checkWebglSupport';
+export { default as MapContainer } from './MapContainer';
 import { default as FlowMap } from './FlowMap';
 export default FlowMap;
