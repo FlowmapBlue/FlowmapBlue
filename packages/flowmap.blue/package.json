@@ -2,9 +2,9 @@
   "name": "flowmap.blue",
   "version": "0.0.1",
   "description": "Flowmap.blue",
-  "main": "dist/index.js",
+  "main": "dist-es5/index.js",
   "module": "dist-esm/index.js",
-  "types": "dist/index.d.ts",
+  "types": "dist-esm/index.d.ts",
   "files": [
     "src",
     "dist",
