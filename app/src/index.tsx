@@ -29,14 +29,14 @@ const ButtonArea = styled.div({
   },
 });
 const globalStyles = css`
-  html,
-  body,
-  button,
-  select {
+  html, body {
     margin: 0;
     background-color: ${'#2d3a4c'};
-    font-family: 'Sarabun', sans-serif;
     font-size: 13pt;
+  }
+  
+  body, * {
+    font-family: 'Sarabun', sans-serif;
   }
 
   a,

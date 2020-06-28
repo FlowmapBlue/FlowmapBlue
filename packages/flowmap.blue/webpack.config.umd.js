@@ -14,10 +14,12 @@ module.exports = {
     minimize: true,
   },
 
+  mode: "production",
+
   // Silence warnings about big bundles
-  // stats: {
-  //   warnings: false
-  // },
+  stats: {
+    warnings: false,
+  },
 
   output: {
     // Generate the bundle in dist folder
@@ -44,26 +46,6 @@ module.exports = {
     //   amd: 'react-dom',
     //   umd: 'react-dom'
     // },
-    // redux: {
-    //   root: 'Redux',
-    //   commonjs2: 'redux',
-    //   commonjs: 'redux',
-    //   amd: 'redux',
-    //   umd: 'redux'
-    // },
-    // 'react-redux': {
-    //   root: 'ReactRedux',
-    //   commonjs2: 'react-redux',
-    //   commonjs: 'react-redux',
-    //   amd: 'react-redux',
-    //   umd: 'react-redux'
-    // },
-    // 'styled-components': {
-    //   commonjs: 'styled-components',
-    //   commonjs2: 'styled-components',
-    //   amd: 'styled-components',
-    //   root: 'styled'
-    // }
   },
 
   module: {
@@ -74,8 +56,24 @@ module.exports = {
         exclude: /node_modules/,
         options: {
           // transpileOnly: true,
-          configFile: 'tsconfig.build.umd.json'
+          configFile: 'tsconfig.build.esm.json'
         }
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              // outputPath: 'assets/'
+            }
+          }
+        ]
       },
     ],
   },

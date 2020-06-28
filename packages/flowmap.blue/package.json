@@ -102,7 +102,10 @@
     "@types/react": "^16.9.38",
     "@types/react-dom": "^16.9.8",
     "@types/seedrandom": "^2.4.28",
+    "css-loader": "^3.6.0",
+    "file-loader": "^6.0.0",
     "react-refetch": "^3.0.0",
+    "style-loader": "^1.2.1",
     "ts-loader": "^7.0.5",
     "webpack-cli": "^3.3.12"
   },

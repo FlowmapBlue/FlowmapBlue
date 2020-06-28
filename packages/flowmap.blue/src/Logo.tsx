@@ -32,7 +32,7 @@ const Logo = ({ fontSize = 25, collapseWidth = 525, embed }: Props) => {
       to="/"
       style={{ textDecoration: 'none' }}
       target={embed ? '_blank' : undefined}
-      rel="noopener noreferrer"
+      rel={embed ? "noopener noreferrer" : undefined}
     >
       <Row spacing={fontSize / 5}>
         <svg
