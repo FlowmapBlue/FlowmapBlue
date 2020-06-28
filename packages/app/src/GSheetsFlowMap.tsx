@@ -13,7 +13,7 @@ import FlowMap, {
   prepareFlows,
   Props as FlowMapProps,
   ToastContent,
-} from 'flowmap.blue';
+} from '@flowmap.blue/core';
 import { Helmet } from 'react-helmet';
 import sendEvent from './ga';
 import { useAsync } from 'react-use';

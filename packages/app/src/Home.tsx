@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
 import { aspectRatio, examples, screenshotSizes } from './examples.json';
 import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
-import { Away, Column, Logo, Row } from 'flowmap.blue';
+import { Away, Column, Logo, Row } from '@flowmap.blue/core';
 import { Helmet } from 'react-helmet';
 import MapboxLogo from './images/mapbox-logo-black.svg';
 import NycCitiBikeImage from './images/nyc-citi-bike.jpg';

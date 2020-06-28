@@ -1,6 +1,6 @@
 {
-  "name": "app",
-  "version": "0.1.0",
+  "name": "@flowmap.blue/app",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@blueprintjs/core": "^3.23.1",
@@ -44,13 +44,14 @@
     "sharp": "^0.24.0"
   },
   "scripts": {
-    "start": "PORT=7000 node -r dotenv/config ../node_modules/.bin/react-scripts start dotenv_config_path=../.env",
-    "build": "node -r dotenv/config ../node_modules/.bin/react-scripts build dotenv_config_path=../.env",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "PORT=7000 node -r dotenv/config ../../node_modules/.bin/react-scripts start dotenv_config_path=../../.env",
+    "dev": "npm start",
+    "build": "node -r dotenv/config ../../node_modules/.bin/react-scripts build dotenv_config_path=../../.env",
+    "test": "node_modules/.bin/react-scripts test",
+    "eject": "node_modules/.bin/react-scripts eject",
     "favicons": "node scripts/favicons.js",
     "shots": "node scripts/screenshots.js",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "node_modules/.bin/source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"

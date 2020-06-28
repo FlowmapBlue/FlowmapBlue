@@ -4,7 +4,7 @@ import { Route, RouteComponentProps, Router, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import * as Sentry from '@sentry/browser';
 import Home from './Home';
-import { AppToaster, LoadingSpinner } from 'flowmap.blue';
+import { AppToaster, LoadingSpinner } from '@flowmap.blue/core';
 import { SPREADSHEET_KEY_RE } from './constants';
 import ErrorFallback from './ErrorFallback';
 import ErrorBoundary from './ErrorBoundary';

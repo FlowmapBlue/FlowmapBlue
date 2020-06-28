@@ -1,7 +1,7 @@
 {
-  "name": "flowmap.blue",
+  "name": "@flowmap.blue/core",
   "version": "0.0.1",
-  "description": "Flowmap.blue",
+  "description": "Flowmap.blue core package",
   "main": "dist-es5/index.js",
   "module": "dist-esm/index.js",
   "types": "dist-esm/index.d.ts",

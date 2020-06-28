@@ -2349,7 +2349,7 @@
     "@turf/helpers" "6.x"
     "@turf/invariant" "6.x"
 
-"@turf/difference@>=4.0.0":
+"@turf/difference@6.0.1", "@turf/difference@>=4.0.0":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@turf/difference/-/difference-6.0.1.tgz#a5ee3433eddb7d707cac227adf0d43ab0d651682"
   integrity sha512-lkhJjNfPeLARQm232A851vVhrUvX3gdvTft5QlqkUlr7AzLpiT8PW14yEkU9xABxRh6PGv7T1UUVAeRgC7JxuA==

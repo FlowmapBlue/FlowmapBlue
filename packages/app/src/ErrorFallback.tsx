@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Fallback, ColorScheme } from 'flowmap.blue';
+import { Fallback, ColorScheme } from '@flowmap.blue/core';
 import * as Sentry from '@sentry/browser';
 
 const ErrorFallback: React.FC<{ error?: any }> = ({ error }) => (

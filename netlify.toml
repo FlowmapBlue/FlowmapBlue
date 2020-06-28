@@ -1,5 +1,5 @@
 [build]
-  publish = "app/build/"
+  publish = "packages/app/build/"
   command = "yarn build"
 
 [[redirects]]
