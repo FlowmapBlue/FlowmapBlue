@@ -3,8 +3,8 @@
   "scripts": {
     "start": "cd packages/app && yarn start",
     "build:core": "cd packages/core && yarn build",
-    "build:core:umd": "cd packages/core && yarn build:umd",
-    "build:app": "cd packages/app && yarn build",
+    "build:core:esm": "cd packages/core && yarn build:esm",
+    "build:app": "yarn build:core:esm && cd packages/app && yarn build",
     "dev:core": "cd packages/core && yarn dev",
     "dev:app": "cd packages/app && yarn dev",
     "dev": "npm run dev:core & npm run dev:app",
