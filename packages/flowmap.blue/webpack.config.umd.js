@@ -1,5 +1,6 @@
 const resolve = require('path').resolve;
 const join = require('path').join;
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 const SRC_DIR = resolve(__dirname, './src');
@@ -7,7 +8,7 @@ const OUTPUT_DIR = resolve(__dirname, './dist-umd');
 
 module.exports = {
   entry: {
-    flowmapBlue: join(SRC_DIR, 'index.standalone.tsx')
+    flowmapBlue: join(SRC_DIR, 'index-standalone.tsx')
   },
 
   optimization: {
@@ -84,5 +85,14 @@ module.exports = {
 
   node: {
     fs: 'empty'
-  }
+  },
+
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: resolve(__dirname, './index-standalone.template.html'),
+      templateParameters: {
+        MAPBOX_ACCESS_TOKEN: process.env.REACT_APP_MapboxAccessToken,
+      }
+    }),
+  ],
 };

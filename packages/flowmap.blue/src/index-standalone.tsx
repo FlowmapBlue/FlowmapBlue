@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { DEFAULT_CONFIG } from './config';
 import FlowMap from './FlowMap';
 import { PromiseState } from 'react-refetch';
-import { Flow, Location } from './types';
+import { ConfigPropName, Flow, Location } from './types';
 import MapContainer from './MapContainer';
 import { ColorScheme, Fallback } from './index';
 import { Router } from 'react-router-dom';
@@ -103,7 +103,8 @@ class ErrorBoundary extends React.Component<{}, {}> {
 export default function(
   locations: Location[],
   flows: Flow[],
-  container: HTMLElement
+  container: HTMLElement,
+  mapboxAccessToken: string,
 ) {
   ReactDOM.render(
     <Router history={history}>
@@ -114,7 +115,10 @@ export default function(
             inBrowser={true}
             flowsFetch={PromiseState.resolve(flows)}
             locationsFetch={PromiseState.resolve(locations)}
-            config={DEFAULT_CONFIG}
+            config={{
+              ...DEFAULT_CONFIG,
+              [ConfigPropName.MAPBOX_ACCESS_TOKEN]: mapboxAccessToken,
+            }}
             spreadSheetKey={undefined}
             flowsSheet={undefined}
           />

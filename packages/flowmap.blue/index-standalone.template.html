@@ -2,7 +2,7 @@
 <body>
   <meta charset="utf-8">
   <div id="container"></div>
-  <script src="dist-umd/flowmap-blue.min.js"></script>
+  <script src="./flowmap-blue.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Sarabun:400,700" rel="stylesheet">
   <script>
     flowmapBlue.default(
@@ -20,6 +20,7 @@
         {origin:3,dest:2,count:42},
       ],
       document.getElementById('container'),
+      '<%= MAPBOX_ACCESS_TOKEN %>'
     );
   </script>
 </body>
