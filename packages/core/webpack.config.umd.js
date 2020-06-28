@@ -6,24 +6,22 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const SRC_DIR = resolve(__dirname, './src');
 const OUTPUT_DIR = resolve(__dirname, './dist-umd');
 
-module.exports = {
+module.exports = (env, argv) => ({
+
   entry: {
     flowmapBlue: join(SRC_DIR, 'index-standalone.tsx')
   },
 
   optimization: {
-    minimize: true,
+    minimize: argv.mode === 'production',
   },
 
-  mode: "production",
-
-  // Silence warnings about big bundles
   stats: {
+    // Silence warnings about big bundles
     warnings: false,
   },
 
   output: {
-    // Generate the bundle in dist folder
     path: OUTPUT_DIR,
     filename: 'flowmap-blue.min.js',
     globalObject: 'this',
@@ -95,4 +93,4 @@ module.exports = {
       }
     }),
   ],
-};
+});
