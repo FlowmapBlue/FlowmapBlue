@@ -5,13 +5,13 @@
   <script src="./flowmap-blue.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Sarabun:400,700" rel="stylesheet">
   <script>
-    flowmapBlue.default(
-      [
+    flowmapBlue.init({
+      locations: [
         {id: 1,name:'New York',lat:40.713543,lon:-74.011219},
         {id: 2,name:'London',lat:51.507425,lon:-0.127738},
         {id: 3,name:'Rio de Janeiro',lat:-22.906241,lon:-43.180244},
       ],
-      [
+      flows: [
         {origin:1,dest:2,count:42},
         {origin:2,dest:1,count:51},
         {origin:3,dest:1,count:50},
@@ -19,9 +19,9 @@
         {origin:1,dest:3,count:22},
         {origin:3,dest:2,count:42},
       ],
-      document.getElementById('container'),
-      '<%= MAPBOX_ACCESS_TOKEN %>'
-    );
+      container: document.getElementById('container'),
+      mapboxAccessToken: '<%= MAPBOX_ACCESS_TOKEN %>',
+    });
   </script>
 </body>
 </html>

@@ -100,11 +100,18 @@ class ErrorBoundary extends React.Component<{}, {}> {
   }
 }
 
-export default function(
-  locations: Location[],
-  flows: Flow[],
-  container: HTMLElement,
-  mapboxAccessToken: string,
+export function init(
+  {
+    locations,
+    flows,
+    container,
+    mapboxAccessToken,
+  }: {
+    locations: Location[],
+    flows: Flow[],
+    container: HTMLElement,
+    mapboxAccessToken: string,
+  },
 ) {
   ReactDOM.render(
     <Router history={history}>
