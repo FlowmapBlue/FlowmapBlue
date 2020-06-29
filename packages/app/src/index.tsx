@@ -16,6 +16,7 @@ import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
 
 FocusStyleManager.onlyShowFocusOnTabs();
+AppToaster.init();
 
 const ButtonArea = styled.div({
   marginTop: 10,

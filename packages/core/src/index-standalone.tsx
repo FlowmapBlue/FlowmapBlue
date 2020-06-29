@@ -4,7 +4,7 @@ import { DEFAULT_CONFIG } from './config';
 import FlowMap from './FlowMap';
 import { ConfigPropName, Flow, Location } from './types';
 import MapContainer from './MapContainer';
-import { ColorScheme, Fallback } from './index';
+import { AppToaster, ColorScheme, Fallback } from './index';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
@@ -16,6 +16,7 @@ import { css, Global } from '@emotion/core';
 import { Classes, Colors, FocusStyleManager } from '@blueprintjs/core';
 
 FocusStyleManager.onlyShowFocusOnTabs();
+AppToaster.init();
 
 const history = createBrowserHistory();
 
