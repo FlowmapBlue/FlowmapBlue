@@ -88,6 +88,7 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
 
   return (
     <Popover
+      usePortal={false}
       hoverOpenDelay={0}
       hoverCloseDelay={0}
       content={

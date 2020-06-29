@@ -16,11 +16,12 @@ import { css, Global } from '@emotion/core';
 import { Classes, Colors, FocusStyleManager } from '@blueprintjs/core';
 
 FocusStyleManager.onlyShowFocusOnTabs();
-AppToaster.init();
 
 const history = createBrowserHistory();
 
 const globalStyles = css`
+  @import url("https://fonts.googleapis.com/css?family=Sarabun:400,700");
+
   html,
   body,
   button,
@@ -106,25 +107,36 @@ export function init(
     flows,
     container,
     mapboxAccessToken,
+    clustering = true,
+    animation = false,
+    darkMode = false,
   }: {
     locations: Location[],
     flows: Flow[],
     container: HTMLElement,
-    mapboxAccessToken: string,
+    mapboxAccessToken?: string,
+    clustering?: boolean,
+    animation?: boolean,
+    darkMode?: boolean,
   },
 ) {
+  AppToaster.init(container);
   ReactDOM.render(
     <Router history={history}>
       <ErrorBoundary>
         <Global styles={globalStyles} />
-        <MapContainer>
+        <MapContainer embed={true}>
           <FlowMap
             inBrowser={true}
+            embed={true}
             flowsFetch={{ value: flows }}
             locationsFetch={{ value: locations }}
             config={{
               ...DEFAULT_CONFIG,
               [ConfigPropName.MAPBOX_ACCESS_TOKEN]: mapboxAccessToken,
+              [ConfigPropName.CLUSTER_ON_ZOOM]: clustering ? 'true' : 'false',
+              [ConfigPropName.ANIMATE_FLOWS]: animation ? 'true' : 'false',
+              [ConfigPropName.COLORS_DARK_MODE]: darkMode ? 'true' : 'false',
             }}
             spreadSheetKey={undefined}
             flowsSheet={undefined}

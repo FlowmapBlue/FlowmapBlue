@@ -99,6 +99,7 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
             <Popover
               position={Position.TOP_RIGHT}
               minimal={true}
+              usePortal={false}
               hoverOpenDelay={0}
               hoverCloseDelay={0}
               content={

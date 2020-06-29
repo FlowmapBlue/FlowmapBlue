@@ -4,12 +4,14 @@ export const AppToaster = new class implements IToaster {
 
   toaster: IToaster | undefined;
 
-  init() {
+  init(container: HTMLElement = document.body) {
     if (!this.toaster) {
-      this.toaster = Toaster.create({
+      this.toaster = Toaster.create(
+        {
           className: 'toaster',
           position: Position.BOTTOM_RIGHT,
-        }
+        },
+        container,
       );
     }
   }

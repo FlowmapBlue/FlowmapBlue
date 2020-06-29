@@ -30,6 +30,8 @@ const ButtonArea = styled.div({
   },
 });
 const globalStyles = css`
+  @import url("https://fonts.googleapis.com/css?family=Sarabun:400,700");
+
   html, body {
     margin: 0;
     background-color: ${'#2d3a4c'};

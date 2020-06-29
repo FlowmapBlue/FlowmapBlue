@@ -792,6 +792,21 @@ const FlowMap: React.FC<Props> = (props) => {
     return layers;
   };
 
+  const [showFullscreenButton, setShowFullscreenButton] = useState(
+    embed && document.fullscreenEnabled
+  );
+
+  useEffect(() => {
+    function handleFullScreenChange() {
+      setShowFullscreenButton(
+        embed && document.fullscreenEnabled && !document.fullscreenElement
+      );
+    }
+    document.addEventListener('fullscreenchange', handleFullScreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
+  }, [setShowFullscreenButton]);
+
+
   return (
     <NoScrollContainer
       ref={outerRef}
@@ -912,7 +927,7 @@ const FlowMap: React.FC<Props> = (props) => {
           <SettingsPopover darkMode={darkMode} state={state} dispatch={dispatch} />
         </Absolute>
       )}
-      {embed && (
+      {showFullscreenButton && (
         <Absolute bottom={30} right={10}>
           <Button
             title="Open in full-screen mode"
