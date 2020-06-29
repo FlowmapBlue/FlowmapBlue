@@ -106,7 +106,6 @@
     "css-loader": "^3.6.0",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
-    "react-refetch": "^3.0.0",
     "style-loader": "^1.2.1",
     "ts-loader": "^7.0.5",
     "webpack-cli": "^3.3.12"

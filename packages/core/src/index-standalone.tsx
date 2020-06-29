@@ -2,7 +2,6 @@ import React from 'react';
 import * as ReactDOM from 'react-dom';
 import { DEFAULT_CONFIG } from './config';
 import FlowMap from './FlowMap';
-import { PromiseState } from 'react-refetch';
 import { ConfigPropName, Flow, Location } from './types';
 import MapContainer from './MapContainer';
 import { ColorScheme, Fallback } from './index';
@@ -120,8 +119,8 @@ export function init(
         <MapContainer>
           <FlowMap
             inBrowser={true}
-            flowsFetch={PromiseState.resolve(flows)}
-            locationsFetch={PromiseState.resolve(locations)}
+            flowsFetch={{ value: flows }}
+            locationsFetch={{ value: locations }}
             config={{
               ...DEFAULT_CONFIG,
               [ConfigPropName.MAPBOX_ACCESS_TOKEN]: mapboxAccessToken,

@@ -19,6 +19,7 @@ import Tooltip, { TargetBounds } from './Tooltip';
 import { Link, useHistory } from 'react-router-dom';
 import Collapsible, { Direction } from './Collapsible';
 import {
+  AsyncState,
   Config,
   ConfigPropName,
   Flow,
@@ -104,8 +105,8 @@ export type Props = {
   inBrowser: boolean;
   embed?: boolean;
   config: Config;
-  locationsFetch: PromiseState<Location[]>;
-  flowsFetch: PromiseState<Flow[]>;
+  locationsFetch: AsyncState<Location[]>;
+  flowsFetch: AsyncState<Flow[]>;
   spreadSheetKey: string | undefined;
   flowsSheet: string | undefined;
   onSetFlowsSheet?: (sheet: string) => void;
@@ -532,28 +533,33 @@ const FlowMap: React.FC<Props> = (props) => {
     }
   };
 
-  if (locationsFetch.pending || locationsFetch.refreshing) {
+  if (locationsFetch.loading) {
     return <LoadingSpinner />;
   }
-  if (locationsFetch.rejected || flowsFetch.rejected) {
+  if (locationsFetch.error || flowsFetch.error) {
     return (
       <Message>
-        <p>
-          Oops… Couldn't fetch data from{` `}
-          <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.
-          {` `}
-        </p>
-        <p>
-          If you are the owner of this spreadsheet, make sure you have shared it by doing the
-          following:
-          <ol>
-            <li>Click the “Share” button in the spreadsheet</li>
-            <li>
-              Change the selection from “Restricted” to “Anyone with the link” in the drop-down
-              under “Get link”
-            </li>
-          </ol>
-        </p>
+        {spreadSheetKey
+          ? <>
+            <p>
+              Oops… Couldn't fetch data from{` `}
+              <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.
+              {` `}
+            </p>
+            <p>
+              If you are the owner of this spreadsheet, make sure you have shared it by doing the
+              following:
+              <ol>
+                <li>Click the “Share” button in the spreadsheet</li>
+                <li>
+                  Change the selection from “Restricted” to “Anyone with the link” in the drop-down
+                  under “Get link”
+                </li>
+              </ol>
+            </p>
+          </>
+          : <p>Oops… Couldn't fetch data</p>
+        }
       </Message>
     );
   }
@@ -980,7 +986,7 @@ const FlowMap: React.FC<Props> = (props) => {
         </TitleBox>
       )}
       {tooltip && <Tooltip {...tooltip} />}
-      {(flowsFetch.pending || flowsFetch.refreshing) && <LoadingSpinner />}
+      {flowsFetch.loading && <LoadingSpinner />}
     </NoScrollContainer>
   );
 };
