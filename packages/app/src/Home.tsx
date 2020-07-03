@@ -7,7 +7,7 @@ import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
 import { Away, Column, Logo, Row } from '@flowmap.blue/core';
 import { Helmet } from 'react-helmet';
 import MapboxLogo from './images/mapbox-logo-black.svg';
-import NycCitiBikeImage from './images/nyc-citi-bike.jpg';
+import NycCitiBikeImage from './images/nyc-citi-bike_1000px.jpg';
 import TLLogo from './images/TL-Horizontal-Black.svg';
 import { Button, Classes, Colors, Intent, Tag } from '@blueprintjs/core';
 import Nav from './Nav';
