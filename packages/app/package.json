@@ -1,0 +1,66 @@
+{
+  "name": "@flowmap.blue/app",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@blueprintjs/core": "^3.23.1",
+    "@blueprintjs/select": "^3.10.0",
+    "@emotion/core": "^10.0.27",
+    "@emotion/styled": "^10.0.27",
+    "@mapbox/geo-viewport": "^0.4.0",
+    "@sentry/browser": "^5.15.4",
+    "@types/d3-dsv": "^1.0.35",
+    "@types/jest": "^25.2.1",
+    "@types/node": "^13.11.0",
+    "@types/react": "^16.9.38",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-helmet": "^5.0.15",
+    "@types/react-router-dom": "^5.1.0",
+    "blueimp-md5": "^2.13.0",
+    "d3-dsv": "^1.0.10",
+    "husky": "^4.2.2",
+    "lint-staged": "^10.1.2",
+    "prettier": "^2.0.4",
+    "query-string": "^6.12.0",
+    "react": "^16.13.1",
+    "react-app-polyfill": "^1.0.6",
+    "react-dom": "^16.13.1",
+    "react-fetch-hook": "^1.8.2",
+    "react-helmet": "^5.2.0",
+    "react-player": "^1.15.3",
+    "react-refetch": "^3.0.0",
+    "react-router-dom": "^5.1.2",
+    "react-router-hash-link": "^1.2.2",
+    "react-scripts": "^3.4.1",
+    "react-use": "^14.1.1",
+    "source-map-explorer": "^2.4.2",
+    "typescript": "^3.7.5"
+  },
+  "devDependencies": {
+    "@babel/helper-call-delegate": "^7.10.4",
+    "@types/blueimp-md5": "^2.7.0",
+    "@types/react-router-hash-link": "^1.2.1",
+    "favicons": "^5.4.1",
+    "puppeteer": "^2.1.1",
+    "sharp": "^0.24.0"
+  },
+  "scripts": {
+    "start": "PORT=7000 node -r dotenv/config ../../node_modules/.bin/react-scripts start dotenv_config_path=../../.env",
+    "dev": "npm start",
+    "build": "node -r dotenv/config ../../node_modules/.bin/react-scripts build dotenv_config_path=../../.env",
+    "test": "node_modules/.bin/react-scripts test",
+    "eject": "node_modules/.bin/react-scripts eject",
+    "favicons": "node scripts/favicons.js",
+    "shots": "node scripts/screenshots.js",
+    "analyze": "node_modules/.bin/source-map-explorer 'build/static/js/*.js'"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

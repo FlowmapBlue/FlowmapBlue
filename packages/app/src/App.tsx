@@ -1,0 +1,86 @@
+import * as React from 'react';
+import { Suspense } from 'react';
+import { Route, RouteComponentProps, Router, Switch } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import * as Sentry from '@sentry/browser';
+import Home from './Home';
+import { AppToaster, LoadingSpinner } from '@flowmap.blue/core';
+import { SPREADSHEET_KEY_RE } from './constants';
+import ErrorFallback from './ErrorFallback';
+import ErrorBoundary from './ErrorBoundary';
+
+const GSheetsFlowMap = React.lazy(() => import('./GSheetsFlowMap'));
+const InBrowserFlowMap = React.lazy(() => import('./InBrowserFlowMap'));
+const FromUrlFlowMap = React.lazy(() => import('./FromUrlFlowMap'));
+const ODMatrixConverter = React.lazy(() => import('./ODMatrixConverter'));
+const Geocoding = React.lazy(() => import('./Geocoding'));
+
+const history = createBrowserHistory();
+history.listen(location => AppToaster.clear());
+
+type Props = {};
+
+type State = {
+  error: any;
+};
+
+const makeGSheetsFlowMap = (embed: boolean) => ({
+  match,
+}: RouteComponentProps<{ sheetKey: string }>) => (
+  <GSheetsFlowMap spreadSheetKey={match.params.sheetKey} embed={embed} />
+);
+
+
+
+export default class App extends React.Component<Props, State> {
+  state = {
+    error: null,
+  };
+
+  componentDidCatch(error: any, errorInfo: any) {
+    this.setState({ error });
+    if (process.env.REACT_APP_SENTRY_DSN) {
+      Sentry.withScope(scope => {
+        Object.keys(errorInfo).forEach(key => {
+          scope.setExtra(key, errorInfo[key]);
+        });
+        Sentry.captureException(error);
+      });
+    }
+  }
+
+  render() {
+    if (this.state.error) {
+      // render fallback UI
+      return (
+        <Router history={history}>
+          <ErrorFallback/>
+        </Router>
+      );
+    } else {
+      return (
+        <Router history={history}>
+          <ErrorBoundary>
+            <Suspense fallback={<LoadingSpinner />}>
+              <Switch>
+                <Route path="/od-matrix-converter" component={ODMatrixConverter} />
+                <Route path="/geocoding" component={Geocoding} />
+                <Route path="/in-browser" component={InBrowserFlowMap} />
+                <Route path="/from-url" component={FromUrlFlowMap} />
+                <Route
+                  path={`/:sheetKey(${SPREADSHEET_KEY_RE})/embed`}
+                  component={makeGSheetsFlowMap(true)}
+                />
+                <Route
+                  path={`/:sheetKey(${SPREADSHEET_KEY_RE})`}
+                  component={makeGSheetsFlowMap(false)}
+                />
+                <Route path="/" component={Home} />
+              </Switch>
+            </Suspense>
+          </ErrorBoundary>
+        </Router>
+      );
+    }
+  }
+}
