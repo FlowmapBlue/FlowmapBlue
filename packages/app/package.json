@@ -37,6 +37,7 @@
     "typescript": "^3.7.5"
   },
   "devDependencies": {
+    "@babel/helper-call-delegate": "^7.10.4",
     "@types/blueimp-md5": "^2.7.0",
     "@types/react-router-hash-link": "^1.2.1",
     "favicons": "^5.4.1",
