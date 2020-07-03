@@ -274,6 +274,11 @@
       "query": "v=41.358382,2.123110,11.57,-50,0&a=0&b=1&bo=77&c=1&d=1&lt=1&lfm=ALL&col=SunsetDark&f=65"
     },
     {
+      "key": "1hsU13EUFyX8m9xp7GYGGEMyC1bZ8_9sU6b4e2KHwVSc",
+      "query": "v=38.063991,12.856926,4,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=SunsetDark&f=50",
+      "name": "France historical mobility 1790-1890"
+    },
+    {
       "key": "11SBtjPvJF9DwhaA8ZBGCYdMwajd4VPTGTp4AXmw1j5k",
       "name": "Migration from Greece",
       "query": "v=38.917953,21.921850,6.24&a=1&d=0&c=1&col=Teal&f=0"

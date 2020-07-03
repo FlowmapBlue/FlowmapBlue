@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 const puppeteer = require('puppeteer');
-const { examples, aspectRatio, screenshotSizes } = require('../packages/app/src/examples');
-const OUTPUT_PATH = path.resolve(__dirname, '../packages/app/public/screenshots/');
+const { examples, aspectRatio, screenshotSizes } = require('../src/examples');
+const OUTPUT_PATH = path.resolve(__dirname, '../public/screenshots/');
 const APP_URL = 'http://localhost:7000';
 
 const PAD = 600;

@@ -42,7 +42,7 @@
     "@types/react-router-hash-link": "^1.2.1",
     "favicons": "^5.4.1",
     "puppeteer": "^2.1.1",
-    "sharp": "^0.24.0"
+    "sharp": "^0.25.4"
   },
   "scripts": {
     "start": "PORT=7000 node -r dotenv/config ../../node_modules/.bin/react-scripts start dotenv_config_path=../../.env",
