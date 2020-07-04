@@ -86,12 +86,12 @@ const Nav = () => (
     </NavMenu>
     <Navbar.Group align={Alignment.RIGHT}>
       <LinksArea>
-        <Away href="https://github.com/sponsors/ilyabo">
-          <LinkItem>
-            <span>Sponsor</span>
-            <Icon icon={IconNames.HEART} />
-          </LinkItem>
-        </Away>
+        {/*<Away href="https://github.com/sponsors/ilyabo">*/}
+        {/*  <LinkItem>*/}
+        {/*    <span>Sponsor</span>*/}
+        {/*    <Icon icon={IconNames.HEART} />*/}
+        {/*  </LinkItem>*/}
+        {/*</Away>*/}
         <Away href="https://spectrum.chat/flowmap-blue/">
           <LinkItem>
             <span>Ask a question</span>
