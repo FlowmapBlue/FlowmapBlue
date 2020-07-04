@@ -350,7 +350,7 @@ const Home = () => (
         If you are not comfortable uploading your data to Google Sheets, consider using our{' '}
         <Link to="/in-browser">In-browser flow map</Link> or load CSV files from any specific URLs
         as{' '}
-        <Away href="https://github.com/ilyabo/flowmap.blue/issues/18#issuecomment-610063627">
+        <Away href="https://github.com/FlowmapBlue/flowmap.blue/issues/18#issuecomment-610063627">
           described here
         </Away>
         .
@@ -444,7 +444,7 @@ const Home = () => (
         <p>
           <Away href="https://spectrum.chat/flowmap-blue/general">Ask a question in the forum</Away>
           ,{` `}
-          <Away href="https://github.com/ilyabo/flowmap.blue/issues">submit an issue</Away>
+          <Away href="https://github.com/FlowmapBlue/flowmap.blue/issues">submit an issue</Away>
           {` or `}
           <a href="mailto:ilya@boyandin.me?subject=Flowmap.blue">write me an email</a>.
         </p>
@@ -480,9 +480,9 @@ const Home = () => (
         <h2 id="open-source">Open source</h2>
         <p>
           {`The source code of Flowmap.blue `}
-          <Away href="https://github.com/ilyabo/flowmap.blue">is freely available</Away>
+          <Away href="https://github.com/FlowmapBlue/flowmap.blue">is freely available</Away>
           {` under the  `}
-          <Away href="https://github.com/ilyabo/flowmap.blue/blob/master/LICENSE">MIT license</Away>
+          <Away href="https://github.com/FlowmapBlue/flowmap.blue/blob/master/LICENSE">MIT license</Away>
           .
         </p>
         <p>

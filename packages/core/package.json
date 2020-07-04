@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ilyabo/flowmap.blue.git"
+    "url": "git+https://github.com/FlowmapBlue/flowmap.blue.git"
   },
   "keywords": [
     "flows",
@@ -37,9 +37,9 @@
   "author": "Ilya Boyandin",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ilyabo/flowmap.blue/issues"
+    "url": "https://github.com/FlowmapBlue/flowmap.blue/issues"
   },
-  "homepage": "https://github.com/ilyabo/flowmap.blue#readme",
+  "homepage": "https://github.com/FlowmapBlue/flowmap.blue#readme",
   "dependencies": {
     "@blueprintjs/core": "^3.23.1",
     "@blueprintjs/select": "^3.10.0",
