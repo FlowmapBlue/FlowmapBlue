@@ -33,7 +33,6 @@ import {
 } from './types';
 import Message from './Message';
 import LoadingSpinner from './LoadingSpinner';
-import { PromiseState } from 'react-refetch';
 import NoScrollContainer from './NoScrollContainer';
 import styled from '@emotion/styled';
 import { IconNames } from '@blueprintjs/icons';
@@ -387,6 +386,20 @@ const FlowMap: React.FC<Props> = (props) => {
       });
     }
   }, [allLocations, locationsHavingFlows, adjustViewportToLocations]);
+
+  const [showFullscreenButton, setShowFullscreenButton] = useState(
+    embed && document.fullscreenEnabled
+  );
+
+  useEffect(() => {
+    function handleFullScreenChange() {
+      setShowFullscreenButton(
+        embed && document.fullscreenEnabled && !document.fullscreenElement
+      );
+    }
+    document.addEventListener('fullscreenchange', handleFullScreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
+  }, [setShowFullscreenButton]);
 
   const getContainerClientRect = useCallback(() => {
     const container = outerRef.current;
@@ -791,20 +804,6 @@ const FlowMap: React.FC<Props> = (props) => {
 
     return layers;
   };
-
-  const [showFullscreenButton, setShowFullscreenButton] = useState(
-    embed && document.fullscreenEnabled
-  );
-
-  useEffect(() => {
-    function handleFullScreenChange() {
-      setShowFullscreenButton(
-        embed && document.fullscreenEnabled && !document.fullscreenElement
-      );
-    }
-    document.addEventListener('fullscreenchange', handleFullScreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
-  }, [setShowFullscreenButton]);
 
 
   return (

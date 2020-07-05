@@ -20,13 +20,15 @@ import { useAsync } from 'react-use';
 import { csvParse } from 'd3-dsv';
 import { Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
+import { compose, withProps } from 'recompose';
 
 interface Props {
   spreadSheetKey: string;
   embed: boolean;
 }
 
-const FlowMapWithData = sheetFetcher('json')<any>(
+const FlowMapWithData = compose<any, any>(
+  sheetFetcher('json')<any>(
   ({ spreadSheetKey, config, flowsSheet = 'flows' }: FlowMapProps) => ({
     locationsFetch: {
       url: makeSheetQueryUrl(spreadSheetKey!, 'locations', 'SELECT A,B,C,D', 'json'),
@@ -49,7 +51,19 @@ const FlowMapWithData = sheetFetcher('json')<any>(
         value: prepareFlows(rows),
       }),
     } as any,
-  })
+  })),
+  withProps(
+    (props: any) => ({
+      locationsFetch: {
+        ...props.locationsFetch,
+        loading: props.locationsFetch.pending || props.locationsFetch.refreshing,
+      },
+      flowsFetch: {
+        ...props.flowsFetch,
+        loading: props.flowsFetch.pending || props.flowsFetch.refreshing,
+      },
+    })
+  ),
 )(FlowMap as any);
 
 const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, embed }) => {
