@@ -66,6 +66,11 @@
       "query": "v=40.733700,-73.985072,12.47&a=0&d=1&c=1&f=45"
     },
     {
+      "key": "1T4WemnQqdWjQHRSSEFkIoDclv8bAzXqnNMaAerWOWK8",
+      "name": "Tokyo metropolitan area census 2015",
+      "query": "v=35.675604,139.743599,10.16,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=YlGnBu&f=50"
+    },
+    {
       "key": "1xHK2xcxyXPP8FV5NHCjcByx9kTenbNY75yY00PHqqAc",
       "name": "Edinburgh's bike sharing 2020",
       "query": "v=55.943846,-3.206758,11.94,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20200101T000000,20200102T000000&col=Sunset&f=50"
@@ -122,11 +127,6 @@
       "key": "1Wz6ohj-PTWIQ7X9nu5dpdliqp9azSLWVPOCQoOpLvKQ",
       "name": "Commuters in Canada 2016",
       "query": "v=48.379110,-94.389853,3.79&a=0&b=1&c=1&d=1&lt=1&col=Default&f=28"
-    },
-    {
-      "key": "18QSxtLs-AemUZx4fAL2L3oRAvK8sadCrecEUfOXucWM",
-      "name": "Migration in Europe",
-      "query": "v=45.564382,15.054623,4.02,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50"
     },
     {
       "key": "1jhDwRoMv12lEzdNyldmGTNbWJ11YgIb-TbuC9qJ6SQs",
@@ -265,6 +265,11 @@
       "key": "1BHy69x6MbVZZSqmF53MnOe2X_B_AGGdNUqsXmmmFt0Q",
       "name": "Commuters to Salzburg 2011",
       "query": "v=47.780392,13.055787,10.31&a=0&b=1&c=1&d=1&lt=1&f=45"
+    },
+    {
+      "key": "18QSxtLs-AemUZx4fAL2L3oRAvK8sadCrecEUfOXucWM",
+      "name": "Migration in Europe",
+      "query": "v=45.564382,15.054623,4.02,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50"
     },
     {
       "key": "1XQXu5-HHCVUxtJoA70qoCe7Od0kJW3TjnsRIrjaPFpg",
