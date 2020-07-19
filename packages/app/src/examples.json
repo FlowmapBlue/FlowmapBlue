@@ -56,9 +56,9 @@
       "query": "v=25.033034,121.499924,11.14,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20190101T080000,20190101T090000&col=Default&f=50"
     },
     {
-      "key": "1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc",
-      "name": "Commuters in the Netherlands 2016",
-      "query": "v=52.098668,4.658308,8.60&a=0&d=1&c=1&lt=1&col=Default&f=45"
+      "key": "1gDrYiVk4jNhmqkBhFwKOYhBTHfOU_GNsjDUHV5vpuVE",
+      "name": "Commuters in Palermo, Italy",
+      "query": "v=38.075220,13.339093,10.03,0,0&a=1&b=1&bo=50&c=1&d=1&lt=1&lfm=ALL&col=YlOrRd&f=17"
     },
     {
       "key": "1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA",
@@ -76,22 +76,23 @@
       "query": "v=35.129811,-98.580030,3.99&a=0&d=1&c=1&f=45"
     },
     {
-      "key": "1Z6dVVFFrdooHIs8xnJ_O7eM5bhS5KscCi7G_k0jUNDI",
-      "name": "London bicycle hires 2017"
+      "key": "1Oe3zM219uSfJ3sjdRT90SAK2kU3xIvzdcCW6cwTsAuc",
+      "name": "Commuters in the Netherlands 2016",
+      "query": "v=52.098668,4.658308,8.60&a=0&d=1&c=1&lt=1&col=Default&f=45"
+    },
+    {
+      "key": "1icUMT7Q3V0DOPHBahXJlz7Mz_BYOgLv9InZUHX_5xIE",
+      "name": "Bird migration model",
+      "query": "v=49.272478,5.910396,5.91&a=1&d=1&c=0&lt=0&col=Sunset&f=24"
     },
     {
       "key": "1MQK6xs-lS82crlfubyAzSXRQDiWTUrIgNuvkXhUKjUs",
       "name": "5 million relocations in Australia"
     },
     {
-      "key": "1gDrYiVk4jNhmqkBhFwKOYhBTHfOU_GNsjDUHV5vpuVE",
-      "name": "Commuters in Palermo, Italy",
-      "query": "v=38.075220,13.339093,10.03,0,0&a=1&b=1&bo=50&c=1&d=1&lt=1&lfm=ALL&col=YlOrRd&f=17"
-    },
-    {
-      "key": "1icUMT7Q3V0DOPHBahXJlz7Mz_BYOgLv9InZUHX_5xIE",
-      "name": "Bird migration model",
-      "query": "v=49.272478,5.910396,5.91&a=1&d=1&c=0&lt=0&col=Sunset&f=24"
+      "key": "1ySZqe2onnkehmFIyXc4o3UqbyZq4RCk9AYcaAC-kWzA",
+      "query": "v=-36.842204,174.744059,9.96,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50",
+      "name": "New Zealand commuters 2018"
     },
     {
       "key": "11leYaPeZ2uw3tlPUKlzto8fET_QLxa3PYitdZJEK2YA",
@@ -104,18 +105,28 @@
       "name": "Bicycle hires in Bern, Switzerland"
     },
     {
-      "key": "1upuL1_mCgXjjIp2OI_PekFS5r_Vtyr46Fayt1aWnnjc",
-      "name": "International migrant stock 2019"
-    },
-    {
       "key": "1hIfHz5LNmiizMAbnUbzCOYt-QqORI4hChUE4dZUQgfs",
       "query": "v=-27.469948,153.026140,11.65,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50",
-      "name": "Public transport trips in South East Queensland"
+      "name": "South East Queensland public transport"
+    },
+    {
+      "key": "1efgAnJcTOVrETiAgVLOZ14Yd5wm2U3wMiSYCgo7F_Yo",
+      "query": "v=51.503510,-0.127498,12.04,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=SunsetDark&f=63",
+      "name": "10M London bicycle hires 2019"
+    },
+    {
+      "key": "1Z6dVVFFrdooHIs8xnJ_O7eM5bhS5KscCi7G_k0jUNDI",
+      "name": "London bicycle hires 2017"
     },
     {
       "key": "1Wz6ohj-PTWIQ7X9nu5dpdliqp9azSLWVPOCQoOpLvKQ",
       "name": "Commuters in Canada 2016",
       "query": "v=48.379110,-94.389853,3.79&a=0&b=1&c=1&d=1&lt=1&col=Default&f=28"
+    },
+    {
+      "key": "18QSxtLs-AemUZx4fAL2L3oRAvK8sadCrecEUfOXucWM",
+      "name": "Migration in Europe",
+      "query": "v=45.564382,15.054623,4.02,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50"
     },
     {
       "key": "1jhDwRoMv12lEzdNyldmGTNbWJ11YgIb-TbuC9qJ6SQs",
@@ -217,6 +228,15 @@
       "key": "1ZXg_3QunGO4_jhaWstYvHAQicYCukPYDCxslW3c0uNQ",
       "name": "Commuters in le Pays de Lorient, France",
       "query": "v=47.756469,-3.380318,10.49&a=0&d=1&c=1&col=PuRd&f=45"
+    },
+    {
+      "key": "1RP9YEXuYJbllZGjUuLdaNmkSyvXYPQ5tBjXX4CGBMjI",
+      "name": "International migrants 2000, 2005, 2010, 2015",
+      "query": "v=8.729650,11.252848,1.22,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Emrld&f=50"
+    },
+    {
+      "key": "1upuL1_mCgXjjIp2OI_PekFS5r_Vtyr46Fayt1aWnnjc",
+      "name": "International migrant stock 2019"
     },
     {
       "key": "18RxRi1aKytbiBL7O_lXbTx4n69JWqiGJquPGJmv7wos",
