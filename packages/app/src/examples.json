@@ -147,9 +147,14 @@
       "name": "Commuters in Switzerland 2014"
     },
     {
-      "key": "12OpNobFWMLRFuBhCxP-hJIGMA3iqDwA3P6fwkDqfQms",
-      "query": "v=45.450771,9.183115,11.46&a=0&d=1&c=1&lt=1&col=Burg&f=64",
-      "name": "Commuters in Milan 2020"
+      "key": "1Tlj2e6Kha7SZgIxwcghIqJiCyWXv7VMtgHw20VSjyIE",
+      "name": "Pedestrians in Mexico City",
+      "query": "v=19.391692,-99.151511,10.91&a=0&d=1&c=1&lt=1&f=45"
+    },
+    {
+      "key": "1CHNxBDHzADEekx78Q-EMfiacPKNapaU8cRLueMFfSr4",
+      "name": "Harris County commuters by wage 2017",
+      "query": "v=29.813146,-95.418800,9.71,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=OrRd&f=50"
     },
     {
       "key": "1j15DwdAvGg21z47dJ1wBWCB_oxKwKqzuuwQbMD4cGNk",
@@ -157,9 +162,9 @@
       "name": "Commuters in Trøndelag, Norway"
     },
     {
-      "key": "1Tlj2e6Kha7SZgIxwcghIqJiCyWXv7VMtgHw20VSjyIE",
-      "name": "Pedestrians in Mexico City",
-      "query": "v=19.391692,-99.151511,10.91&a=0&d=1&c=1&lt=1&f=45"
+      "key": "12OpNobFWMLRFuBhCxP-hJIGMA3iqDwA3P6fwkDqfQms",
+      "query": "v=45.450771,9.183115,11.46&a=0&d=1&c=1&lt=1&col=Burg&f=64",
+      "name": "Commuters in Milan 2020"
     },
     {
       "key": "1C2Br5bAU0R6j-2C2-_ElpIu45bLFm-F3hkbe7-JOFwg",
@@ -269,7 +274,7 @@
     {
       "key": "18QSxtLs-AemUZx4fAL2L3oRAvK8sadCrecEUfOXucWM",
       "name": "Migration in Europe",
-      "query": "v=45.564382,15.054623,4.02,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50"
+      "query": "v=45.564382,15.054623,4.02,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=YlGnBu&f=50"
     },
     {
       "key": "1XQXu5-HHCVUxtJoA70qoCe7Od0kJW3TjnsRIrjaPFpg",
