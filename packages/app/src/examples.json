@@ -157,6 +157,11 @@
       "query": "v=29.813146,-95.418800,9.71,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=OrRd&f=50"
     },
     {
+      "key": "1xnVwgxAUGPn14nnyCl1XjkznsKV303poObzODeqGf_c",
+      "name": "Santiago, Chile, March 9, 2020",
+      "query": "v=-33.452532,-70.662550,9.93,0,0&a=0&b=1&bo=75&c=0&d=1&lt=1&lfm=ALL&col=BuPu&f=50"
+    },
+    {
       "key": "1j15DwdAvGg21z47dJ1wBWCB_oxKwKqzuuwQbMD4cGNk",
       "query": "v=63.520513,10.767703,7.36,0,0&a=0&b=1&bo=75&c=0&d=1&lt=1&lfm=ALL&col=BluYl&f=33",
       "name": "Commuters in Trøndelag, Norway"
