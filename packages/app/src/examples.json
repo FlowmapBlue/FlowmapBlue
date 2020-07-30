@@ -323,6 +323,11 @@
       "name": "Poultry trade and risk of HPAI endemicity in Vietnam + background data map"
     },
     {
+      "key": "19kZJ8t_jO1WmlnncuXqYHdf5nQAYLqPLdfXtWW-k8eE",
+      "name": "Trans-Atlantic Slave Trade 1516-1865",
+      "query": "v=-4.876383,-19.778484,2.09,0,0&a=0&b=1&bo=75&c=0&d=1&lt=1&lfm=ALL&t=15160101T000000,18630101T000000&col=PuRd&f=50"
+    },
+    {
       "key": "1_SFSYKWgyo7BF1SK1TTyqFewr2nUDPfBOGnJTNh3s3k",
       "name": "Commuters in Switzerland, Swisstopo basemap",
       "query": "v=47.038717,8.158928,8.46,0,0&a=0&b=1&bo=100&c=1&d=0&lt=1&lfm=ALL&col=Burg&f=50"
