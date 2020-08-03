@@ -709,8 +709,8 @@ function calcLocationTotalsExtent(
   let rv: [number, number] | undefined = undefined;
   for (const [id, { incoming, outgoing, within }] of locationTotals.entries()) {
     if (locationIdsInViewport == null || locationIdsInViewport.has(id)){
-      const lo = Math.min(incoming, outgoing, within);
-      const hi = Math.max(incoming, outgoing, within);
+      const lo = Math.min(incoming + within, outgoing + within, within);
+      const hi = Math.max(incoming + within, outgoing + within, within);
       if (!rv) {
         rv = [lo, hi];
       } else {
