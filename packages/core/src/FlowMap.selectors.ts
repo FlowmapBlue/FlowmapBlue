@@ -426,11 +426,16 @@ export const getSortedAggregatedFilteredFlows: Selector<Flow[] | undefined> = cr
 
 export const getFlowMagnitudeExtent: Selector<[number, number] | undefined> = createSelector(
   getSortedAggregatedFilteredFlows,
-  (flows) => {
+  getSelectedLocationsSet,
+  getLocationFilterMode,
+  (flows, selectedLocationsSet, locationFilterMode) => {
     if (!flows) return undefined;
     let rv: [number, number] | undefined = undefined;
     for (const f of flows) {
-      if (getFlowOriginId(f) !== getFlowDestId(f)) {
+      if (
+        getFlowOriginId(f) !== getFlowDestId(f)
+        && isFlowInSelection(f, selectedLocationsSet, locationFilterMode)
+      ){
         const count = getFlowMagnitude(f);
         if (rv == null) {
           rv = [count, count];
