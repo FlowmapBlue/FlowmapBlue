@@ -17,7 +17,7 @@ import {
   getLocationCentroid,
   getLocationId,
   isLocationCluster,
-  Location,
+  Location, LocationTotals,
 } from './types';
 import * as Cluster from '@flowmap.gl/cluster';
 import { ClusterNode, findAppropriateZoomLevel, isCluster } from '@flowmap.gl/cluster';
@@ -530,6 +530,38 @@ const getLocationsForZoom: Selector<Location[] | ClusterNode[] | undefined> = cr
   }
 );
 
+export const getLocationTotals: Selector<Map<string, LocationTotals> | undefined> = createSelector(
+  getLocationsForZoom,
+  getSortedAggregatedFilteredFlows,
+  getSelectedLocationsSet,
+  getLocationFilterMode,
+  (locations, flows, selectedLocationsSet, locationFilterMode) => {
+    if (!flows) return undefined;
+    const totals = new Map<string, LocationTotals>();
+    const add = (id: string, d: Partial<LocationTotals>): LocationTotals => {
+      const rv = totals.get(id) ?? { incoming: 0, outgoing: 0, within: 0 };
+      if (d.incoming != null) rv.incoming += d.incoming;
+      if (d.outgoing != null) rv.outgoing += d.outgoing;
+      if (d.within != null) rv.within += d.within;
+      return rv;
+    };
+    for (const f of flows) {
+      if (isFlowInSelection(f, selectedLocationsSet, locationFilterMode)){
+        const originId = getFlowOriginId(f);
+        const destId = getFlowDestId(f);
+        const count = getFlowMagnitude(f);
+        if (originId === destId) {
+          totals.set(originId, add(originId, { within: count }))
+        } else {
+          totals.set(originId, add(originId, { outgoing: count }))
+          totals.set(destId, add(destId, { incoming: count }))
+        }
+      }
+    }
+    return totals;
+  }
+);
+
 type KDBushTree = any;
 
 export const getLocationsTree: Selector<KDBushTree> = createSelector(
@@ -668,6 +700,48 @@ export const getTotalFilteredCount: Selector<number | undefined> = createSelecto
     return count;
   }
 );
+
+function calcLocationTotalsExtent(
+  locationTotals: Map<string, LocationTotals> | undefined,
+  locationIdsInViewport: Set<string> | undefined,
+) {
+  if (!locationTotals) return undefined;
+  let rv: [number, number] | undefined = undefined;
+  for (const [id, { incoming, outgoing, within }] of locationTotals.entries()) {
+    if (locationIdsInViewport == null || locationIdsInViewport.has(id)){
+      const lo = Math.min(incoming, outgoing, within);
+      const hi = Math.max(incoming, outgoing, within);
+      if (!rv) {
+        rv = [lo, hi];
+      } else {
+        if (lo < rv[0]) rv[0] = lo;
+        if (hi > rv[1]) rv[1] = hi;
+      }
+    }
+  }
+  return rv;
+}
+
+const _getLocationTotalsExtent: Selector<[number, number] | undefined> = createSelector(
+  getLocationTotals,
+  locationTotals =>
+    calcLocationTotalsExtent(locationTotals, undefined),
+);
+
+const _getLocationTotalsForViewportExtent: Selector<[number, number] | undefined> = createSelector(
+  getLocationTotals,
+  getLocationIdsInViewport,
+  (locationTotals, locationsInViewport) =>
+    calcLocationTotalsExtent(locationTotals, locationsInViewport),
+);
+
+export function getLocationTotalsExtent(state: State, props: Props) {
+  if (state.adaptiveScalesEnabled) {
+    return _getLocationTotalsForViewportExtent(state, props);
+  } else {
+    return _getLocationTotalsExtent(state, props);
+  }
+}
 
 export const getFlowsForFlowMapLayer: Selector<Flow[] | undefined> = createSelector(
   getSortedAggregatedFilteredFlows,

@@ -43,6 +43,12 @@ export interface Location {
   name: string;
 }
 
+export interface LocationTotals {
+  incoming: number;
+  outgoing: number;
+  within: number;
+}
+
 export function isLocationCluster(l: Location | Cluster.Cluster): l is Cluster.Cluster {
   const { zoom } = l as Cluster.Cluster;
   return zoom !== undefined;
