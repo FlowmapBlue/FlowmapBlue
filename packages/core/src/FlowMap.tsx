@@ -59,7 +59,7 @@ import {
   getClusterZoom,
   getDarkMode,
   getDiffMode,
-  getFetchedFlows,
+  getFetchedFlows, getFlowMagnitudeExtent,
   getFlowMapColors,
   getFlowsForFlowMapLayer,
   getFlowsSheets,
@@ -747,7 +747,14 @@ const FlowMap: React.FC<Props> = (props) => {
   };
 
   const getLayers = () => {
-    const { animationEnabled, locationTotalsEnabled, darkMode, colorSchemeKey, fadeAmount } = state;
+    const {
+      animationEnabled,
+      adaptiveScalesEnabled,
+      locationTotalsEnabled,
+      darkMode,
+      colorSchemeKey,
+      fadeAmount,
+    } = state;
     const layers = [];
     if (locations && flows) {
       const id = [
@@ -781,6 +788,9 @@ const FlowMap: React.FC<Props> = (props) => {
           showTotals: true,
           maxLocationCircleSize: getMaxLocationCircleSize(state, props),
           maxFlowThickness: animationEnabled ? 18 : 12,
+          ...(!adaptiveScalesEnabled) && {
+            flowMagnitudeExtent: getFlowMagnitudeExtent(state, props),
+          },
           // selectedLocationIds: getExpandedSelection(state, props),
           highlightedLocationId:
             highlight && highlight.type === HighlightType.LOCATION

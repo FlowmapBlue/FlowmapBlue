@@ -423,6 +423,27 @@ export const getSortedAggregatedFilteredFlows: Selector<Flow[] | undefined> = cr
   }
 );
 
+
+export const getFlowMagnitudeExtent: Selector<[number, number] | undefined> = createSelector(
+  getSortedAggregatedFilteredFlows,
+  (flows) => {
+    if (!flows) return undefined;
+    let rv: [number, number] | undefined = undefined;
+    for (const f of flows) {
+      if (getFlowOriginId(f) !== getFlowDestId(f)) {
+        const count = getFlowMagnitude(f);
+        if (rv == null) {
+          rv = [count, count];
+        } else {
+          if (count < rv[0]) rv[0] = count;
+          if (count > rv[1]) rv[1] = count;
+        }
+      }
+    }
+    return rv;
+  }
+);
+
 export const getExpandedSelectedLocationsSet: Selector<Set<string> | undefined> = createSelector(
   getClusteringEnabled,
   getSelectedLocationsSet,
