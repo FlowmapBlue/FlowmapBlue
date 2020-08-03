@@ -59,6 +59,7 @@ export interface State {
   selectedTimeRange: [Date, Date] | undefined;
   locationFilterMode: LocationFilterMode;
   animationEnabled: boolean;
+  fadeEnabled: boolean;
   locationTotalsEnabled: boolean;
   adaptiveScalesEnabled: boolean;
   clusteringEnabled: boolean;
@@ -91,6 +92,7 @@ export enum ActionType {
   SET_LOCATION_TOTALS_ENABLED = 'SET_LOCATION_TOTALS_ENABLED',
   SET_ADAPTIVE_SCALES_ENABLED = 'SET_ADAPTIVE_SCALES_ENABLED',
   SET_DARK_MODE = 'SET_DARK_MODE',
+  SET_FADE_ENABLED = 'SET_FADE_ENABLED',
   SET_BASE_MAP_ENABLED = 'SET_BASE_MAP_ENABLED',
   SET_FADE_AMOUNT = 'SET_FADE_AMOUNT',
   SET_BASE_MAP_OPACITY = 'SET_BASE_MAP_OPACITY',
@@ -163,6 +165,10 @@ export type Action =
   | {
       type: ActionType.SET_DARK_MODE;
       darkMode: boolean;
+    }
+  | {
+      type: ActionType.SET_FADE_ENABLED;
+      fadeEnabled: boolean;
     }
   | {
       type: ActionType.SET_BASE_MAP_ENABLED;
@@ -363,6 +369,13 @@ function mainReducer(state: State, action: Action): State {
         darkMode,
       };
     }
+    case ActionType.SET_FADE_ENABLED: {
+      const { fadeEnabled } = action;
+      return {
+        ...state,
+        fadeEnabled,
+      };
+    }
     case ActionType.SET_BASE_MAP_ENABLED: {
       const { baseMapEnabled } = action;
       return {
@@ -455,11 +468,12 @@ export function applyStateFromQueryString(draft: State, query: string) {
       }
     }
   }
-  draft.fadeAmount = asNumber(params.f) ?? draft.fadeAmount;
   draft.baseMapOpacity = asNumber(params.bo) ?? draft.baseMapOpacity;
   draft.manualClusterZoom = asNumber(params.cz) ?? draft.manualClusterZoom;
   draft.baseMapEnabled = asBoolean(params.b) ?? draft.baseMapEnabled;
   draft.darkMode = asBoolean(params.d) ?? draft.darkMode;
+  draft.fadeEnabled = asBoolean(params.fe) ?? draft.fadeEnabled;
+  draft.fadeAmount = asNumber(params.f) ?? draft.fadeAmount;
   draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled;
   draft.adaptiveScalesEnabled = asBoolean(params.as) ?? draft.adaptiveScalesEnabled;
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
@@ -506,6 +520,7 @@ export function stateToQueryString(state: State) {
   parts.push(`ca=${state.clusteringAuto ? 1 : 0}`);
   parts.push(`cz=${state.manualClusterZoom}`);
   parts.push(`d=${state.darkMode ? 1 : 0}`);
+  parts.push(`fe=${state.fadeEnabled ? 1 : 0}`);
   parts.push(`lt=${state.locationTotalsEnabled ? 1 : 0}`);
   parts.push(`lfm=${state.locationFilterMode}`);
   if (state.selectedTimeRange) {
@@ -558,6 +573,7 @@ export function getInitialState(config: Config, queryString: string) {
     animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
     clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
     manualClusterZoom: undefined,
+    fadeEnabled: true,
     clusteringAuto: true,
     darkMode: parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
     fadeAmount: parseNumberConfigProp(config[ConfigPropName.FADE_AMOUNT], 50),

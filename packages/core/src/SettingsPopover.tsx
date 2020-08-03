@@ -64,6 +64,14 @@ const SettingsPopover: React.FC<Props> = (
     });
   };
 
+  const handleToggleFadeEnabled = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked;
+    dispatch({
+      type: ActionType.SET_FADE_ENABLED,
+      fadeEnabled: value,
+    });
+  };
+
   const handleToggleBaseMap = (evt: SyntheticEvent) => {
     const value = (evt.target as HTMLInputElement).checked;
     dispatch({
@@ -140,6 +148,40 @@ const SettingsPopover: React.FC<Props> = (
                 label="Dark mode"
                 onChange={handleToggleDarkMode}
               />
+              <Row spacing={15}>
+                <StyledSwitch
+                  checked={state.fadeEnabled}
+                  label="Fade"
+                  onChange={handleToggleFadeEnabled}
+                />
+                {state.fadeEnabled && <Slider
+                  value={state.fadeAmount}
+                  min={0}
+                  max={100}
+                  stepSize={1}
+                  labelRenderer={false}
+                  showTrackFill={false}
+                  onChange={handleChangeFadeAmount}
+                />}
+              </Row>
+              <Row spacing={15}>
+                <StyledSwitch
+                  checked={state.baseMapEnabled}
+                  label="Base map"
+                  onChange={handleToggleBaseMap}
+                />
+                {state.baseMapEnabled && (
+                  <Slider
+                    value={state.baseMapOpacity}
+                    min={0}
+                    max={100}
+                    stepSize={1}
+                    labelRenderer={false}
+                    showTrackFill={false}
+                    onChange={handleChangeBaseMapOpacity}
+                  />
+                )}
+              </Row>
               <StyledSwitch
                 checked={state.animationEnabled}
                 label="Animate flows"
@@ -190,36 +232,6 @@ const SettingsPopover: React.FC<Props> = (
                   />
                 </Row>}
               </>}
-              <Row spacing={15}>
-                <StyledSwitch
-                  checked={state.baseMapEnabled}
-                  label="Base map"
-                  onChange={handleToggleBaseMap}
-                />
-                {state.baseMapEnabled && (
-                  <Slider
-                    value={state.baseMapOpacity}
-                    min={0}
-                    max={100}
-                    stepSize={1}
-                    labelRenderer={false}
-                    showTrackFill={false}
-                    onChange={handleChangeBaseMapOpacity}
-                  />
-                )}
-              </Row>
-              <Row spacing={15}>
-                <div>Fade</div>
-                <Slider
-                  value={state.fadeAmount}
-                  min={0}
-                  max={100}
-                  stepSize={1}
-                  labelRenderer={false}
-                  showTrackFill={false}
-                  onChange={handleChangeFadeAmount}
-                />
-              </Row>
             </Column>
           </Column>
         </SettingsOuter>

@@ -329,6 +329,7 @@ export const getColorSchemeKey: Selector<string | undefined> = (state: State, pr
 
 export const getDarkMode: Selector<boolean> = (state: State, props: Props) => state.darkMode;
 
+export const getFadeEnabled: Selector<number> = (state: State, props: Props) => state.fadeEnabled;
 export const getFadeAmount: Selector<number> = (state: State, props: Props) => state.fadeAmount;
 
 export const getAnimate: Selector<boolean> = (state: State, props: Props) => state.animationEnabled;
@@ -338,6 +339,7 @@ export const getFlowMapColors = createSelector(
   getDiffMode,
   getColorSchemeKey,
   getDarkMode,
+  getFadeEnabled,
   getFadeAmount,
   getAnimate,
   getColors
