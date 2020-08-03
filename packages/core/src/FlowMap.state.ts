@@ -60,6 +60,7 @@ export interface State {
   locationFilterMode: LocationFilterMode;
   animationEnabled: boolean;
   locationTotalsEnabled: boolean;
+  adaptiveScalesEnabled: boolean;
   clusteringEnabled: boolean;
   baseMapEnabled: boolean;
   darkMode: boolean;
@@ -84,6 +85,7 @@ export enum ActionType {
   SET_CLUSTERING_ENABLED = 'SET_CLUSTERING_ENABLED',
   SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED',
   SET_LOCATION_TOTALS_ENABLED = 'SET_LOCATION_TOTALS_ENABLED',
+  SET_ADAPTIVE_SCALES_ENABLED = 'SET_ADAPTIVE_SCALES_ENABLED',
   SET_DARK_MODE = 'SET_DARK_MODE',
   SET_BASE_MAP_ENABLED = 'SET_BASE_MAP_ENABLED',
   SET_FADE_AMOUNT = 'SET_FADE_AMOUNT',
@@ -145,6 +147,10 @@ export type Action =
   | {
       type: ActionType.SET_LOCATION_TOTALS_ENABLED;
       locationTotalsEnabled: boolean;
+    }
+  | {
+      type: ActionType.SET_ADAPTIVE_SCALES_ENABLED;
+      adaptiveScalesEnabled: boolean;
     }
   | {
       type: ActionType.SET_DARK_MODE;
@@ -324,6 +330,13 @@ function mainReducer(state: State, action: Action): State {
         locationTotalsEnabled,
       };
     }
+    case ActionType.SET_ADAPTIVE_SCALES_ENABLED: {
+      const { adaptiveScalesEnabled } = action;
+      return {
+        ...state,
+        adaptiveScalesEnabled,
+      };
+    }
     case ActionType.SET_DARK_MODE: {
       const { darkMode } = action;
       return {
@@ -421,6 +434,7 @@ export function applyStateFromQueryString(draft: State, query: string) {
   draft.baseMapEnabled = asBoolean(params.b) ?? draft.baseMapEnabled;
   draft.darkMode = asBoolean(params.d) ?? draft.darkMode;
   draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled;
+  draft.adaptiveScalesEnabled = asBoolean(params.as) ?? draft.adaptiveScalesEnabled;
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
   draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled;
   if (params.lfm != null && params.lfm in LocationFilterMode) {
@@ -457,6 +471,7 @@ export function stateToQueryString(state: State) {
     ])}`
   );
   parts.push(`a=${state.animationEnabled ? 1 : 0}`);
+  parts.push(`as=${state.adaptiveScalesEnabled ? 1 : 0}`);
   parts.push(`b=${state.baseMapEnabled ? 1 : 0}`);
   parts.push(`bo=${state.baseMapOpacity}`);
   parts.push(`c=${state.clusteringEnabled ? 1 : 0}`);
@@ -509,6 +524,7 @@ export function getInitialState(config: Config, queryString: string) {
     locationTotalsEnabled: true,
     locationFilterMode: LocationFilterMode.ALL,
     baseMapEnabled: true,
+    adaptiveScalesEnabled: true,
     animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
     clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
     darkMode: parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE] || 'true'),

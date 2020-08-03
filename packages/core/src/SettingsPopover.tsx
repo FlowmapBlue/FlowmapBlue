@@ -86,6 +86,14 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
     });
   };
 
+  const handleToggleAdaptiveScales = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked;
+    dispatch({
+      type: ActionType.SET_ADAPTIVE_SCALES_ENABLED,
+      adaptiveScalesEnabled: value,
+    });
+  };
+
   return (
     <Popover
       usePortal={false}
@@ -130,6 +138,11 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
                 checked={state.clusteringEnabled}
                 label="Cluster on zoom"
                 onChange={handleToggleClustering}
+              />
+              <StyledSwitch
+                checked={state.adaptiveScalesEnabled}
+                label="Adaptive scales"
+                onChange={handleToggleAdaptiveScales}
               />
               <StyledSwitch
                 checked={state.locationTotalsEnabled}

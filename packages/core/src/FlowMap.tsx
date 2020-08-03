@@ -59,7 +59,7 @@ import {
   getClusterZoom,
   getDarkMode,
   getDiffMode,
-  getFetchedFlows,
+  getFetchedFlows, getFlowMagnitudeExtent,
   getFlowMapColors,
   getFlowsForFlowMapLayer,
   getFlowsSheets,
@@ -69,7 +69,7 @@ import {
   getLocationsForSearchBox,
   getLocationsHavingFlows,
   getLocationsInBbox,
-  getLocationsTree,
+  getLocationsTree, getLocationTotals, getLocationTotalsExtent,
   getMapboxMapStyle,
   getMaxLocationCircleSize,
   getSortedFlowsForKnownLocations,
@@ -747,7 +747,14 @@ const FlowMap: React.FC<Props> = (props) => {
   };
 
   const getLayers = () => {
-    const { animationEnabled, locationTotalsEnabled, darkMode, colorSchemeKey, fadeAmount } = state;
+    const {
+      animationEnabled,
+      adaptiveScalesEnabled,
+      locationTotalsEnabled,
+      darkMode,
+      colorSchemeKey,
+      fadeAmount,
+    } = state;
     const layers = [];
     if (locations && flows) {
       const id = [
@@ -759,6 +766,7 @@ const FlowMap: React.FC<Props> = (props) => {
         fadeAmount,
       ].join('-');
 
+      const locationTotals = getLocationTotals(state, props);
       const highlight = getHighlightForZoom();
       layers.push(
         new FlowMapLayer({
@@ -775,12 +783,22 @@ const FlowMap: React.FC<Props> = (props) => {
           getFlowOriginId,
           getFlowDestId,
           getLocationId,
+          getLocationTotalIn: loc => locationTotals?.get(loc.id)?.incoming || 0,
+          getLocationTotalOut: loc => locationTotals?.get(loc.id)?.outgoing || 0,
+          getLocationTotalWithin: loc => locationTotals?.get(loc.id)?.within || 0,
           getAnimatedFlowLineStaggering: (d: Flow) =>
             // @ts-ignore
             new alea(`${d.origin}-${d.dest}`)(),
           showTotals: true,
           maxLocationCircleSize: getMaxLocationCircleSize(state, props),
           maxFlowThickness: animationEnabled ? 18 : 12,
+          ...(!adaptiveScalesEnabled) && {
+            flowMagnitudeExtent: getFlowMagnitudeExtent(state, props),
+          },
+          // locationTotalsExtent needs to be always calculated, because locations
+          // are not filtered by the viewport (e.g. the connected ones need to be included).
+          // Also, the totals cannot be correctly calculated from the flows passed to the layer.
+          locationTotalsExtent: getLocationTotalsExtent(state, props),
           // selectedLocationIds: getExpandedSelection(state, props),
           highlightedLocationId:
             highlight && highlight.type === HighlightType.LOCATION
