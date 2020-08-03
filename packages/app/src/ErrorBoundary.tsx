@@ -15,7 +15,9 @@ class ErrorBoundary extends React.Component<{}, {}> {
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error(error);
     withScope(scope => {
-      scope.setExtras(errorInfo);
+      scope.setExtras({
+        ...errorInfo,
+      });
       captureException(error);
     });
   }
