@@ -434,6 +434,7 @@ export function applyStateFromQueryString(draft: State, query: string) {
   draft.baseMapEnabled = asBoolean(params.b) ?? draft.baseMapEnabled;
   draft.darkMode = asBoolean(params.d) ?? draft.darkMode;
   draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled;
+  draft.adaptiveScalesEnabled = asBoolean(params.as) ?? draft.adaptiveScalesEnabled;
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
   draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled;
   if (params.lfm != null && params.lfm in LocationFilterMode) {
@@ -470,6 +471,7 @@ export function stateToQueryString(state: State) {
     ])}`
   );
   parts.push(`a=${state.animationEnabled ? 1 : 0}`);
+  parts.push(`as=${state.adaptiveScalesEnabled ? 1 : 0}`);
   parts.push(`b=${state.baseMapEnabled ? 1 : 0}`);
   parts.push(`bo=${state.baseMapOpacity}`);
   parts.push(`c=${state.clusteringEnabled ? 1 : 0}`);
