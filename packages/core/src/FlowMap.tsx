@@ -796,7 +796,8 @@ const FlowMap: React.FC<Props> = (props) => {
             flowMagnitudeExtent: getFlowMagnitudeExtent(state, props),
           },
           // locationTotalsExtent needs to be always calculated, because locations
-          // are not filtered by viewport (e.g. the connected ones need to be included)
+          // are not filtered by the viewport (e.g. the connected ones need to be included).
+          // Also, the totals cannot be correctly calculated from the flows passed to the layer.
           locationTotalsExtent: getLocationTotalsExtent(state, props),
           // selectedLocationIds: getExpandedSelection(state, props),
           highlightedLocationId:
