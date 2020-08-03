@@ -55,6 +55,7 @@ import {
   stateToQueryString,
 } from './FlowMap.state';
 import {
+  getAvailableClusterZoomLevels,
   getClusterIndex,
   getClusterZoom,
   getDarkMode,
@@ -90,6 +91,7 @@ import getBbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import Timeline from './Timeline';
 import { TimeGranularity } from './time';
+import { findAppropriateZoomLevel } from '@flowmap.gl/cluster/dist-esm';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -386,6 +388,27 @@ const FlowMap: React.FC<Props> = (props) => {
       });
     }
   }, [allLocations, locationsHavingFlows, adjustViewportToLocations]);
+
+  const clusterIndex = getClusterIndex(state, props);
+  const handleChangeClusteringAuto = (value: boolean) => {
+    if (!value) {
+      if (clusterIndex) {
+        const { availableZoomLevels } = clusterIndex;
+        if (availableZoomLevels != null) {
+          dispatch({
+            type: ActionType.SET_MANUAL_CLUSTER_ZOOM,
+            manualClusterZoom:
+              findAppropriateZoomLevel(clusterIndex.availableZoomLevels, viewport.zoom),
+          });
+        }
+      }
+    }
+    dispatch({
+      type: ActionType.SET_CLUSTERING_AUTO,
+      clusteringAuto: value,
+    });
+  }
+
 
   const [showFullscreenButton, setShowFullscreenButton] = useState(
     embed && document.fullscreenEnabled
@@ -941,7 +964,14 @@ const FlowMap: React.FC<Props> = (props) => {
       )}
       {!embed && (
         <Absolute bottom={40} left={10}>
-          <SettingsPopover darkMode={darkMode} state={state} dispatch={dispatch} />
+          <SettingsPopover
+            darkMode={darkMode}
+            state={state}
+            dispatch={dispatch}
+            clusterZoom={getClusterZoom(state, props)}
+            availableClusterZoomLevels={getAvailableClusterZoomLevels(state, props)}
+            onChangeClusteringAuto={handleChangeClusteringAuto}
+          />
         </Absolute>
       )}
       {showFullscreenButton && (

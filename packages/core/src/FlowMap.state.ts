@@ -62,6 +62,8 @@ export interface State {
   locationTotalsEnabled: boolean;
   adaptiveScalesEnabled: boolean;
   clusteringEnabled: boolean;
+  clusteringAuto: boolean;
+  manualClusterZoom?: number;
   baseMapEnabled: boolean;
   darkMode: boolean;
   fadeAmount: number;
@@ -83,6 +85,8 @@ export enum ActionType {
   SET_LOCATION_FILTER_MODE = 'SET_LOCATION_FILTER_MODE',
   SET_TIME_RANGE = 'SET_TIME_RANGE',
   SET_CLUSTERING_ENABLED = 'SET_CLUSTERING_ENABLED',
+  SET_CLUSTERING_AUTO = 'SET_CLUSTERING_AUTO',
+  SET_MANUAL_CLUSTER_ZOOM = 'SET_MANUAL_CLUSTER_ZOOM',
   SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED',
   SET_LOCATION_TOTALS_ENABLED = 'SET_LOCATION_TOTALS_ENABLED',
   SET_ADAPTIVE_SCALES_ENABLED = 'SET_ADAPTIVE_SCALES_ENABLED',
@@ -141,6 +145,10 @@ export type Action =
       clusteringEnabled: boolean;
     }
   | {
+      type: ActionType.SET_CLUSTERING_AUTO;
+      clusteringAuto: boolean;
+    }
+  | {
       type: ActionType.SET_ANIMATION_ENABLED;
       animationEnabled: boolean;
     }
@@ -167,6 +175,10 @@ export type Action =
   | {
       type: ActionType.SET_BASE_MAP_OPACITY;
       baseMapOpacity: number;
+    }
+  | {
+      type: ActionType.SET_MANUAL_CLUSTER_ZOOM;
+      manualClusterZoom: number | undefined;
     }
   | {
       type: ActionType.SET_FLOWS_SHEET;
@@ -316,6 +328,13 @@ function mainReducer(state: State, action: Action): State {
         clusteringEnabled,
       };
     }
+    case ActionType.SET_CLUSTERING_AUTO: {
+      const { clusteringAuto } = action;
+      return {
+        ...state,
+        clusteringAuto,
+      };
+    }
     case ActionType.SET_ANIMATION_ENABLED: {
       const { animationEnabled } = action;
       return {
@@ -363,6 +382,13 @@ function mainReducer(state: State, action: Action): State {
       return {
         ...state,
         baseMapOpacity,
+      };
+    }
+    case ActionType.SET_MANUAL_CLUSTER_ZOOM: {
+      const { manualClusterZoom } = action;
+      return {
+        ...state,
+        manualClusterZoom,
       };
     }
     case ActionType.SET_COLOR_SCHEME: {
@@ -431,11 +457,13 @@ export function applyStateFromQueryString(draft: State, query: string) {
   }
   draft.fadeAmount = asNumber(params.f) ?? draft.fadeAmount;
   draft.baseMapOpacity = asNumber(params.bo) ?? draft.baseMapOpacity;
+  draft.manualClusterZoom = asNumber(params.cz) ?? draft.manualClusterZoom;
   draft.baseMapEnabled = asBoolean(params.b) ?? draft.baseMapEnabled;
   draft.darkMode = asBoolean(params.d) ?? draft.darkMode;
   draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled;
   draft.adaptiveScalesEnabled = asBoolean(params.as) ?? draft.adaptiveScalesEnabled;
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
+  draft.clusteringAuto = asBoolean(params.ca) ?? draft.clusteringAuto;
   draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled;
   if (params.lfm != null && params.lfm in LocationFilterMode) {
     draft.locationFilterMode = params.lfm as LocationFilterMode;
@@ -475,6 +503,8 @@ export function stateToQueryString(state: State) {
   parts.push(`b=${state.baseMapEnabled ? 1 : 0}`);
   parts.push(`bo=${state.baseMapOpacity}`);
   parts.push(`c=${state.clusteringEnabled ? 1 : 0}`);
+  parts.push(`ca=${state.clusteringAuto ? 1 : 0}`);
+  parts.push(`cz=${state.manualClusterZoom}`);
   parts.push(`d=${state.darkMode ? 1 : 0}`);
   parts.push(`lt=${state.locationTotalsEnabled ? 1 : 0}`);
   parts.push(`lfm=${state.locationFilterMode}`);
@@ -527,6 +557,8 @@ export function getInitialState(config: Config, queryString: string) {
     adaptiveScalesEnabled: true,
     animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
     clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
+    manualClusterZoom: undefined,
+    clusteringAuto: true,
     darkMode: parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE] || 'true'),
     fadeAmount: parseNumberConfigProp(config[ConfigPropName.FADE_AMOUNT], 50),
     baseMapOpacity: parseNumberConfigProp(config[ConfigPropName.BASE_MAP_OPACITY], 75),

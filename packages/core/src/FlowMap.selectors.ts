@@ -258,7 +258,7 @@ export const getAvailableClusterZoomLevels = createSelector(
   }
 );
 
-export const getClusterZoom: Selector<number | undefined> = createSelector(
+const _getClusterZoom: Selector<number | undefined> = createSelector(
   getClusterIndex,
   getZoom,
   getAvailableClusterZoomLevels,
@@ -272,6 +272,14 @@ export const getClusterZoom: Selector<number | undefined> = createSelector(
     return clusterZoom;
   }
 );
+
+export function getClusterZoom(state: State, props: Props) {
+  if (!state.clusteringEnabled) return undefined;
+  if (state.clusteringAuto || state.manualClusterZoom == null) {
+    return _getClusterZoom(state, props);
+  }
+  return state.manualClusterZoom;
+}
 
 export const getLocationsForSearchBox: Selector<
   (Location | Cluster.Cluster)[] | undefined
