@@ -388,6 +388,7 @@ const FlowMap: React.FC<Props> = (props) => {
           altitude: 1.5,
           ...mapTransition(1000),
         },
+        adjustViewportToLocations: false,
       });
     }
   }, [allLocations, locationsHavingFlows, adjustViewportToLocations]);

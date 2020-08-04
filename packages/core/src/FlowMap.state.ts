@@ -103,6 +103,7 @@ export type Action =
   | {
       type: ActionType.SET_VIEWPORT;
       viewport: ViewportProps;
+      adjustViewportToLocations?: boolean;
     }
   | {
       type: ActionType.ZOOM_IN;
@@ -193,7 +194,7 @@ export type Action =
 function mainReducer(state: State, action: Action): State {
   switch (action.type) {
     case ActionType.SET_VIEWPORT: {
-      const { viewport } = action;
+      const { viewport, adjustViewportToLocations } = action;
       return {
         ...state,
         viewport: {
@@ -202,6 +203,9 @@ function mainReducer(state: State, action: Action): State {
         },
         tooltip: undefined,
         highlight: undefined,
+        ...(adjustViewportToLocations != null && {
+          adjustViewportToLocations: false,
+        }),
       };
     }
     case ActionType.ZOOM_IN: {
