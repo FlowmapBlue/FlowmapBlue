@@ -258,7 +258,7 @@ export const getAvailableClusterZoomLevels = createSelector(
   }
 );
 
-export const getClusterZoom: Selector<number | undefined> = createSelector(
+const _getClusterZoom: Selector<number | undefined> = createSelector(
   getClusterIndex,
   getZoom,
   getAvailableClusterZoomLevels,
@@ -272,6 +272,14 @@ export const getClusterZoom: Selector<number | undefined> = createSelector(
     return clusterZoom;
   }
 );
+
+export function getClusterZoom(state: State, props: Props) {
+  if (!state.clusteringEnabled) return undefined;
+  if (state.clusteringAuto || state.manualClusterZoom == null) {
+    return _getClusterZoom(state, props);
+  }
+  return state.manualClusterZoom;
+}
 
 export const getLocationsForSearchBox: Selector<
   (Location | Cluster.Cluster)[] | undefined
@@ -321,6 +329,7 @@ export const getColorSchemeKey: Selector<string | undefined> = (state: State, pr
 
 export const getDarkMode: Selector<boolean> = (state: State, props: Props) => state.darkMode;
 
+export const getFadeEnabled: Selector<boolean> = (state: State, props: Props) => state.fadeEnabled;
 export const getFadeAmount: Selector<number> = (state: State, props: Props) => state.fadeAmount;
 
 export const getAnimate: Selector<boolean> = (state: State, props: Props) => state.animationEnabled;
@@ -330,6 +339,7 @@ export const getFlowMapColors = createSelector(
   getDiffMode,
   getColorSchemeKey,
   getDarkMode,
+  getFadeEnabled,
   getFadeAmount,
   getAnimate,
   getColors

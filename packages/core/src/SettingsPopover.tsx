@@ -22,9 +22,20 @@ interface Props {
   state: State;
   darkMode: boolean;
   dispatch: Dispatch<Action>;
+  clusterZoom: number | undefined;
+  availableClusterZoomLevels: number[] | undefined;
+  onChangeClusteringAuto: (value: boolean) => void;
 }
 
-const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
+const SettingsPopover: React.FC<Props> = (
+  {
+    dispatch,
+    state,
+    darkMode,
+    clusterZoom,
+    availableClusterZoomLevels,
+    onChangeClusteringAuto,
+  }) => {
   const handleToggleClustering = (evt: SyntheticEvent) => {
     const value = (evt.target as HTMLInputElement).checked;
     dispatch({
@@ -33,11 +44,31 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
     });
   };
 
+  const handleToggleClusteringAuto = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked;
+    onChangeClusteringAuto(value);
+  };
+
+  const handleChangeManualClusterZoom = (index: number) => {
+    dispatch({
+      type: ActionType.SET_MANUAL_CLUSTER_ZOOM,
+      manualClusterZoom: availableClusterZoomLevels ? availableClusterZoomLevels[index] : undefined,
+    });
+  };
+
   const handleToggleDarkMode = (evt: SyntheticEvent) => {
     const value = (evt.target as HTMLInputElement).checked;
     dispatch({
       type: ActionType.SET_DARK_MODE,
       darkMode: value,
+    });
+  };
+
+  const handleToggleFadeEnabled = (evt: SyntheticEvent) => {
+    const value = (evt.target as HTMLInputElement).checked;
+    dispatch({
+      type: ActionType.SET_FADE_ENABLED,
+      fadeEnabled: value,
     });
   };
 
@@ -111,44 +142,28 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
                 onChange={handleChangeColorScheme}
               />
             </Row>
-            <Row spacing={15}>
-              <div>Fade</div>
-              <Slider
-                value={state.fadeAmount}
-                min={0}
-                max={100}
-                stepSize={1}
-                labelRenderer={false}
-                showTrackFill={false}
-                onChange={handleChangeFadeAmount}
-              />
-            </Row>
             <Column spacing={10}>
               <StyledSwitch
                 checked={state.darkMode}
                 label="Dark mode"
                 onChange={handleToggleDarkMode}
               />
-              <StyledSwitch
-                checked={state.animationEnabled}
-                label="Animate flows"
-                onChange={handleToggleAnimation}
-              />
-              <StyledSwitch
-                checked={state.clusteringEnabled}
-                label="Cluster on zoom"
-                onChange={handleToggleClustering}
-              />
-              <StyledSwitch
-                checked={state.adaptiveScalesEnabled}
-                label="Adaptive scales"
-                onChange={handleToggleAdaptiveScales}
-              />
-              <StyledSwitch
-                checked={state.locationTotalsEnabled}
-                label="Location totals"
-                onChange={handleToggleLocationTotals}
-              />
+              <Row spacing={15}>
+                <StyledSwitch
+                  checked={state.fadeEnabled}
+                  label="Fade"
+                  onChange={handleToggleFadeEnabled}
+                />
+                {state.fadeEnabled && <Slider
+                  value={state.fadeAmount}
+                  min={0}
+                  max={100}
+                  stepSize={1}
+                  labelRenderer={false}
+                  showTrackFill={false}
+                  onChange={handleChangeFadeAmount}
+                />}
+              </Row>
               <Row spacing={15}>
                 <StyledSwitch
                   checked={state.baseMapEnabled}
@@ -167,6 +182,56 @@ const SettingsPopover: React.FC<Props> = ({ dispatch, state, darkMode }) => {
                   />
                 )}
               </Row>
+              <StyledSwitch
+                checked={state.animationEnabled}
+                label="Animate flows"
+                onChange={handleToggleAnimation}
+              />
+              <StyledSwitch
+                checked={state.adaptiveScalesEnabled}
+                label="Adaptive scales"
+                onChange={handleToggleAdaptiveScales}
+              />
+              <StyledSwitch
+                checked={state.locationTotalsEnabled}
+                label="Location totals"
+                onChange={handleToggleLocationTotals}
+              />
+              {availableClusterZoomLevels &&
+              <>
+                <Row spacing={15}>
+                  <StyledSwitch
+                    checked={state.clusteringEnabled}
+                    label="Clustering"
+                    onChange={handleToggleClustering}
+                  />
+                  {state.clusteringEnabled &&
+                    <StyledSwitch
+                checked={state.clusteringAuto}
+                    innerLabel={state.clusteringAuto ? 'Auto' : 'Manual'}
+                    onChange={handleToggleClusteringAuto}
+                  />}
+                </Row>
+                {state.clusteringEnabled && !state.clusteringAuto &&
+                <Row spacing={15}>
+                  <div style={{ whiteSpace: 'nowrap' }}>Clustering level</div>
+                  <Slider
+                    value={
+                      availableClusterZoomLevels.indexOf(
+                        state.manualClusterZoom != null
+                          ? state.manualClusterZoom
+                          : clusterZoom || 0
+                      )
+                    }
+                    min={0}
+                    max={availableClusterZoomLevels.length - 1}
+                    stepSize={1}
+                    labelRenderer={false}
+                    showTrackFill={false}
+                    onChange={handleChangeManualClusterZoom}
+                  />
+                </Row>}
+              </>}
             </Column>
           </Column>
         </SettingsOuter>

@@ -105,6 +105,7 @@ export default function getColors(
   diffMode: boolean,
   schemeKey: string | undefined,
   darkMode: boolean,
+  fadeEnabled: boolean,
   fadeAmount: number,
   animate: boolean
 ): Colors | DiffColors {
@@ -124,7 +125,7 @@ export default function getColors(
     const N = indices.length - 1;
     const colorScale = scaleSequential(interpolateRgbBasis(scheme)).domain([0, N]);
 
-    if (fadeAmount === 0) {
+    if (!fadeEnabled || fadeAmount === 0) {
       scheme = indices.map((c, i) => colorScale(i));
     } else {
       const amount = scalePow()
