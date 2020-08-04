@@ -21,9 +21,12 @@ import { csvParse } from 'd3-dsv';
 import { Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { compose, withProps } from 'recompose';
+import md5 from 'blueimp-md5';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
   spreadSheetKey: string;
+  flowsSheetKey?: string;
   embed: boolean;
 }
 
@@ -66,9 +69,20 @@ const FlowMapWithData = compose<any, any>(
   ),
 )(FlowMap as any);
 
-const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, embed }) => {
+const getFlowsSheetKey = (name: string) => md5(name).substr(0, 7);
+
+const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed }) => {
   const url = makeSheetQueryUrl(spreadSheetKey, 'properties', 'SELECT A,B', 'csv');
   const [flowsSheet, setFlowsSheet] = useState<string>();
+  const history = useHistory();
+
+  const handleChangeFlowsSheet = (name: string) => {
+    history.replace({
+      ...history.location,
+      pathname: `/${spreadSheetKey}/${getFlowsSheetKey(name)}${embed ? '/embed' : ''}`,
+    });
+    setFlowsSheet(name);
+  }
 
   const configFetch = useAsync(async () => {
     const response = await fetch(url);
@@ -84,9 +98,18 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, embed }) => {
       `Load config`,
       `Load config "${configProps[ConfigPropName.TITLE] || 'Untitled'}"`
     );
+
     const flowsSheets = getFlowsSheets(configProps);
     if (flowsSheets && flowsSheets.length > 0) {
-      setFlowsSheet(flowsSheets[0]);
+      let name = undefined;
+      if (flowsSheetKey) {
+        name = flowsSheets.find(fs => getFlowsSheetKey(fs) === flowsSheetKey)
+      } else {
+        name = flowsSheets[0];
+      }
+      if (name != null) {
+        handleChangeFlowsSheet(name);
+      }
     }
     return configProps;
   }, [url]);
@@ -108,9 +131,6 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, embed }) => {
     }
   }, [configFetch.error]);
 
-  const handleSetFlowsSheet = (sheet: string) => {
-    setFlowsSheet(sheet);
-  };
   return (
     <MapContainer embed={embed}>
       {configFetch.loading ? (
@@ -121,7 +141,7 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, embed }) => {
           embed={embed}
           config={configFetch.value ? configFetch.value : DEFAULT_CONFIG}
           flowsSheet={flowsSheet}
-          onSetFlowsSheet={handleSetFlowsSheet}
+          onSetFlowsSheet={handleChangeFlowsSheet}
         />
       )}
       {configFetch.value && configFetch.value[ConfigPropName.TITLE] && (

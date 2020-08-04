@@ -5,7 +5,7 @@ import { createBrowserHistory } from 'history';
 import * as Sentry from '@sentry/browser';
 import Home from './Home';
 import { AppToaster, LoadingSpinner } from '@flowmap.blue/core';
-import { SPREADSHEET_KEY_RE } from './constants';
+import { FLOWS_SHEET_KEY_RE, SPREADSHEET_KEY_RE } from './constants';
 import ErrorFallback from './ErrorFallback';
 import ErrorBoundary from './ErrorBoundary';
 
@@ -26,8 +26,11 @@ type State = {
 
 const makeGSheetsFlowMap = (embed: boolean) => ({
   match,
-}: RouteComponentProps<{ sheetKey: string }>) => (
-  <GSheetsFlowMap spreadSheetKey={match.params.sheetKey} embed={embed} />
+}: RouteComponentProps<{ sheetKey: string, flowsSheetKey: string }>) => (
+  <GSheetsFlowMap
+    spreadSheetKey={match.params.sheetKey}
+    flowsSheetKey={match.params.flowsSheetKey}
+    embed={embed} />
 );
 
 
@@ -67,6 +70,14 @@ export default class App extends React.Component<Props, State> {
                 <Route path="/geocoding" component={Geocoding} />
                 <Route path="/in-browser" component={InBrowserFlowMap} />
                 <Route path="/from-url" component={FromUrlFlowMap} />
+                <Route
+                  path={`/:sheetKey(${SPREADSHEET_KEY_RE})/:flowsSheetKey(${FLOWS_SHEET_KEY_RE})/embed`}
+                  component={makeGSheetsFlowMap(true)}
+                />
+                <Route
+                  path={`/:sheetKey(${SPREADSHEET_KEY_RE})/:flowsSheetKey(${FLOWS_SHEET_KEY_RE})`}
+                  component={makeGSheetsFlowMap(false)}
+                />
                 <Route
                   path={`/:sheetKey(${SPREADSHEET_KEY_RE})/embed`}
                   component={makeGSheetsFlowMap(true)}

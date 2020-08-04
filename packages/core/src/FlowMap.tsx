@@ -60,7 +60,8 @@ import {
   getClusterZoom,
   getDarkMode,
   getDiffMode,
-  getFetchedFlows, getFlowMagnitudeExtent,
+  getFetchedFlows,
+  getFlowMagnitudeExtent,
   getFlowMapColors,
   getFlowsForFlowMapLayer,
   getFlowsSheets,
@@ -70,7 +71,9 @@ import {
   getLocationsForSearchBox,
   getLocationsHavingFlows,
   getLocationsInBbox,
-  getLocationsTree, getLocationTotals, getLocationTotalsExtent,
+  getLocationsTree,
+  getLocationTotals,
+  getLocationTotalsExtent,
   getMapboxMapStyle,
   getMaxLocationCircleSize,
   getSortedFlowsForKnownLocations,
@@ -754,7 +757,6 @@ const FlowMap: React.FC<Props> = (props) => {
     if (onSetFlowsSheet) {
       onSetFlowsSheet(sheet);
       handleChangeSelectLocations(undefined);
-      // dispatch({ type: ActionType.SET_FLOWS_SHEET, sheet });
     }
   };
 

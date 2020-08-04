@@ -97,7 +97,6 @@ export enum ActionType {
   SET_FADE_AMOUNT = 'SET_FADE_AMOUNT',
   SET_BASE_MAP_OPACITY = 'SET_BASE_MAP_OPACITY',
   SET_COLOR_SCHEME = 'SET_COLOR_SCHEME',
-  SET_FLOWS_SHEET = 'SET_FLOWS_SHEET',
 }
 
 export type Action =
@@ -185,10 +184,6 @@ export type Action =
   | {
       type: ActionType.SET_MANUAL_CLUSTER_ZOOM;
       manualClusterZoom: number | undefined;
-    }
-  | {
-      type: ActionType.SET_FLOWS_SHEET;
-      sheet: string;
     }
   | {
       type: ActionType.SET_COLOR_SCHEME;
@@ -411,13 +406,6 @@ function mainReducer(state: State, action: Action): State {
         colorSchemeKey,
       };
     }
-    case ActionType.SET_FLOWS_SHEET: {
-      const { sheet } = action;
-      return {
-        ...state,
-        selectedFlowsSheet: sheet,
-      };
-    }
   }
   return state;
 }
@@ -518,7 +506,7 @@ export function stateToQueryString(state: State) {
   parts.push(`bo=${state.baseMapOpacity}`);
   parts.push(`c=${state.clusteringEnabled ? 1 : 0}`);
   parts.push(`ca=${state.clusteringAuto ? 1 : 0}`);
-  parts.push(`cz=${state.manualClusterZoom}`);
+  if (state.manualClusterZoom != null) parts.push(`cz=${state.manualClusterZoom}`);
   parts.push(`d=${state.darkMode ? 1 : 0}`);
   parts.push(`fe=${state.fadeEnabled ? 1 : 0}`);
   parts.push(`lt=${state.locationTotalsEnabled ? 1 : 0}`);
