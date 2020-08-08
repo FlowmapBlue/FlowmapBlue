@@ -37,6 +37,11 @@
       "query": "v=14.163209,1.373237,1.65,0,0&a=0&b=1&bo=100&c=1&d=1&lt=1&lfm=ALL&col=Mint&f=60"
     },
     {
+      "key": "19mCVbGW943x-xx7zompIrw2bPnyXAq-T8HsupbW4NHQ",
+      "query": "v=47.905261,12.092776,3.12,0,0&a=0&as=1&b=1&bo=75&c=0&ca=0&cz=2&d=1&fe=1&lt=1&lfm=ALL&t=20200301T000000,20200804T000000&col=Sunset&f=50",
+      "name": "Daily flights in Europe 2020"
+    },
+    {
       "key": "1e3Euejg1bPCe5mdSPFVahi6Fy_LqXFyPTKJT-BcpMP8",
       "name": "Cyclable trips in Waterloo Region",
       "query": "v=43.444961,-80.478809,11.17&a=0&d=1&c=1&col=Default&f=45"
@@ -252,11 +257,6 @@
       "key": "18RxRi1aKytbiBL7O_lXbTx4n69JWqiGJquPGJmv7wos",
       "name": "Commuters in New Zealand 2013",
       "query": "v=-42.051751,173.211728,4.67&a=0&b=1&c=1&d=1&lt=1&f=45"
-    },
-    {
-      "key": "19mCVbGW943x-xx7zompIrw2bPnyXAq-T8HsupbW4NHQ",
-      "query": "v=47.905261,12.092776,3.12,0,0&a=0&as=1&b=1&bo=75&c=0&ca=0&cz=2&d=1&fe=1&lt=1&lfm=ALL&t=20200301T000000,20200804T000000&col=Sunset&f=50",
-      "name": "Daily flights in Europe 2020"
     },
     {
       "key": "1ax4J4iLZb5nFWooseKEmLXJyOb-gGpo5qYtHbr_3TOU",
