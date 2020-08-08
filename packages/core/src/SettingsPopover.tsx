@@ -52,7 +52,9 @@ const SettingsPopover: React.FC<Props> = (
   const handleChangeManualClusterZoom = (index: number) => {
     dispatch({
       type: ActionType.SET_MANUAL_CLUSTER_ZOOM,
-      manualClusterZoom: availableClusterZoomLevels ? availableClusterZoomLevels[index] : undefined,
+      manualClusterZoom: availableClusterZoomLevels
+        ? availableClusterZoomLevels[availableClusterZoomLevels.length - 1 - index]
+        : undefined,
     });
   };
 
@@ -217,11 +219,12 @@ const SettingsPopover: React.FC<Props> = (
                   <div style={{ whiteSpace: 'nowrap' }}>Clustering level</div>
                   <Slider
                     value={
-                      availableClusterZoomLevels.indexOf(
+                      availableClusterZoomLevels.length - 1 -
+                      (availableClusterZoomLevels.indexOf(
                         state.manualClusterZoom != null
                           ? state.manualClusterZoom
                           : clusterZoom || 0
-                      )
+                      ))
                     }
                     min={0}
                     max={availableClusterZoomLevels.length - 1}
