@@ -76,11 +76,13 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed 
   const [flowsSheet, setFlowsSheet] = useState<string>();
   const history = useHistory();
 
-  const handleChangeFlowsSheet = (name: string) => {
-    history.replace({
-      ...history.location,
-      pathname: `/${spreadSheetKey}/${getFlowsSheetKey(name)}${embed ? '/embed' : ''}`,
-    });
+  const handleChangeFlowsSheet = (name: string, replaceUrl: boolean) => {
+    if (replaceUrl) {
+      history.replace({
+        ...history.location,
+        pathname: `/${spreadSheetKey}/${getFlowsSheetKey(name)}${embed ? '/embed' : ''}`,
+      });
+    }
     setFlowsSheet(name);
   }
 
@@ -108,7 +110,7 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed 
         name = flowsSheets[0];
       }
       if (name != null) {
-        handleChangeFlowsSheet(name);
+        handleChangeFlowsSheet(name, flowsSheets.length > 1);
       }
     }
     return configProps;
