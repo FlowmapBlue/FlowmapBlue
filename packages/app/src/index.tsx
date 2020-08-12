@@ -34,7 +34,7 @@ const globalStyles = css`
 
   html, body {
     margin: 0;
-    background-color: ${'#2d3a4c'};
+    background-color: ${'rgb(35, 48, 66)'};
     font-size: 13pt;
   }
   
