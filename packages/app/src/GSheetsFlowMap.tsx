@@ -143,7 +143,7 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed 
           embed={embed}
           config={configFetch.value ? configFetch.value : DEFAULT_CONFIG}
           flowsSheet={flowsSheet}
-          onSetFlowsSheet={handleChangeFlowsSheet}
+          onSetFlowsSheet={(name: string) => handleChangeFlowsSheet(name, true)}
         />
       )}
       {configFetch.value && configFetch.value[ConfigPropName.TITLE] && (
