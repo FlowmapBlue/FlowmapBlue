@@ -188,11 +188,16 @@ const FlowMap: React.FC<Props> = (props) => {
   const totalUnfilteredCount = getTotalUnfilteredCount(state, props);
 
   useEffect(() => {
-    if (timeExtent && !selectedTimeRange) {
-      dispatch({
-        type: ActionType.SET_TIME_RANGE,
-        range: timeExtent,
-      });
+    if (timeExtent) {
+      if (!selectedTimeRange ||
+         // reset selectedTimeRange if not within the timeExtent
+         !(timeExtent[0] <= selectedTimeRange[0] && selectedTimeRange[1] <= timeExtent[1])
+      ) {
+        dispatch({
+          type: ActionType.SET_TIME_RANGE,
+          range: timeExtent,
+        });
+      }
     }
   }, [timeExtent, selectedTimeRange]);
 
