@@ -7,6 +7,7 @@
     "build:app": "yarn build:core:esm && cd packages/app && yarn build",
     "dev:core": "cd packages/core && yarn dev",
     "dev:app": "cd packages/app && yarn dev",
+    "shots": "cd packages/app && yarn shots",
     "dev": "npm run dev:core & npm run dev:app",
     "build": "yarn build:core && yarn build:app",
     "version-bump": "lerna version --no-push --force-publish",

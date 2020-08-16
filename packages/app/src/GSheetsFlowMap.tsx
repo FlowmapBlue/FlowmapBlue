@@ -37,7 +37,7 @@ const FlowMapWithData = compose<any, any>(
       url: makeSheetQueryUrl(spreadSheetKey!, 'locations', 'SELECT A,B,C,D', 'json'),
       then: (rows: any[]) => ({
         value: rows.map(
-          ({ id, time, name, lon, lat }: any) =>
+          ({ id, name, lon, lat }: any) =>
             ({
               id: `${id}`,
               name: name ?? id,

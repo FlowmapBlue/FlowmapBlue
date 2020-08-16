@@ -134,6 +134,11 @@
       "query": "v=48.379110,-94.389853,3.79&a=0&b=1&c=1&d=1&lt=1&col=Default&f=28"
     },
     {
+      "key": "1juFa0ce9rMZNzG1UTNvL9ND6wS7fBS2RtwGrt_qR6pg",
+      "name": "Monthly global flights 2010",
+      "query": "v=33.633058,-40.428589,2.41,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20100101T000000,20100201T000000&col=Magma&f=50"
+    },
+    {
       "key": "1jhDwRoMv12lEzdNyldmGTNbWJ11YgIb-TbuC9qJ6SQs",
       "name": "King County sewer system",
       "query": "v=47.569243,-122.273770,11.01&a=0&d=1&c=1&col=SunsetDark&f=45"
@@ -284,11 +289,12 @@
     {
       "key": "18QSxtLs-AemUZx4fAL2L3oRAvK8sadCrecEUfOXucWM",
       "name": "Migration in Europe",
-      "query": "v=45.564382,15.054623,4.02,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=YlGnBu&f=50"
+      "query": "v=49.277032,5.572255,4.64,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&cz=2&d=1&fe=1&lt=1&lfm=ALL&col=YlGnBu&f=50"
     },
     {
-      "key": "1XQXu5-HHCVUxtJoA70qoCe7Od0kJW3TjnsRIrjaPFpg",
-      "name": "Migration of developers in Europe"
+      "key": "1kkCHVHmo6ZC-qxt3nL4Zd6F3LfuZldO3ZKtmUw_a-Z8",
+      "name": "Annual global flights 2010",
+      "query": "v=29.809658,56.251406,2.32,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Viridis&f=50"
     },
     {
       "key": "1ElqxUc0fhgMzBGQ5XVsff0ScESdXK1OiGOizda-l-DE",
