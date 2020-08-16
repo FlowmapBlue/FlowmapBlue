@@ -237,6 +237,11 @@
       "name": "Commuters in Cook County, Chicago"
     },
     {
+      "key": "1ywFcYdbvtdN4gFhoTs2A8Bn7HE4530k05P4NNjqedHg",
+      "name": "Migration in Africa 2005-2010",
+      "query": "v=9.004937,0.518016,4.29,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Magma&f=9"
+    },
+    {
       "key": "1rhsLubo_ZCjoBhP7PbX16nm-WUPvtHRguEFXhLJu1Jk",
       "name": "Relocations in the Netherlands 2017"
     },
