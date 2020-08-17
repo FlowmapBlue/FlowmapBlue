@@ -23,28 +23,23 @@
       "query": "v=45.495056,-73.564832,11.84,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20190701T050000,20190702T020000&col=Default&f=50"
     },
     {
-      "key": "1LoeL7i9GHl67Y4SPyp5fiyex6lRqxOuib_mfmg978q4",
-      "name": "Hourly NYC Uber trips 2019-12-02",
-      "query": "v=40.731554,-73.969132,11.96,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20191202T150000,20191202T170000&col=Default&f=50"
+      "key": "13PZndO5uCtm88VBzdHcKX37NrGIrs8iWwXaSrtnJf-U",
+      "name": "1 billion U.S. air passengers in 2018",
+      "query": "v=36.849073,-100.022031,3.68&a=0&b=1&c=1&d=1&lt=1&col=BuPu&f=47"
     },
     {
       "key": "1B75NgT4vzOW86HZdIgKRv4lxE_GXDHalJW-0vGfFqQY",
       "name": "Commuters in France 2016"
     },
     {
-      "key": "1ywFcYdbvtdN4gFhoTs2A8Bn7HE4530k05P4NNjqedHg",
-      "name": "Migration in Africa 2005-2010",
-      "query": "v=9.004937,0.518016,4.29,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Magma&f=9"
-    },
-    {
-      "key": "13PZndO5uCtm88VBzdHcKX37NrGIrs8iWwXaSrtnJf-U",
-      "name": "1 billion U.S. air passengers in 2018",
-      "query": "v=36.849073,-100.022031,3.68&a=0&b=1&c=1&d=1&lt=1&col=BuPu&f=47"
-    },
-    {
       "key": "1ndHiKo8z2B99ZQpToSfoIhI0RCbUsPZhqwNT0-U-TMk",
       "name": "Global Airplane Routes 2014",
       "query": "v=14.163209,1.373237,1.65,0,0&a=0&b=1&bo=100&c=1&d=1&lt=1&lfm=ALL&col=Mint&f=60"
+    },
+    {
+      "key": "1ywFcYdbvtdN4gFhoTs2A8Bn7HE4530k05P4NNjqedHg",
+      "name": "Migration in Africa 2005-2010",
+      "query": "v=9.004937,0.518016,4.29,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Magma&f=9"
     },
     {
       "key": "19mCVbGW943x-xx7zompIrw2bPnyXAq-T8HsupbW4NHQ",
@@ -74,6 +69,11 @@
       "key": "1gDrYiVk4jNhmqkBhFwKOYhBTHfOU_GNsjDUHV5vpuVE",
       "name": "Commuters in Palermo, Italy",
       "query": "v=38.075220,13.339093,10.03,0,0&a=1&b=1&bo=50&c=1&d=1&lt=1&lfm=ALL&col=YlOrRd&f=17"
+    },
+    {
+      "key": "1LoeL7i9GHl67Y4SPyp5fiyex6lRqxOuib_mfmg978q4",
+      "name": "Hourly NYC Uber trips 2019-12-02",
+      "query": "v=40.731554,-73.969132,11.96,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20191202T150000,20191202T170000&col=Default&f=50"
     },
     {
       "key": "1Aum0anWxPx6bHyfcFXWCCTE8u0xtfenIls_kPAJEDIA",
