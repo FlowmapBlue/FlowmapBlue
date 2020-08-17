@@ -8,6 +8,11 @@
       "query": "v=46.719075,7.817990,7.51&a=0&d=1&c=0&lt=1&col=Default&f=45"
     },
     {
+      "key": "1hIfHz5LNmiizMAbnUbzCOYt-QqORI4hChUE4dZUQgfs",
+      "query": "v=-27.469948,153.026140,11.65,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50",
+      "name": "South East Queensland public transport"
+    },
+    {
       "key": "1mK1ZMxNmGtSSxMhtoKO5h7nxyDMXFC_3_u4eo4rtucg",
       "name": "BIXI bicycle sharing Montréal",
       "query": "v=45.513266,-73.573425,12.18&a=0&d=1&c=1&col=Teal&f=45"
@@ -25,6 +30,11 @@
     {
       "key": "1B75NgT4vzOW86HZdIgKRv4lxE_GXDHalJW-0vGfFqQY",
       "name": "Commuters in France 2016"
+    },
+    {
+      "key": "1ywFcYdbvtdN4gFhoTs2A8Bn7HE4530k05P4NNjqedHg",
+      "name": "Migration in Africa 2005-2010",
+      "query": "v=9.004937,0.518016,4.29,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Magma&f=9"
     },
     {
       "key": "13PZndO5uCtm88VBzdHcKX37NrGIrs8iWwXaSrtnJf-U",
@@ -54,11 +64,6 @@
       "key": "1gDIhNsPYFOyrqSQlp1FDNXSCw-j3JAwL497QRfOYCGE",
       "name": "Morning commuters in Seoul",
       "query": "v=37.544353,126.987414,11.37,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50"
-    },
-    {
-      "key": "1ywFcYdbvtdN4gFhoTs2A8Bn7HE4530k05P4NNjqedHg",
-      "name": "Migration in Africa 2005-2010",
-      "query": "v=9.004937,0.518016,4.29,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Magma&f=9"
     },
     {
       "key": "1snSJx8zPZQStNEmN0qN10VRpf3acjRRJHLxH1yUCPws",
@@ -118,11 +123,6 @@
       "key": "1PVvaeeASIQV7dflQmvFRY9ztXi1Bwul8V2-v1UyRP_w",
       "query": "v=46.944276,7.428740,12.93&a=0&b=1&c=1&d=1&lt=1&col=TealGrn&f=45",
       "name": "Bicycle hires in Bern, Switzerland"
-    },
-    {
-      "key": "1hIfHz5LNmiizMAbnUbzCOYt-QqORI4hChUE4dZUQgfs",
-      "query": "v=-27.469948,153.026140,11.65,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50",
-      "name": "South East Queensland public transport"
     },
     {
       "key": "1efgAnJcTOVrETiAgVLOZ14Yd5wm2U3wMiSYCgo7F_Yo",
