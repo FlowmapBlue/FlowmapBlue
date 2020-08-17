@@ -56,6 +56,11 @@
       "query": "v=37.544353,126.987414,11.37,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50"
     },
     {
+      "key": "1ywFcYdbvtdN4gFhoTs2A8Bn7HE4530k05P4NNjqedHg",
+      "name": "Migration in Africa 2005-2010",
+      "query": "v=9.004937,0.518016,4.29,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Magma&f=9"
+    },
+    {
       "key": "1snSJx8zPZQStNEmN0qN10VRpf3acjRRJHLxH1yUCPws",
       "name": "Taipei metro travels by hour 2019",
       "query": "v=25.033034,121.499924,11.14,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20190101T080000,20190101T090000&col=Default&f=50"
@@ -237,11 +242,6 @@
       "name": "Commuters in Cook County, Chicago"
     },
     {
-      "key": "1ywFcYdbvtdN4gFhoTs2A8Bn7HE4530k05P4NNjqedHg",
-      "name": "Migration in Africa 2005-2010",
-      "query": "v=9.004937,0.518016,4.29,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Magma&f=9"
-    },
-    {
       "key": "1rhsLubo_ZCjoBhP7PbX16nm-WUPvtHRguEFXhLJu1Jk",
       "name": "Relocations in the Netherlands 2017"
     },
@@ -299,7 +299,7 @@
     {
       "key": "1kkCHVHmo6ZC-qxt3nL4Zd6F3LfuZldO3ZKtmUw_a-Z8",
       "name": "Annual global flights 2010",
-      "query": "v=29.809658,56.251406,2.32,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Viridis&f=50"
+      "query": "v=29.809658,56.251406,2.32,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Magma&f=50"
     },
     {
       "key": "1ElqxUc0fhgMzBGQ5XVsff0ScESdXK1OiGOizda-l-DE",
