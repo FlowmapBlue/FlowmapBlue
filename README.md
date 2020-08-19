@@ -30,6 +30,9 @@ Add `.env` file to the project root with a [Mapbox access token](https://www.map
 
 Then run:
 
+    yarn dev
+or     
+
     npm run dev
 
 
