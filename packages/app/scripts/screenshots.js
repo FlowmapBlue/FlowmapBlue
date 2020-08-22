@@ -30,18 +30,23 @@ async function mkdirp(dirPath) {
   await page.click('.bp3-toast-message button.bp3-intent-primary');
   page.on('pageerror', console.error);
 
+  function getOutFileName(key, sheet, width) {
+    return path.resolve(OUTPUT_PATH, `${key}${sheet?`_${sheet}`:''}__${width}px.jpg`);
+  }
+
   const width = SIZE;
   const height = Math.floor(SIZE/aspectRatio);
   await page.setViewport({ width: width + PAD * 2, height, });
   for (const key of exampleKeys) {
     const ex = examples.find(ex => ex.key === key)
     const query = ex ? ex.query : undefined
-    const url = `${APP_URL}/${key}/embed${query ? `?${query}` : ''}`;
+    const sheet = ex ? ex.sheet : undefined
+    const url = `${APP_URL}/${key}${sheet ? `/${sheet}` : ''}/embed${query ? `?${query}` : ''}`;
     process.stdout.write('Making screenshot of '+ url + '\n');
     await page.goto(url, { waitUntil: 'networkidle0', timeout });
     await page.waitForSelector('.bp3-multi-select', { timeout });
     await page.waitFor(3000);
-    const fname = path.resolve(OUTPUT_PATH, `${key}__${width}px.jpg`);
+    const fname = getOutFileName(key, sheet, width);
     process.stdout.write('Writing to '+ fname + '\n');
     await page.screenshot({
       path: fname,
@@ -61,12 +66,14 @@ async function mkdirp(dirPath) {
 
 
   for (const key of exampleKeys) {
-    const fname = path.resolve(OUTPUT_PATH, `${key}__${SIZE}px.jpg`);
+    const ex = examples.find(ex => ex.key === key)
+    const sheet = ex ? ex.sheet : undefined
+    const fname = getOutFileName(key, sheet, SIZE);
     for (const size of screenshotSizes) {
       if (size != SIZE) {
         const resized = await sharp(fname)
           .resize(size)
-          .toFile(path.resolve(OUTPUT_PATH, `${key}__${size}px.jpg`));
+          .toFile(getOutFileName(key, sheet, size));
       }
     }
   }

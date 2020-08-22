@@ -47,6 +47,12 @@
       "name": "Daily flights in Europe 2020"
     },
     {
+      "key": "1_ujwdP2U4GnMzAEOI1cB-myk083SloVVREYU8_SQ7FU",
+      "sheet": "6e029fb",
+      "query": "v=47.187858,8.040960,9.43,0,0&a=0&as=1&b=1&bo=45&c=1&ca=1&cz=8&d=1&fe=1&lt=1&lfm=ALL&col=SunsetDark&f=45",
+      "name": "Swiss Passenger Transport Model 2017"
+    },
+    {
       "key": "1e3Euejg1bPCe5mdSPFVahi6Fy_LqXFyPTKJT-BcpMP8",
       "name": "Cyclable trips in Waterloo Region",
       "query": "v=43.444961,-80.478809,11.17&a=0&d=1&c=1&col=Default&f=45"

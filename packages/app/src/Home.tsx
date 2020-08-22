@@ -390,15 +390,15 @@ const Home = () => (
           </ListOfUses>
         </div>
         <ExampleGrid>
-          {examples.map(({ key, name, query }) => (
-            <ExampleGridHoverableLink key={key} to={`/${key}${query ? `?${query}` : ''}`}>
+          {examples.map(({ key, sheet, name, query }) => (
+            <ExampleGridHoverableLink key={key} to={`/${key}${sheet ? `/${sheet}` : ''}${query ? `?${query}` : ''}`}>
               <ExampleImage>
                 <ExampleTitle className="name">{name}</ExampleTitle>
                 <img
                   width={screenshotSizes[0]}
                   height={Math.floor(screenshotSizes[0] / aspectRatio)}
                   alt={name}
-                  src={`/screenshots/${key}__${screenshotSizes[0]}px.jpg`}
+                  src={`/screenshots/${key}${sheet ? `_${sheet}` : ''}__${screenshotSizes[0]}px.jpg`}
                   // srcSet={screenshotSizes.map(w => `/screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
                   // sizes={screenshotSizes.map((w, i) =>
                   //   (i < screenshotSizes.length - 1 ? `(max-width: ${w * 2}px) ` : '') + `${w}px`)
