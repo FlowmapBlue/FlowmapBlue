@@ -30,7 +30,10 @@ Add `.env` file to the project root with a [Mapbox access token](https://www.map
 
 Then run:
 
-    npm start
+    yarn dev
+or     
+
+    npm run dev
 
 
 <a href="https://www.netlify.com">
