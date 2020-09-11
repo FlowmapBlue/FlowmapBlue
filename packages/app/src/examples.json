@@ -198,6 +198,16 @@
       "name": "Commuters in Milan 2020"
     },
     {
+      "key": "1uHumN4NeDIm1YFXnYowJWOXc_oGFsKIfSCXhdrGYaHg",
+      "query": "v=19.406278,-99.164120,12.72,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=PuRd&f=50",
+      "name": "Mexico city bike sharing 2020"
+    },
+    {
+      "key": "1EEGFfR5uMU4cfXyiVB00rYhOsXgR7CyfTrQk5lj9HLs",
+      "query": "v=19.426211,-99.188794,13.31,0,0&a=0&as=1&b=1&bo=75&c=0&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=YlGn&f=50",
+      "name": "Mexico city kick scooter sharing 2019-2020"
+    },
+    {
       "key": "1C2Br5bAU0R6j-2C2-_ElpIu45bLFm-F3hkbe7-JOFwg",
       "name": "Cattle livestock movements in NZ"
     },
