@@ -2,6 +2,10 @@
   publish = "packages/app/build/"
   command = "yarn build:app"
 
+[build.environment]
+  YARN_VERSION = "1.22.5"
+  YARN_FLAGS = "--frozen-lockfile"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
