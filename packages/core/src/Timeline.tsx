@@ -452,7 +452,7 @@ const Timeline: React.FC<Props> = (props) => {
         onPause={() => setPlaying(false)}
         onAdvance={handlePlayAdvance}
       />
-      <MeasureTarget ref={measureRef}>
+      <MeasureTarget ref={measureRef as any}>
         {dimensions.width > 0 && (
           <TimelineChart
             {...props}

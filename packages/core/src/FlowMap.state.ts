@@ -471,7 +471,7 @@ export function applyStateFromQueryString(draft: State, query: string) {
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
   draft.clusteringAuto = asBoolean(params.ca) ?? draft.clusteringAuto;
   draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled;
-  if (params.lfm != null && params.lfm in LocationFilterMode) {
+  if (params.lfm != null && (params.lfm as string) in LocationFilterMode) {
     draft.locationFilterMode = params.lfm as LocationFilterMode;
   }
   if (typeof params.t === 'string') {

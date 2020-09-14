@@ -38,5 +38,8 @@
     "semi": true,
     "singleQuote": true,
     "printWidth": 100
+  },
+  "dependencies": {
+    "@turf/difference": "6.0.2"
   }
 }
