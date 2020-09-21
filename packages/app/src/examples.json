@@ -23,6 +23,11 @@
       "query": "v=45.495056,-73.564832,11.84,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20190701T050000,20190702T020000&col=Default&f=50"
     },
     {
+      "key": "1Ekx_2rvuq-OnxTlPyFZ2ryQSphHG4KW2llDgzDoF-RA",
+      "query": "v=57.679760,11.949905,10.68,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=19990101T000000,20200101T000000&col=Default&f=50",
+      "name": "Yearly migration in Gothenburg, SWE"
+    },
+    {
       "key": "13PZndO5uCtm88VBzdHcKX37NrGIrs8iWwXaSrtnJf-U",
       "name": "1 billion U.S. air passengers in 2018",
       "query": "v=36.849073,-100.022031,3.68&a=0&b=1&c=1&d=1&lt=1&col=BuPu&f=47"
