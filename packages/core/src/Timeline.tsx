@@ -20,16 +20,15 @@ interface Props {
   onChange: (range: [Date, Date]) => void;
 }
 
-const SVG_HEIGHT = 100;
+const SVG_HEIGHT = 80;
 const AXIS_AREA_HEIGHT = 20;
 const TOTAL_COUNT_CHART_HEIGHT = 30;
-const TICK_HEIGHT = 5;
 
 const margin = {
-  top: 25,
+  top: 15,
   left: 25,
   right: 25,
-  bottom: 25,
+  bottom: 15,
 };
 
 const Outer = styled.div({
@@ -99,7 +98,7 @@ const AxisPath = styled.path({
 const TickText = styled.text<{ darkMode: boolean }>((props) => ({
   fill: props.darkMode ? Colors.LIGHT_GRAY1 : Colors.DARK_GRAY1,
   fontSize: 10,
-  textAnchor: 'middle',
+  textAnchor: 'start',
 }));
 
 const Bar = styled.rect<{ darkMode: boolean }>((props) => ({
@@ -332,44 +331,49 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   return (
     <TimelineSvg ref={svgRef} darkMode={darkMode} width={width} height={SVG_HEIGHT}>
       <g transform={`translate(${margin.left},${margin.top})`}>
-        {totalCountsByTime.map(({ time, count }) => (
-          <Bar
-            darkMode={darkMode}
-            key={time.getTime()}
-            x={timeScale(time)}
-            y={TOTAL_COUNT_CHART_HEIGHT - totalCountScale(count)}
-            width={Math.max(
-              timeScale(timeGranularity.interval.offset(time)) - timeScale(time) - 1,
-              1
-            )}
-            height={totalCountScale(count)}
-          />
+        {ticks.map((t, i) => (
+          <g key={i} transform={`translate(${timeScale(t)},${0})`}>
+            <TickLine y1={0} y2={TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT} />
+            {timeScale(t) < chartWidth &&
+            <TickText darkMode={darkMode} x={3} y={12}>
+              {
+                // timeGranularity.format(t)
+                tickLabelFormat(t)
+              }
+            </TickText>
+            }
+          </g>
         ))}
-        <g transform={`translate(0,${TOTAL_COUNT_CHART_HEIGHT})`}>
-          {ticks.map((t, i) => (
-            <g key={i} transform={`translate(${timeScale(t)},${0})`}>
-              <TickLine y1={0} y2={TICK_HEIGHT} />
-              <TickText darkMode={darkMode} x={3} y={15}>
-                {
-                  // timeGranularity.format(t)
-                  tickLabelFormat(t)
-                }
-              </TickText>
-            </g>
+        <AxisPath d={`M0,0 ${chartWidth},0`} />
+        <AxisPath
+          transform={`translate(0,${TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT})`}
+          d={`M0,0 ${chartWidth},0`} />
+        <g transform={`translate(0,${AXIS_AREA_HEIGHT})`}>
+          {totalCountsByTime.map(({ time, count }) => (
+            <Bar
+              darkMode={darkMode}
+              key={time.getTime()}
+              x={timeScale(time)}
+              y={TOTAL_COUNT_CHART_HEIGHT - totalCountScale(count)}
+              width={Math.max(
+                timeScale(timeGranularity.interval.offset(time)) - timeScale(time) - 1,
+                1
+              )}
+              height={totalCountScale(count)}
+            />
           ))}
-          <AxisPath
-            d={`M0,${TICK_HEIGHT * 1.5} 0,0 ${chartWidth},0 ${chartWidth},${TICK_HEIGHT * 1.5}`}
-          />
         </g>
       </g>
       <OuterRect ref={outerRectRef} width={width} height={SVG_HEIGHT} />
       <g transform={`translate(${margin.left},${margin.top})`}>
-        <g transform={`translate(${timeScale(selectedRange[0])},${-handleHGap})`}>
+        <g transform={`translate(${timeScale(selectedRange[0])},0)`}>
           <SelectedRangeRect
             ref={selectedRangeRectRef}
-            height={handleHeight}
+            height={TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT}
             width={timeScale(selectedRange[1]) - timeScale(selectedRange[0])}
           />
+        </g>
+        <g transform={`translate(${timeScale(selectedRange[0])},${-handleHGap})`}>
           <TimelineHandle
             darkMode={darkMode}
             width={handleWidth}
