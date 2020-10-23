@@ -191,7 +191,7 @@ const SettingsPopover: React.FC<Props> = (
               />
               <StyledSwitch
                 checked={state.adaptiveScalesEnabled}
-                label="Adaptive scales"
+                label="Dynamic range adjustment"
                 onChange={handleToggleAdaptiveScales}
               />
               <StyledSwitch
@@ -216,7 +216,7 @@ const SettingsPopover: React.FC<Props> = (
                 </Row>
                 {state.clusteringEnabled && !state.clusteringAuto &&
                 <Row spacing={15}>
-                  <div style={{ whiteSpace: 'nowrap' }}>Clustering level</div>
+                  <div style={{ whiteSpace: 'nowrap', marginLeft: 38 }}>Level</div>
                   <Slider
                     value={
                       availableClusterZoomLevels.length - 1 -
