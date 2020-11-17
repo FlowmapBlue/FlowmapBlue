@@ -322,6 +322,11 @@
       "query": "v=47.780392,13.055787,10.31&a=0&b=1&c=1&d=1&lt=1&f=45"
     },
     {
+      "key": "1V8g6xe7hWLEUUIJDnSwq4XcHUuXZnlFCchRMLxkXJ3k",
+      "name": "Migration in Indonesia 2015",
+      "query": "v=-4.073862,112.431066,4.77,0,0&a=0&as=1&b=1&bo=75&c=0&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Blues&f=50"
+    },
+    {
       "key": "18QSxtLs-AemUZx4fAL2L3oRAvK8sadCrecEUfOXucWM",
       "name": "Migration in Europe",
       "query": "v=49.277032,5.572255,4.64,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&cz=2&d=1&fe=1&lt=1&lfm=ALL&col=YlGnBu&f=50"
