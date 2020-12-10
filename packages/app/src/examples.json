@@ -159,6 +159,11 @@
       "name": "London bicycle hires 2017"
     },
     {
+      "key": "1XrvJF4AGdmY2JYu_F8BD7c_hktyY7eoLEBkRIBIc4Ls",
+      "name": "Migration in Greenland 1993-2019",
+      "query": "v=66.008791,-49.639574,4.90,49,48&a=0&as=1&b=1&bo=34&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20190101T000000,20200101T000000&col=BluYl&f=52"
+    },
+    {
       "key": "1Wz6ohj-PTWIQ7X9nu5dpdliqp9azSLWVPOCQoOpLvKQ",
       "name": "Commuters in Canada 2016",
       "query": "v=48.379110,-94.389853,3.79&a=0&b=1&c=1&d=1&lt=1&col=Default&f=28"
