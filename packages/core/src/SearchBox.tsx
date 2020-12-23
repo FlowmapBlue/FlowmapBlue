@@ -10,7 +10,7 @@ import {
 } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { ItemPredicate, ItemRenderer, MultiSelect } from '@blueprintjs/select';
-import React from 'react';
+import React, {ReactNode} from 'react';
 import { defaultMemoize } from 'reselect';
 import { LocationFilterMode } from './FlowMap.state';
 import { Column } from './Boxes';
@@ -168,7 +168,7 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
     }
   };
 
-  private handleItemRemoved = (value: string, index: number) => {
+  private handleItemRemoved = (value: ReactNode, index: number) => {
     const { selectedItems, onRemoved } = this.props;
     if (selectedItems) {
       onRemoved(selectedItems[index]);

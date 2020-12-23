@@ -216,7 +216,10 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     if (offset == null) {
       const pos = mousePosition(center.x);
       if (pos != null) {
-        setOffset(timeScale(selectedRange[0]) - pos);
+        const selectedPos = timeScale(selectedRange[0]);
+        if (selectedPos != null) {
+          setOffset(selectedPos - pos);
+        }
       }
     } else {
       let nextStart = timeFromPos(center.x + offset);
@@ -331,19 +334,23 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   return (
     <TimelineSvg ref={svgRef} darkMode={darkMode} width={width} height={SVG_HEIGHT}>
       <g transform={`translate(${margin.left},${margin.top})`}>
-        {ticks.map((t, i) => (
-          <g key={i} transform={`translate(${timeScale(t)},${0})`}>
-            <TickLine y1={0} y2={TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT} />
-            {timeScale(t) < chartWidth &&
-            <TickText darkMode={darkMode} x={3} y={12}>
-              {
-                // timeGranularity.format(t)
-                tickLabelFormat(t)
-              }
-            </TickText>
-            }
-          </g>
-        ))}
+        {ticks.map((t, i) => {
+          const xPos = timeScale(t);
+          if (xPos == null) return null;
+          return (
+              <g key={i} transform={`translate(${xPos},${0})`}>
+                <TickLine y1={0} y2={TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT} />
+                {xPos < chartWidth &&
+                <TickText darkMode={darkMode} x={3} y={12}>
+                  {
+                    // timeGranularity.format(t)
+                    tickLabelFormat(t)
+                  }
+                </TickText>
+                }
+              </g>
+          )
+        })}
         <AxisPath d={`M0,0 ${chartWidth},0`} />
         <AxisPath
           transform={`translate(0,${TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT})`}
@@ -354,9 +361,9 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
               darkMode={darkMode}
               key={time.getTime()}
               x={timeScale(time)}
-              y={TOTAL_COUNT_CHART_HEIGHT - totalCountScale(count)}
+              y={TOTAL_COUNT_CHART_HEIGHT - totalCountScale(count)!}
               width={Math.max(
-                timeScale(timeGranularity.interval.offset(time)) - timeScale(time) - 1,
+                timeScale(timeGranularity.interval.offset(time))! - timeScale(time)! - 1,
                 1
               )}
               height={totalCountScale(count)}
@@ -370,7 +377,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
           <SelectedRangeRect
             ref={selectedRangeRectRef}
             height={TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT}
-            width={timeScale(selectedRange[1]) - timeScale(selectedRange[0])}
+            width={timeScale(selectedRange[1])! - timeScale(selectedRange[0])!}
           />
         </g>
         <g transform={`translate(${timeScale(selectedRange[0])},${-handleHGap})`}>
@@ -382,7 +389,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
             onMove={handleMoveSide}
           />
         </g>
-        <g transform={`translate(${timeScale(selectedRange[1]) - handleWidth},${-handleHGap})`}>
+        <g transform={`translate(${timeScale(selectedRange[1])! - handleWidth},${-handleHGap})`}>
           <TimelineHandle
             darkMode={darkMode}
             width={handleWidth}

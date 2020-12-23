@@ -8,7 +8,7 @@ import { ascending } from 'd3-array';
 import { connect, PromiseState } from 'react-refetch';
 import md5 from 'blueimp-md5';
 import COUNTRIES from './countries.json';
-import { AppToaster, ToastContent } from '@flowmap.blue/core';
+import { AppToaster } from '@flowmap.blue/core';
 
 const MAX_GEOCODING_ROWS = 1000;
 const countries = COUNTRIES as { [key: string]: string };
@@ -133,6 +133,10 @@ const GeoCoder = connect(({ names, country, locationType }: GeoCoderProps) => {
     />
   );
 });
+
+const ToastContent = styled.div`
+  font-size: 12px;
+`;
 
 const Geocoding = () => {
   const [input, setInput] = useState(['Paris', 'London', 'New York'].join('\n'));

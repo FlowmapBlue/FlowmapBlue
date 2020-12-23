@@ -40,5 +40,10 @@
     "semi": true,
     "singleQuote": true,
     "printWidth": 100
+  },
+  "dependencies": {
+    "@turf/difference": "6.0.2",
+    "@typescript-eslint/eslint-plugin": "4.11.0",
+    "@typescript-eslint/parser": "4.11.0"
   }
 }

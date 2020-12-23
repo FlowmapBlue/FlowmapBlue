@@ -48,7 +48,7 @@ const ColorRamp: React.FC<{
       if (ctx) {
         ctx.clearRect(0, 0, width, height);
         for (let i = 0; i < width; i++) {
-          ctx.fillStyle = colorScale(xScale.invert(i));
+          ctx.fillStyle = colorScale(xScale.invert(i))!;
           ctx.fillRect(reverse ? width - i - 1 : i, 0, 1, height);
         }
       }

@@ -12,7 +12,6 @@ import FlowMap, {
   MapContainer,
   prepareFlows,
   Props as FlowMapProps,
-  ToastContent,
 } from '@flowmap.blue/core';
 import { Helmet } from 'react-helmet';
 import sendEvent from './ga';
@@ -23,12 +22,17 @@ import { IconNames } from '@blueprintjs/icons';
 import { compose, withProps } from 'recompose';
 import md5 from 'blueimp-md5';
 import { useHistory } from 'react-router-dom';
+import styled from "@emotion/styled";
 
 interface Props {
   spreadSheetKey: string;
   flowsSheetKey?: string;
   embed: boolean;
 }
+
+const ToastContent = styled.div`
+  font-size: 12px;
+`;
 
 const FlowMapWithData = compose<any, any>(
   sheetFetcher('json')<any>(

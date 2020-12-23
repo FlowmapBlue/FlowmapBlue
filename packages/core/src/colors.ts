@@ -143,7 +143,7 @@ export default function getColors(
     const colorScale = scaleSequential(interpolateRgbBasis(scheme)).domain([0, N]);
 
     if (!fadeEnabled || fadeAmount === 0) {
-      scheme = indices.map((c, i) => colorScale(i));
+      scheme = indices.map((c, i) => colorScale(i)!);
     } else {
       const amount = scalePow()
         // .exponent(animate ? 1 : 1/2.5)
@@ -161,9 +161,12 @@ export default function getColors(
 
       scheme = indices.map(
         (c, i) => {
-          const col = hcl(colorScale(i));
-          col.l = darkMode ? col.l - col.l * amount(i) : col.l + (100 - col.l) * amount(i);
-          col.c = col.c - col.c * (amount(i) / 4);
+          const color = colorScale(i);
+          const alpha = amount(i);
+          if (color == null || alpha == null) return '#000';
+          const col = hcl(color);
+          col.l = darkMode ? col.l - col.l * alpha : col.l + (100 - col.l) * alpha;
+          col.c = col.c - col.c * (alpha / 4);
           return col.toString();
         }
         // interpolateRgbBasis([colorScale(i), darkMode ? '#000' : '#fff'])(amount(i))
