@@ -54,6 +54,7 @@
     "@luma.gl/core": "^8.1.0",
     "@mapbox/geo-viewport": "^0.4.0",
     "@math.gl/web-mercator": "^3.2.1",
+    "@turf/area": "^6.3.0",
     "@turf/bbox": "^6.0.1",
     "@turf/boolean-point-in-polygon": "^6.0.1",
     "d3-collection": "^1.0.7",
@@ -83,6 +84,8 @@
     "react-dom": ">= 16.0.0"
   },
   "devDependencies": {
+    "@blueprintjs/core": "^3.23.1",
+    "@blueprintjs/select": "^3.10.0",
     "@types/d3-array": "^2.0.0",
     "@types/d3-collection": "^1.0.7",
     "@types/d3-color": "^1.2.1",
@@ -103,8 +106,6 @@
     "@types/react": "^16.9.38",
     "@types/react-dom": "^16.9.8",
     "@types/seedrandom": "^2.4.28",
-    "@blueprintjs/core": "^3.23.1",
-    "@blueprintjs/select": "^3.10.0",
     "css-loader": "^4.3.0",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
