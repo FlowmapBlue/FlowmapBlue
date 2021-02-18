@@ -391,7 +391,7 @@ const FlowMap: React.FC<Props> = (props) => {
           bearing: 0,
           pitch: 0,
           altitude: 1.5,
-          ...mapTransition(1000),
+          ...mapTransition(500),
         },
         adjustViewportToLocations: false,
       });
