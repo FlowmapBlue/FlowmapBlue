@@ -1,11 +1,12 @@
 import React from 'react';
 import useFetch from 'react-fetch-hook';
 import { PromiseState } from 'react-refetch';
-import FlowMap, { DEFAULT_CONFIG, LoadingSpinner, MapContainer, prepareFlows } from '@flowmap.blue/core';
+import FlowMap, { ConfigPropName, DEFAULT_CONFIG, LoadingSpinner, MapContainer, prepareFlows } from '@flowmap.blue/core';
 import { csvParse } from 'd3-dsv';
 import { useLocation } from 'react-router-dom';
 import * as queryString from 'query-string';
 import ErrorFallback from './ErrorFallback';
+import { useMemo } from 'react';
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -23,6 +24,14 @@ const FromUrlFlowMap = (props: {}) => {
   if (typeof flowsUrl !== 'string') {
     throw new Error(`Invalid flows URL`);
   }
+
+  const config = useMemo(() => {
+    const {mapboxAccessToken} = params;
+    return {
+      ...DEFAULT_CONFIG,
+      ...mapboxAccessToken && { [ConfigPropName.MAPBOX_ACCESS_TOKEN]: mapboxAccessToken }
+    };
+  }, [params.mapboxAccessToken]);
 
   const fetchFlows = useFetch(flowsUrl, {
     formatter: (response) =>
@@ -63,7 +72,7 @@ const FromUrlFlowMap = (props: {}) => {
         flowsSheet={undefined}
         flowsFetch={PromiseState.resolve(prepareFlows(fetchFlows.data as any[]))}
         locationsFetch={PromiseState.resolve(fetchLocations.data)}
-        config={DEFAULT_CONFIG}
+        config={config}
         spreadSheetKey={undefined}
       />
     </MapContainer>
