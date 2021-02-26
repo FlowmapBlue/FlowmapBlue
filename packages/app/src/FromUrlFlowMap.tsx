@@ -26,12 +26,15 @@ const FromUrlFlowMap = (props: {}) => {
   }
 
   const config = useMemo(() => {
-    const {mapboxAccessToken} = params;
-    return {
-      ...DEFAULT_CONFIG,
-      ...mapboxAccessToken && { [ConfigPropName.MAPBOX_ACCESS_TOKEN]: mapboxAccessToken }
-    };
-  }, [params.mapboxAccessToken]);
+    const config = { ...DEFAULT_CONFIG };
+    for (const prop of Object.values(ConfigPropName)) {
+      const val = params[prop];
+      if (typeof(val) === 'string' && val.length > 0) {
+        config[prop] = val;
+      }
+    }
+    return config;
+  }, [params]);
 
   const fetchFlows = useFetch(flowsUrl, {
     formatter: (response) =>
