@@ -17,7 +17,8 @@ import {
   getLocationCentroid,
   getLocationId,
   isLocationCluster,
-  Location, LocationTotals,
+  Location,
+  LocationTotals,
 } from './types';
 import * as Cluster from '@flowmap.gl/cluster';
 import { ClusterNode, findAppropriateZoomLevel, isCluster } from '@flowmap.gl/cluster';
@@ -379,7 +380,8 @@ function aggregateFlows(flows: Flow[]) {
     .rollup((ff: Flow[]) => {
       const origin = getFlowOriginId(ff[0]);
       const dest = getFlowDestId(ff[0]);
-      return {
+      const color = ff[0].color;
+      const rv: Flow = {
         origin,
         dest,
         count: ff.reduce((m, f) => {
@@ -391,6 +393,8 @@ function aggregateFlows(flows: Flow[]) {
         }, 0),
         time: undefined,
       };
+      if (color) rv.color = color;
+      return rv;
     })
     .entries(flows);
   const rv: Flow[] = [];
@@ -433,7 +437,6 @@ export const getSortedAggregatedFilteredFlows: Selector<Flow[] | undefined> = cr
   }
 );
 
-
 export const getFlowMagnitudeExtent: Selector<[number, number] | undefined> = createSelector(
   getSortedAggregatedFilteredFlows,
   getSelectedLocationsSet,
@@ -443,9 +446,9 @@ export const getFlowMagnitudeExtent: Selector<[number, number] | undefined> = cr
     let rv: [number, number] | undefined = undefined;
     for (const f of flows) {
       if (
-        getFlowOriginId(f) !== getFlowDestId(f)
-        && isFlowInSelection(f, selectedLocationsSet, locationFilterMode)
-      ){
+        getFlowOriginId(f) !== getFlowDestId(f) &&
+        isFlowInSelection(f, selectedLocationsSet, locationFilterMode)
+      ) {
         const count = getFlowMagnitude(f);
         if (rv == null) {
           rv = [count, count];
@@ -556,15 +559,15 @@ export const getLocationTotals: Selector<Map<string, LocationTotals> | undefined
       return rv;
     };
     for (const f of flows) {
-      if (isFlowInSelection(f, selectedLocationsSet, locationFilterMode)){
+      if (isFlowInSelection(f, selectedLocationsSet, locationFilterMode)) {
         const originId = getFlowOriginId(f);
         const destId = getFlowDestId(f);
         const count = getFlowMagnitude(f);
         if (originId === destId) {
-          totals.set(originId, add(originId, { within: count }))
+          totals.set(originId, add(originId, { within: count }));
         } else {
-          totals.set(originId, add(originId, { outgoing: count }))
-          totals.set(destId, add(destId, { incoming: count }))
+          totals.set(originId, add(originId, { outgoing: count }));
+          totals.set(destId, add(destId, { incoming: count }));
         }
       }
     }
@@ -599,9 +602,9 @@ function _getLocationsInBboxIndices(tree: KDBushTree, bbox: [number, number, num
 
 export function getLocationsInBbox(tree: KDBushTree, bbox: [number, number, number, number]) {
   if (!tree) return undefined;
-  return _getLocationsInBboxIndices(tree, bbox).map((idx: number) => tree.points[idx]) as Array<
-    Location
-  >;
+  return _getLocationsInBboxIndices(tree, bbox).map(
+    (idx: number) => tree.points[idx]
+  ) as Array<Location>;
 }
 
 const _getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelector(
@@ -713,12 +716,12 @@ export const getTotalFilteredCount: Selector<number | undefined> = createSelecto
 
 function calcLocationTotalsExtent(
   locationTotals: Map<string, LocationTotals> | undefined,
-  locationIdsInViewport: Set<string> | undefined,
+  locationIdsInViewport: Set<string> | undefined
 ) {
   if (!locationTotals) return undefined;
   let rv: [number, number] | undefined = undefined;
   for (const [id, { incoming, outgoing, within }] of locationTotals.entries()) {
-    if (locationIdsInViewport == null || locationIdsInViewport.has(id)){
+    if (locationIdsInViewport == null || locationIdsInViewport.has(id)) {
       const lo = Math.min(incoming + within, outgoing + within, within);
       const hi = Math.max(incoming + within, outgoing + within, within);
       if (!rv) {
@@ -732,17 +735,19 @@ function calcLocationTotalsExtent(
   return rv;
 }
 
-const _getLocationTotalsExtent: Selector<[number, number] | undefined> = createSelector(
-  getLocationTotals,
-  locationTotals =>
-    calcLocationTotalsExtent(locationTotals, undefined),
+const _getLocationTotalsExtent: Selector<
+  [number, number] | undefined
+> = createSelector(getLocationTotals, (locationTotals) =>
+  calcLocationTotalsExtent(locationTotals, undefined)
 );
 
-const _getLocationTotalsForViewportExtent: Selector<[number, number] | undefined> = createSelector(
+const _getLocationTotalsForViewportExtent: Selector<
+  [number, number] | undefined
+> = createSelector(
   getLocationTotals,
   getLocationIdsInViewport,
   (locationTotals, locationsInViewport) =>
-    calcLocationTotalsExtent(locationTotals, locationsInViewport),
+    calcLocationTotalsExtent(locationTotals, locationsInViewport)
 );
 
 export function getLocationTotalsExtent(state: State, props: Props) {

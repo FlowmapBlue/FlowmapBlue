@@ -1,7 +1,16 @@
 import { DeckGL } from '@deck.gl/react';
-import {MapController, MapView} from '@deck.gl/core';
+import { MapController, MapView } from '@deck.gl/core';
 import * as React from 'react';
-import { ReactNode, Reducer, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import {
+  ReactNode,
+  Reducer,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { alea } from 'seedrandom';
 import { _MapContext as MapContext, StaticMap } from 'react-map-gl';
 import FlowMapLayer, {
@@ -13,7 +22,17 @@ import FlowMapLayer, {
 import { Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent } from '@blueprintjs/core';
 import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react';
 import WebMercatorViewport from '@math.gl/web-mercator';
-import { Absolute, Box, BoxStyle, Column, Description, LegendTitle, Title, TitleBox, ToastContent, } from './Boxes';
+import {
+  Absolute,
+  Box,
+  BoxStyle,
+  Column,
+  Description,
+  LegendTitle,
+  Title,
+  TitleBox,
+  ToastContent,
+} from './Boxes';
 import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
 import Tooltip, { TargetBounds } from './Tooltip';
 import { Link, useHistory } from 'react-router-dom';
@@ -189,9 +208,10 @@ const FlowMap: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (timeExtent) {
-      if (!selectedTimeRange ||
-         // reset selectedTimeRange if not within the timeExtent
-         !(timeExtent[0] <= selectedTimeRange[0] && selectedTimeRange[1] <= timeExtent[1])
+      if (
+        !selectedTimeRange ||
+        // reset selectedTimeRange if not within the timeExtent
+        !(timeExtent[0] <= selectedTimeRange[0] && selectedTimeRange[1] <= timeExtent[1])
       ) {
         dispatch({
           type: ActionType.SET_TIME_RANGE,
@@ -406,8 +426,10 @@ const FlowMap: React.FC<Props> = (props) => {
         if (availableZoomLevels != null) {
           dispatch({
             type: ActionType.SET_MANUAL_CLUSTER_ZOOM,
-            manualClusterZoom:
-              findAppropriateZoomLevel(clusterIndex.availableZoomLevels, viewport.zoom),
+            manualClusterZoom: findAppropriateZoomLevel(
+              clusterIndex.availableZoomLevels,
+              viewport.zoom
+            ),
           });
         }
       }
@@ -416,8 +438,7 @@ const FlowMap: React.FC<Props> = (props) => {
       type: ActionType.SET_CLUSTERING_AUTO,
       clusteringAuto: value,
     });
-  }
-
+  };
 
   const [showFullscreenButton, setShowFullscreenButton] = useState(
     embed && document.fullscreenEnabled
@@ -425,9 +446,7 @@ const FlowMap: React.FC<Props> = (props) => {
 
   useEffect(() => {
     function handleFullScreenChange() {
-      setShowFullscreenButton(
-        embed && document.fullscreenEnabled && !document.fullscreenElement
-      );
+      setShowFullscreenButton(embed && document.fullscreenEnabled && !document.fullscreenElement);
     }
     document.addEventListener('fullscreenchange', handleFullScreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
@@ -584,12 +603,14 @@ const FlowMap: React.FC<Props> = (props) => {
   if (locationsFetch.error || flowsFetch.error) {
     return (
       <Message>
-        {spreadSheetKey
-          ? <>
+        {spreadSheetKey ? (
+          <>
             <p>
               Oops… Couldn't fetch data from{` `}
-              <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>this spreadsheet</a>.
-              {` `}
+              <a href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>
+                this spreadsheet
+              </a>
+              .{` `}
             </p>
             <p>
               If you are the owner of this spreadsheet, make sure you have shared it by doing the
@@ -603,8 +624,9 @@ const FlowMap: React.FC<Props> = (props) => {
               </ol>
             </p>
           </>
-          : <p>Oops… Couldn't fetch data</p>
-        }
+        ) : (
+          <p>Oops… Couldn't fetch data</p>
+        )}
       </Message>
     );
   }
@@ -808,24 +830,25 @@ const FlowMap: React.FC<Props> = (props) => {
           colors: getFlowMapColors(state, props),
           locations,
           flows,
+          getFlowColor: (f: Flow) => f.color ?? undefined,
           showOnlyTopFlows: NUMBER_OF_FLOWS_TO_DISPLAY,
           getLocationCentroid,
           getFlowMagnitude,
           getFlowOriginId,
           getFlowDestId,
           getLocationId,
-          getLocationTotalIn: loc => locationTotals?.get(loc.id)?.incoming || 0,
-          getLocationTotalOut: loc => locationTotals?.get(loc.id)?.outgoing || 0,
-          getLocationTotalWithin: loc => locationTotals?.get(loc.id)?.within || 0,
+          getLocationTotalIn: (loc) => locationTotals?.get(loc.id)?.incoming || 0,
+          getLocationTotalOut: (loc) => locationTotals?.get(loc.id)?.outgoing || 0,
+          getLocationTotalWithin: (loc) => locationTotals?.get(loc.id)?.within || 0,
           getAnimatedFlowLineStaggering: (d: Flow) =>
             // @ts-ignore
             new alea(`${d.origin}-${d.dest}`)(),
           showTotals: true,
           maxLocationCircleSize: getMaxLocationCircleSize(state, props),
           maxFlowThickness: animationEnabled ? 18 : 12,
-          ...(!adaptiveScalesEnabled) && {
+          ...(!adaptiveScalesEnabled && {
             flowMagnitudeExtent: getFlowMagnitudeExtent(state, props),
-          },
+          }),
           // locationTotalsExtent needs to be always calculated, because locations
           // are not filtered by the viewport (e.g. the connected ones need to be included).
           // Also, the totals cannot be correctly calculated from the flows passed to the layer.
@@ -854,7 +877,6 @@ const FlowMap: React.FC<Props> = (props) => {
     return layers;
   };
 
-
   return (
     <NoScrollContainer
       ref={outerRef}
@@ -873,7 +895,7 @@ const FlowMap: React.FC<Props> = (props) => {
           ref={deckRef}
           controller={CONTROLLER_OPTIONS}
           viewState={viewport}
-          views={[new MapView({id: 'map', repeat: true})]}
+          views={[new MapView({ id: 'map', repeat: true })]}
           onViewStateChange={handleViewStateChange}
           layers={getLayers()}
           ContextProvider={MapContext.Provider}

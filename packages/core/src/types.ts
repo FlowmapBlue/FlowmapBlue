@@ -59,6 +59,7 @@ export interface Flow {
   dest: string;
   count: number;
   time?: Date;
+  color?: string;
 }
 
 export interface CountByTime {
@@ -85,16 +86,19 @@ export interface ViewportProps {
   transitionEasing?: any;
 }
 
-export declare type AsyncState<T> = {
-  loading: boolean;
-  error?: undefined;
-  value?: undefined;
-} | {
-  loading?: false;
-  error: Error;
-  value?: undefined;
-} | {
-  loading?: false;
-  error?: undefined;
-  value: T;
-};
+export declare type AsyncState<T> =
+  | {
+      loading: boolean;
+      error?: undefined;
+      value?: undefined;
+    }
+  | {
+      loading?: false;
+      error: Error;
+      value?: undefined;
+    }
+  | {
+      loading?: false;
+      error?: undefined;
+      value: T;
+    };
