@@ -391,7 +391,7 @@
     {
       "key": "1_SFSYKWgyo7BF1SK1TTyqFewr2nUDPfBOGnJTNh3s3k",
       "name": "Commuters in Switzerland, Swisstopo basemap",
-      "query": "v=47.038717,8.158928,8.46,0,0&a=0&b=1&bo=100&c=1&d=0&lt=1&lfm=ALL&col=Burg&f=50"
+      "query": "v=46.766666,8.366874,7.64,0,0&a=0&as=1&b=1&bo=41&c=1&ca=1&d=0&fe=1&lt=1&lfm=ALL&col=Greys&f=50"
     }
   ]
 }

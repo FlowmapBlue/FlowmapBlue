@@ -4,7 +4,7 @@ import { DEFAULT_CONFIG } from './config';
 import FlowMap from './FlowMap';
 import { ConfigPropName, Flow, Location } from './types';
 import MapContainer from './MapContainer';
-import { AppToaster, ColorScheme, Fallback } from './index';
+import { AppToaster, Fallback } from './index';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
@@ -13,15 +13,14 @@ import '@blueprintjs/select/lib/css/blueprint-select.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { css, Global } from '@emotion/core';
-import { Classes, Colors, FocusStyleManager } from '@blueprintjs/core';
+import { FocusStyleManager } from '@blueprintjs/core';
+import globalStyles from './globalStyles';
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
 const history = createBrowserHistory();
 
-const globalStyles = css`
-  @import url('https://fonts.googleapis.com/css?family=Sarabun:400,700');
-
+const customGlobalStyles = css`
   html,
   body,
   button,
@@ -30,37 +29,8 @@ const globalStyles = css`
     background-color: ${'#2d3a4c'};
     font-size: 13pt;
   }
-
-  body,
-  * {
-    font-family: 'Sarabun', sans-serif;
-  }
-
-  a,
-  a:visited {
-    color: ${ColorScheme.primary};
-  }
-  .${Classes.DARK} {
-    a,
-    a:visited {
-      color: ${Colors.BLUE5};
-    }
-  }
-
-  .mapboxgl-control-container {
-    a,
-    a:visited {
-      color: ${Colors.DARK_GRAY1};
-    }
-  }
-
   section {
     margin-bottom: 4em;
-  }
-  #no-token-warning {
-    bottom: 30px;
-    top: unset !important;
-    left: 10px !important;
   }
 `;
 
@@ -132,6 +102,7 @@ export function init({
     <Router history={history}>
       <ErrorBoundary>
         <Global styles={globalStyles} />
+        <Global styles={customGlobalStyles} />
         <MapContainer embed={true}>
           <FlowMap
             inBrowser={true}
