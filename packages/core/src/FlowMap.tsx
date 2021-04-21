@@ -1015,7 +1015,7 @@ const FlowMap: React.FC<Props> = (props) => {
         </Absolute>
       )}
       {spreadSheetKey && !embed && (
-        <TitleBox top={60} left={0} darkMode={darkMode}>
+        <TitleBox top={52} left={0} darkMode={darkMode}>
           <Collapsible darkMode={darkMode} width={300} direction={Direction.LEFT}>
             <Column spacing={10} padding="12px 20px">
               {title && (
