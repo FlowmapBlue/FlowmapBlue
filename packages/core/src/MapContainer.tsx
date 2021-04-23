@@ -15,7 +15,6 @@ const supportsWebGl = checkWebglSupport();
 
 const LogoOuter = styled(Absolute)`
   filter: grayscale(1);
-  opacity: 0.8;
   svg {
     circle {
       fill: #fff;
