@@ -332,6 +332,11 @@
       "query": "v=47.780392,13.055787,10.31&a=0&b=1&c=1&d=1&lt=1&f=45"
     },
     {
+      "key": "1gZCPCLpQjkGFJWL0sTv1dLBuR1zBkeNqVOvDGA46uLM",
+      "name": "Hungary hourly mobility 2019",
+      "query": "v=47.162326,19.108898,7.67,0,0&a=0&as=1&b=1&bo=75&c=1&ca=0&cz=7&d=1&fe=1&lt=1&lfm=ALL&t=20190528T010000,20190529T000000&col=Default&f=50"
+    },
+    {
       "key": "1V8g6xe7hWLEUUIJDnSwq4XcHUuXZnlFCchRMLxkXJ3k",
       "name": "Migration in Indonesia 2015",
       "query": "v=-4.073862,112.431066,4.77,0,0&a=0&as=1&b=1&bo=75&c=0&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Blues&f=50"
