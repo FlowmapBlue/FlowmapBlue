@@ -300,6 +300,11 @@
       "query": "v=8.729650,11.252848,1.22,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Emrld&f=50"
     },
     {
+      "key": "14wDs-nZ6GQV4bNtxCcW2s_98402f9gK9BOqC5uLst68",
+      "name": "Top football transfers 2000–2018",
+      "query": "v=47.110989,2.251806,4.17,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20000101T000000,20190101T000000&col=Magma&f=50"
+    },
+    {
       "key": "1upuL1_mCgXjjIp2OI_PekFS5r_Vtyr46Fayt1aWnnjc",
       "name": "International migrant stock 2019"
     },
