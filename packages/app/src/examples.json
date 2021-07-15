@@ -18,6 +18,11 @@
       "query": "v=45.513266,-73.573425,12.18&a=0&d=1&c=1&col=Teal&f=45"
     },
     {
+      "key": "1T4rtV14nPZ_3sOaySjbmSHFDgZkQnxewzL85X6suGY8",
+      "name": "Tartu bike sharing 2019",
+      "query": "v=58.372321,26.723534,12.32,0,0&a=0&as=1&b=1&bo=50&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20190701T000000,20191231T220000&col=Default&f=46"
+    },
+    {
       "key": "1qTVOzkPB7U1ySI4g4uPtVBzzEDCI8n1WXAmQeZL15fE",
       "name": "Hourly BIXI rides Montréal",
       "query": "v=45.495056,-73.564832,11.84,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20190701T050000,20190702T020000&col=Default&f=50"
