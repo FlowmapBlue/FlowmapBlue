@@ -122,8 +122,8 @@
       "query": "v=52.098668,4.658308,8.60&a=0&d=1&c=1&lt=1&col=Default&f=45"
     },
     {
-      "key": "11odTn4_kytEo2O9LxAXGbZspXM_OLFsX__mpxRAvAOc",
-      "query": "v=30.264396,-97.742259,13.24,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20200101T000000,20200701T000000&col=Default&f=50",
+      "key": "1SCmQHSfvgYhPz5VFzg5LBtqY3OSfHzTutKkpneWVL4Q",
+      "query": "v=30.263617,-97.753185,12.79,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20200101T000000,20210101T000000&col=Default&f=50",
       "name": "Austin MetroBike by day 2020"
     },
     {
