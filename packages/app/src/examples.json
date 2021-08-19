@@ -13,6 +13,11 @@
       "name": "South East Queensland public transport"
     },
     {
+      "key": "1Ipp8FUeOTSXcrzXEg9cfW_V3Czpurkt59vvdFk3v1EA",
+      "query": "v=37.695073,-122.123593,9.45,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=SunsetDark&f=50",
+      "name": "BART ridership 2021"
+    },
+    {
       "key": "1mK1ZMxNmGtSSxMhtoKO5h7nxyDMXFC_3_u4eo4rtucg",
       "name": "BIXI bicycle sharing Montréal",
       "query": "v=45.513266,-73.573425,12.18&a=0&d=1&c=1&col=Teal&f=45"
