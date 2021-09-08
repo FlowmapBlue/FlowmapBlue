@@ -30,6 +30,20 @@ const NewsItem = styled.div`
 export default () => (
   <Outer>
     <NewsItem>
+      <NewsDate>Sep 01, 2021</NewsDate>
+      <NewsText>
+        <Away href="https://www.mapbox.com/showcase/flowmap-blue">Featured in Mapbox showcase</Away>
+      </NewsText>
+    </NewsItem>
+    <NewsItem>
+      <NewsDate>Feb 25, 2021</NewsDate>
+      <NewsText>
+        <Away href="https://www.producthunt.com/posts/flowmap-blue">
+          Flowmap.blue featured on ProductHunt
+        </Away>
+      </NewsText>
+    </NewsItem>
+    <NewsItem>
       <NewsDate>Jul 01, 2020</NewsDate>
       <NewsText>
         <Away href="https://github.com/FlowmapBlue/flowmapblue.R">

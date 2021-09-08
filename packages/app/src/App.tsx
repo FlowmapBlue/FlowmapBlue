@@ -8,6 +8,7 @@ import { AppToaster, LoadingSpinner } from '@flowmap.blue/core';
 import { FLOWS_SHEET_KEY_RE, SPREADSHEET_KEY_RE } from './constants';
 import ErrorFallback from './ErrorFallback';
 import ErrorBoundary from './ErrorBoundary';
+import Gallery from './Gallery';
 
 const GSheetsFlowMap = React.lazy(() => import('./GSheetsFlowMap'));
 const InBrowserFlowMap = React.lazy(() => import('./InBrowserFlowMap'));
@@ -16,7 +17,7 @@ const ODMatrixConverter = React.lazy(() => import('./ODMatrixConverter'));
 const Geocoding = React.lazy(() => import('./Geocoding'));
 
 const history = createBrowserHistory();
-history.listen(location => AppToaster.clear());
+history.listen((location) => AppToaster.clear());
 
 type Props = {};
 
@@ -26,14 +27,13 @@ type State = {
 
 const makeGSheetsFlowMap = (embed: boolean) => ({
   match,
-}: RouteComponentProps<{ sheetKey: string, flowsSheetKey: string }>) => (
+}: RouteComponentProps<{ sheetKey: string; flowsSheetKey: string }>) => (
   <GSheetsFlowMap
     spreadSheetKey={match.params.sheetKey}
     flowsSheetKey={match.params.flowsSheetKey}
-    embed={embed} />
+    embed={embed}
+  />
 );
-
-
 
 export default class App extends React.Component<Props, State> {
   state = {
@@ -43,8 +43,8 @@ export default class App extends React.Component<Props, State> {
   componentDidCatch(error: any, errorInfo: any) {
     this.setState({ error });
     if (process.env.REACT_APP_SENTRY_DSN) {
-      Sentry.withScope(scope => {
-        Object.keys(errorInfo).forEach(key => {
+      Sentry.withScope((scope) => {
+        Object.keys(errorInfo).forEach((key) => {
           scope.setExtra(key, errorInfo[key]);
         });
         Sentry.captureException(error);
@@ -57,7 +57,7 @@ export default class App extends React.Component<Props, State> {
       // render fallback UI
       return (
         <Router history={history}>
-          <ErrorFallback/>
+          <ErrorFallback />
         </Router>
       );
     } else {
@@ -67,6 +67,7 @@ export default class App extends React.Component<Props, State> {
             <Suspense fallback={<LoadingSpinner />}>
               <Switch>
                 <Route path="/od-matrix-converter" component={ODMatrixConverter} />
+                <Route path="/gallery" component={Gallery} />
                 <Route path="/geocoding" component={Geocoding} />
                 <Route path="/in-browser" component={InBrowserFlowMap} />
                 <Route path="/from-url" component={FromUrlFlowMap} />

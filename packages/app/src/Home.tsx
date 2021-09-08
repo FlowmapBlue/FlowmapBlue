@@ -2,17 +2,18 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
-import { aspectRatio, examples, screenshotSizes } from './examples.json';
 import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
 import { Away, Column, Logo, Row } from '@flowmap.blue/core';
 import { Helmet } from 'react-helmet';
 import MapboxLogo from './images/mapbox-logo-black.svg';
+import LinuxFoundation from './images/linux-foundation-hztl-white.svg';
 import NycCitiBikeImage from './images/nyc-citi-bike_1000px.jpg';
 import TLLogo from './images/TL-Horizontal-Black.svg';
-import { Button, Classes, Colors, Intent, Tag } from '@blueprintjs/core';
+import { Button, Classes, Colors } from '@blueprintjs/core';
 import Nav from './Nav';
 import News from './News';
 import ReactPlayer from 'react-player';
+import { ListOfUses, ListOfUsesItem } from './Gallery';
 
 const ContentBody = styled.div`
   padding: 10px 20px;
@@ -31,6 +32,7 @@ const LogoTitle = styled.h1`
 `;
 
 const Support = styled.p`
+  margin-top: 1.5em;
   display: flex;
   justify-items: center;
   flex-wrap: wrap;
@@ -50,6 +52,9 @@ const SupportLogoLink = styled.a`
   transition: opacity 0.2s;
   opacity: 0.6;
   margin: 0 22px;
+  img {
+    max-width: 200px;
+  }
   &:hover {
     opacity: 1;
   }
@@ -66,84 +71,6 @@ const NoWrap = styled.span`
   flex-wrap: nowrap;
 `;
 
-const ExampleGrid = styled.div`
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: 1fr;
-  @media (min-width: 500px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (min-width: 650px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  @media (min-width: 800px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  @media (min-width: 1000px) {
-    grid-template-columns: repeat(5, 1fr);
-  }
-  @media (min-width: 1200px) {
-    grid-template-columns: repeat(6, 1fr);
-  }
-`;
-
-const HoverableLink = styled(Link)`
-  width: 100%;
-  overflow: hidden;
-  border: 1px solid ${Colors.GRAY2};
-  transition: border 0.25s;
-  &:hover {
-    border: 1px solid ${Colors.LIGHT_GRAY1};
-  }
-`;
-const ExampleGridHoverableLink = styled(HoverableLink)`
-  position: relative;
-  width: 100%;
-  &:hover {
-    & > .name {
-      color: ${Colors.LIGHT_GRAY1};
-    }
-  }
-`;
-const ExampleTitle = styled.div`
-  width: 100%;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  position: absolute;
-  padding: 4px 7px;
-  bottom: 0;
-  background: ${Colors.DARK_GRAY2};
-  color: ${Colors.GRAY3};
-  font-size: 9pt;
-  z-index: 2;
-  pointer-events: none;
-  transition: color 0.25s;
-  text-align: center;
-  border-top: 1px solid rgba(19, 124, 189, 0.25);
-`;
-const ExampleImage = styled.div`
-  img {
-    display: block;
-    height: auto;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    transform: scale(1);
-    transition: transform 0.5s;
-    &:hover {
-      transform: scale(1.5);
-    }
-  }
-  &:before {
-    // persistent aspect ratio trick https://stackoverflow.com/a/51578598/120779
-    content: '';
-    display: block;
-    height: 0;
-    width: 0;
-    padding-bottom: calc(${1 / aspectRatio} * 100%);
-  }
-`;
 const DemoVideo = styled.div`
   width: 100%;
   margin-bottom: 20px;
@@ -206,24 +133,6 @@ const NewsletterOuter = styled.div`
     }
     margin-bottom: 2rem;
   }
-`;
-
-const ListOfUses = styled.div`
-  display: flex;
-  // border-radius: 6px;
-  // background-color: ${Colors.DARK_GRAY3};
-  flex-wrap: wrap;
-  list-style-type: none;
-  padding: 0.5em 1em;
-  margin: 1em 0;
-`;
-
-const ListOfUsesItem = styled(({ className, children }) => (
-  <Tag className={className} minimal round interactive={false} intent={Intent.NONE}>
-    {children}
-  </Tag>
-))`
-  margin: 5px;
 `;
 
 const TitleRow = styled.div`
@@ -295,6 +204,46 @@ const Home = () => (
         <p>Visualize numbers of movements between locations (origin-destination data).</p>
         <p>Explore the data interactively.</p>
       </section>
+      <section>
+        <h2>What's it for?</h2>
+        <div>
+          Flowmap.blue is used to visualize various real-world phenomena in which pairs of locations
+          are involved:
+          <ListOfUses>
+            <ListOfUsesItem>Urban mobility</ListOfUsesItem>
+            <ListOfUsesItem>Commuters</ListOfUsesItem>
+            <ListOfUsesItem>Pedestrian movement</ListOfUsesItem>
+            <ListOfUsesItem>Bus travels </ListOfUsesItem>
+            <ListOfUsesItem>Metro rides</ListOfUsesItem>
+            <ListOfUsesItem>Train rides</ListOfUsesItem>
+            <ListOfUsesItem>Air travels</ListOfUsesItem>
+            <ListOfUsesItem>Marine traffic</ListOfUsesItem>
+            <ListOfUsesItem>Bicycle sharing</ListOfUsesItem>
+            <ListOfUsesItem>Scooter sharing</ListOfUsesItem>
+            <ListOfUsesItem>Car ride sharing </ListOfUsesItem>
+            <ListOfUsesItem>Taxi rides</ListOfUsesItem>
+            <ListOfUsesItem>Internal migration</ListOfUsesItem>
+            <ListOfUsesItem>International migration</ListOfUsesItem>
+            <ListOfUsesItem>Refugees</ListOfUsesItem>
+            <ListOfUsesItem>Human trafficking </ListOfUsesItem>
+            <ListOfUsesItem>Drug flows </ListOfUsesItem>
+            <ListOfUsesItem>Freight transportation </ListOfUsesItem>
+            <ListOfUsesItem>Material flows</ListOfUsesItem>
+            <ListOfUsesItem>Trade </ListOfUsesItem>
+            <ListOfUsesItem>Bird migrations </ListOfUsesItem>
+            <ListOfUsesItem>Livestock movements </ListOfUsesItem>
+            <ListOfUsesItem>Plant migration</ListOfUsesItem>
+            <ListOfUsesItem>Urban infrastructure</ListOfUsesItem>
+            <ListOfUsesItem>Sewage flows</ListOfUsesItem>
+            <ListOfUsesItem>Waste management</ListOfUsesItem>
+            <ListOfUsesItem>Supply chain </ListOfUsesItem>
+            <ListOfUsesItem>Epidemiology</ListOfUsesItem>
+            <ListOfUsesItem>Historical journeys </ListOfUsesItem>
+            <ListOfUsesItem>Scientific collaborations</ListOfUsesItem>
+          </ListOfUses>
+        </div>
+        Many flow maps can be found in the <Link to="/gallery">examples gallery</Link>.
+      </section>
 
       <section>
         {/*How to make a flow map*/}
@@ -354,61 +303,6 @@ const Home = () => (
           described here
         </Away>
         .
-      </section>
-
-      <section>
-        <h2 id="examples">Examples</h2>
-        <div>
-          Flowmap.blue is used for various kinds of datasets:
-          <ListOfUses>
-            <ListOfUsesItem>Internal migration</ListOfUsesItem>
-            <ListOfUsesItem>International migration</ListOfUsesItem>
-            <ListOfUsesItem>Commuters </ListOfUsesItem>
-            <ListOfUsesItem>Pedestrian movement</ListOfUsesItem>
-            <ListOfUsesItem>Air travels</ListOfUsesItem>
-            <ListOfUsesItem>Bus travels </ListOfUsesItem>
-            <ListOfUsesItem>Metro rides</ListOfUsesItem>
-            <ListOfUsesItem>Train rides</ListOfUsesItem>
-            <ListOfUsesItem>Bicycle sharing </ListOfUsesItem>
-            <ListOfUsesItem>Scooter sharing </ListOfUsesItem>
-            <ListOfUsesItem>Car ride sharing </ListOfUsesItem>
-            <ListOfUsesItem>Taxi rides</ListOfUsesItem>
-            <ListOfUsesItem>Refugees</ListOfUsesItem>
-            <ListOfUsesItem>Human trafficking </ListOfUsesItem>
-            <ListOfUsesItem>Drug flows </ListOfUsesItem>
-            <ListOfUsesItem>Freight transportation </ListOfUsesItem>
-            <ListOfUsesItem>Trade </ListOfUsesItem>
-            <ListOfUsesItem>Bird migrations </ListOfUsesItem>
-            <ListOfUsesItem>Livestock movements </ListOfUsesItem>
-            <ListOfUsesItem>Plant migration</ListOfUsesItem>
-            <ListOfUsesItem>Sewer system </ListOfUsesItem>
-            <ListOfUsesItem>Supply chain </ListOfUsesItem>
-            <ListOfUsesItem>Fishing</ListOfUsesItem>
-            <ListOfUsesItem>Epidemiology</ListOfUsesItem>
-            <ListOfUsesItem>Historical journeys </ListOfUsesItem>
-            <ListOfUsesItem>Scientific collaborations</ListOfUsesItem>
-          </ListOfUses>
-        </div>
-        <ExampleGrid>
-          {examples.map(({ key, sheet, name, query }) => (
-            <ExampleGridHoverableLink key={key} to={`/${key}${sheet ? `/${sheet}` : ''}${query ? `?${query}` : ''}`}>
-              <ExampleImage>
-                <ExampleTitle className="name">{name}</ExampleTitle>
-                <img
-                  width={screenshotSizes[0]}
-                  height={Math.floor(screenshotSizes[0] / aspectRatio)}
-                  alt={name}
-                  src={`/screenshots/${key}${sheet ? `_${sheet}` : ''}__${screenshotSizes[0]}px.jpg`}
-                  // srcSet={screenshotSizes.map(w => `/screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
-                  // sizes={screenshotSizes.map((w, i) =>
-                  //   (i < screenshotSizes.length - 1 ? `(max-width: ${w * 2}px) ` : '') + `${w}px`)
-                  //   .join(',')
-                  // }
-                />
-              </ExampleImage>
-            </ExampleGridHoverableLink>
-          ))}
-        </ExampleGrid>
       </section>
 
       {/*<section>*/}
@@ -482,7 +376,9 @@ const Home = () => (
           {`The source code of Flowmap.blue `}
           <Away href="https://github.com/FlowmapBlue/flowmap.blue">is freely available</Away>
           {` under the  `}
-          <Away href="https://github.com/FlowmapBlue/flowmap.blue/blob/master/LICENSE">MIT license</Away>
+          <Away href="https://github.com/FlowmapBlue/flowmap.blue/blob/master/LICENSE">
+            MIT license
+          </Away>
           .
         </p>
         <p>
@@ -501,22 +397,44 @@ const Home = () => (
           <Away href="https://blueprintjs.com/">blueprint</Away>,{` `}
           <Away href="https://github.com/CartoDB/cartocolor">CARTOColors</Away>.
         </p>
+        <p>With kind support from</p>
         <Support>
-          <span>With kind support from</span>
           <NoWrap>
             <SupportLogo href="https://www.teralytics.net" src={TLLogo} />
-            <span>and</span>
+            <SupportLogo href="https://www.linuxfoundation.org" src={LinuxFoundation} />
             <SupportLogo href="https://www.mapbox.com" src={MapboxLogo} />
           </NoWrap>
         </Support>
-        <Away href="https://www.netlify.com">
-          <img
-            width={114}
-            height={51}
-            src="https://www.netlify.com/img/global/badges/netlify-dark.svg"
-            alt="Deploys by Netlify"
-          />
-        </Away>
+      </section>
+      <section>
+        <span style={{ zoom: 0.8 }}>
+          <Away href="https://www.netlify.com">
+            <img
+              width={114}
+              height={51}
+              src="https://www.netlify.com/img/global/badges/netlify-dark.svg"
+              alt="Deploys by Netlify"
+            />
+          </Away>
+        </span>
+        <span
+          style={{
+            marginLeft: '1em',
+            zoom: 0.75,
+            filter: 'grayscale(0.8)contrast(0.75)',
+            opacity: 0.8,
+          }}
+        >
+          <Away href="https://www.producthunt.com/posts/flowmap-blue?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-flowmap-blue">
+            <img
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=285959&theme=dark"
+              alt="Flowmap.blue - Flow map visualization for geographic movement analysis | Product Hunt"
+              style={{ width: 250, height: 54 }}
+              width="250"
+              height="54"
+            />
+          </Away>
+        </span>
       </section>
       <section>
         <h2 id="awards">Awards</h2>
