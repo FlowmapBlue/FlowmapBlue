@@ -8,13 +8,13 @@ import { AppToaster, LoadingSpinner } from '@flowmap.blue/core';
 import { FLOWS_SHEET_KEY_RE, SPREADSHEET_KEY_RE } from './constants';
 import ErrorFallback from './ErrorFallback';
 import ErrorBoundary from './ErrorBoundary';
-import Gallery from './Gallery';
 
 const GSheetsFlowMap = React.lazy(() => import('./GSheetsFlowMap'));
 const InBrowserFlowMap = React.lazy(() => import('./InBrowserFlowMap'));
 const FromUrlFlowMap = React.lazy(() => import('./FromUrlFlowMap'));
 const ODMatrixConverter = React.lazy(() => import('./ODMatrixConverter'));
 const Geocoding = React.lazy(() => import('./Geocoding'));
+const Gallery = React.lazy(() => import('./Gallery'));
 
 const history = createBrowserHistory();
 history.listen((location) => AppToaster.clear());
