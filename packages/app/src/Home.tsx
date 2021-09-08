@@ -48,10 +48,12 @@ const AwardImage = styled.img`
 
 const SupportLogoLink = styled.a`
   position: relative;
-  top: 0.14em;
+  margin-top: 20px;
+  margin-right: 35px;
+  //top: 0.14em;
   transition: opacity 0.2s;
   opacity: 0.6;
-  margin: 0 22px;
+  //margin: 0 22px;
   img {
     max-width: 200px;
   }
@@ -399,11 +401,9 @@ const Home = () => (
         </p>
         <p>With kind support from</p>
         <Support>
-          <NoWrap>
-            <SupportLogo href="https://www.teralytics.net" src={TLLogo} />
-            <SupportLogo href="https://www.linuxfoundation.org" src={LinuxFoundation} />
-            <SupportLogo href="https://www.mapbox.com" src={MapboxLogo} />
-          </NoWrap>
+          <SupportLogo href="https://www.teralytics.net" src={TLLogo} />
+          <SupportLogo href="https://www.linuxfoundation.org" src={LinuxFoundation} />
+          <SupportLogo href="https://www.mapbox.com" src={MapboxLogo} />
         </Support>
       </section>
       <section>
