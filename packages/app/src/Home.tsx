@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import ReadMore from './ReadMore';
 import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
-import { Away, Column, Logo, Row } from '@flowmap.blue/core';
 import { Helmet } from 'react-helmet';
 import MapboxLogo from './images/mapbox-logo-black.svg';
 import LinuxFoundation from './images/linux-foundation-hztl-white.svg';
@@ -14,6 +13,9 @@ import Nav from './Nav';
 import News from './News';
 import ReactPlayer from 'react-player';
 import { ListOfUses, ListOfUsesItem } from './Gallery';
+import Logo from './Logo';
+import { Column, Row } from './Boxes';
+import Away from './Away';
 
 const ContentBody = styled.div`
   padding: 10px 20px;

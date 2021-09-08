@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Away } from '@flowmap.blue/core';
 import * as React from 'react';
 import styled from '@emotion/styled';
 import { Colors } from '@blueprintjs/core';
+import Away from './Away';
 
 const Outer = styled.div`
   display: flex;
