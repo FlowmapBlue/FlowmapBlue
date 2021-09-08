@@ -4,7 +4,7 @@ import { Route, RouteComponentProps, Router, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import * as Sentry from '@sentry/browser';
 import Home from './Home';
-import { AppToaster, LoadingSpinner } from '@flowmap.blue/core';
+// import { AppToaster, LoadingSpinner } from '@flowmap.blue/core';
 import { FLOWS_SHEET_KEY_RE, SPREADSHEET_KEY_RE } from './constants';
 import ErrorFallback from './ErrorFallback';
 import ErrorBoundary from './ErrorBoundary';
@@ -17,7 +17,7 @@ const Geocoding = React.lazy(() => import('./Geocoding'));
 const Gallery = React.lazy(() => import('./Gallery'));
 
 const history = createBrowserHistory();
-history.listen((location) => AppToaster.clear());
+// history.listen((location) => AppToaster.clear());
 
 type Props = {};
 
@@ -64,7 +64,12 @@ export default class App extends React.Component<Props, State> {
       return (
         <Router history={history}>
           <ErrorBoundary>
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense
+              fallback={
+                <div>Loading…</div>
+                // <LoadingSpinner />
+              }
+            >
               <Switch>
                 <Route path="/od-matrix-converter" component={ODMatrixConverter} />
                 <Route path="/gallery" component={Gallery} />
