@@ -4,10 +4,10 @@ import { Route, RouteComponentProps, Router, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import * as Sentry from '@sentry/browser';
 import Home from './Home';
-// import { AppToaster, LoadingSpinner } from '@flowmap.blue/core';
 import { FLOWS_SHEET_KEY_RE, SPREADSHEET_KEY_RE } from './constants';
 import ErrorFallback from './ErrorFallback';
 import ErrorBoundary from './ErrorBoundary';
+// import { AppToaster, LoadingSpinner } from '@flowmap.blue/core';
 
 const GSheetsFlowMap = React.lazy(() => import('./GSheetsFlowMap'));
 const InBrowserFlowMap = React.lazy(() => import('./InBrowserFlowMap'));
