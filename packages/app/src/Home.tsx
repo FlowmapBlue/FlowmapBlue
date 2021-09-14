@@ -18,7 +18,9 @@ import TflLogo from './images/Tfl-logo.svg';
 import NZMinistryOfTransportLogo from './images/nz-minstry-of-transport-logo.svg';
 import KingCountyLogo from './images/KingCounty-logo.png';
 import EurocontrolLogo from './images/eurocontrol-logo.svg';
+import TrondheimLogo from './images/trondheim-logo.svg';
 // import StadtZuerichLogo from './images/stadtzurich-logo.svg';
+import OpenDataZuerichLogo from './images/opendatazurichlogo.png';
 import UcfLogo from './images/ucf-logo.svg';
 import { Button, Classes, Colors } from '@blueprintjs/core';
 import Nav from './Nav';
@@ -275,7 +277,7 @@ const Home = () => (
             <ListOfUsesItem>Scientific collaborations</ListOfUsesItem>
           </ListOfUses>
         </div>
-        Many flow maps can be found in the <Link to="/gallery">examples gallery</Link>.
+        Make sure to check out <Link to="/gallery">the examples gallery</Link>.
       </section>
 
       <section>
@@ -290,7 +292,7 @@ const Home = () => (
           <Away href="https://aecom.com">
             <img src={AecomLogo} />
           </Away>
-          <Away href="https://ansperformance.eu">
+          <Away href="https://ansperformance.eu/study/daily_country_flows_2020/">
             <img src={EurocontrolLogo} />
           </Away>
           <Away href="https://www.elpasotexas.gov">
@@ -299,12 +301,18 @@ const Home = () => (
           {/*<Away href="https://www.stadt-zuerich.ch/">*/}
           {/*  <img src={StadtZuerichLogo} />*/}
           {/*</Away>*/}
+          <Away href="https://data.stadt-zuerich.ch">
+            <img src={OpenDataZuerichLogo} style={{ maxWidth: 130, height: 28 }} />
+          </Away>
+          <Away href="https://www.trondelagfylke.no/vare-tjenester/plan-og-areal/kart-statistikk-og-analyse/nyhetsarkiv-kart-og-statistikk/faktafredag---pendlestrommer-i-trondelag-pa-mer-enn-100-personer-per-4.kvartal-2018/">
+            <img src={TrondheimLogo} />
+          </Away>
           <Away href="https://www.transport.govt.nz">
             <img src={NZMinistryOfTransportLogo} style={{ maxWidth: 130 }} />
           </Away>
-          <Away href="https://www.education.govt.nz">
-            <img src={MoeLogo} />
-          </Away>
+          {/*<Away href="https://www.education.govt.nz">*/}
+          {/*  <img src={MoeLogo} />*/}
+          {/*</Away>*/}
           <Away href="https://kingcounty.gov">
             <img src={KingCountyLogo} style={{ height: 20 }} />
           </Away>
