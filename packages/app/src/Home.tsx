@@ -18,6 +18,7 @@ import TflLogo from './images/Tfl-logo.svg';
 import NZMinistryOfTransportLogo from './images/nz-minstry-of-transport-logo.svg';
 import KingCountyLogo from './images/KingCounty-logo.png';
 import EurocontrolLogo from './images/eurocontrol-logo.svg';
+// import StadtZuerichLogo from './images/stadtzurich-logo.svg';
 import UcfLogo from './images/ucf-logo.svg';
 import { Button, Classes, Colors } from '@blueprintjs/core';
 import Nav from './Nav';
@@ -295,6 +296,9 @@ const Home = () => (
           <Away href="https://www.elpasotexas.gov">
             <img src={ElPasoLogo} />
           </Away>
+          {/*<Away href="https://www.stadt-zuerich.ch/">*/}
+          {/*  <img src={StadtZuerichLogo} />*/}
+          {/*</Away>*/}
           <Away href="https://www.transport.govt.nz">
             <img src={NZMinistryOfTransportLogo} style={{ maxWidth: 130 }} />
           </Away>
