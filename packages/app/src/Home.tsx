@@ -277,7 +277,7 @@ const Home = () => (
             <ListOfUsesItem>Scientific collaborations</ListOfUsesItem>
           </ListOfUses>
         </div>
-        Make sure to check out <Link to="/gallery">the examples gallery</Link>.
+        Make sure to check <Link to="/gallery">the examples gallery</Link>.
       </section>
 
       <section>
