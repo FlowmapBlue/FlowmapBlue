@@ -6,9 +6,19 @@ import SpreadsheetKeyExtractor from './SpreadsheetKeyExtractor';
 import { Away, Column, Logo, Row } from '@flowmap.blue/core';
 import { Helmet } from 'react-helmet';
 import MapboxLogo from './images/mapbox-logo-black.svg';
+import ElPasoLogo from './images/city-of-el-paso-eptx.png';
 import LinuxFoundation from './images/linux-foundation-hztl-white.svg';
+import AecomLogo from './images/aecom-logo-light.svg';
+import MoeLogo from './images/moe-logo.svg';
+import GreaterAucklandLogo from './images/greater-auckland-logo.svg';
 import NycCitiBikeImage from './images/nyc-citi-bike_1000px.jpg';
 import TLLogo from './images/TL-Horizontal-Black.svg';
+import MTALogo from './images/mta-logo.svg';
+import TflLogo from './images/Tfl-logo.svg';
+import NZMinistryOfTransportLogo from './images/nz-minstry-of-transport-logo.svg';
+import KingCountyLogo from './images/KingCounty-logo.png';
+import EurocontrolLogo from './images/eurocontrol-logo.svg';
+import UcfLogo from './images/ucf-logo.svg';
 import { Button, Classes, Colors } from '@blueprintjs/core';
 import Nav from './Nav';
 import News from './News';
@@ -137,6 +147,25 @@ const NewsletterOuter = styled.div`
   }
 `;
 
+const UsedByContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-items: center;
+  & > * > img {
+    max-width: 100px;
+    height: 50px;
+  }
+  & > * {
+    padding: 1em;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  padding: 1em;
+`;
 const TitleRow = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -206,6 +235,7 @@ const Home = () => (
         <p>Visualize numbers of movements between locations (origin-destination data).</p>
         <p>Explore the data interactively.</p>
       </section>
+
       <section>
         <h2>What's it for?</h2>
         <div>
@@ -245,6 +275,39 @@ const Home = () => (
           </ListOfUses>
         </div>
         Many flow maps can be found in the <Link to="/gallery">examples gallery</Link>.
+      </section>
+
+      <section>
+        <h2>Who's using it?</h2>
+        <UsedByContainer>
+          <Away href="https://new.mta.info">
+            <img src={MTALogo} />
+          </Away>
+          <Away href="https://tfl.gov.uk">
+            <img src={TflLogo} />
+          </Away>
+          <Away href="https://aecom.com">
+            <img src={AecomLogo} />
+          </Away>
+          <Away href="https://ansperformance.eu">
+            <img src={EurocontrolLogo} />
+          </Away>
+          <Away href="https://www.elpasotexas.gov">
+            <img src={ElPasoLogo} />
+          </Away>
+          <Away href="https://www.transport.govt.nz">
+            <img src={NZMinistryOfTransportLogo} style={{ maxWidth: 130 }} />
+          </Away>
+          <Away href="https://www.education.govt.nz">
+            <img src={MoeLogo} />
+          </Away>
+          <Away href="https://kingcounty.gov">
+            <img src={KingCountyLogo} style={{ height: 20 }} />
+          </Away>
+          <Away href="https://www.greaterauckland.org.nz/2020/08/11/2018-census-commuting-data/">
+            <img src={GreaterAucklandLogo} />
+          </Away>
+        </UsedByContainer>
       </section>
 
       <section>
@@ -402,8 +465,9 @@ const Home = () => (
         <p>With kind support from</p>
         <Support>
           <SupportLogo href="https://www.teralytics.net" src={TLLogo} />
-          <SupportLogo href="https://www.linuxfoundation.org" src={LinuxFoundation} />
           <SupportLogo href="https://www.mapbox.com" src={MapboxLogo} />
+          <SupportLogo href="https://uc.foundation" src={UcfLogo} />
+          <SupportLogo href="https://www.linuxfoundation.org" src={LinuxFoundation} />
         </Support>
       </section>
       <section>
