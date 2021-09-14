@@ -9,7 +9,7 @@ import MapboxLogo from './images/mapbox-logo-black.svg';
 import ElPasoLogo from './images/city-of-el-paso-eptx.png';
 import LinuxFoundation from './images/linux-foundation-hztl-white.svg';
 import AecomLogo from './images/aecom-logo-light.svg';
-import MoeLogo from './images/moe-logo.svg';
+// import MoeLogo from './images/moe-logo.svg';
 import GreaterAucklandLogo from './images/greater-auckland-logo.svg';
 import NycCitiBikeImage from './images/nyc-citi-bike_1000px.jpg';
 import TLLogo from './images/TL-Horizontal-Black.svg';
@@ -20,7 +20,7 @@ import KingCountyLogo from './images/KingCounty-logo.png';
 import EurocontrolLogo from './images/eurocontrol-logo.svg';
 import TrondheimLogo from './images/trondheim-logo.svg';
 // import StadtZuerichLogo from './images/stadtzurich-logo.svg';
-import OpenDataZuerichLogo from './images/opendatazurichlogo.png';
+import OpenDataZuerichLogo from './images/stadtzurich-opendata-logo.svg';
 import UcfLogo from './images/ucf-logo.svg';
 import { Button, Classes, Colors } from '@blueprintjs/core';
 import Nav from './Nav';
@@ -302,7 +302,7 @@ const Home = () => (
           {/*  <img src={StadtZuerichLogo} />*/}
           {/*</Away>*/}
           <Away href="https://data.stadt-zuerich.ch">
-            <img src={OpenDataZuerichLogo} style={{ maxWidth: 130, height: 28 }} />
+            <img src={OpenDataZuerichLogo} />
           </Away>
           <Away href="https://www.trondelagfylke.no/vare-tjenester/plan-og-areal/kart-statistikk-og-analyse/nyhetsarkiv-kart-og-statistikk/faktafredag---pendlestrommer-i-trondelag-pa-mer-enn-100-personer-per-4.kvartal-2018/">
             <img src={TrondheimLogo} />
