@@ -385,6 +385,11 @@
       "query": "v=47.362589,13.205399,6.75&a=0&d=1&c=1&lt=1&col=Sunset&f=46"
     },
     {
+      "key": "1aRGa9oo7eJwG0n2-HbA22IiTqcUbImylb2chhe1dLaU",
+      "name": "Internal Migration in Uruguay 2011",
+      "query": "v=-33.568021,-55.836306,6.34,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Default&f=50"
+    },
+    {
       "key": "1VdL8bOI42S_M597lO-uVZG2Hx4ujwudiSrgPFps6oeo",
       "name": "Foursquare check-ins in Barcelona",
       "query": "v=41.358382,2.123110,11.57,-50,0&a=0&b=1&bo=77&c=1&d=1&lt=1&lfm=ALL&col=SunsetDark&f=65"
