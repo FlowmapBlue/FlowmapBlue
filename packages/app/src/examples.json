@@ -385,6 +385,11 @@
       "query": "v=47.362589,13.205399,6.75&a=0&d=1&c=1&lt=1&col=Sunset&f=46"
     },
     {
+      "key": "1Pqzc63fDdRVTrgi7u8MtGY1eAHFQjYTGXw_yHomb3DA",
+      "name": "Plastic waste of EU27 countries",
+      "query": "v=32.751857,56.275567,2.04,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20000101T000000,20210101T000000&col=Sunset&f=50"
+    },
+    {
       "key": "1aRGa9oo7eJwG0n2-HbA22IiTqcUbImylb2chhe1dLaU",
       "name": "Internal Migration in Uruguay 2011",
       "query": "v=-33.568021,-55.836306,6.34,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Default&f=50"
