@@ -349,9 +349,7 @@ export const getFlowMapColors = createSelector(
 export const getMapboxMapStyle = createSelector(getConfig, getDarkMode, (config, darkMode) => {
   const configMapStyle = config[ConfigPropName.MAPBOX_MAP_STYLE];
   if (configMapStyle) {
-    if (darkMode === parseBoolConfigProp(config[ConfigPropName.COLORS_DARK_MODE])) {
-      return configMapStyle;
-    }
+    return configMapStyle;
   }
   return darkMode ? DEFAULT_MAP_STYLE_DARK : DEFAULT_MAP_STYLE_LIGHT;
 });
