@@ -240,7 +240,7 @@ const Home = () => (
       </section>
 
       <section>
-        <h2>What's it for?</h2>
+        <h2>What is it for?</h2>
         <div>
           Flowmap.blue is used to visualize various real-world phenomena in which pairs of locations
           are involved:
