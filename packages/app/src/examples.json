@@ -421,7 +421,7 @@
     {
       "key": "1_SFSYKWgyo7BF1SK1TTyqFewr2nUDPfBOGnJTNh3s3k",
       "name": "Commuters in Switzerland, Swisstopo basemap",
-      "query": "v=46.910705,8.192031,7.28,0,0&a=0&as=1&b=1&bo=41&c=1&ca=1&d=0&fe=1&lt=1&lfm=ALL&col=DarkMint&f=63"
+      "query": "v=46.653848,8.176866,7.06,0,0&a=0&as=1&b=1&bo=30&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=DarkMint&f=42"
     }
   ]
 }
