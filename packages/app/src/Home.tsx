@@ -281,7 +281,7 @@ const Home = () => (
       </section>
 
       <section>
-        <h2>Who's using it?</h2>
+        <h2>Who is using it?</h2>
         <UsedByContainer>
           <Away href="https://new.mta.info">
             <img src={MTALogo} />
