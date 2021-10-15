@@ -17,6 +17,7 @@ import MTALogo from './images/mta-logo.svg';
 import TflLogo from './images/Tfl-logo.svg';
 import NZMinistryOfTransportLogo from './images/nz-minstry-of-transport-logo.svg';
 import KingCountyLogo from './images/KingCounty-logo.png';
+import UddLogo from './images/logo-udd-blanco.svg';
 import EurocontrolLogo from './images/eurocontrol-logo.svg';
 import TrondheimLogo from './images/trondheim-logo.svg';
 // import StadtZuerichLogo from './images/stadtzurich-logo.svg';
@@ -306,6 +307,9 @@ const Home = () => (
           </Away>
           <Away href="https://www.trondelagfylke.no/vare-tjenester/plan-og-areal/kart-statistikk-og-analyse/nyhetsarkiv-kart-og-statistikk/faktafredag---pendlestrommer-i-trondelag-pa-mer-enn-100-personer-per-4.kvartal-2018/">
             <img src={TrondheimLogo} />
+          </Away>
+          <Away href="http://datagramas.cl/2015/03/run-run-inferencia-y-visualizaci%C3%B3n-de-uso-de-modos-de-transporte-en-la-ciudad-2015-presente/">
+            <img src={UddLogo} />
           </Away>
           <Away href="https://www.transport.govt.nz">
             <img src={NZMinistryOfTransportLogo} style={{ maxWidth: 130 }} />
