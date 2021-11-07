@@ -82,7 +82,6 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed 
         id: spreadSheetKey,
         sheet: getFlowsSheetKey(name),
       };
-      console.log(query);
       router.replace({
         pathname: `/[id]/[sheet]/${embed ? '/embed' : ''}`,
         query: query,
