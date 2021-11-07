@@ -243,11 +243,7 @@ const FlowMap: React.FC<Props> = (props) => {
     250,
     [state, router.asPath]
   );
-  useEffect(updateQuerySearch, [
-    //TODO: what should be here instead of history?
-    // history,
-    state,
-  ]);
+  useEffect(updateQuerySearch, [router, state]);
 
   const { viewport, tooltip, animationEnabled, baseMapEnabled } = state;
   const allFlows = getFetchedFlows(state, props);

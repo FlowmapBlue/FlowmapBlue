@@ -6,9 +6,12 @@ import DefaultErrorPage from 'next/error';
 import Nav from '../components/Nav';
 import ClientSide from '../components/ClientSide';
 
-export interface Props {}
+export interface Props {
+  embed?: boolean;
+}
 
 const FlowMapPage: React.FC<Props> = (props) => {
+  const { embed } = props;
   const router = useRouter();
   const { id, sheet } = router.query;
 
@@ -26,7 +29,7 @@ const FlowMapPage: React.FC<Props> = (props) => {
         <GSheetsFlowMap
           spreadSheetKey={`${id ?? ''}`}
           flowsSheetKey={`${sheet ?? ''}`}
-          embed={false}
+          embed={embed ? true : false}
         />
       )}
     />
