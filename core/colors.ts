@@ -1,4 +1,4 @@
-import { Colors, DiffColors } from '@flowmap.gl/core';
+import type { Colors, DiffColors } from '@flowmap.gl/core';
 import {
   interpolateCool,
   interpolateInferno,
@@ -43,8 +43,9 @@ export const DEFAULT_COLOR_SCHEME = [FLOW_MIN_COLOR, ColorScheme.primary];
 
 const SCALE_NUM_STEPS = 20;
 const getColorSteps = (interpolate: (x: number) => string) =>
-    range(0,SCALE_NUM_STEPS + 1)
-      .map(i => interpolate(i/SCALE_NUM_STEPS)).reverse();
+  range(0, SCALE_NUM_STEPS + 1)
+    .map((i) => interpolate(i / SCALE_NUM_STEPS))
+    .reverse();
 
 export const COLOR_SCHEMES: { [key: string]: string[] } = {
   Default: DEFAULT_COLOR_SCHEME,
