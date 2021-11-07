@@ -1,4 +1,5 @@
 import { FC, ReactNode, useEffect, useState } from 'react';
+import { LoadingSpinner } from '../core';
 
 export interface Props {
   render: () => ReactNode;
@@ -13,7 +14,7 @@ const ClientSide: FC<Props> = (props) => {
     })();
   }, []);
 
-  return <>{mounted ? render() : null}</>;
+  return <>{mounted ? render() : <LoadingSpinner />}</>;
 };
 
 export default ClientSide;
