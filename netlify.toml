@@ -1,6 +1,6 @@
 [build]
-  publish = "packages/app/build/"
-  command = "yarn build:app"
+  publish = "out"
+  command = "yarn build"
 
 [[redirects]]
   from = "/*"
