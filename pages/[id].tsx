@@ -14,8 +14,9 @@ const FlowMapPage: React.FC<Props> = (props) => {
   const { embed } = props;
   const router = useRouter();
   const { id, sheet } = router.query;
+  const spreadsheetKey = id ? `${id}` : null;
 
-  if (!new RegExp(SPREADSHEET_KEY_RE).test(`${id}`)) {
+  if (spreadsheetKey && !new RegExp(SPREADSHEET_KEY_RE).test(spreadsheetKey)) {
     return (
       <>
         <Nav />
