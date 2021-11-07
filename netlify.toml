@@ -1,7 +1,3 @@
-[build]
-  publish = "packages/app/build/"
-  command = "yarn build:app"
-
 [[redirects]]
   from = "/*"
   to = "/index.html"

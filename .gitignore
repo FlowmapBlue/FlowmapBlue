@@ -22,6 +22,7 @@ dist-umd
 .env.production.local
 .idea
 .cache
+.next
 
 npm-debug.log*
 yarn-debug.log*
