@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import useFetch from 'react-fetch-hook';
 import { PromiseState } from 'react-refetch';
 import FlowMap, {
@@ -9,22 +9,17 @@ import FlowMap, {
   prepareFlows,
 } from '../core';
 import { csvParse } from 'd3-dsv';
-import ErrorFallback from './ErrorFallback';
+import ErrorFallback from '../components/ErrorFallback';
 import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 
-const FromUrlFlowMap = (props: {}) => {
-  const router = useRouter();
-  const params = router.query;
-  const locationsUrl = params.locations;
-  const flowsUrl = params.flows;
-  if (typeof locationsUrl !== 'string') {
-    throw new Error(`Invalid locations URL`);
-  }
-  if (typeof flowsUrl !== 'string') {
-    throw new Error(`Invalid flows URL`);
-  }
-
+type Props = {
+  locationsUrl: string;
+  flowsUrl: string;
+  params: Record<string, string | string[] | undefined>;
+};
+const FromUrlFlowMap: FC<Props> = (props) => {
+  const { locationsUrl, flowsUrl, params } = props;
   const config = useMemo(() => {
     const config = { ...DEFAULT_CONFIG };
     for (const prop of Object.values(ConfigPropName)) {
@@ -82,4 +77,10 @@ const FromUrlFlowMap = (props: {}) => {
   );
 };
 
-export default FromUrlFlowMap;
+export default function FromUrlFlowMapPage() {
+  const router = useRouter();
+  const { locations, flows, ...params } = router.query;
+  return typeof locations === 'string' && typeof flows === 'string' ? (
+    <FromUrlFlowMap locationsUrl={locations} flowsUrl={flows} params={params} />
+  ) : null;
+}
