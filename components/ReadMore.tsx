@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import * as React from 'react';
 import { Card, Colors } from '@blueprintjs/core';
-import { Elevation } from '@blueprintjs/core/lib/esm/common/elevation';
+import { Elevation } from '@blueprintjs/core';
 
 const MoreContent = styled(Card)`
   margin-top: 1em;

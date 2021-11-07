@@ -23,6 +23,7 @@ const Support = styled.p`
   margin-top: 1.5em;
   display: flex;
   justify-items: center;
+  justify-content: center;
   flex-wrap: wrap;
 `;
 
@@ -38,13 +39,11 @@ const SupportLogoLink = styled.a`
   position: relative;
   margin-top: 20px;
   margin-right: 35px;
+  margin-bottom: 20px;
   //top: 0.14em;
   transition: opacity 0.2s;
   opacity: 0.6;
   //margin: 0 22px;
-  img {
-    max-width: 200px;
-  }
   &:hover {
     opacity: 1;
   }
@@ -52,7 +51,7 @@ const SupportLogoLink = styled.a`
 
 const SupportLogo = ({ src, href }: { src: string; href: string }) => (
   <SupportLogoLink href={href} target="_blank" rel="noopener noreferrer">
-    <Image alt="support logo" src={src} height={25} width={150} />
+    <Image alt="support logo" src={src} height={25} width={200} />
   </SupportLogoLink>
 );
 
@@ -113,6 +112,7 @@ const UsedByContainer = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-items: center;
+  justify-content: center;
   & > * > img {
     max-width: 100px;
     height: 50px;

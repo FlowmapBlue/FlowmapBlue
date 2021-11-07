@@ -7,7 +7,7 @@ import type { AppProps } from 'next/app';
 import Link from 'next/link';
 import Head from 'next/head';
 
-import '@blueprintjs/core/lib/css/blueprint.css';
+import '../css/blueprint.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import 'mapbox-gl/dist/mapbox-gl.css';

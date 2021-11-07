@@ -65,7 +65,7 @@ const globalStyles = css`
     left: 10px !important;
   }
 
-  .bp3-toast-container.bp3-toast-container-inline {
+  .bp4-toast-container.bp4-toast-container-inline {
     position: fixed;
   }
 `;

@@ -2,7 +2,6 @@ import React, { ReactNode, useState } from 'react';
 import { Classes, Icon } from '@blueprintjs/core';
 import { Away } from '../core';
 import GitHubLogo from '../public/images/github.svg';
-import SpectrumLogo from '../public/images/spectrum.svg';
 import styled from '@emotion/styled';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -19,6 +18,9 @@ const Outer = styled.div`
   width: 100%;
   padding: 5px;
   background-color: ${BG_COLOR} !important;
+
+  box-shadow: inset 0 0 0 1px rgb(16 22 26 / 20%), 0 0 0 rgb(16 22 26 / 0%),
+    0 1px 1px rgb(16 22 26 / 40%);
 
   .menu-button {
     display: none;
@@ -156,7 +158,6 @@ const Nav = () => {
         <Away href="https://github.com/FlowmapBlue/flowmap.blue/discussions">
           <LinkItem>
             <span>Ask a question</span>
-            <Image width={20} height={20} alt="Flowmap.blue chat on Spectrum" src={SpectrumLogo} />
           </LinkItem>
         </Away>
         <Away href="https://github.com/FlowmapBlue/flowmap.blue">
