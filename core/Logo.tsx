@@ -6,6 +6,7 @@ import { Row } from './Boxes';
 
 type Props = {
   embed?: boolean;
+  showText?: boolean;
   fontSize?: number;
   collapseWidth?: number;
 };
@@ -25,7 +26,7 @@ const LogoText = styled.div<Props>(({ fontSize, collapseWidth }: Props) => ({
   },
 }));
 
-const Logo = ({ fontSize = 25, collapseWidth = 525, embed }: Props) => {
+const Logo = ({ fontSize = 25, collapseWidth = 525, embed, showText = true }: Props) => {
   const size = Math.ceil(fontSize * 1.5);
   const content = (
     <Row spacing={fontSize / 5}>
@@ -41,9 +42,11 @@ const Logo = ({ fontSize = 25, collapseWidth = 525, embed }: Props) => {
           />
         </g>
       </svg>
-      <LogoText collapseWidth={collapseWidth} fontSize={fontSize}>
-        flowmap.blue
-      </LogoText>
+      {showText ? (
+        <LogoText collapseWidth={collapseWidth} fontSize={fontSize}>
+          flowmap.blue
+        </LogoText>
+      ) : null}
     </Row>
   );
   if (embed) {
