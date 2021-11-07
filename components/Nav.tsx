@@ -126,11 +126,11 @@ const NavItem = ({ to, children }: { to: string; children: ReactNode }) => (
     // }}
     href={to}
   >
-    <div
+    <a
       className={[Classes.INTENT_PRIMARY, Classes.BUTTON, Classes.MINIMAL, Classes.LARGE].join(' ')}
     >
       {children}
-    </div>
+    </a>
   </Link>
 );
 
