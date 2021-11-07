@@ -3,7 +3,6 @@ import { Column } from './Boxes';
 import * as React from 'react';
 import styled from '@emotion/styled';
 import { IconNames } from '@blueprintjs/icons';
-import { useLocation } from 'react-router-dom';
 import { FC, useState } from 'react';
 import { useRouter } from 'next/router';
 
