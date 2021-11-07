@@ -27,7 +27,7 @@ const NewsItem = styled.div`
   align-items: center;
 `;
 
-export default () => (
+const News = () => (
   <Outer>
     <NewsItem>
       <NewsDate>{`Sep 01, 2021`}</NewsDate>
@@ -196,3 +196,5 @@ export default () => (
     </NewsItem>
   </Outer>
 );
+
+export default News;
