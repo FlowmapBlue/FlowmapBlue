@@ -49,9 +49,9 @@ const SupportLogoLink = styled.a`
   }
 `;
 
-const SupportLogo = ({ src, href }: { src: string; href: string }) => (
+const SupportLogo = ({ name, src, href }: { name: string; src: string; href: string }) => (
   <SupportLogoLink href={href} target="_blank" rel="noopener noreferrer">
-    <Image alt="support logo" src={src} height={25} width={200} />
+    <Image alt={`Supported by ${name}`} src={src} height={25} width={200} />
   </SupportLogoLink>
 );
 
@@ -236,7 +236,7 @@ const Index = () => (
       <UsedByContainer>
         {USED_BY_LOGOS.map(({ url, name, img, width = 120 }) => (
           <Away key={name} href={url}>
-            <Image width={width} height="50" src={img} objectFit="contain" />
+            <Image alt={name} width={width} height="50" src={img} objectFit="contain" />
           </Away>
         ))}
       </UsedByContainer>
@@ -291,10 +291,14 @@ const Index = () => (
       </p>
       <p>With kind support from</p>
       <Support>
-        <SupportLogo href="https://www.teralytics.net" src={TLLogo} />
-        <SupportLogo href="https://www.mapbox.com" src={MapboxLogo} />
-        <SupportLogo href="https://uc.foundation" src={UcfLogo} />
-        <SupportLogo href="https://www.linuxfoundation.org" src={LinuxFoundation} />
+        <SupportLogo name="Teralytics" href="https://www.teralytics.net" src={TLLogo} />
+        <SupportLogo name="Mapbox" href="https://www.mapbox.com" src={MapboxLogo} />
+        <SupportLogo name="Urban Computing Foundation" href="https://uc.foundation" src={UcfLogo} />
+        <SupportLogo
+          name="Linux Foundation"
+          href="https://www.linuxfoundation.org"
+          src={LinuxFoundation}
+        />
       </Support>
     </section>
     <section>
@@ -330,7 +334,11 @@ const Index = () => (
     <section>
       <h2 id="awards">Awards</h2>
       <Away href="https://www.informationisbeautifulawards.com/showcase/3815">
-        <AwardImage width={100} src="https://infobawards.s3.amazonaws.com/2019/badges/w-2019.png" />
+        <AwardImage
+          alt="Flowmap.blue – Kantar Information is Beautiful Award"
+          width={100}
+          src="https://infobawards.s3.amazonaws.com/2019/badges/w-2019.png"
+        />
       </Away>
     </section>
   </Layout>
