@@ -22,7 +22,8 @@ import { IconNames } from '@blueprintjs/icons';
 import { compose, withProps } from 'recompose';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
-import { getFlowsSheetKey } from './constants';
+import { getFlowsSheetKey, makeGSheetsMapUrl } from './constants';
+import { UrlObject } from 'url';
 
 interface Props {
   spreadSheetKey: string;
@@ -77,15 +78,7 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed 
 
   const handleChangeFlowsSheet = (name: string, replaceUrl: boolean) => {
     if (replaceUrl) {
-      const query = {
-        ...router.query,
-        id: spreadSheetKey,
-        sheet: getFlowsSheetKey(name),
-      };
-      router.replace({
-        pathname: `/[id]/[sheet]/${embed ? '/embed' : ''}`,
-        query: query,
-      });
+      router.replace(makeGSheetsMapUrl(spreadSheetKey, name, embed, router.query));
     }
     setFlowsSheet(name);
   };
@@ -110,7 +103,8 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed 
       let name = undefined;
       if (flowsSheetKey) {
         name = flowsSheets.find((fs) => getFlowsSheetKey(fs) === flowsSheetKey);
-      } else {
+      }
+      if (!name) {
         name = flowsSheets[0];
       }
       if (name != null) {

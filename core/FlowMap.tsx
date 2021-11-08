@@ -116,7 +116,7 @@ import Timeline from './Timeline';
 import { TimeGranularity } from './time';
 import { findAppropriateZoomLevel } from '@flowmap.gl/cluster/dist-esm';
 import { useRouter } from 'next/router';
-import { getFlowsSheetKey } from '../components/constants';
+import { getFlowsSheetKey, makeGSheetsMapUrl } from '../components/constants';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -224,20 +224,16 @@ const FlowMap: React.FC<Props> = (props) => {
 
   const [updateQuerySearch] = useDebounced(
     () => {
-      if (inBrowser) return;
+      if (inBrowser || !spreadSheetKey) return;
       // const locationSearch = `?${stateToQueryString(state)}`;
+      const queryParams = stateToQueryParams(state);
       const query = {
-        ...stateToQueryParams(state),
+        ...queryParams,
         ...(spreadSheetKey ? { id: spreadSheetKey } : {}),
         ...(flowsSheet ? { sheet: getFlowsSheetKey(flowsSheet) } : {}),
       };
       if (!isDeepEqual(query, router.query)) {
-        router.replace({
-          // ...history.location, // keep location state for in-browser flowmap
-          // search: locationSearch,
-          pathname: router.pathname,
-          query,
-        });
+        router.replace(makeGSheetsMapUrl(spreadSheetKey, flowsSheet, embed, queryParams));
       }
     },
     250,
