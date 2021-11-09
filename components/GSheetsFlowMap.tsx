@@ -22,8 +22,7 @@ import { IconNames } from '@blueprintjs/icons';
 import { compose, withProps } from 'recompose';
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
-import { getFlowsSheetKey, makeGSheetsMapUrl } from './constants';
-import { UrlObject } from 'url';
+import { DEFAULT_FLOWS_SHEET, getFlowsSheetKey, makeGSheetsMapUrl } from './constants';
 
 interface Props {
   spreadSheetKey: string;
@@ -36,29 +35,31 @@ const ToastContent = styled.div`
 `;
 
 const FlowMapWithData = compose<any, any>(
-  sheetFetcher('json')<any>(({ spreadSheetKey, config, flowsSheet = 'flows' }: FlowMapProps) => ({
-    locationsFetch: {
-      url: makeSheetQueryUrl(spreadSheetKey!, 'locations', 'SELECT A,B,C,D', 'json'),
-      then: (rows: any[]) => ({
-        value: rows.map(
-          ({ id, name, lon, lat }: any) =>
-            ({
-              id: `${id}`,
-              name: name ?? id,
-              lon: +lon,
-              lat: +lat,
-            } as Location)
-        ),
-      }),
-    } as any,
-    flowsFetch: {
-      url: makeSheetQueryUrl(spreadSheetKey!, flowsSheet, 'SELECT *', 'json'),
-      refreshing: true,
-      then: (rows: any[]) => ({
-        value: prepareFlows(rows),
-      }),
-    } as any,
-  })),
+  sheetFetcher('json')<any>(
+    ({ spreadSheetKey, config, flowsSheet = DEFAULT_FLOWS_SHEET }: FlowMapProps) => ({
+      locationsFetch: {
+        url: makeSheetQueryUrl(spreadSheetKey!, 'locations', 'SELECT A,B,C,D', 'json'),
+        then: (rows: any[]) => ({
+          value: rows.map(
+            ({ id, name, lon, lat }: any) =>
+              ({
+                id: `${id}`,
+                name: name ?? id,
+                lon: +lon,
+                lat: +lat,
+              } as Location)
+          ),
+        }),
+      } as any,
+      flowsFetch: {
+        url: makeSheetQueryUrl(spreadSheetKey!, flowsSheet, 'SELECT *', 'json'),
+        refreshing: true,
+        then: (rows: any[]) => ({
+          value: prepareFlows(rows),
+        }),
+      } as any,
+    })
+  ),
   withProps((props: any) => ({
     locationsFetch: {
       ...props.locationsFetch,

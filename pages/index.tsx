@@ -51,14 +51,16 @@ const SupportLogoLink = styled.a`
 
 const SupportLogo = ({ name, src, href }: { name: string; src: string; href: string }) => (
   <SupportLogoLink href={href} target="_blank" rel="noopener noreferrer">
-    <Image alt={`Supported by ${name}`} src={src} height={25} width={200} />
+    <Image
+      alt={`Supported by ${name}`}
+      src={src}
+      height={25}
+      width={200}
+      placeholder="blur"
+      blurDataURL={src}
+    />
   </SupportLogoLink>
 );
-
-const NoWrap = styled.span`
-  display: flex;
-  flex-wrap: nowrap;
-`;
 
 const DemoVideo = styled.div`
   width: 100%;
@@ -236,7 +238,15 @@ const Index = () => (
       <UsedByContainer>
         {USED_BY_LOGOS.map(({ url, name, img, width = 120 }) => (
           <Away key={name} href={url}>
-            <Image alt={name} width={width} height="50" src={img} objectFit="contain" />
+            <Image
+              alt={name}
+              width={width}
+              height="50"
+              src={img}
+              placeholder="blur"
+              blurDataURL={img}
+              objectFit="contain"
+            />
           </Away>
         ))}
       </UsedByContainer>
