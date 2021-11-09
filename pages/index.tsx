@@ -8,12 +8,12 @@ import LinuxFoundation from '../public/images/linux-foundation-hztl-white.svg';
 import VideoPlaceholderImg from '../public/images/nyc-citi-bike_1000px.jpg';
 import TLLogo from '../public/images/TL-Horizontal-Black.svg';
 import UcfLogo from '../public/images/ucf-logo.svg';
-import { Button, Classes, Colors } from '@blueprintjs/core';
+import { Button, Classes, Colors, Intent, Tag } from '@blueprintjs/core';
 import News from '../components/News';
 import ReactPlayer from 'react-player';
-import { ListOfUses, ListOfUsesItem } from './gallery';
 import Layout from '../core/Layout';
 import { USED_BY_LOGOS } from '../used-by';
+import Gallery from '../components/Gallery';
 
 const LogoTitle = styled.h1`
   margin-bottom: 1em;
@@ -25,6 +25,24 @@ const Support = styled.p`
   justify-items: center;
   justify-content: center;
   flex-wrap: wrap;
+`;
+
+const ListOfUses = styled.div`
+  display: flex;
+  // border-radius: 6px;
+  // background-color: ${Colors.DARK_GRAY3};
+  flex-wrap: wrap;
+  list-style-type: none;
+  padding: 0.5em 1em;
+  margin: 1em 0;
+`;
+
+const ListOfUsesItem = styled(({ className, children }) => (
+  <Tag className={className} minimal round interactive={false} intent={Intent.NONE}>
+    {children}
+  </Tag>
+))`
+  margin: 5px;
 `;
 
 const AwardImage = styled.img`
@@ -61,6 +79,10 @@ const SupportLogo = ({ name, src, href }: { name: string; src: string; href: str
     />
   </SupportLogoLink>
 );
+
+const GalleryPreviewOuter = styled.div`
+  margin-bottom: 20px;
+`;
 
 const DemoVideo = styled.div`
   width: 100%;
@@ -230,7 +252,12 @@ const Index = () => (
           <ListOfUsesItem>Scientific collaborations</ListOfUsesItem>
         </ListOfUses>
       </div>
-      <Link href="/gallery">Visit our gallery</Link> to see real world examples.
+      <GalleryPreviewOuter>
+        <Gallery maxCount={6} />
+      </GalleryPreviewOuter>
+      {/*<p>*/}
+      {/*  <Link href="/gallery">Visit our gallery</Link> to see more real world examples.*/}
+      {/*</p>*/}
     </section>
 
     <section>
