@@ -8,12 +8,13 @@ import LinuxFoundation from '../public/images/linux-foundation-hztl-white.svg';
 import VideoPlaceholderImg from '../public/images/nyc-citi-bike_1000px.jpg';
 import TLLogo from '../public/images/TL-Horizontal-Black.svg';
 import UcfLogo from '../public/images/ucf-logo.svg';
-import { Button, Classes, Colors, Intent, Tag } from '@blueprintjs/core';
+import { Button, Classes, Colors, Icon, Intent, Tag } from '@blueprintjs/core';
 import News from '../components/News';
 import ReactPlayer from 'react-player';
 import Layout from '../core/Layout';
 import { USED_BY_LOGOS } from '../used-by';
 import Gallery from '../components/Gallery';
+import { IconNames } from '@blueprintjs/icons';
 
 const LogoTitle = styled.h1`
   margin-bottom: 1em;
@@ -295,8 +296,8 @@ const Index = () => (
     {/*</section>*/}
 
     <section>
-      <h2 id="news">News</h2>
-      <News />
+      <h2 id="news">Latest news</h2>
+      <News maxCount={5} />
     </section>
 
     <section>

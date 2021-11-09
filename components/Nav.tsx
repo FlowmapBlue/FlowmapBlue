@@ -144,7 +144,7 @@ const Nav = () => {
     <>
       <NavItem to="/">Home</NavItem>
       <NavItem to="/gallery">Gallery</NavItem>
-      <NavItem to="/#news">News</NavItem>
+      <NavItem to="/news">News</NavItem>
       <NavItem to="/how-to-make-a-flow-map">How to make a flow map</NavItem>
       <NavItem to="/#credits">Credits</NavItem>
       <NavItem to="/privacy">Privacy</NavItem>
