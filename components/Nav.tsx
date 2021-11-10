@@ -6,9 +6,7 @@ import styled from '@emotion/styled';
 import Link from 'next/link';
 import Image from 'next/image';
 import { IconNames } from '@blueprintjs/icons';
-import { IconSize } from '@blueprintjs/core/src/components/icon/icon';
 import Logo from '../core/Logo';
-import { useRouter } from 'next/router';
 
 const BG_COLOR = 'rgb(38, 50, 71)';
 
@@ -169,8 +167,6 @@ const Nav = () => {
       </div>
     </>
   );
-
-  const { route } = useRouter();
 
   return (
     <Outer

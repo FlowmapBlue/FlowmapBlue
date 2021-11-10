@@ -49,7 +49,7 @@ function App({ Component, pageProps }: AppProps) {
       <Head>
         <link href="https://flowmap.blue/" rel="canonical" />
         <link rel="manifest" href="/manifest.json" />
-        <title>Flowmap.blue - Flow map visualization tool</title>
+        <title>Flowmap.blue – Flow map visualization tool</title>
         <meta charSet="utf-8" />
         <link rel="shortcut icon" href="/favicon-32x32.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
