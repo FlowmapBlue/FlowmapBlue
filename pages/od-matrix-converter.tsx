@@ -4,6 +4,7 @@ import { Button, Classes, H5, Intent, TextArea } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import { tsvFormatRows, tsvParseRows } from 'd3-dsv';
 import Layout from '../core/Layout';
+import Head from 'next/head';
 
 const ConverterContainer = styled.div`
   display: grid;
@@ -57,6 +58,9 @@ const ODMatrixConverter = () => {
   return (
     <Layout>
       <h1>OD-matrix converter</h1>
+      <Head>
+        <title>OD-matrix converter – Flowmap.blue</title>
+      </Head>
       <section>
         <p>
           Often OD-data comes in the form of an OD-matrix: the rows are the origins, the columns are

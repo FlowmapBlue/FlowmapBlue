@@ -9,6 +9,7 @@ import md5 from 'blueimp-md5';
 import COUNTRIES from '../countries.json';
 import { AppToaster } from '../core';
 import Layout from '../core/Layout';
+import Head from 'next/head';
 
 const MAX_GEOCODING_ROWS = 1000;
 const countries = COUNTRIES as { [key: string]: string };
@@ -163,6 +164,9 @@ const Geocoding = () => {
   return (
     <Layout>
       <h1>Geocoding</h1>
+      <Head>
+        <title>Geocoding – Flowmap.blue</title>
+      </Head>
       <section>
         <p>Find geographic coordinates of locations by their names.</p>
       </section>

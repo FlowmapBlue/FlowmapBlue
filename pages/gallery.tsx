@@ -1,10 +1,14 @@
 import React from 'react';
 import Layout from '../core/Layout';
 import Gallery from '../components/Gallery';
+import Head from 'next/head';
 
 const GalleryPage = () => {
   return (
     <Layout>
+      <Head>
+        <title>Gallery – Flowmap.blue</title>
+      </Head>
       <h1>Gallery</h1>
       <section>
         <p>

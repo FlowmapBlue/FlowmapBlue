@@ -2,6 +2,8 @@ import Layout from '../core/Layout';
 import { Away } from '../core';
 import ReadMore from '../components/ReadMore';
 import Link from 'next/link';
+import Head from 'next/head';
+
 import SpreadsheetKeyExtractor from '../components/SpreadsheetKeyExtractor';
 import * as React from 'react';
 import styled from '@emotion/styled';
@@ -40,9 +42,11 @@ const HowToPage: React.FC<Props> = (props) => {
   const {} = props;
   return (
     <Layout>
+      <Head>
+        <title>How to make a flow map – Flowmap.blue</title>
+      </Head>
       <section>
-        {/*How to make a flow map*/}
-        <h2 id="how-to">How to make a flow map</h2>
+        <h1>How to make a flow map</h1>
         <p>
           To visualize and publish a data set as a flow map you need to have a Google account.{' '}
           <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don&apos;t.
