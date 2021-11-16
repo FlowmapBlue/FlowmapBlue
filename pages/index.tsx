@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styled from '@emotion/styled';
 import { Away, Column, Logo, Row } from '../core';
-import VideoPlaceholderImg from '../public/images/nyc-citi-bike-new-4-1000.jpg';
+import VideoPlaceholderImg from '../public/images/nyc-citi-bike-new-4-1000.webp';
 import { Button, Classes, Colors, Intent, Tag } from '@blueprintjs/core';
 import News from '../components/News';
 import ReactPlayer from 'react-player';
