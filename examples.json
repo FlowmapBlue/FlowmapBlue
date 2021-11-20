@@ -43,6 +43,16 @@
       "query": "v=36.849073,-100.022031,3.68&a=0&b=1&c=1&d=1&lt=1&col=BuPu&f=47"
     },
     {
+      "key": "1e9YGvTJS2tloMmK-sXXP2-361nWhBuAgyDIwhTu7MYA",
+      "name": "Mobility in Estonia in 2018",
+      "query": "v=58.557008%2C25.317849%2C7.34%2C0%2C0&a=0&as=1&b=1&bo=47&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Default&f=48"
+    },
+    {
+      "key": "1lxe0FRjCu5FG2SVbX5m1vDMfVAXzS0i_bnwxxPNuCX8",
+      "name": "Northeast Megalopolis commuters in 2017",
+      "query": "v=41.122203%2C-75.833434%2C5.38%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=interpolateViridis&f=50"
+    },
+    {
       "key": "1B75NgT4vzOW86HZdIgKRv4lxE_GXDHalJW-0vGfFqQY",
       "query": "v=46.816064,1.831957,5.55,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&cz=5&d=1&fe=1&lt=1&lfm=ALL&col=Magma&f=39",
       "name": "Commuters in France 2016"
@@ -87,14 +97,19 @@
       "query": "v=37.544353,126.987414,11.37,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=Default&f=50"
     },
     {
-      "key": "1snSJx8zPZQStNEmN0qN10VRpf3acjRRJHLxH1yUCPws",
-      "name": "Taipei metro travels by hour 2019",
-      "query": "v=25.033034,121.499924,11.14,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20190101T080000,20190101T090000&col=Default&f=50"
-    },
-    {
       "key": "1gDrYiVk4jNhmqkBhFwKOYhBTHfOU_GNsjDUHV5vpuVE",
       "name": "Commuters in Palermo, Italy",
       "query": "v=38.075220,13.339093,10.03,0,0&a=1&b=1&bo=50&c=1&d=1&lt=1&lfm=ALL&col=YlOrRd&f=17"
+    },
+    {
+      "key": "1eZsRuRnUvJ8zU5VARuO5f5joQODvC-Fc8923GQRBrVI",
+      "name": "Mobility in Catalonia during COVID-19",
+      "query": "v=41.430779%2C2.073365%2C9.90%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20201101T000000%2C20201201T000000&col=Default&f=50"
+    },
+    {
+      "key": "1iGK8eMyLZPVSGV-VqFO_n9jWUgl1mF6PSnOUYtsj0Q4",
+      "query": "v=37.521452,-122.139346,8.81,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Default&f=50",
+      "name": "Alameda County flows"
     },
     {
       "key": "1LoeL7i9GHl67Y4SPyp5fiyex6lRqxOuib_mfmg978q4",
@@ -146,6 +161,11 @@
       "name": "New Zealand commuters 2018"
     },
     {
+      "key": "1snSJx8zPZQStNEmN0qN10VRpf3acjRRJHLxH1yUCPws",
+      "name": "Taipei metro travels by hour 2019",
+      "query": "v=25.033034,121.499924,11.14,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&t=20190101T080000,20190101T090000&col=Default&f=50"
+    },
+    {
       "key": "11leYaPeZ2uw3tlPUKlzto8fET_QLxa3PYitdZJEK2YA",
       "name": "Commuters in Metro Vancouver 2016",
       "query": "v=49.210835,-122.943528,9.71&a=0&b=1&c=1&d=1&lt=1&col=Default&f=45"
@@ -187,6 +207,11 @@
       "key": "1jhDwRoMv12lEzdNyldmGTNbWJ11YgIb-TbuC9qJ6SQs",
       "name": "King County sewer system",
       "query": "v=47.569243,-122.273770,11.01&a=0&d=1&c=1&col=SunsetDark&f=45"
+    },
+    {
+      "key": "1nrVGJ5-MzXp0Tdt2rthTSc1AkRTAxEaUg91GiIq-KPA",
+      "name": "Commuting in Kurzeme region, Latvia (2017)",
+      "query": "v=56.846781%2C22.017780%2C7.55%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Default&f=50"
     },
     {
       "key": "15_pAF6byVzfM4XWjVMryfirY6Lyo_rhJa7M7LADaveQ",

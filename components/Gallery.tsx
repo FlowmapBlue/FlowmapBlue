@@ -112,24 +112,26 @@ const Gallery = (props: Props) => {
         const src = `/screenshots/${key}${sheet ? `_${sheet}` : ''}__${screenshotSizes[0]}px.jpg`;
         return (
           <Link key={key} href={`/${key}${sheet ? `/${sheet}` : ''}${query ? `?${query}` : ''}`}>
-            <LinkItem>
-              <ItemImage>
-                <ItemTitle className="name">{name}</ItemTitle>
-                <Image
-                  width={screenshotSizes[0]}
-                  height={Math.floor(screenshotSizes[0] / aspectRatio)}
-                  alt={name}
-                  src={src}
-                  blurDataURL={src}
-                  placeholder="blur"
-                  // srcSet={screenshotSizes.map(w => `/screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
-                  // sizes={screenshotSizes.map((w, i) =>
-                  //   (i < screenshotSizes.length - 1 ? `(max-width: ${w * 2}px) ` : '') + `${w}px`)
-                  //   .join(',')
-                  // }
-                />
-              </ItemImage>
-            </LinkItem>
+            <a>
+              <LinkItem>
+                <ItemImage>
+                  <ItemTitle className="name">{name}</ItemTitle>
+                  <Image
+                    width={screenshotSizes[0]}
+                    height={Math.floor(screenshotSizes[0] / aspectRatio)}
+                    alt={name}
+                    src={src}
+                    blurDataURL={src}
+                    placeholder="blur"
+                    // srcSet={screenshotSizes.map(w => `/screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
+                    // sizes={screenshotSizes.map((w, i) =>
+                    //   (i < screenshotSizes.length - 1 ? `(max-width: ${w * 2}px) ` : '') + `${w}px`)
+                    //   .join(',')
+                    // }
+                  />
+                </ItemImage>
+              </LinkItem>
+            </a>
           </Link>
         );
       })}
