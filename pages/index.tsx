@@ -164,8 +164,8 @@ const Index = () => (
     </DemoVideo>
 
     <section>
-      <p>Create geographic flow maps representing your data published in Google Sheets.</p>
-      <p>Visualize numbers of movements between locations (origin-destination data).</p>
+      <p>Create geographic flow maps representing numbers of movements between locations.</p>
+      <p>Visualize your own origin-destination data published in Google Sheets.</p>
       <p>Explore the data interactively.</p>
     </section>
 

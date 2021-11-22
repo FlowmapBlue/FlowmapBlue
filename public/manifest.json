@@ -1,7 +1,7 @@
 {
   "name": "Flowmap.blue",
   "short_name": "Flowmap.blue",
-  "description": "Create geographic flow maps representing your data published in Google Sheets. Visualize numbers of movements between locations (origin-destination data). Explore the data interactively.",
+  "description": "Create geographic flow maps representing numbers of movements between locations. Visualize your own origin-destination data published in Google Sheets. Explore the data interactively.",
   "dir": "auto",
   "lang": "en-US",
   "display": "standalone",

@@ -17,6 +17,7 @@ import { Button, FocusStyleManager, Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
 import styled from '@emotion/styled';
 import { Router } from 'next/router';
+import manifest from '../public/manifest.json';
 
 FocusStyleManager.onlyShowFocusOnTabs();
 AppToaster.init();
@@ -55,10 +56,7 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="theme-color" content="#000000" />
         <link href="https://fonts.googleapis.com/css?family=Sarabun:400,700" rel="stylesheet" />
-        <meta
-          name="description"
-          content="Create geographic flow maps from data published in Google Sheets. Visualize numbers of movements between locations (origin-destination data). Explore the data interactively."
-        />
+        <meta name="description" content={manifest.description} />
         <meta
           name="keywords"
           content="flow map, flowmap, flow mapping, visualization, mobility, urban mobility, human mobility, mobility data, origin-destination data, OD-data, geographic visualization, maps, movement, geographic movement, transport, migration, traffic, transportation, data visualization, relocation, commuters, journeys, trips, movement routes, interactive map, thematic map"
