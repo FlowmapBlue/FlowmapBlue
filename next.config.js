@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
 
-// const withTM = require('next-transpile-modules')(['@blueprintjs/core']);
-//
-// module.exports = withTM({
+// module.exports = {
 //   reactStrictMode: true,
-// });
-module.exports = {
+// };
+const withTM = require('next-transpile-modules')([
+  // '@blueprintjs/core'
+  '@deck.gl/core',
+]);
+
+module.exports = withTM({
   reactStrictMode: true,
-};
+});
