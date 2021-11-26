@@ -4,13 +4,13 @@ html,
 body {
     margin: 0;
     background-color: rgb(35, 48, 66);
-    color: #f6f7f9; /* LIGHT_GRAY5 */
-    font-weight: 200;
-    line-height: 1.4;
 }
 
 body #__next {
+    color: #f6f7f9; /* LIGHT_GRAY5 */
     font-size: 13pt;
+    font-weight: 200;
+    line-height: 1.4;
 }
 
 body,
