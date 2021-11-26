@@ -11,7 +11,7 @@ import '../css/blueprint.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import globalStyles from '../core/globalStyles';
+import '../css/globals.css';
 import AppToaster from '../core/AppToaster';
 import { Button, FocusStyleManager, Intent } from '@blueprintjs/core';
 import { IconNames } from '@blueprintjs/icons';
@@ -74,7 +74,6 @@ function App({ Component, pageProps }: AppProps) {
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Flowmap.blue" />
       </Head>
-      <Global styles={globalStyles} />
       <Component {...pageProps} />
     </>
   );
