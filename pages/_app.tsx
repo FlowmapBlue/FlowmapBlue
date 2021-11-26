@@ -1,7 +1,6 @@
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 import * as React from 'react';
-import { Global } from '@emotion/core';
 import * as Sentry from '@sentry/browser';
 import type { AppProps } from 'next/app';
 import Link from 'next/link';
@@ -55,7 +54,6 @@ function App({ Component, pageProps }: AppProps) {
         <link rel="shortcut icon" href="/favicon-32x32.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="theme-color" content="#000000" />
-        <link href="https://fonts.googleapis.com/css?family=Sarabun:400,700" rel="stylesheet" />
         <meta name="description" content={manifest.description} />
         <meta
           name="keywords"
