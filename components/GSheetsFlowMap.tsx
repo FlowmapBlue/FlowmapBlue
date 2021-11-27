@@ -148,6 +148,9 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed 
       {configFetch.value && configFetch.value[ConfigPropName.TITLE] && (
         <Head>
           <title>{`${configFetch.value[ConfigPropName.TITLE]} - Flowmap.blue`}</title>
+          {configFetch.value[ConfigPropName.DESCRIPTION]?.trim() && (
+            <meta name="description" content={configFetch.value[ConfigPropName.DESCRIPTION]} />
+          )}
           <link href={`https://flowmap.blue/${spreadSheetKey}`} rel="canonical" />
         </Head>
       )}
