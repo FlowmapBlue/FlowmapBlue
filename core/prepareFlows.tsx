@@ -1,12 +1,12 @@
 import React from 'react';
-import { Flow } from './types';
-import { nest } from 'd3-collection';
-import { parseTime } from './time';
+import {Flow} from './types';
+import {nest} from 'd3-collection';
+import {parseTime} from './time';
 import AppToaster from './AppToaster';
-import { Intent } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
-import { ToastContent } from './Boxes';
-import { ErrorsLocationsBlock, MAX_NUM_OF_IDS_IN_ERROR } from './FlowMap';
+import {Intent} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
+import {ToastContent} from './Boxes';
+import {ErrorsLocationsBlock, MAX_NUM_OF_IDS_IN_ERROR} from './FlowMap';
 import * as d3color from 'd3-color';
 
 export function prepareFlows(rows: any[]) {
@@ -17,7 +17,7 @@ export function prepareFlows(rows: any[]) {
     .key((d: any) => d.dest)
     .key((d: any) => parseTime(d.time)?.toISOString() || 'unknown')
     .rollup((dd) => {
-      const { origin, dest, time, color } = dd[0];
+      const {origin, dest, time, color} = dd[0];
       if (dd.length > 1) {
         dupes.push(dd[0]);
       }
@@ -44,7 +44,7 @@ export function prepareFlows(rows: any[]) {
   const rv: Flow[] = [];
   for (const byDestTime of byOriginDestTime) {
     for (const byTime of byDestTime.values) {
-      for (const { value } of byTime.values) {
+      for (const {value} of byTime.values) {
         if (value.origin != null && value.dest != null) {
           rv.push(value);
         }
@@ -64,7 +64,7 @@ export function prepareFlows(rows: any[]) {
               ? dupes.slice(0, MAX_NUM_OF_IDS_IN_ERROR)
               : dupes
             )
-              .map(({ origin, dest }) => `${origin} → ${dest}`)
+              .map(({origin, dest}) => `${origin} → ${dest}`)
               .join(', ')}
             {dupes.length > MAX_NUM_OF_IDS_IN_ERROR &&
               ` … and ${dupes.length - MAX_NUM_OF_IDS_IN_ERROR} others`}

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useRouter } from 'next/router';
-import { SPREADSHEET_KEY_RE } from '../components/constants';
+import {useRouter} from 'next/router';
+import {SPREADSHEET_KEY_RE} from '../components/constants';
 import DefaultErrorPage from 'next/error';
 import Nav from '../components/Nav';
 
@@ -11,9 +11,9 @@ export interface Props {
 }
 
 const FlowMapPage: React.FC<Props> = (props) => {
-  const { embed } = props;
+  const {embed} = props;
   const router = useRouter();
-  const { id, sheet } = router.query;
+  const {id, sheet} = router.query;
   const spreadSheetKey = id ? `${id}` : null;
 
   if (spreadSheetKey && !new RegExp(SPREADSHEET_KEY_RE).test(spreadSheetKey)) {

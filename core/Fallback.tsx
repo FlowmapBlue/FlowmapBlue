@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Classes } from '@blueprintjs/core';
+import {Classes} from '@blueprintjs/core';
 import Logo from './Logo';
 
-export default ({ children }: { children: React.ReactChild }) => (
+const Fallback = ({children}: {children: React.ReactChild}) => (
   <div
     className={Classes.DARK}
     style={{
@@ -26,3 +26,5 @@ export default ({ children }: { children: React.ReactChild }) => (
     </div>
   </div>
 );
+
+export default Fallback;

@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { Config, getFlowMagnitude } from './types';
-import { Location } from './types';
+import {Config, getFlowMagnitude} from './types';
+import {Location} from './types';
 import styled from '@emotion/styled';
 import * as d3Format from 'd3-format';
-import { Flow, LocationPickingInfo } from '@flowmap.gl/core';
+import {Flow, LocationPickingInfo} from '@flowmap.gl/core';
 
-type OuterProps = { width: number };
+type OuterProps = {width: number};
 const Outer = styled.div<OuterProps>(
-  ({ width }: OuterProps) => `
+  ({width}: OuterProps) => `
   font-size: 10px;
   width: ${width}px;
   display: flex;
@@ -15,7 +15,7 @@ const Outer = styled.div<OuterProps>(
   & > * + * {
     margin-top: 2px;    
   }
-`
+`,
 );
 
 const Title = styled.div`
@@ -64,7 +64,7 @@ export const LocationTooltipContent = ({
   isSelectionEmpty,
   config,
 }: Props) => {
-  const { object: location, totalIn, totalOut, totalWithin } = locationInfo;
+  const {object: location, totalIn, totalOut, totalWithin} = locationInfo;
 
   return (
     <Outer width={150}>

@@ -1,8 +1,8 @@
-import { ColorScheme } from './colors';
+import {ColorScheme} from './colors';
 import Link from 'next/link';
 import * as React from 'react';
 import styled from '@emotion/styled';
-import { Row } from './Boxes';
+import {Row} from './Boxes';
 
 type Props = {
   embed?: boolean;
@@ -12,7 +12,7 @@ type Props = {
 };
 
 const SHADOW_COLOR = ColorScheme.primary;
-const LogoText = styled.div<Props>(({ fontSize, collapseWidth }: Props) => ({
+const LogoText = styled.div<Props>(({fontSize, collapseWidth}: Props) => ({
   // fontFamily: "'Titillium Web', sans-serif",
   fontSize,
   color: '#fff',
@@ -26,7 +26,7 @@ const LogoText = styled.div<Props>(({ fontSize, collapseWidth }: Props) => ({
   },
 }));
 
-const Logo = ({ fontSize = 25, collapseWidth = 525, embed, showText = true }: Props) => {
+const Logo = ({fontSize = 25, collapseWidth = 525, embed, showText = true}: Props) => {
   const size = Math.ceil(fontSize * 1.5);
   const content = (
     <Row spacing={fontSize / 5}>
@@ -53,7 +53,7 @@ const Logo = ({ fontSize = 25, collapseWidth = 525, embed, showText = true }: Pr
     return (
       <a
         href="https://flowmap.blue"
-        style={{ textDecoration: 'none' }}
+        style={{textDecoration: 'none'}}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -63,7 +63,7 @@ const Logo = ({ fontSize = 25, collapseWidth = 525, embed, showText = true }: Pr
   }
   return (
     <Link href="/">
-      <div style={{ textDecoration: 'none', cursor: 'pointer' }}>{content}</div>
+      <div style={{textDecoration: 'none', cursor: 'pointer'}}>{content}</div>
     </Link>
   );
 };

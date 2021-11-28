@@ -2,7 +2,7 @@ import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 import * as React from 'react';
 import * as Sentry from '@sentry/browser';
-import type { AppProps } from 'next/app';
+import type {AppProps} from 'next/app';
 import Link from 'next/link';
 import Head from 'next/head';
 
@@ -12,10 +12,10 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../css/globals.css';
 import AppToaster from '../core/AppToaster';
-import { Button, FocusStyleManager, Intent } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
+import {Button, FocusStyleManager, Intent} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
 import styled from '@emotion/styled';
-import { Router } from 'next/router';
+import {Router} from 'next/router';
 import manifest from '../public/manifest.json';
 
 FocusStyleManager.onlyShowFocusOnTabs();
@@ -43,7 +43,7 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   });
 }
 
-function App({ Component, pageProps }: AppProps) {
+function App({Component, pageProps}: AppProps) {
   return (
     <>
       <Head>
@@ -98,7 +98,7 @@ try {
               flexDirection: 'column',
             }}
           >
-            <div style={{ fontSize: 14 }}>
+            <div style={{fontSize: 14}}>
               We use cookies to collect usage statistics. This helps us to improve the app. If you
               use Flowmap.blue, we assume that you agree with our very short{' '}
               <Link href="/privacy">privacy policy</Link>.
@@ -117,7 +117,7 @@ try {
           </div>
         ),
       },
-      'privacy'
+      'privacy',
     );
   }
 } catch (err) {

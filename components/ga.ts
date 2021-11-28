@@ -2,7 +2,7 @@ export default function sendEvent(
   eventCategory: string,
   eventAction: string,
   eventLabel: string,
-  eventValue?: number
+  eventValue?: number,
 ) {
   if ('ga' in window) {
     try {
@@ -13,7 +13,7 @@ export default function sendEvent(
           eventCategory,
           eventAction,
           eventLabel,
-          ...(eventValue != null && { eventValue }),
+          ...(eventValue != null && {eventValue}),
         });
       }
     } catch (err) {

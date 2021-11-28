@@ -50,17 +50,17 @@ const CONFIG = {
 
 (async () => {
   const response = await favicons(SOURCE_ICON, CONFIG);
-  for (const { name, contents } of response.images) {
+  for (const {name, contents} of response.images) {
     const stream = fs.createWriteStream(path.resolve(OUTPUT_PATH, name));
     await stream.write(contents);
     await stream.end();
   }
-  for (const { name, contents } of response.files) {
+  for (const {name, contents} of response.files) {
     fs.writeFileSync(path.resolve(OUTPUT_PATH, name), contents);
   }
   const indexHtmlTemplate = fs.readFileSync(INDEX_HTML_TEMPLATE, 'utf8');
   fs.writeFileSync(
     path.resolve(OUTPUT_PATH, 'index.html'),
-    indexHtmlTemplate.replace('%FAVICON_HEADERS%', response.html.join('\n'))
+    indexHtmlTemplate.replace('%FAVICON_HEADERS%', response.html.join('\n')),
   );
 })();

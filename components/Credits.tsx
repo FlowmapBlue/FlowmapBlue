@@ -1,4 +1,4 @@
-import { Away } from '../core';
+import {Away} from '../core';
 import TLLogo from '../public/images/TL-Horizontal-Black.svg';
 import MapboxLogo from '../public/images/mapbox-logo-black.svg';
 import UcfLogo from '../public/images/ucf-logo.svg';
@@ -39,7 +39,7 @@ const SupportLogoLink = styled.a`
   }
 `;
 
-const SupportLogo = ({ name, src, href }: { name: string; src: string; href: string }) => (
+const SupportLogo = ({name, src, href}: {name: string; src: string; href: string}) => (
   <SupportLogoLink href={href} target="_blank" rel="noopener noreferrer">
     <Image
       alt={`Supported by ${name}`}
@@ -83,7 +83,7 @@ const Credits: React.FC<Props> = (props) => {
       </section>
 
       <section>
-        <span style={{ zoom: 0.8 }}>
+        <span style={{zoom: 0.8}}>
           <Away href="https://www.netlify.com">
             <img
               width={114}
@@ -105,7 +105,7 @@ const Credits: React.FC<Props> = (props) => {
             <img
               src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=285959&theme=dark"
               alt="Flowmap.blue - Flow map visualization for geographic movement analysis | Product Hunt"
-              style={{ width: 250, height: 54 }}
+              style={{width: 250, height: 54}}
               width="250"
               height="54"
             />

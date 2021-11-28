@@ -1,4 +1,4 @@
-import type { Colors, DiffColors } from '@flowmap.gl/core';
+import type {Colors, DiffColors} from '@flowmap.gl/core';
 import {
   interpolateCool,
   interpolateInferno,
@@ -25,11 +25,11 @@ import {
   schemeYlOrBr,
   schemeYlOrRd,
 } from 'd3-scale-chromatic';
-import { range } from 'd3-array';
-import { scalePow, scaleSequential } from 'd3-scale';
-import { interpolateRgbBasis } from 'd3-interpolate';
-import { Config } from './types';
-import { hcl } from 'd3-color';
+import {range} from 'd3-array';
+import {scalePow, scaleSequential} from 'd3-scale';
+import {interpolateRgbBasis} from 'd3-interpolate';
+import {Config} from './types';
+import {hcl} from 'd3-color';
 
 const asScheme = (scheme: ReadonlyArray<ReadonlyArray<string>>) =>
   scheme[scheme.length - 1] as string[];
@@ -47,7 +47,7 @@ const getColorSteps = (interpolate: (x: number) => string) =>
     .map((i) => interpolate(i / SCALE_NUM_STEPS))
     .reverse();
 
-export const COLOR_SCHEMES: { [key: string]: string[] } = {
+export const COLOR_SCHEMES: {[key: string]: string[]} = {
   Default: DEFAULT_COLOR_SCHEME,
   // https://carto.com/carto-colors/
   Blues: asScheme(schemeBlues),
@@ -125,7 +125,7 @@ export default function getColors(
   darkMode: boolean,
   fadeEnabled: boolean,
   fadeAmount: number,
-  animate: boolean
+  animate: boolean,
 ): Colors | DiffColors {
   if (diffMode) {
     return diffColors;
@@ -169,7 +169,7 @@ export default function getColors(
           col.l = darkMode ? col.l - col.l * alpha : col.l + (100 - col.l) * alpha;
           col.c = col.c - col.c * (alpha / 4);
           return col.toString();
-        }
+        },
         // interpolateRgbBasis([colorScale(i), darkMode ? '#000' : '#fff'])(amount(i))
         // interpolateHsl(colorScale(i), darkMode ? '#000' : '#fff')(amount(i)).toString()
       );

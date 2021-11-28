@@ -1,4 +1,4 @@
-import { defaultMemoize } from 'reselect';
+import {defaultMemoize} from 'reselect';
 
 const splitIntoWords = defaultMemoize((str: string) => {
   // https://stackoverflow.com/a/25575009/120779

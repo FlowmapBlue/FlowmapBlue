@@ -1,5 +1,5 @@
-import { DeckGL } from '@deck.gl/react';
-import { MapController, MapView } from '@deck.gl/core';
+import {DeckGL} from '@deck.gl/react';
+import {MapController, MapView} from '@deck.gl/core';
 import * as React from 'react';
 import {
   ReactNode,
@@ -11,16 +11,16 @@ import {
   useRef,
   useState,
 } from 'react';
-import { alea } from 'seedrandom';
-import { _MapContext as MapContext, StaticMap } from 'react-map-gl';
+import {alea} from 'seedrandom';
+import {_MapContext as MapContext, StaticMap} from 'react-map-gl';
 import FlowMapLayer, {
   FlowLayerPickingInfo,
   FlowPickingInfo,
   LocationPickingInfo,
   PickingType,
 } from '@flowmap.gl/core';
-import { Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent } from '@blueprintjs/core';
-import { getViewStateForLocations, LocationTotalsLegend } from '@flowmap.gl/react';
+import {Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent} from '@blueprintjs/core';
+import {getViewStateForLocations, LocationTotalsLegend} from '@flowmap.gl/react';
 import WebMercatorViewport from '@math.gl/web-mercator';
 import {
   Absolute,
@@ -33,10 +33,10 @@ import {
   TitleBox,
   ToastContent,
 } from './Boxes';
-import { FlowTooltipContent, formatCount, LocationTooltipContent } from './TooltipContent';
-import Tooltip, { TargetBounds } from './Tooltip';
+import {FlowTooltipContent, formatCount, LocationTooltipContent} from './TooltipContent';
+import Tooltip, {TargetBounds} from './Tooltip';
 import Link from 'next/link';
-import Collapsible, { Direction } from './Collapsible';
+import Collapsible, {Direction} from './Collapsible';
 import isDeepEqual from 'fast-deep-equal';
 import {
   AsyncState,
@@ -55,7 +55,7 @@ import Message from './Message';
 import LoadingSpinner from './LoadingSpinner';
 import NoScrollContainer from './NoScrollContainer';
 import styled from '@emotion/styled';
-import { IconNames } from '@blueprintjs/icons';
+import {IconNames} from '@blueprintjs/icons';
 import LocationsSearchBox from './LocationSearchBox';
 import Away from './Away';
 import {
@@ -109,14 +109,14 @@ import AppToaster from './AppToaster';
 import useDebounced from './hooks';
 import SharePopover from './SharePopover';
 import SettingsPopover from './SettingsPopover';
-import MapDrawingEditor, { MapDrawingFeature, MapDrawingMode } from './MapDrawingEditor';
+import MapDrawingEditor, {MapDrawingFeature, MapDrawingMode} from './MapDrawingEditor';
 import getBbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import Timeline from './Timeline';
-import { TimeGranularity } from './time';
-import { findAppropriateZoomLevel } from '@flowmap.gl/cluster/dist-esm';
-import { useRouter } from 'next/router';
-import { getFlowsSheetKey, makeGSheetsMapUrl } from '../components/constants';
+import {TimeGranularity} from './time';
+import {findAppropriateZoomLevel} from '@flowmap.gl/cluster/dist-esm';
+import {useRouter} from 'next/router';
+import {getFlowsSheetKey, makeGSheetsMapUrl} from '../components/constants';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -144,7 +144,7 @@ const DeckGLOuter = styled.div<{
   baseMapOpacity: number;
   cursor: 'crosshair' | 'pointer' | undefined;
 }>(
-  ({ cursor, baseMapOpacity, darkMode }) => `
+  ({cursor, baseMapOpacity, darkMode}) => `
   & #deckgl-overlay {
     mix-blend-mode: ${darkMode ? 'screen' : 'multiply'};
   }
@@ -152,7 +152,7 @@ const DeckGLOuter = styled.div<{
     opacity: ${baseMapOpacity}
   }
   ${cursor != null ? `& #view-default-view { cursor: ${cursor}; }` : ''},
-`
+`,
 );
 
 export const ErrorsLocationsBlock = styled.div`
@@ -162,7 +162,7 @@ export const ErrorsLocationsBlock = styled.div`
   overflow: auto;
 `;
 
-const SelectedTimeRangeBox = styled(BoxStyle)<{ darkMode: boolean }>((props) => ({
+const SelectedTimeRangeBox = styled(BoxStyle)<{darkMode: boolean}>((props) => ({
   display: 'flex',
   alignSelf: 'center',
   fontSize: 12,
@@ -179,7 +179,7 @@ const TimelineBox = styled(BoxStyle)({
   borderTop: '1px solid #999',
 });
 
-const TotalCount = styled.div<{ darkMode: boolean }>((props) => ({
+const TotalCount = styled.div<{darkMode: boolean}>((props) => ({
   padding: 5,
   borderRadius: 5,
   backgroundColor: props.darkMode ? Colors.DARK_GRAY4 : Colors.LIGHT_GRAY4,
@@ -189,8 +189,7 @@ const TotalCount = styled.div<{ darkMode: boolean }>((props) => ({
 export const MAX_NUM_OF_IDS_IN_ERROR = 100;
 
 const FlowMap: React.FC<Props> = (props) => {
-  const { inBrowser, embed, config, spreadSheetKey, flowsSheet, locationsFetch, flowsFetch } =
-    props;
+  const {inBrowser, embed, config, spreadSheetKey, flowsSheet, locationsFetch, flowsFetch} = props;
   const deckRef = useRef<any>();
   const router = useRouter();
   const initialState = useMemo<State>(() => getInitialState(config, router.query), [config]);
@@ -199,7 +198,7 @@ const FlowMap: React.FC<Props> = (props) => {
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState);
   const [mapDrawingEnabled, setMapDrawingEnabled] = useState(false);
-  const { selectedTimeRange } = state;
+  const {selectedTimeRange} = state;
 
   const timeGranularity = getTimeGranularity(state, props);
   const timeExtent = getTimeExtent(state, props);
@@ -229,19 +228,19 @@ const FlowMap: React.FC<Props> = (props) => {
       const queryParams = stateToQueryParams(state);
       const query = {
         ...queryParams,
-        ...(spreadSheetKey ? { id: spreadSheetKey } : {}),
-        ...(flowsSheet ? { sheet: getFlowsSheetKey(flowsSheet) } : {}),
+        ...(spreadSheetKey ? {id: spreadSheetKey} : {}),
+        ...(flowsSheet ? {sheet: getFlowsSheetKey(flowsSheet)} : {}),
       };
       if (!isDeepEqual(query, router.query)) {
         router.replace(makeGSheetsMapUrl(spreadSheetKey, flowsSheet, embed, queryParams));
       }
     },
     250,
-    [state, router.asPath]
+    [state, router.asPath],
   );
   useEffect(updateQuerySearch, [router.asPath, state]);
 
-  const { viewport, tooltip, animationEnabled, baseMapEnabled } = state;
+  const {viewport, tooltip, animationEnabled, baseMapEnabled} = state;
   const allFlows = getFetchedFlows(state, props);
   const allLocations = getLocations(state, props);
   const locationsHavingFlows = getLocationsHavingFlows(state, props);
@@ -286,7 +285,7 @@ const FlowMap: React.FC<Props> = (props) => {
       setTime(((timestamp % loopTime) / loopTime) * loopLength);
       requestAnimationFrameRef.current = requestAnimationFrame(animate);
     },
-    [requestAnimationFrameRef, setTime]
+    [requestAnimationFrameRef, setTime],
   );
 
   useEffect(() => {
@@ -317,7 +316,7 @@ const FlowMap: React.FC<Props> = (props) => {
         });
       }
     },
-    [config]
+    [config],
   );
 
   const invalidLocations = getInvalidLocationIds(state, props);
@@ -343,7 +342,7 @@ const FlowMap: React.FC<Props> = (props) => {
             this tool
           </Away>{' '}
           for example.
-        </>
+        </>,
       );
     }
   }, [invalidLocations, showErrorToast]);
@@ -366,18 +365,18 @@ const FlowMap: React.FC<Props> = (props) => {
             </ErrorsLocationsBlock>
             {formatCount(allFlows.length - flowsForKnownLocations.length)} flows were omitted.
             {flowsForKnownLocations.length === 0 && (
-              <div style={{ marginTop: '1em' }}>
+              <div style={{marginTop: '1em'}}>
                 Make sure the columns are named header row in the flows sheet is correct. There must
                 be <b>origin</b>, <b>dest</b>, and <b>count</b>.
               </div>
             )}
-          </>
+          </>,
         );
       }
     }
   }, [unknownLocations, showErrorToast, allFlows, flowsForKnownLocations]);
 
-  const { adjustViewportToLocations } = state;
+  const {adjustViewportToLocations} = state;
 
   useEffect(() => {
     if (!adjustViewportToLocations) {
@@ -391,7 +390,7 @@ const FlowMap: React.FC<Props> = (props) => {
         locationsHavingFlows ?? allLocations,
         getLocationCentroid,
         [width, height],
-        { pad: 0.1 }
+        {pad: 0.1},
       );
 
       if (!draft.zoom) {
@@ -426,13 +425,13 @@ const FlowMap: React.FC<Props> = (props) => {
   const handleChangeClusteringAuto = (value: boolean) => {
     if (!value) {
       if (clusterIndex) {
-        const { availableZoomLevels } = clusterIndex;
+        const {availableZoomLevels} = clusterIndex;
         if (availableZoomLevels != null) {
           dispatch({
             type: ActionType.SET_MANUAL_CLUSTER_ZOOM,
             manualClusterZoom: findAppropriateZoomLevel(
               clusterIndex.availableZoomLevels,
-              viewport.zoom
+              viewport.zoom,
             ),
           });
         }
@@ -445,7 +444,7 @@ const FlowMap: React.FC<Props> = (props) => {
   };
 
   const [showFullscreenButton, setShowFullscreenButton] = useState(
-    embed && document.fullscreenEnabled
+    embed && document.fullscreenEnabled,
   );
 
   useEffect(() => {
@@ -465,7 +464,7 @@ const FlowMap: React.FC<Props> = (props) => {
   const getMercator = useCallback(() => {
     const containerBounds = getContainerClientRect();
     if (!containerBounds) return undefined;
-    const { width, height } = containerBounds;
+    const {width, height} = containerBounds;
     return new WebMercatorViewport({
       ...viewport,
       width,
@@ -476,7 +475,7 @@ const FlowMap: React.FC<Props> = (props) => {
   const showTooltip = (bounds: TargetBounds, content: React.ReactNode) => {
     const containerBounds = getContainerClientRect();
     if (!containerBounds) return;
-    const { top, left } = containerBounds;
+    const {top, left} = containerBounds;
     dispatch({
       type: ActionType.SET_TOOLTIP,
       tooltip: {
@@ -492,7 +491,7 @@ const FlowMap: React.FC<Props> = (props) => {
   };
 
   const highlight = (highlight: Highlight | undefined) => {
-    dispatch({ type: ActionType.SET_HIGHLIGHT, highlight });
+    dispatch({type: ActionType.SET_HIGHLIGHT, highlight});
   };
   const [showTooltipDebounced, cancelShowTooltipDebounced] = useDebounced(showTooltip, 500);
   const [highlightDebounced, cancelHighlightDebounced] = useDebounced(highlight, 500);
@@ -531,12 +530,12 @@ const FlowMap: React.FC<Props> = (props) => {
   };
 
   const showLocationTooltip = (info: LocationPickingInfo) => {
-    const { object: location, circleRadius } = info;
+    const {object: location, circleRadius} = info;
     const mercator = getMercator();
     if (!mercator) return;
     const [x, y] = mercator.project(getLocationCentroid(location));
     const r = circleRadius + 5;
-    const { selectedLocations } = state;
+    const {selectedLocations} = state;
     const bounds = {
       left: x - r,
       top: y - r,
@@ -562,7 +561,7 @@ const FlowMap: React.FC<Props> = (props) => {
   };
 
   const handleHover = (info: FlowLayerPickingInfo) => {
-    const { type, object, x, y } = info;
+    const {type, object, x, y} = info;
     switch (type) {
       case PickingType.FLOW: {
         if (object) {
@@ -647,7 +646,7 @@ const FlowMap: React.FC<Props> = (props) => {
   const mapboxMapStyle = getMapboxMapStyle(state, props);
 
   const getHighlightForZoom = () => {
-    const { highlight, clusteringEnabled } = state;
+    const {highlight, clusteringEnabled} = state;
     if (!highlight || !clusteringEnabled) {
       return highlight;
     }
@@ -672,12 +671,12 @@ const FlowMap: React.FC<Props> = (props) => {
 
     switch (highlight.type) {
       case HighlightType.LOCATION:
-        const { locationId } = highlight;
+        const {locationId} = highlight;
         return isValidForClusterZoom(locationId) ? highlight : undefined;
 
       case HighlightType.FLOW:
         const {
-          flow: { origin, dest },
+          flow: {origin, dest},
         } = highlight;
         if (isValidForClusterZoom(origin) && isValidForClusterZoom(dest)) {
           return highlight;
@@ -688,12 +687,12 @@ const FlowMap: React.FC<Props> = (props) => {
     return undefined;
   };
 
-  const handleClick = (info: FlowLayerPickingInfo, event: { srcEvent: MouseEvent }) => {
+  const handleClick = (info: FlowLayerPickingInfo, event: {srcEvent: MouseEvent}) => {
     switch (info.type) {
       case PickingType.LOCATION:
       // fall through
       case PickingType.LOCATION_AREA: {
-        const { object } = info;
+        const {object} = info;
         if (object) {
           dispatch({
             type: ActionType.SELECT_LOCATION,
@@ -720,7 +719,7 @@ const FlowMap: React.FC<Props> = (props) => {
     });
   };
 
-  const handleViewStateChange = ({ viewState }: { viewState: ViewportProps }) => {
+  const handleViewStateChange = ({viewState}: {viewState: ViewportProps}) => {
     dispatch({
       type: ActionType.SET_VIEWPORT,
       viewport: viewState,
@@ -742,7 +741,7 @@ const FlowMap: React.FC<Props> = (props) => {
       const candidates = getLocationsInBbox(locationsTree, bbox);
       if (candidates) {
         const inPolygon = candidates.filter((loc) =>
-          booleanPointInPolygon(getLocationCentroid(loc), feature)
+          booleanPointInPolygon(getLocationCentroid(loc), feature),
         );
         if (inPolygon.length > 0) {
           handleChangeSelectLocations(inPolygon.map(getLocationId));
@@ -772,20 +771,20 @@ const FlowMap: React.FC<Props> = (props) => {
   };
 
   const handleZoomIn = () => {
-    dispatch({ type: ActionType.ZOOM_IN });
+    dispatch({type: ActionType.ZOOM_IN});
   };
 
   const handleZoomOut = () => {
-    dispatch({ type: ActionType.ZOOM_OUT });
+    dispatch({type: ActionType.ZOOM_OUT});
   };
 
   const handleResetBearingPitch = () => {
-    dispatch({ type: ActionType.RESET_BEARING_PITCH });
+    dispatch({type: ActionType.RESET_BEARING_PITCH});
   };
 
   const handleSelectFlowsSheet: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     const sheet = event.currentTarget.value;
-    const { onSetFlowsSheet } = props;
+    const {onSetFlowsSheet} = props;
     if (onSetFlowsSheet) {
       onSetFlowsSheet(sheet);
       handleChangeSelectLocations(undefined);
@@ -874,7 +873,7 @@ const FlowMap: React.FC<Props> = (props) => {
             onHover: handleHover, // to avoid stale closure in the handler
             onClick: handleClick,
           } as any,
-        })
+        }),
       );
     }
 
@@ -899,7 +898,7 @@ const FlowMap: React.FC<Props> = (props) => {
           ref={deckRef}
           controller={CONTROLLER_OPTIONS}
           viewState={viewport}
-          views={[new MapView({ id: 'map', repeat: true })]}
+          views={[new MapView({id: 'map', repeat: true})]}
           onViewStateChange={handleViewStateChange}
           layers={getLayers()}
           ContextProvider={MapContext.Provider}
@@ -1071,7 +1070,7 @@ const FlowMap: React.FC<Props> = (props) => {
                   {Math.round(totalFilteredCount) === Math.round(totalUnfilteredCount)
                     ? config['msg.totalCount.allTrips']?.replace(
                         '{0}',
-                        formatCount(totalUnfilteredCount)
+                        formatCount(totalUnfilteredCount),
                       )
                     : config['msg.totalCount.countOfTrips']
                         ?.replace('{0}', formatCount(totalFilteredCount))
@@ -1090,9 +1089,9 @@ const FlowMap: React.FC<Props> = (props) => {
 
 function selectedTimeRangeToString(
   selectedTimeRange: [Date, Date],
-  timeGranularity: TimeGranularity
+  timeGranularity: TimeGranularity,
 ) {
-  const { interval, formatFull, order } = timeGranularity;
+  const {interval, formatFull, order} = timeGranularity;
   const start = selectedTimeRange[0];
   let end = selectedTimeRange[1];
   if (order >= 3) {

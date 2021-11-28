@@ -1,8 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import styled from '@emotion/styled';
-import { Button, Classes, H5, Intent, TextArea } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
-import { tsvFormatRows, tsvParseRows } from 'd3-dsv';
+import {Button, Classes, H5, Intent, TextArea} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
+import {tsvFormatRows, tsvParseRows} from 'd3-dsv';
 import Layout from '../core/Layout';
 import Head from 'next/head';
 
@@ -49,7 +49,7 @@ const ODMatrixConverter = () => {
       ['Paris', '100', '200', '20'],
       ['Berlin', '300', '50', '30'],
       ['London', '140', '20', '10'],
-    ])
+    ]),
   );
   const [output, setOutput] = useState(convert(input));
   const handleConvert = useCallback(() => {

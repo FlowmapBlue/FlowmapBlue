@@ -8,13 +8,13 @@ import {
   Popover,
   Position,
 } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
-import { ItemPredicate, ItemRenderer, MultiSelect } from '@blueprintjs/select';
+import {IconNames} from '@blueprintjs/icons';
+import {ItemPredicate, ItemRenderer, MultiSelect} from '@blueprintjs/select';
 import React, {ReactNode} from 'react';
-import { defaultMemoize } from 'reselect';
-import { LocationFilterMode } from './FlowMap.state';
-import { Column } from './Boxes';
-import { ClassNames } from '@emotion/core';
+import {defaultMemoize} from 'reselect';
+import {LocationFilterMode} from './FlowMap.state';
+import {Column} from './Boxes';
+import {ClassNames} from '@emotion/core';
 
 export interface Props<Item> {
   placeholder: string;
@@ -48,7 +48,7 @@ function filterItems<Item>(
   items: Item[],
   query: string,
   itemPredicate: ItemPredicate<Item>,
-  maxLength: number
+  maxLength: number,
 ) {
   const matches: Item[] = [];
   if (!items || items.length === 0) {
@@ -86,7 +86,7 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
       locationFilterMode,
       onLocationFilterModeChange,
     } = this.props;
-    const { query } = this.state;
+    const {query} = this.state;
 
     const tagInputProps = {
       placeholder,
@@ -104,15 +104,24 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
               hoverCloseDelay={0}
               content={
                 <ClassNames>
-                  {({ css }) => (
+                  {({css}) => (
                     <Menu>
                       <MenuDivider title="Filter mode" />
                       {[
-                        { value: LocationFilterMode.ALL, label: 'All' },
-                        { value: LocationFilterMode.INCOMING, label: 'Incoming to selected' },
-                        { value: LocationFilterMode.OUTGOING, label: 'Outgoing from selected' },
-                        { value: LocationFilterMode.BETWEEN, label: 'Between selected' },
-                      ].map(v => (
+                        {value: LocationFilterMode.ALL, label: 'All'},
+                        {
+                          value: LocationFilterMode.INCOMING,
+                          label: 'Incoming to selected',
+                        },
+                        {
+                          value: LocationFilterMode.OUTGOING,
+                          label: 'Outgoing from selected',
+                        },
+                        {
+                          value: LocationFilterMode.BETWEEN,
+                          label: 'Between selected',
+                        },
+                      ].map((v) => (
                         <MenuItem
                           active={locationFilterMode === v.value}
                           icon={
@@ -136,9 +145,7 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
               <Button title="Filter mode" icon={IconNames.COG} minimal={true} />
             </Popover>
           </Column>
-        ) : (
-          undefined
-        ),
+        ) : undefined,
     };
 
     return (
@@ -162,14 +169,14 @@ export default class SearchBox<Item> extends React.PureComponent<Props<Item>, St
     this.setState({
       query,
     });
-    const { onQueryChange } = this.props;
+    const {onQueryChange} = this.props;
     if (onQueryChange) {
       onQueryChange(query);
     }
   };
 
   private handleItemRemoved = (value: ReactNode, index: number) => {
-    const { selectedItems, onRemoved } = this.props;
+    const {selectedItems, onRemoved} = this.props;
     if (selectedItems) {
       onRemoved(selectedItems[index]);
     }

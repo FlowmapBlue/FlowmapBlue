@@ -1,5 +1,5 @@
 import Nav from '../components/Nav';
-import { Classes } from '@blueprintjs/core';
+import {Classes} from '@blueprintjs/core';
 import * as React from 'react';
 import styled from '@emotion/styled';
 
@@ -17,7 +17,7 @@ const ContentBody = styled.div`
 `;
 
 const Layout: React.FC<Props> = (props) => {
-  const { children } = props;
+  const {children} = props;
   return (
     <>
       <Nav />

@@ -5,8 +5,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "shots": "cd scripts && node ./screenshots.js"
+    "lint": "next lint --no-cache",
+    "shots": "cd scripts && node ./screenshots.js",
+    "prettier": "prettier --write \"**/*.{json,js,jsx,ts,tsx}\"",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@blueprintjs/core": "^4.0.0-beta.8",
@@ -87,6 +89,7 @@
     "eslint-config-prettier": "^8.3.0",
     "next-transpile-modules": "^9.0.0",
     "prettier": "^2.4.1",
-    "typescript": "4.4.4"
+    "typescript": "4.4.4",
+    "husky": "^7.0.0"
   }
 }

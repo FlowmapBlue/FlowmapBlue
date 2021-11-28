@@ -1,3 +1,3 @@
-import { default as FlowMapPage } from '../[id]';
+import {default as FlowMapPage} from '../[id]';
 
 export default FlowMapPage;

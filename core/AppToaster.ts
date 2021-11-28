@@ -1,4 +1,4 @@
-import { IToaster, IToastOptions, IToastProps, Position, Toaster } from '@blueprintjs/core';
+import {IToaster, IToastOptions, IToastProps, Position, Toaster} from '@blueprintjs/core';
 
 const AppToaster = new (class implements IToaster {
   toaster: IToaster | undefined;
@@ -10,7 +10,7 @@ const AppToaster = new (class implements IToaster {
           className: 'toaster',
           position: Position.BOTTOM_RIGHT,
         },
-        container
+        container,
       );
     }
   }

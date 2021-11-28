@@ -1,5 +1,5 @@
-import { connect } from 'react-refetch';
-import { csvParse } from 'd3-dsv';
+import {connect} from 'react-refetch';
+import {csvParse} from 'd3-dsv';
 
 // TODO: use LRU cache
 const cache = new Map();
@@ -52,7 +52,7 @@ const sheetFetcher = (format: 'csv' | 'json') =>
                 console.error(err);
                 reject(err);
               }
-            })
+            }),
         );
       } else {
         return text.then((cause: any) => Promise.reject(new Error(cause)));
@@ -68,10 +68,10 @@ export const makeSheetQueryUrl = (
   spreadSheetKey: string,
   sheet: string,
   query: string,
-  format: 'csv' | 'json' = 'json'
+  format: 'csv' | 'json' = 'json',
 ) =>
   `${BASE_URL}/${spreadSheetKey}/gviz/tq?tq=${encodeURI(
-    `${query} OPTIONS no_format`
+    `${query} OPTIONS no_format`,
   )}&tqx=out:${format}&sheet=${encodeURIComponent(sheet)}`;
 
 function getJson(text: string) {
@@ -119,10 +119,10 @@ function getSheetDataAsArray(data: SheetData) {
     colNames = data.table.rows[0].c.map(getValue);
   } else {
     rows = data.table.rows;
-    colNames = data.table.cols.map(({ label }) => `${label}`.trim());
+    colNames = data.table.cols.map(({label}) => `${label}`.trim());
   }
   return rows.map((row) => {
-    const obj: { [key: string]: string | number | Date | undefined } = {};
+    const obj: {[key: string]: string | number | Date | undefined} = {};
     for (let i = 0; i < numCols; i++) {
       try {
         const colName = `${colNames[i]}`.trim();

@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import React, { useMemo } from 'react';
+import React, {useMemo} from 'react';
 import examplesConfig from '../examples.json';
 import styled from '@emotion/styled';
-import { Colors, Icon } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
+import {Colors, Icon} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
 
-const { aspectRatio, examples, screenshotSizes } = examplesConfig;
+const {aspectRatio, examples, screenshotSizes} = examplesConfig;
 
 const LinkItem = styled.div`
   cursor: pointer !important;
@@ -101,14 +101,14 @@ type Props = {
 };
 
 const Gallery = (props: Props) => {
-  const { maxCount } = props;
+  const {maxCount} = props;
   const examplesToShow = useMemo(
     () => (maxCount ? examples.slice(0, maxCount) : examples),
-    [maxCount]
+    [maxCount],
   );
   return (
     <ItemGrid>
-      {examplesToShow.map(({ key, sheet, name, query }) => {
+      {examplesToShow.map(({key, sheet, name, query}) => {
         const src = `/screenshots/${key}${sheet ? `_${sheet}` : ''}__${screenshotSizes[0]}px.jpg`;
         return (
           <Link key={key} href={`/${key}${sheet ? `/${sheet}` : ''}${query ? `?${query}` : ''}`}>

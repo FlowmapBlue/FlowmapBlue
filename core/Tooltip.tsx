@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Popper } from 'react-popper';
-import { Placement } from 'popper.js';
+import {Popper} from 'react-popper';
+import {Placement} from 'popper.js';
 import styled from '@emotion/styled';
 
 export type TargetBounds = {
@@ -22,7 +22,7 @@ class VirtualReference {
     this.target = target;
   }
   getBoundingClientRect() {
-    const { left, top, width, height } = this.target;
+    const {left, top, width, height} = this.target;
     return {
       top,
       left,
@@ -48,13 +48,13 @@ const ContentWrapper = styled.div`
   padding: 7px;
 `;
 
-const Tooltip = ({ target, content, placement }: Props) => (
+const Tooltip = ({target, content, placement}: Props) => (
   <Popper
     placement={placement}
     // @ts-ignore
     referenceElement={new VirtualReference(target)}
   >
-    {({ ref, style, placement, arrowProps }) => (
+    {({ref, style, placement, arrowProps}) => (
       <ContentWrapper ref={ref} style={style} data-placement={placement}>
         {content}
         <div ref={arrowProps.ref} style={arrowProps.style} />

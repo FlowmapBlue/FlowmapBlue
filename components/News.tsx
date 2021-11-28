@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { Away } from '../core';
+import {Away} from '../core';
 import * as React from 'react';
 import styled from '@emotion/styled';
-import { Colors, Icon } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
+import {Colors, Icon} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
 
 const Outer = styled.div`
   display: flex;
@@ -198,7 +198,7 @@ const NEWS_ITEMS = [
 ];
 /* eslint-enable react/jsx-key */
 
-const News = ({ maxCount }: Props) => {
+const News = ({maxCount}: Props) => {
   const news = maxCount ? NEWS_ITEMS.slice(0, maxCount) : NEWS_ITEMS;
   return (
     <Outer>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ErrorFallback from './ErrorFallback';
-import { captureException, withScope } from '@sentry/core';
+import {captureException, withScope} from '@sentry/core';
 
 class ErrorBoundary extends React.Component<{}, {}> {
   state = {hasError: false, error: null};
@@ -8,13 +8,13 @@ class ErrorBoundary extends React.Component<{}, {}> {
   static getDerivedStateFromError(error: any) {
     return {
       hasError: true,
-      error
+      error,
     };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error(error);
-    withScope(scope => {
+    withScope((scope) => {
       scope.setExtras({
         ...errorInfo,
       });
@@ -24,9 +24,7 @@ class ErrorBoundary extends React.Component<{}, {}> {
 
   render() {
     if (this.state.hasError) {
-      return (
-        <ErrorFallback error={this.state.error}/>
-      );
+      return <ErrorFallback error={this.state.error} />;
     }
     return this.props.children;
   }

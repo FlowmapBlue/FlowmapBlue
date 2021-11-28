@@ -2,13 +2,13 @@ import * as React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styled from '@emotion/styled';
-import { Away, Column, Logo, Row } from '../core';
+import {Away, Column, Logo, Row} from '../core';
 import VideoPlaceholderImg from '../public/images/nyc-citi-bike-new-4-1000.webp';
-import { Button, Classes, Colors, Intent, Tag } from '@blueprintjs/core';
+import {Button, Classes, Colors, Intent, Tag} from '@blueprintjs/core';
 import News from '../components/News';
 import ReactPlayer from 'react-player';
 import Layout from '../core/Layout';
-import { USED_BY_LOGOS } from '../used-by';
+import {USED_BY_LOGOS} from '../used-by';
 import Gallery from '../components/Gallery';
 import Credits from '../components/Credits';
 
@@ -26,7 +26,7 @@ const ListOfUses = styled.div`
   margin: 1em 0;
 `;
 
-const ListOfUsesItem = styled(({ className, children }) => (
+const ListOfUsesItem = styled(({className, children}) => (
   <Tag className={className} minimal round interactive={false} intent={Intent.NONE}>
     {children}
   </Tag>
@@ -218,7 +218,7 @@ const Index = () => (
     <section>
       <h2>Who is using it?</h2>
       <UsedByContainer>
-        {USED_BY_LOGOS.map(({ url, name, img, width = 120 }) => (
+        {USED_BY_LOGOS.map(({url, name, img, width = 120}) => (
           <Away key={name} href={url}>
             <Image
               alt={name}

@@ -1,4 +1,4 @@
-import { Away } from '../core';
+import {Away} from '../core';
 import * as React from 'react';
 import Layout from '../core/Layout';
 import Head from 'next/head';

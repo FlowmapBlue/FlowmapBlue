@@ -1,9 +1,9 @@
-import { useCallback, useRef } from 'react';
+import {useCallback, useRef} from 'react';
 
 export default function useDebounced<T extends (...args: any[]) => void>(
   fun: T,
   delay: number,
-  deps: ReadonlyArray<any> = []
+  deps: ReadonlyArray<any> = [],
 ): [T, () => void] {
   const funCallback = useCallback(fun, deps);
   const timoutId = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -25,7 +25,7 @@ export default function useDebounced<T extends (...args: any[]) => void>(
         funCallback(...args);
       }, delay);
     },
-    [funCallback, timoutId, delay]
+    [funCallback, timoutId, delay],
   );
 
   return [debounced as T, cancel];

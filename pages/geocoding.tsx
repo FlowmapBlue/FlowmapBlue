@@ -1,18 +1,18 @@
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import styled from '@emotion/styled';
-import { Button, H5, HTMLSelect, Intent, TextArea } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
-import { dsvFormat } from 'd3-dsv';
-import { ascending } from 'd3-array';
-import { connect, PromiseState } from 'react-refetch';
+import {Button, H5, HTMLSelect, Intent, TextArea} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
+import {dsvFormat} from 'd3-dsv';
+import {ascending} from 'd3-array';
+import {connect, PromiseState} from 'react-refetch';
 import md5 from 'blueimp-md5';
 import COUNTRIES from '../countries.json';
-import { AppToaster } from '../core';
+import {AppToaster} from '../core';
 import Layout from '../core/Layout';
 import Head from 'next/head';
 
 const MAX_GEOCODING_ROWS = 1000;
-const countries = COUNTRIES as { [key: string]: string };
+const countries = COUNTRIES as {[key: string]: string};
 
 const SearchOptions = styled.div`
   display: grid;
@@ -59,10 +59,10 @@ function prepareOutput(
     name: string;
     fetchState: PromiseState<GeoCodingResult>;
   }[],
-  delimiter: string
+  delimiter: string,
 ) {
   const outputRows = [['id', 'name', 'lat', 'lon']];
-  for (const { name, fetchState } of fetchStates) {
+  for (const {name, fetchState} of fetchStates) {
     if (!fetchState || fetchState.pending) {
       outputRows.push([name, 'Pending…']);
     } else if (fetchState.rejected) {
@@ -94,8 +94,8 @@ interface GeoCoderProps {
   locationType: string;
   delimiter: string;
 }
-const GeoCoder = connect(({ names, country, locationType }: GeoCoderProps) => {
-  const fetches: { [key: string]: string } = {};
+const GeoCoder = connect(({names, country, locationType}: GeoCoderProps) => {
+  const fetches: {[key: string]: string} = {};
   for (const name of names) {
     fetches[md5(name)] =
       `${baseURL}${encodeURIComponent(name)}.json?` +
@@ -110,7 +110,7 @@ const GeoCoder = connect(({ names, country, locationType }: GeoCoderProps) => {
       name,
       fetchState: (props as any)[md5(name)] as PromiseState<GeoCodingResult>,
     })),
-    props.delimiter
+    props.delimiter,
   );
   return (
     <TextArea

@@ -1,9 +1,9 @@
 import React from 'react';
-import { InputGroup, Button, Intent, Tooltip } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
+import {InputGroup, Button, Intent, Tooltip} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
 import styled from '@emotion/styled';
-import { SPREADSHEET_KEY_RE } from './constants';
-import { Away } from '../core';
+import {SPREADSHEET_KEY_RE} from './constants';
+import {Away} from '../core';
 
 const StyledInputGroup = styled(InputGroup)`
   max-width: 50em;
@@ -36,7 +36,7 @@ export default class SpreadsheetKeyExtractor extends React.Component<{}, State> 
 
   private handleChange = () => {
     if (!this.ref) return;
-    const { value } = this.ref;
+    const {value} = this.ref;
     const m = spreadsheetKeyRegExp.exec(value);
     this.setState({
       spreadsheetKey: m ? m[0] : null,
@@ -45,12 +45,12 @@ export default class SpreadsheetKeyExtractor extends React.Component<{}, State> 
   };
 
   render() {
-    const { spreadsheetKey, invalid } = this.state;
+    const {spreadsheetKey, invalid} = this.state;
     const items = [
       <li key="input">
         <span>Copy the link to your spreadsheet and paste it here:</span>
         <StyledInputGroup
-          inputRef={ref => (this.ref = ref)}
+          inputRef={(ref) => (this.ref = ref)}
           leftIcon={IconNames.LINK}
           rightElement={
             invalid ? <InvalidInputIcon /> : spreadsheetKey ? <ValidInputIcon /> : undefined
@@ -68,7 +68,7 @@ export default class SpreadsheetKeyExtractor extends React.Component<{}, State> 
           <Away href={`/${spreadsheetKey}`}>
             {`${document.location.protocol}//${document.location.host}/${spreadsheetKey}`}
           </Away>
-        </li>
+        </li>,
       );
     }
     return items;

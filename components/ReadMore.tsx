@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import * as React from 'react';
-import { Card, Colors } from '@blueprintjs/core';
-import { Elevation } from '@blueprintjs/core';
+import {Card, Colors} from '@blueprintjs/core';
+import {Elevation} from '@blueprintjs/core';
 
 const MoreContent = styled(Card)`
   margin-top: 1em;
@@ -18,7 +18,7 @@ export default class ReadMore extends React.Component {
   state = {
     isOpen: false,
   };
-  handleClick = () => this.setState({ isOpen: true });
+  handleClick = () => this.setState({isOpen: true});
   render() {
     return this.state.isOpen ? (
       <MoreContent elevation={Elevation.TWO}>{this.props.children}</MoreContent>

@@ -1,4 +1,4 @@
-import { Config, ConfigPropName } from './types';
+import {Config, ConfigPropName} from './types';
 
 export const DEFAULT_MAP_STYLE_LIGHT = process.env.NEXT_PUBLIC_MapboxMapStyle_Light;
 export const DEFAULT_MAP_STYLE_DARK = process.env.NEXT_PUBLIC_MapboxMapStyle_Dark;

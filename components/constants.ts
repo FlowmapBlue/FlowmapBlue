@@ -1,5 +1,5 @@
 import md5 from 'blueimp-md5';
-import { UrlObject } from 'url';
+import {UrlObject} from 'url';
 
 export const DEFAULT_FLOWS_SHEET = 'flows';
 export const SPREADSHEET_KEY_RE = '[a-zA-Z0-9-_]{44}';
@@ -11,7 +11,7 @@ export const makeGSheetsMapUrl = (
   spreadSheetKey: string,
   flowsSheetName: string | undefined,
   embed: boolean | undefined,
-  queryParams?: Record<string, string | string[] | undefined>
+  queryParams?: Record<string, string | string[] | undefined>,
 ): UrlObject => {
   const flowsSheetKey =
     flowsSheetName && flowsSheetName !== DEFAULT_FLOWS_SHEET
@@ -24,7 +24,7 @@ export const makeGSheetsMapUrl = (
     query: {
       ...queryParams,
       id: spreadSheetKey,
-      ...(flowsSheetKey ? { sheet: flowsSheetKey } : {}),
+      ...(flowsSheetKey ? {sheet: flowsSheetKey} : {}),
     },
   };
 };

@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import styled from '@emotion/styled';
-import { scaleLinear, scaleTime } from 'd3-scale';
-import { max } from 'd3-array';
-import { EventManager } from 'mjolnir.js';
+import {scaleLinear, scaleTime} from 'd3-scale';
+import {max} from 'd3-array';
+import {EventManager} from 'mjolnir.js';
 import PlayControl from './PlayControl';
-import { Colors } from '@blueprintjs/core';
-import { useMeasure, useThrottle } from 'react-use';
-import { areRangesEqual, tickMultiFormat, TimeGranularity } from './time';
-import { CountByTime } from './types';
-import { ColorScheme } from './colors';
-import { hcl } from 'd3-color';
+import {Colors} from '@blueprintjs/core';
+import {useMeasure, useThrottle} from 'react-use';
+import {areRangesEqual, tickMultiFormat, TimeGranularity} from './time';
+import {CountByTime} from './types';
+import {ColorScheme} from './colors';
+import {hcl} from 'd3-color';
 
 interface Props {
   selectedRange: [Date, Date];
@@ -47,7 +47,7 @@ const MeasureTarget = styled.div({
   overflow: 'hidden',
 });
 
-const TimelineSvg = styled.svg<{ darkMode: boolean }>((props) => ({
+const TimelineSvg = styled.svg<{darkMode: boolean}>((props) => ({
   cursor: 'pointer',
   backgroundColor: props.darkMode ? Colors.DARK_GRAY4 : Colors.LIGHT_GRAY4,
 }));
@@ -58,7 +58,7 @@ const OuterRect = styled.rect({
   stroke: 'none',
 });
 
-const HandleOuter = styled.g<{ darkMode: boolean }>((props) => ({
+const HandleOuter = styled.g<{darkMode: boolean}>((props) => ({
   cursor: 'ew-resize',
   '& > path': {
     stroke: Colors.DARK_GRAY1,
@@ -95,13 +95,13 @@ const AxisPath = styled.path({
   shapeRendering: 'crispEdges',
 } as any);
 
-const TickText = styled.text<{ darkMode: boolean }>((props) => ({
+const TickText = styled.text<{darkMode: boolean}>((props) => ({
   fill: props.darkMode ? Colors.LIGHT_GRAY1 : Colors.DARK_GRAY1,
   fontSize: 10,
   textAnchor: 'start',
 }));
 
-const Bar = styled.rect<{ darkMode: boolean }>((props) => ({
+const Bar = styled.rect<{darkMode: boolean}>((props) => ({
   fill: props.darkMode ? Colors.LIGHT_GRAY1 : ColorScheme.primary,
   stroke: props.darkMode ? Colors.GRAY4 : hcl(ColorScheme.primary).darker().toString(),
 }));
@@ -122,9 +122,9 @@ interface HandleProps {
   onMove: (pos: number, side: Side) => void;
 }
 const TimelineHandle: React.FC<HandleProps> = (props) => {
-  const { width, height, side, darkMode, onMove } = props;
+  const {width, height, side, darkMode, onMove} = props;
   const handleMoveRef = useRef<any>();
-  handleMoveRef.current = ({ center }: any) => {
+  handleMoveRef.current = ({center}: any) => {
     onMove(center.x, side);
   };
   const ref = useRef<SVGRectElement>(null);
@@ -170,15 +170,8 @@ interface TimelineChartProps extends Props {
 type MoveSideHandler = (pos: number, side: Side) => void;
 
 const TimelineChart: React.FC<TimelineChartProps> = (props) => {
-  const {
-    width,
-    extent,
-    selectedRange,
-    timeGranularity,
-    totalCountsByTime,
-    darkMode,
-    onChange,
-  } = props;
+  const {width, extent, selectedRange, timeGranularity, totalCountsByTime, darkMode, onChange} =
+    props;
 
   const handleWidth = 10;
   const handleHGap = 10;
@@ -197,9 +190,9 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   const selectedRangeRectRef = useRef<SVGRectElement>(null);
 
   const mousePosition = (absPos: number) => {
-    const { current } = svgRef;
+    const {current} = svgRef;
     if (current != null) {
-      const { left } = current.getBoundingClientRect();
+      const {left} = current.getBoundingClientRect();
       return absPos - left - margin.left;
     }
     return undefined;
@@ -212,7 +205,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   };
 
   const handleMoveRef = useRef<any>();
-  handleMoveRef.current = ({ center }: any) => {
+  handleMoveRef.current = ({center}: any) => {
     if (offset == null) {
       const pos = mousePosition(center.x);
       if (pos != null) {
@@ -224,7 +217,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
     } else {
       let nextStart = timeFromPos(center.x + offset);
       if (nextStart) {
-        const { interval } = timeGranularity;
+        const {interval} = timeGranularity;
         nextStart = interval.round(nextStart);
         const length = (interval as any).count(selectedRange[0], selectedRange[1]);
         let nextEnd = interval.offset(nextStart, length);
@@ -253,7 +246,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   const handleClick = (evt: any) => handleClickRef.current(evt);
 
   const handlePanStartRef = useRef<any>();
-  handlePanStartRef.current = ({ center }: any) => {
+  handlePanStartRef.current = ({center}: any) => {
     let start = timeFromPos(center.x);
     if (start) {
       start = timeGranularity.interval.round(start);
@@ -266,7 +259,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   const handlePanStart = (evt: any) => handlePanStartRef.current(evt);
 
   const handlePanMoveRef = useRef<any>();
-  handlePanMoveRef.current = ({ center }: any) => {
+  handlePanMoveRef.current = ({center}: any) => {
     let end = timeFromPos(center.x);
     if (panStart && end) {
       end = timeGranularity.interval.round(end);
@@ -322,8 +315,8 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   const ticks = timeScale.ticks(
     Math.min(
       (timeGranularity.interval as any).count(extent[0], extent[1]),
-      chartWidth / minLabelWidth
-    )
+      chartWidth / minLabelWidth,
+    ),
   );
 
   const totalCountScale = scaleLinear()
@@ -338,25 +331,26 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
           const xPos = timeScale(t);
           if (xPos == null) return null;
           return (
-              <g key={i} transform={`translate(${xPos},${0})`}>
-                <TickLine y1={0} y2={TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT} />
-                {xPos < chartWidth &&
+            <g key={i} transform={`translate(${xPos},${0})`}>
+              <TickLine y1={0} y2={TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT} />
+              {xPos < chartWidth && (
                 <TickText darkMode={darkMode} x={3} y={12}>
                   {
                     // timeGranularity.format(t)
                     tickLabelFormat(t)
                   }
                 </TickText>
-                }
-              </g>
-          )
+              )}
+            </g>
+          );
         })}
         <AxisPath d={`M0,0 ${chartWidth},0`} />
         <AxisPath
           transform={`translate(0,${TOTAL_COUNT_CHART_HEIGHT + AXIS_AREA_HEIGHT})`}
-          d={`M0,0 ${chartWidth},0`} />
+          d={`M0,0 ${chartWidth},0`}
+        />
         <g transform={`translate(0,${AXIS_AREA_HEIGHT})`}>
-          {totalCountsByTime.map(({ time, count }) => (
+          {totalCountsByTime.map(({time, count}) => (
             <Bar
               darkMode={darkMode}
               key={time.getTime()}
@@ -364,7 +358,7 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
               y={TOTAL_COUNT_CHART_HEIGHT - totalCountScale(count)!}
               width={Math.max(
                 timeScale(timeGranularity.interval.offset(time))! - timeScale(time)! - 1,
-                1
+                1,
               )}
               height={totalCountScale(count)}
             />
@@ -405,13 +399,13 @@ const TimelineChart: React.FC<TimelineChartProps> = (props) => {
 
 const Timeline: React.FC<Props> = (props) => {
   const [measureRef, dimensions] = useMeasure();
-  const { extent, selectedRange, timeGranularity, darkMode, onChange } = props;
+  const {extent, selectedRange, timeGranularity, darkMode, onChange} = props;
   const [internalRange, setInternalRange] = useState<[Date, Date]>(selectedRange);
   const throttledRange = useThrottle(internalRange, 100);
   const onChangeRef = useRef<(range: [Date, Date]) => void>();
   onChangeRef.current = (range) => onChange(range);
   useEffect(() => {
-    const { current } = onChangeRef;
+    const {current} = onChangeRef;
     if (current) current(throttledRange);
   }, [throttledRange, onChangeRef]);
 
@@ -424,7 +418,7 @@ const Timeline: React.FC<Props> = (props) => {
   const [isPlaying, setPlaying] = useState(false);
 
   const handlePlay = () => {
-    const { interval } = timeGranularity;
+    const {interval} = timeGranularity;
     if (selectedRange[1] >= extent[1]) {
       const length = (interval as any).count(selectedRange[0], selectedRange[1]);
       setInternalRange([extent[0], interval.offset(extent[0], length)]);
@@ -433,7 +427,7 @@ const Timeline: React.FC<Props> = (props) => {
   };
 
   const handlePlayAdvance = (start: Date) => {
-    const { interval } = timeGranularity;
+    const {interval} = timeGranularity;
     const length = (interval as any).count(selectedRange[0], selectedRange[1]);
     const end = interval.offset(start, length);
     if (end >= extent[1]) {

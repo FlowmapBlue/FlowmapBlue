@@ -1,13 +1,13 @@
-import { ItemRenderer, Select } from '@blueprintjs/select';
-import { Button, Colors, Intent, MenuItem } from '@blueprintjs/core';
+import {ItemRenderer, Select} from '@blueprintjs/select';
+import {Button, Colors, Intent, MenuItem} from '@blueprintjs/core';
 import styled from '@emotion/styled';
-import React, { FC, useLayoutEffect, useMemo, useRef } from 'react';
-import { IconNames } from '@blueprintjs/icons';
-import { scaleLinear, scaleSequential } from 'd3-scale';
-import { interpolateRgbBasis } from 'd3-interpolate';
-import { ClassNames } from '@emotion/core';
-import { COLOR_SCHEMES, DEFAULT_COLOR_SCHEME } from './colors';
-import { Row } from './Boxes';
+import React, {FC, useLayoutEffect, useMemo, useRef} from 'react';
+import {IconNames} from '@blueprintjs/icons';
+import {scaleLinear, scaleSequential} from 'd3-scale';
+import {interpolateRgbBasis} from 'd3-interpolate';
+import {ClassNames} from '@emotion/core';
+import {COLOR_SCHEMES, DEFAULT_COLOR_SCHEME} from './colors';
+import {Row} from './Boxes';
 
 export interface Props {
   selected?: string;
@@ -32,17 +32,17 @@ const ColorRamp: React.FC<{
   width?: number;
   height?: number;
   reverse?: boolean;
-}> = props => {
-  const { colorScheme, width = 60, height = 13, reverse } = props;
+}> = (props) => {
+  const {colorScheme, width = 60, height = 13, reverse} = props;
 
   const colorScale = scaleSequential(
-    interpolateRgbBasis(COLOR_SCHEMES[colorScheme] || DEFAULT_COLOR_SCHEME)
+    interpolateRgbBasis(COLOR_SCHEMES[colorScheme] || DEFAULT_COLOR_SCHEME),
   );
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const xScale = useMemo(() => scaleLinear().range([0, width]), [width]);
 
   useLayoutEffect(() => {
-    const { current } = canvasRef;
+    const {current} = canvasRef;
     if (current) {
       const ctx = current.getContext('2d');
       if (ctx) {
@@ -62,8 +62,8 @@ const ColorRamp: React.FC<{
   );
 };
 
-const ColorSchemeSelector: FC<Props> = ({ selected = 'Default', reverse, onChange }) => {
-  const itemRenderer: ItemRenderer<string> = (colorScheme, { modifiers, handleClick }) => {
+const ColorSchemeSelector: FC<Props> = ({selected = 'Default', reverse, onChange}) => {
+  const itemRenderer: ItemRenderer<string> = (colorScheme, {modifiers, handleClick}) => {
     if (!modifiers.matchesPredicate) {
       return null;
     }
@@ -81,7 +81,7 @@ const ColorSchemeSelector: FC<Props> = ({ selected = 'Default', reverse, onChang
 
   return (
     <ClassNames>
-      {({ css }) => (
+      {({css}) => (
         <Select<string>
           items={Object.keys(COLOR_SCHEMES)}
           filterable={false}

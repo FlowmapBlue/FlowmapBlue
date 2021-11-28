@@ -12,17 +12,26 @@ import GreaterAucklandLogo from './public/images/greater-auckland-logo.svg';
 // import MoeLogo from '../public/images/moe-logo.svg';
 
 export const USED_BY_LOGOS = [
-  { name: 'MTA', img: MTALogo, url: 'https://new.mta.info', width: 50 },
-  { name: 'Tfl', img: TflLogo, url: 'https://tfl.gov.uk' },
-  { name: 'Aecom', img: AecomLogo, url: 'https://aecom.com' },
+  {name: 'MTA', img: MTALogo, url: 'https://new.mta.info', width: 50},
+  {name: 'Tfl', img: TflLogo, url: 'https://tfl.gov.uk'},
+  {name: 'Aecom', img: AecomLogo, url: 'https://aecom.com'},
   {
     name: 'Eurocontrol',
     img: EurocontrolLogo,
     url: 'https://ansperformance.eu/study/daily_country_flows_2020/',
     width: 50,
   },
-  { name: 'ElPaso', img: ElPasoLogo, url: 'https://www.elpasotexas.gov', width: 50 },
-  { name: 'OpenDataZuerich', img: OpenDataZuerichLogo, url: 'https://data.stadt-zuerich.ch' },
+  {
+    name: 'ElPaso',
+    img: ElPasoLogo,
+    url: 'https://www.elpasotexas.gov',
+    width: 50,
+  },
+  {
+    name: 'OpenDataZuerich',
+    img: OpenDataZuerichLogo,
+    url: 'https://data.stadt-zuerich.ch',
+  },
   {
     name: 'Trondheim',
     img: TrondheimLogo,
@@ -39,7 +48,7 @@ export const USED_BY_LOGOS = [
     url: 'https://www.transport.govt.nz',
   },
   // {name:'Moe', img: MoeLogo, url: "https://www.education.govt.nz"},
-  { name: 'KingCounty', img: KingCountyLogo, url: 'https://kingcounty.gov' },
+  {name: 'KingCounty', img: KingCountyLogo, url: 'https://kingcounty.gov'},
   {
     name: 'GreaterAuckland',
     img: GreaterAucklandLogo,

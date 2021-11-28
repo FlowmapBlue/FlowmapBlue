@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import sheetFetcher, { makeSheetQueryUrl } from './sheetFetcher';
+import {useEffect, useState} from 'react';
+import sheetFetcher, {makeSheetQueryUrl} from './sheetFetcher';
 import FlowMap, {
   AppToaster,
   ConfigProp,
@@ -15,14 +15,14 @@ import FlowMap, {
 } from '../core';
 import Head from 'next/head';
 import sendEvent from './ga';
-import { useAsync } from 'react-use';
-import { csvParse } from 'd3-dsv';
-import { Intent } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
-import { compose, withProps } from 'recompose';
+import {useAsync} from 'react-use';
+import {csvParse} from 'd3-dsv';
+import {Intent} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
+import {compose, withProps} from 'recompose';
 import styled from '@emotion/styled';
-import { useRouter } from 'next/router';
-import { DEFAULT_FLOWS_SHEET, getFlowsSheetKey, makeGSheetsMapUrl } from './constants';
+import {useRouter} from 'next/router';
+import {DEFAULT_FLOWS_SHEET, getFlowsSheetKey, makeGSheetsMapUrl} from './constants';
 
 interface Props {
   spreadSheetKey: string;
@@ -36,18 +36,18 @@ const ToastContent = styled.div`
 
 const FlowMapWithData = compose<any, any>(
   sheetFetcher('json')<any>(
-    ({ spreadSheetKey, config, flowsSheet = DEFAULT_FLOWS_SHEET }: FlowMapProps) => ({
+    ({spreadSheetKey, config, flowsSheet = DEFAULT_FLOWS_SHEET}: FlowMapProps) => ({
       locationsFetch: {
         url: makeSheetQueryUrl(spreadSheetKey!, 'locations', 'SELECT A,B,C,D', 'json'),
         then: (rows: any[]) => ({
           value: rows.map(
-            ({ id, name, lon, lat }: any) =>
+            ({id, name, lon, lat}: any) =>
               ({
                 id: `${id}`,
                 name: name ?? id,
                 lon: +lon,
                 lat: +lat,
-              } as Location)
+              } as Location),
           ),
         }),
       } as any,
@@ -58,7 +58,7 @@ const FlowMapWithData = compose<any, any>(
           value: prepareFlows(rows),
         }),
       } as any,
-    })
+    }),
   ),
   withProps((props: any) => ({
     locationsFetch: {
@@ -69,10 +69,10 @@ const FlowMapWithData = compose<any, any>(
       ...props.flowsFetch,
       loading: props.flowsFetch.pending || props.flowsFetch.refreshing,
     },
-  }))
+  })),
 )(FlowMap as any);
 
-const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed }) => {
+const GSheetsFlowMap: React.FC<Props> = ({spreadSheetKey, flowsSheetKey, embed}) => {
   const url = makeSheetQueryUrl(spreadSheetKey, 'properties', 'SELECT A,B', 'csv');
   const [flowsSheet, setFlowsSheet] = useState<string>();
   const router = useRouter();
@@ -87,7 +87,7 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed 
   const configFetch = useAsync(async () => {
     const response = await fetch(url);
     const rows = csvParse(await response.text()) as ConfigProp[];
-    const configProps = { ...DEFAULT_CONFIG };
+    const configProps = {...DEFAULT_CONFIG};
     for (const prop of rows) {
       if (prop.value != null && `${prop.value}`.length > 0) {
         configProps[prop.property] = prop.value;
@@ -96,7 +96,7 @@ const GSheetsFlowMap: React.FC<Props> = ({ spreadSheetKey, flowsSheetKey, embed 
     sendEvent(
       `${spreadSheetKey} "${configProps[ConfigPropName.TITLE] || 'Untitled'}"`,
       `Load config`,
-      `Load config "${configProps[ConfigPropName.TITLE] || 'Untitled'}"`
+      `Load config "${configProps[ConfigPropName.TITLE] || 'Untitled'}"`,
     );
 
     const flowsSheets = getFlowsSheets(configProps);

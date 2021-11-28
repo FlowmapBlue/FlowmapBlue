@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react';
+import React, {ReactNode} from 'react';
 import checkWebglSupport from './checkWebglSupport';
 import NoScrollContainer from './NoScrollContainer';
-import { Absolute } from './Boxes';
+import {Absolute} from './Boxes';
 import Logo from './Logo';
-import { ColorScheme, Fallback } from './index';
+import {ColorScheme, Fallback} from './index';
 import styled from '@emotion/styled';
 
 interface Props {
@@ -29,7 +29,7 @@ const LogoOuter = styled(Absolute)`
   }
 `;
 
-const MapContainer: React.FC<Props> = ({ embed, children }) => (
+const MapContainer: React.FC<Props> = ({embed, children}) => (
   <NoScrollContainer>
     {supportsWebGl ? (
       <>

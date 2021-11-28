@@ -50,7 +50,7 @@ export interface LocationTotals {
 }
 
 export function isLocationCluster(l: Location | Cluster.Cluster): l is Cluster.Cluster {
-  const { zoom } = l as Cluster.Cluster;
+  const {zoom} = l as Cluster.Cluster;
   return zoom !== undefined;
 }
 

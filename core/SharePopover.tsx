@@ -1,17 +1,17 @@
-import { Button, Classes, Popover, Position, Switch, Tab, Tabs } from '@blueprintjs/core';
-import { Column } from './Boxes';
+import {Button, Classes, Popover, Position, Switch, Tab, Tabs} from '@blueprintjs/core';
+import {Column} from './Boxes';
 import * as React from 'react';
 import styled from '@emotion/styled';
-import { IconNames } from '@blueprintjs/icons';
-import { FC, useState } from 'react';
-import { useRouter } from 'next/router';
+import {IconNames} from '@blueprintjs/icons';
+import {FC, useState} from 'react';
+import {useRouter} from 'next/router';
 
 const Outer = styled(Column)`
   padding: 10px 20px 10px 20px;
   font-size: 12px;
 `;
 
-const StyledTextArea = styled.textarea<{ multiline?: boolean }>(
+const StyledTextArea = styled.textarea<{multiline?: boolean}>(
   (props) => `
   @media (min-width: 500px) {
      width: 30em;
@@ -20,7 +20,7 @@ const StyledTextArea = styled.textarea<{ multiline?: boolean }>(
   min-height: ${props.multiline ? '10em;' : '6em'};
   overflow: hidden;
   font-family: monospace;
-`
+`,
 );
 
 const Group = styled.div`
@@ -33,7 +33,7 @@ const CopyButton = styled(Button)`
   right: 10px;
 `;
 
-const CopyInput: FC<{ text: string; embed?: boolean }> = ({ text, embed }) => {
+const CopyInput: FC<{text: string; embed?: boolean}> = ({text, embed}) => {
   const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
   const handleCopyToClipboard = () => {
     const input = textAreaRef.current;
@@ -62,7 +62,7 @@ const CopyInput: FC<{ text: string; embed?: boolean }> = ({ text, embed }) => {
   );
 };
 
-const SharePopover: React.FC<{}> = ({ children }) => {
+const SharePopover: React.FC<{}> = ({children}) => {
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState('url');
   const [withState, setWithState] = useState(false);

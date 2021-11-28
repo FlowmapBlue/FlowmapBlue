@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import React, {FC} from 'react';
 import useFetch from 'react-fetch-hook';
-import { PromiseState } from 'react-refetch';
+import {PromiseState} from 'react-refetch';
 import FlowMap, {
   ConfigPropName,
   DEFAULT_CONFIG,
@@ -8,10 +8,10 @@ import FlowMap, {
   MapContainer,
   prepareFlows,
 } from '../core';
-import { csvParse } from 'd3-dsv';
+import {csvParse} from 'd3-dsv';
 import ErrorFallback from '../components/ErrorFallback';
-import { useMemo } from 'react';
-import { useRouter } from 'next/router';
+import {useMemo} from 'react';
+import {useRouter} from 'next/router';
 
 type Props = {
   locationsUrl: string;
@@ -19,9 +19,9 @@ type Props = {
   params: Record<string, string | string[] | undefined>;
 };
 const FromUrlFlowMap: FC<Props> = (props) => {
-  const { locationsUrl, flowsUrl, params } = props;
+  const {locationsUrl, flowsUrl, params} = props;
   const config = useMemo(() => {
-    const config = { ...DEFAULT_CONFIG };
+    const config = {...DEFAULT_CONFIG};
     for (const prop of Object.values(ConfigPropName)) {
       const val = params[prop];
       if (typeof val === 'string' && val.length > 0) {
@@ -37,7 +37,7 @@ const FromUrlFlowMap: FC<Props> = (props) => {
         csvParse(text, (row: any) => ({
           ...row,
           count: +row.count,
-        }))
+        })),
       ),
   });
   const fetchLocations = useFetch(locationsUrl, {
@@ -47,7 +47,7 @@ const FromUrlFlowMap: FC<Props> = (props) => {
           ...row,
           lat: +row.lat,
           lon: +row.lon,
-        }))
+        })),
       ),
   });
 
@@ -79,7 +79,7 @@ const FromUrlFlowMap: FC<Props> = (props) => {
 
 export default function FromUrlFlowMapPage() {
   const router = useRouter();
-  const { locations, flows, ...params } = router.query;
+  const {locations, flows, ...params} = router.query;
   return typeof locations === 'string' && typeof flows === 'string' ? (
     <FromUrlFlowMap locationsUrl={locations} flowsUrl={flows} params={params} />
   ) : null;

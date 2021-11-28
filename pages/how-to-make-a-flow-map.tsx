@@ -1,5 +1,5 @@
 import Layout from '../core/Layout';
-import { Away } from '../core';
+import {Away} from '../core';
 import ReadMore from '../components/ReadMore';
 import Link from 'next/link';
 import Head from 'next/head';

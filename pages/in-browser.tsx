@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import styled from '@emotion/styled';
-import { Button, H5, Intent, TextArea } from '@blueprintjs/core';
-import { IconNames } from '@blueprintjs/icons';
-import { dsvFormat } from 'd3-dsv';
-import FlowMap, { DEFAULT_CONFIG, Flow, Location, MapContainer, prepareFlows } from '../core';
-import { PromiseState } from 'react-refetch';
+import {Button, H5, Intent, TextArea} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
+import {dsvFormat} from 'd3-dsv';
+import FlowMap, {DEFAULT_CONFIG, Flow, Location, MapContainer, prepareFlows} from '../core';
+import {PromiseState} from 'react-refetch';
 import Layout from '../core/Layout';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import md5 from 'blueimp-md5';
 
 interface DataProps {
@@ -15,7 +15,7 @@ interface DataProps {
 }
 
 const FlowMapContainer = (props: DataProps) => {
-  const { flows, locations } = props;
+  const {flows, locations} = props;
   return (
     <MapContainer>
       <FlowMap
@@ -55,7 +55,7 @@ const InBrowserFlowMap = () => {
     `id,name,lat,lon
 1,New York,40.713543,-74.011219
 2,London,51.507425,-0.127738
-3,Rio de Janeiro,-22.906241,-43.180244`
+3,Rio de Janeiro,-22.906241,-43.180244`,
   );
   const [flowsCsv, setFlowsCsv] = useState(
     `origin,dest,count
@@ -64,10 +64,10 @@ const InBrowserFlowMap = () => {
 3,1,50
 2,3,40
 1,3,22
-3,2,42`
+3,2,42`,
   );
   const router = useRouter();
-  const { hash } = router.query;
+  const {hash} = router.query;
   const [data, setData] = useState<DataProps>();
   const handleVisualize = () => {
     const data = {
