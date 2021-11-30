@@ -5,7 +5,7 @@
 [Flowmap.blue](http://flowmap.blue/) is a free tool for representing aggregated numbers of movements between geographic locations as flow maps. It is used to visualize urban mobility, commuting behavior, bus, subway and air travels, bicycle sharing, human and bird migration, refugee flows, freight transportation, trade, supply chains, scientific collaboration, epidemiological and historical data and many other topics.
 
 
-<a href=https://flowmap.blue/><img src=https://user-images.githubusercontent.com/351828/80291366-3767c300-874d-11ea-9a73-b1f76e0ed554.png width=800>
+<a href=https://flowmap.blue/><img src=https://user-images.githubusercontent.com/351828/144013336-53bad978-74d1-4d39-be94-a0bd7a4f4f90.jpg width=400>
 </a>
 
 
