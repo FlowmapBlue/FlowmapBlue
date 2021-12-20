@@ -13,12 +13,13 @@ import {
 } from 'react';
 import {alea} from 'seedrandom';
 import {_MapContext as MapContext, StaticMap} from 'react-map-gl';
-import FlowMapLayer, {
+import {
+  FlowMapLayer,
   FlowLayerPickingInfo,
   FlowPickingInfo,
   LocationPickingInfo,
   PickingType,
-} from '@flowmap.gl/core';
+} from '@flowmap.gl/layers';
 import {Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent} from '@blueprintjs/core';
 import {getViewStateForLocations, LocationTotalsLegend} from '@flowmap.gl/react';
 import WebMercatorViewport from '@math.gl/web-mercator';
@@ -560,42 +561,31 @@ const FlowMap: React.FC<Props> = (props) => {
     }
   };
 
-  const handleHover = (info: FlowLayerPickingInfo) => {
+  const handleHover = (info: FlowLayerPickingInfo<Location, Flow>) => {
+    if (!info?.object) {
+      highlight(undefined);
+      cancelHighlightDebounced();
+      hideTooltip();
+      return;
+    }
     const {type, object, x, y} = info;
     switch (type) {
       case PickingType.FLOW: {
-        if (object) {
-          highlight({
-            type: HighlightType.FLOW,
-            flow: object,
-          });
-          cancelHighlightDebounced();
-          showFlowTooltip([x, y], info as FlowPickingInfo);
-        } else {
-          highlight(undefined);
-          cancelHighlightDebounced();
-          hideTooltip();
-        }
+        highlight({
+          type: HighlightType.FLOW,
+          flow: object,
+        });
+        cancelHighlightDebounced();
+        showFlowTooltip([x, y], info as FlowPickingInfo);
         break;
       }
       case PickingType.LOCATION: {
-        if (object) {
-          highlightDebounced({
-            type: HighlightType.LOCATION,
-            locationId: getLocationId!(object),
-          });
-          showLocationTooltip(info as LocationPickingInfo);
-        } else {
-          highlight(undefined);
-          cancelHighlightDebounced();
-          hideTooltip();
-        }
+        highlightDebounced({
+          type: HighlightType.LOCATION,
+          locationId: getLocationId!(object),
+        });
+        showLocationTooltip(info as LocationPickingInfo);
         break;
-      }
-      default: {
-        highlight(undefined);
-        cancelHighlightDebounced();
-        hideTooltip();
       }
     }
   };
@@ -826,53 +816,82 @@ const FlowMap: React.FC<Props> = (props) => {
       const highlight = getHighlightForZoom();
       layers.push(
         new FlowMapLayer({
-          id,
-          animate: animationEnabled,
-          animationCurrentTime: time,
-          diffMode: getDiffMode(state, props),
-          colors: getFlowMapColors(state, props),
-          locations,
-          flows,
-          getFlowColor: (f: Flow) => f.color ?? undefined,
-          showOnlyTopFlows: NUMBER_OF_FLOWS_TO_DISPLAY,
-          getLocationCentroid,
-          getFlowMagnitude,
-          getFlowOriginId,
-          getFlowDestId,
-          getLocationId,
-          getLocationTotalIn: (loc) => locationTotals?.get(loc.id)?.incoming || 0,
-          getLocationTotalOut: (loc) => locationTotals?.get(loc.id)?.outgoing || 0,
-          getLocationTotalWithin: (loc) => locationTotals?.get(loc.id)?.within || 0,
-          getAnimatedFlowLineStaggering: (d: Flow) =>
-            // @ts-ignore
-            new alea(`${d.origin}-${d.dest}`)(),
-          showTotals: true,
-          maxLocationCircleSize: getMaxLocationCircleSize(state, props),
-          maxFlowThickness: animationEnabled ? 18 : 12,
-          ...(!adaptiveScalesEnabled && {
-            flowMagnitudeExtent: getFlowMagnitudeExtent(state, props),
-          }),
-          // locationTotalsExtent needs to be always calculated, because locations
-          // are not filtered by the viewport (e.g. the connected ones need to be included).
-          // Also, the totals cannot be correctly calculated from the flows passed to the layer.
-          locationTotalsExtent: getLocationTotalsExtent(state, props),
-          // selectedLocationIds: getExpandedSelection(state, props),
-          highlightedLocationId:
-            highlight && highlight.type === HighlightType.LOCATION
-              ? highlight.locationId
-              : undefined,
-          highlightedFlow:
-            highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
+          data: {
+            locations: locationsFetch.value,
+            flows: flowsFetch.value,
+          },
           pickable: true,
+          darkMode: darkMode,
+          // diffMode: getDiffMode(state, props),
+          colorScheme: state.colorSchemeKey,
+          fadeAmount: state.fadeAmount,
+          fadeEnabled: state.fadeEnabled,
+          locationTotalsEnabled: state.locationTotalsEnabled,
+          animationEnabled: state.animationEnabled,
+          clusteringEnabled: state.clusteringEnabled,
+          clusteringAuto: state.clusteringAuto,
+          clusteringLevel: state.manualClusterZoom,
+          adaptiveScalesEnabled: state.adaptiveScalesEnabled,
+
+          getLocationId: (loc: Location) => loc.id,
+          getLocationCentroid: (loc: Location) => [loc.lon, loc.lat],
+          getFlowOriginId: (flow: Flow) => flow.origin,
+          getFlowDestId: (flow: Flow) => flow.dest,
+          getFlowMagnitude: (flow: Flow) => flow.count,
+          getLocationName: (loc: Location) => loc.name,
+          onHover: (info: FlowLayerPickingInfo) => console.log('hover!', info?.type, info?.object),
+          onClick: (info: FlowLayerPickingInfo) => console.log('clicked', info.type, info.object),
           ...(!mapDrawingEnabled && {
             onHover: handleHover,
             onClick: handleClick as any,
           }),
-          visible: true,
-          updateTriggers: {
-            onHover: handleHover, // to avoid stale closure in the handler
-            onClick: handleClick,
-          } as any,
+
+          // id,
+          // animate: animationEnabled,
+          // animationCurrentTime: time,
+          // colors: getFlowMapColors(state, props),
+          // locations,
+          // flows,
+          // getFlowColor: (f: Flow) => f.color ?? undefined,
+          // showOnlyTopFlows: NUMBER_OF_FLOWS_TO_DISPLAY,
+          // getLocationCentroid,
+          // getFlowMagnitude,
+          // getFlowOriginId,
+          // getFlowDestId,
+          // getLocationId,
+          // getLocationTotalIn: (loc) => locationTotals?.get(loc.id)?.incoming || 0,
+          // getLocationTotalOut: (loc) => locationTotals?.get(loc.id)?.outgoing || 0,
+          // getLocationTotalWithin: (loc) => locationTotals?.get(loc.id)?.within || 0,
+          // getAnimatedFlowLineStaggering: (d: Flow) =>
+          //   // @ts-ignore
+          //   new alea(`${d.origin}-${d.dest}`)(),
+          // showTotals: true,
+          // maxLocationCircleSize: getMaxLocationCircleSize(state, props),
+          // maxFlowThickness: animationEnabled ? 18 : 12,
+          // ...(!adaptiveScalesEnabled && {
+          //   flowMagnitudeExtent: getFlowMagnitudeExtent(state, props),
+          // }),
+          // // locationTotalsExtent needs to be always calculated, because locations
+          // // are not filtered by the viewport (e.g. the connected ones need to be included).
+          // // Also, the totals cannot be correctly calculated from the flows passed to the layer.
+          // locationTotalsExtent: getLocationTotalsExtent(state, props),
+          // // selectedLocationIds: getExpandedSelection(state, props),
+          // highlightedLocationId:
+          //   highlight && highlight.type === HighlightType.LOCATION
+          //     ? highlight.locationId
+          //     : undefined,
+          // highlightedFlow:
+          //   highlight && highlight.type === HighlightType.FLOW ? highlight.flow : undefined,
+          // pickable: true,
+          // ...(!mapDrawingEnabled && {
+          //   onHover: handleHover,
+          //   onClick: handleClick as any,
+          // }),
+          // visible: true,
+          // updateTriggers: {
+          //   onHover: handleHover, // to avoid stale closure in the handler
+          //   onClick: handleClick,
+          // } as any,
         }),
       );
     }

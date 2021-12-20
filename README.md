@@ -20,7 +20,7 @@ or
     npm install
     
 
-Add `.env` file to the project root with a [Mapbox access token](https://www.mapbox.com/help/define-access-token/):
+Add `app/.env.local` file to the project root with a [Mapbox access token](https://www.mapbox.com/help/define-access-token/):
 
     NEXT_PUBLIC_MapboxAccessToken=Your_Own_Mapbox_Access_Token_Goes_Here
 

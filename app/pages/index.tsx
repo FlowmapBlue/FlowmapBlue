@@ -8,7 +8,7 @@ import {Button, Classes, Colors, Intent, Tag} from '@blueprintjs/core';
 import News from '../components/News';
 import ReactPlayer from 'react-player';
 import Layout from '../core/Layout';
-import {USED_BY_LOGOS} from '../used-by';
+import {USED_BY_LOGOS} from '../../used-by';
 import Gallery from '../components/Gallery';
 import Credits from '../components/Credits';
 

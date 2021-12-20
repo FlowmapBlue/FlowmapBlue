@@ -3,7 +3,7 @@ const path = require('path');
 const sharp = require('sharp');
 const puppeteer = require('puppeteer');
 const {examples, aspectRatio, screenshotSizes} = require('../examples');
-const OUTPUT_PATH = path.resolve(__dirname, '../public/screenshots/');
+const OUTPUT_PATH = path.resolve(__dirname, '../app/public/screenshots/');
 const APP_URL = 'http://localhost:3000';
 
 const PAD = 600;

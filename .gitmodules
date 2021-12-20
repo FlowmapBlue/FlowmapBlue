@@ -1,0 +1,3 @@
+[submodule "flowmap.gl"]
+	path = flowmap.gl
+	url = git@github.com:FlowmapBlue/flowmap.gl.git

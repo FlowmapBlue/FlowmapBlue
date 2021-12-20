@@ -1,15 +1,15 @@
-import MTALogo from './public/images/mta-logo.svg';
-import TflLogo from './public/images/Tfl-logo.svg';
-import AecomLogo from './public/images/aecom-logo-light.svg';
-import EurocontrolLogo from './public/images/eurocontrol-logo.svg';
-import ElPasoLogo from './public/images/city-of-el-paso-eptx.png';
-import OpenDataZuerichLogo from './public/images/stadtzurich-opendata-logo.svg';
-import TrondheimLogo from './public/images/trondheim-logo.svg';
-import UddLogo from './public/images/logo-udd-blanco.svg';
-import NZMinistryOfTransportLogo from './public/images/nz-minstry-of-transport-logo.svg';
-import KingCountyLogo from './public/images/KingCounty-logo.png';
-import GreaterAucklandLogo from './public/images/greater-auckland-logo.svg';
-// import MoeLogo from '../public/images/moe-logo.svg';
+import MTALogo from './app/public/images/mta-logo.svg';
+import TflLogo from './app/public/images/Tfl-logo.svg';
+import AecomLogo from './app/public/images/aecom-logo-light.svg';
+import EurocontrolLogo from './app/public/images/eurocontrol-logo.svg';
+import ElPasoLogo from './app/public/images/city-of-el-paso-eptx.png';
+import OpenDataZuerichLogo from './app/public/images/stadtzurich-opendata-logo.svg';
+import TrondheimLogo from './app/public/images/trondheim-logo.svg';
+import UddLogo from './app/public/images/logo-udd-blanco.svg';
+import NZMinistryOfTransportLogo from './app/public/images/nz-minstry-of-transport-logo.svg';
+import KingCountyLogo from './app/public/images/KingCounty-logo.png';
+import GreaterAucklandLogo from './app/public/images/greater-auckland-logo.svg';
+// import MoeLogo from '../app/public/images/moe-logo.svg';
 
 export const USED_BY_LOGOS = [
   {name: 'MTA', img: MTALogo, url: 'https://new.mta.info', width: 50},

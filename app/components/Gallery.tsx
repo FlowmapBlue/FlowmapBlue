@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import React, {useMemo} from 'react';
-import examplesConfig from '../examples.json';
+import examplesConfig from '../../examples.json';
 import styled from '@emotion/styled';
 import {Colors, Icon} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';

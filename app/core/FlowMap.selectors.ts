@@ -610,6 +610,7 @@ const _getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelec
 );
 
 const getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelectorCreator<
+  // @ts-ignore
   Set<string> | undefined
 >(
   // @ts-ignore

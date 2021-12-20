@@ -6,7 +6,7 @@ import {dsvFormat} from 'd3-dsv';
 import {ascending} from 'd3-array';
 import {connect, PromiseState} from 'react-refetch';
 import md5 from 'blueimp-md5';
-import COUNTRIES from '../countries.json';
+import COUNTRIES from '../../countries.json';
 import {AppToaster} from '../core';
 import Layout from '../core/Layout';
 import Head from 'next/head';
