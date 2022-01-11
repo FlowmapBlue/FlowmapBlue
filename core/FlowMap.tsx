@@ -1058,11 +1058,19 @@ const FlowMap: React.FC<Props> = (props) => {
                 </div>
               )}
               <div>
-                {'Data behind this map is in '}
-                <Away href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>
-                  this spreadsheet
-                </Away>
-                . You can <Link href="/">publish your own</Link> too.
+                {config[ConfigPropName.HIDE_DATA_LINK] !== 'yes' ? (
+                  <>
+                    {'Data behind this map is in '}
+                    <Away href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>
+                      this spreadsheet
+                    </Away>
+                    .
+                  </>
+                ) : (
+                  <>
+                    You can <Link href="/">publish your own map</Link> too.
+                  </>
+                )}
               </div>
 
               {totalFilteredCount != null && totalUnfilteredCount != null && (
