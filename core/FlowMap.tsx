@@ -1064,13 +1064,12 @@ const FlowMap: React.FC<Props> = (props) => {
                     <Away href={`https://docs.google.com/spreadsheets/d/${spreadSheetKey}`}>
                       this spreadsheet
                     </Away>
-                    .
+                    .{' '}
                   </>
-                ) : (
-                  <>
-                    You can <Link href="/">publish your own map</Link> too.
-                  </>
-                )}
+                ) : null}
+                <>
+                  You can <Link href="/">publish your own map</Link> too.
+                </>
               </div>
 
               {totalFilteredCount != null && totalUnfilteredCount != null && (
