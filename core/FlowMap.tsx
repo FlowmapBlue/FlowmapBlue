@@ -1065,11 +1065,11 @@ const FlowMap: React.FC<Props> = (props) => {
                       this spreadsheet
                     </Away>
                     .{' '}
+                    <>
+                      You can <Link href="/">publish your own map</Link> too.
+                    </>
                   </>
                 ) : null}
-                <>
-                  You can <Link href="/">publish your own map</Link> too.
-                </>
               </div>
 
               {totalFilteredCount != null && totalUnfilteredCount != null && (
