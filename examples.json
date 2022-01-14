@@ -309,6 +309,11 @@
       "query": "v=39.951751,-75.167605,12.51,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=DarkMint&f=50"
     },
     {
+      "key": "1hXJsxW_ZWD1sqth2iVhHGRtWH5P_IWtjTjkZRIrzTQk",
+      "name": "Mumbai Commuting 2018",
+      "query": "v=19.164517%2C72.991162%2C10.06%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Blues&f=50"
+    },
+    {
       "key": "1k-GPUBh334sXxKg3-bY-MAiH0wgiM7A6rE1px9T0hKA",
       "name": "World refugees 2017",
       "query": "v=27.125172,31.789959,3.19&a=0&b=1&c=1&d=1&lt=1&col=SunsetDark&f=30"
