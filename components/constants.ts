@@ -19,8 +19,8 @@ export const makeGSheetsMapUrl = (
       : undefined;
   return {
     pathname: flowsSheetKey
-      ? `/[id]/[sheet]/${embed ? '/embed' : ''}`
-      : `/[id]/${embed ? '/embed' : ''}`,
+      ? `/[id]/[sheet]${embed ? '/embed' : ''}`
+      : `/[id]${embed ? '/embed' : ''}`,
     query: {
       ...queryParams,
       id: spreadSheetKey,
