@@ -8,6 +8,7 @@ import TrondheimLogo from './public/images/trondheim-logo.svg';
 import UddLogo from './public/images/logo-udd-blanco.svg';
 import NZMinistryOfTransportLogo from './public/images/nz-minstry-of-transport-logo.svg';
 import KingCountyLogo from './public/images/KingCounty-logo.png';
+import HorrocksLogo from './public/images/horrocks-logo.svg';
 import GreaterAucklandLogo from './public/images/greater-auckland-logo.svg';
 // import MoeLogo from '../public/images/moe-logo.svg';
 
@@ -26,6 +27,12 @@ export const USED_BY_LOGOS = [
     img: ElPasoLogo,
     url: 'https://www.elpasotexas.gov',
     width: 50,
+  },
+  {
+    name: 'Horrocks Engineers',
+    img: HorrocksLogo,
+    url: 'https://www.horrocksengineers.com/',
+    width: 30,
   },
   {
     name: 'OpenDataZuerich',

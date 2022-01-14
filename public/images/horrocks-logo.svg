@@ -1,0 +1,42 @@
+<svg width="42" height="37" viewBox="0 0 42 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="path-1-inside-1_201_10" fill="white">
+<rect x="35" width="7" height="37" rx="0.2"/>
+</mask>
+<rect x="35" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="35" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="35" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="35" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="35" width="7" height="37" rx="0.2" stroke="white" stroke-width="2" mask="url(#path-1-inside-1_201_10)"/>
+<mask id="path-2-inside-2_201_10" fill="white">
+<rect x="26" width="7" height="37" rx="0.2"/>
+</mask>
+<rect x="26" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="26" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="26" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="26" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="26" width="7" height="37" rx="0.2" stroke="white" stroke-width="2" mask="url(#path-2-inside-2_201_10)"/>
+<mask id="path-3-inside-3_201_10" fill="white">
+<rect x="9" width="7" height="37" rx="0.2"/>
+</mask>
+<rect x="9" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="9" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="9" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="9" width="7" height="37" rx="0.2" fill="white"/>
+<rect x="9" width="7" height="37" rx="0.2" stroke="white" stroke-width="2" mask="url(#path-3-inside-3_201_10)"/>
+<mask id="path-4-inside-4_201_10" fill="white">
+<rect width="7" height="37" rx="0.2"/>
+</mask>
+<rect width="7" height="37" rx="0.2" fill="white"/>
+<rect width="7" height="37" rx="0.2" fill="white"/>
+<rect width="7" height="37" rx="0.2" fill="white"/>
+<rect width="7" height="37" rx="0.2" fill="white"/>
+<rect width="7" height="37" rx="0.2" stroke="white" stroke-width="2" mask="url(#path-4-inside-4_201_10)"/>
+<mask id="path-5-inside-5_201_10" fill="white">
+<rect x="18" y="11" width="6" height="15" rx="0.2"/>
+</mask>
+<rect x="18" y="11" width="6" height="15" rx="0.2" fill="white"/>
+<rect x="18" y="11" width="6" height="15" rx="0.2" fill="white"/>
+<rect x="18" y="11" width="6" height="15" rx="0.2" fill="white"/>
+<rect x="18" y="11" width="6" height="15" rx="0.2" fill="white"/>
+<rect x="18" y="11" width="6" height="15" rx="0.2" stroke="white" stroke-width="2" mask="url(#path-5-inside-5_201_10)"/>
+</svg>
