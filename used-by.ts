@@ -39,23 +39,23 @@ export const USED_BY_LOGOS = [
     img: OpenDataZuerichLogo,
     url: 'https://data.stadt-zuerich.ch',
   },
-  {
-    name: 'Trondheim',
-    img: TrondheimLogo,
-    url: 'https://www.trondelagfylke.no/vare-tjenester/plan-og-areal/kart-statistikk-og-analyse/nyhetsarkiv-kart-og-statistikk/faktafredag---pendlestrommer-i-trondelag-pa-mer-enn-100-personer-per-4.kvartal-2018/',
-  },
+  // {
+  //   name: 'Trondheim',
+  //   img: TrondheimLogo,
+  //   url: 'https://www.trondelagfylke.no/vare-tjenester/plan-og-areal/kart-statistikk-og-analyse/nyhetsarkiv-kart-og-statistikk/faktafredag---pendlestrommer-i-trondelag-pa-mer-enn-100-personer-per-4.kvartal-2018/',
+  // },
   {
     name: 'Udd',
     img: UddLogo,
     url: 'http://datagramas.cl/2015/03/run-run-inferencia-y-visualizaci%C3%B3n-de-uso-de-modos-de-transporte-en-la-ciudad-2015-presente/',
   },
-  {
-    name: 'NZMinistryOfTransport',
-    img: NZMinistryOfTransportLogo,
-    url: 'https://www.transport.govt.nz',
-  },
+  // {
+  //   name: 'NZMinistryOfTransport',
+  //   img: NZMinistryOfTransportLogo,
+  //   url: 'https://www.transport.govt.nz',
+  // },
   // {name:'Moe', img: MoeLogo, url: "https://www.education.govt.nz"},
-  {name: 'KingCounty', img: KingCountyLogo, url: 'https://kingcounty.gov'},
+  // {name: 'KingCounty', img: KingCountyLogo, url: 'https://kingcounty.gov'},
   {
     name: 'GreaterAuckland',
     img: GreaterAucklandLogo,
