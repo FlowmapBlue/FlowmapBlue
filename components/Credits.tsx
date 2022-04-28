@@ -82,36 +82,26 @@ const Credits: React.FC<Props> = (props) => {
         </Support>
       </section>
 
-      <section>
-        <span style={{zoom: 0.8}}>
-          <Away href="https://www.netlify.com">
-            <img
-              width={114}
-              height={51}
-              src="https://www.netlify.com/img/global/badges/netlify-dark.svg"
-              alt="Deploys by Netlify"
-            />
-          </Away>
-        </span>
-        <span
-          style={{
-            marginLeft: '1em',
-            zoom: 0.75,
-            filter: 'grayscale(0.8)contrast(0.75)',
-            opacity: 0.8,
-          }}
-        >
-          <Away href="https://www.producthunt.com/posts/flowmap-blue?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-flowmap-blue">
-            <img
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=285959&theme=dark"
-              alt="Flowmap.blue - Flow map visualization for geographic movement analysis | Product Hunt"
-              style={{width: 250, height: 54}}
-              width="250"
-              height="54"
-            />
-          </Away>
-        </span>
-      </section>
+      {/*<section>*/}
+      {/*  <span*/}
+      {/*    style={{*/}
+      {/*      marginLeft: '1em',*/}
+      {/*      zoom: 0.75,*/}
+      {/*      filter: 'grayscale(0.8)contrast(0.75)',*/}
+      {/*      opacity: 0.8,*/}
+      {/*    }}*/}
+      {/*  >*/}
+      {/*    <Away href="https://www.producthunt.com/posts/flowmap-blue?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-flowmap-blue">*/}
+      {/*      <img*/}
+      {/*        src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=285959&theme=dark"*/}
+      {/*        alt="Flowmap.blue - Flow map visualization for geographic movement analysis | Product Hunt"*/}
+      {/*        style={{width: 250, height: 54}}*/}
+      {/*        width="250"*/}
+      {/*        height="54"*/}
+      {/*      />*/}
+      {/*    </Away>*/}
+      {/*  </span>*/}
+      {/*</section>*/}
 
       <section>
         <h2 id="awards">Awards</h2>
