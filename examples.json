@@ -309,6 +309,11 @@
       "name": "Metro travels in Santiago, Chile"
     },
     {
+      "key": "1UjFe82hMq8L_TlrEnkNWOuIiOONxb2rcfS7BiBLFd-U",
+      "name": "Chicago bike sharing 2021",
+      "query": "v=41.884052%2C-87.647792%2C12.22%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Teal&f=50"
+    },
+    {
       "key": "1IYzuqRDlBbXKWFKiJ-XQ7dRsHOHxQcdSHdfC23vKfac",
       "name": "Philadelphia bike sharing 2019 Q4",
       "query": "v=39.951751,-75.167605,12.51,0,0&a=0&b=1&bo=75&c=1&d=1&lt=1&lfm=ALL&col=DarkMint&f=50"
