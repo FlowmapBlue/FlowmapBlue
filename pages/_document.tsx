@@ -1,7 +1,7 @@
 import {Html, Head, Main, NextScript} from 'next/document';
 import manifest from '../public/manifest.json';
 import * as React from 'react';
-const fontUrl = 'https://fonts.googleapis.com/css?family=Sarabun:200,400,700&display=optional';
+const fontUrl = 'https://fonts.googleapis.com/css?family=Sarabun:200,400,700&display=swap';
 
 export default function Document() {
   return (
@@ -9,9 +9,8 @@ export default function Document() {
       <Head>
         <link href="https://flowmap.blue/" rel="canonical" />
         <link rel="manifest" href="/manifest.json" />
-        {/*<link rel="preload" href={fontUrl} as="style" crossOrigin="crossorigin" />*/}
-        {/*<link rel="stylesheet" href={fontUrl} crossOrigin="crossorigin" />*/}
-        <link rel="stylesheet" href={fontUrl} />
+        <link rel="preload" href={fontUrl} as="style" crossOrigin="crossorigin" />
+        <link rel="stylesheet" href={fontUrl} crossOrigin="crossorigin" />
         <title>FlowmapBlue – Flow map visualization tool</title>
         <meta charSet="utf-8" />
         <link rel="shortcut icon" href="/favicon-32x32.png" />
