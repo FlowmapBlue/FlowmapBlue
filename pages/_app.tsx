@@ -43,12 +43,16 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   });
 }
 
+const fontUrl = 'https://fonts.googleapis.com/css?family=Sarabun:200,400,700&display=swap';
+
 function App({Component, pageProps}: AppProps) {
   return (
     <>
       <Head>
         <link href="https://flowmap.blue/" rel="canonical" />
         <link rel="manifest" href="/manifest.json" />
+        <link rel="preload" href={fontUrl} as="style" crossOrigin="crossorigin" />
+        <link rel="stylesheet" href={fontUrl} crossOrigin="crossorigin" />
         <title>FlowmapBlue – Flow map visualization tool</title>
         <meta charSet="utf-8" />
         <link rel="shortcut icon" href="/favicon-32x32.png" />
