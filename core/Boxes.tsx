@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import {Colors} from '@blueprintjs/core';
+import { opacifyHex } from './colors';
 
 export interface AbsoluteProps {
   top?: number;
@@ -44,7 +45,7 @@ export const Absolute = styled.div<AbsoluteProps>(
 
 export type BoxProps = {darkMode?: boolean};
 export const getBoxStyle = (props: BoxProps) => `
-  background: ${props.darkMode ? Colors.DARK_GRAY5 : `rgba(255, 255, 255, 0.9)`};
+  background: ${opacifyHex(props.darkMode ? Colors.DARK_GRAY5 : `rgba(255, 255, 255, 0.9)`, 0.8)};
   border-radius: 4px;
   font-size: 11px;
   box-shadow: 0 0 5px #aaa; 

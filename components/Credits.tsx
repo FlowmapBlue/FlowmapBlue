@@ -94,7 +94,7 @@ const Credits: React.FC<Props> = (props) => {
       {/*    <Away href="https://www.producthunt.com/posts/flowmap-blue?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-flowmap-blue">*/}
       {/*      <img*/}
       {/*        src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=285959&theme=dark"*/}
-      {/*        alt="Flowmap.blue - Flow map visualization for geographic movement analysis | Product Hunt"*/}
+      {/*        alt="FlowmapBlue - Flow map visualization for geographic movement analysis | Product Hunt"*/}
       {/*        style={{width: 250, height: 54}}*/}
       {/*        width="250"*/}
       {/*        height="54"*/}
@@ -107,7 +107,7 @@ const Credits: React.FC<Props> = (props) => {
         <h2 id="awards">Awards</h2>
         <Away href="https://www.informationisbeautifulawards.com/showcase/3815">
           <AwardImage
-            alt="Flowmap.blue – Kantar Information is Beautiful Award"
+            alt="FlowmapBlue – Kantar Information is Beautiful Award"
             width={100}
             src="https://infobawards.s3.amazonaws.com/2019/badges/w-2019.png"
           />

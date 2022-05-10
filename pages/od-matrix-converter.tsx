@@ -59,7 +59,7 @@ const ODMatrixConverter = () => {
     <Layout>
       <h1>OD-matrix converter</h1>
       <Head>
-        <title>OD-matrix converter – Flowmap.blue</title>
+        <title>OD-matrix converter – FlowmapBlue</title>
       </Head>
       <section>
         <p>
@@ -68,7 +68,7 @@ const ODMatrixConverter = () => {
         </p>
         <p>
           This utility can help you converting an OD-matrix dataset into the form suitable for
-          Flowmap.blue by unpivoting the destinations.
+          FlowmapBlue by unpivoting the destinations.
         </p>
       </section>
       <ConverterContainer>

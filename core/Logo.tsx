@@ -44,7 +44,7 @@ const Logo = ({fontSize = 25, collapseWidth = 525, embed, showText = true}: Prop
       </svg>
       {showText ? (
         <LogoText collapseWidth={collapseWidth} fontSize={fontSize}>
-          flowmap.blue
+          FlowmapBlue
         </LogoText>
       ) : null}
     </Row>

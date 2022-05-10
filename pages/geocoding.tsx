@@ -165,7 +165,7 @@ const Geocoding = () => {
     <Layout>
       <h1>Geocoding</h1>
       <Head>
-        <title>Geocoding – Flowmap.blue</title>
+        <title>Geocoding – FlowmapBlue</title>
       </Head>
       <section>
         <p>Find geographic coordinates of locations by their names.</p>

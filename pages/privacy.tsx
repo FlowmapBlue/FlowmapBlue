@@ -12,10 +12,10 @@ const PrivacyPage: React.FC<Props> = (props) => {
       <section>
         <h1>Privacy policy</h1>
         <Head>
-          <title>Privacy – Flowmap.blue</title>
+          <title>Privacy – FlowmapBlue</title>
         </Head>
         <p>
-          Flowmap.blue does not store any of the data the users upload to Google Sheets. The data
+          FlowmapBlue does not store any of the data the users upload to Google Sheets. The data
           from the spreadsheets is loaded directly into the clients&apos; browsers. We are using{' '}
           <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">
             Google Visualization API
@@ -30,13 +30,13 @@ const PrivacyPage: React.FC<Props> = (props) => {
         </p>
         <p>
           We collect usage statistics via Google Analytics and track errors via Sentry. We want to
-          know how Flowmap.blue is used and when it fails so that we can improve it. The use of
+          know how FlowmapBlue is used and when it fails so that we can improve it. The use of
           Google Analytics involves setting cookies in the users&apos; browsers for detecting
           recurring visits and working sessions.
         </p>
         <p>
           We may try to contact you asking for a permission to add your flow map to the list of
-          examples on the homepage of Flowmap.blue.
+          examples on the homepage of FlowmapBlue.
         </p>
       </section>
     </Layout>

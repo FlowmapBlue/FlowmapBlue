@@ -172,7 +172,7 @@ const Index = () => (
     <section>
       <h2>What is it for?</h2>
       <div>
-        Flowmap.blue is used to visualize various real-world phenomena in which pairs of locations
+        FlowmapBlue is used to visualize various real-world phenomena in which pairs of locations
         are involved:
         <ListOfUses>
           <ListOfUsesItem>Urban mobility</ListOfUsesItem>
@@ -257,7 +257,7 @@ const Index = () => (
     <section>
       <h2 id="open-source">Open source</h2>
       <p>
-        {`The source code of Flowmap.blue `}
+        {`The source code of FlowmapBlue `}
         <Away href="https://github.com/FlowmapBlue/flowmap.blue">is freely available</Away>
         {` under the  `}
         <Away href="https://github.com/FlowmapBlue/flowmap.blue/blob/master/LICENSE">
@@ -266,7 +266,7 @@ const Index = () => (
         .
       </p>
       <p>
-        Make sure to include a proper attribution (URL of Flowmap.blue, the original author) if you
+        Make sure to include a proper attribution (URL of FlowmapBlue, the original author) if you
         use it in a different project.
       </p>
     </section>

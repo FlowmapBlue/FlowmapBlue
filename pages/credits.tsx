@@ -13,7 +13,7 @@ const CreditsPage: React.FC<Props> = (props) => {
       <section>
         <h1>Credits</h1>
         <Head>
-          <title>Credits – Flowmap.blue</title>
+          <title>Credits – FlowmapBlue</title>
         </Head>
         <Credits />
       </section>

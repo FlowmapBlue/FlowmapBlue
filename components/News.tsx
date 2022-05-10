@@ -44,7 +44,7 @@ const NEWS_ITEMS = [
     <NewsDate>{`Feb 25, 2021`}</NewsDate>
     <NewsText>
       <Away href="https://www.producthunt.com/posts/flowmap-blue">
-        Flowmap.blue featured on ProductHunt
+        FlowmapBlue featured on ProductHunt
       </Away>
     </NewsText>
   </NewsItem>,
@@ -52,7 +52,7 @@ const NEWS_ITEMS = [
     <NewsDate>{`Jul 01, 2020`}</NewsDate>
     <NewsText>
       <Away href="https://github.com/FlowmapBlue/flowmapblue.R">
-        Flowmap.blue R widget released
+        FlowmapBlue R widget released
       </Away>
     </NewsText>
   </NewsItem>,
@@ -91,7 +91,7 @@ const NEWS_ITEMS = [
   <NewsItem>
     <NewsDate>{`Nov 20, 2019`}</NewsDate>
     <NewsText>
-      Flowmap.blue{' '}
+      FlowmapBlue{' '}
       <Away href="https://twitter.com/infobeautyaward/status/1197248080640380929">
         won Bronze at the Information is Beautiful Awards
       </Away>
@@ -144,7 +144,7 @@ const NEWS_ITEMS = [
   <NewsItem>
     <NewsDate>{`Oct 16, 2019`}</NewsDate>
     <NewsText>
-      Flowmap.blue{' '}
+      FlowmapBlue{' '}
       <Away href="http://informationisbeautifulawards.com/showcase/3815-flowmap-blue">
         made it to the shortlist
       </Away>{' '}
@@ -158,7 +158,7 @@ const NEWS_ITEMS = [
       <Away href="https://ilya.boyandin.me/talks/2019-10-11-urban-mobility-symp/">
         “Scalability of OD-data visualizations”
       </Away>{' '}
-      about Flowmap.blue and{' '}
+      about FlowmapBlue and{' '}
       <Away href="https://github.com/teralytics/flowmap.query">flowmap.query</Away> at the{' '}
       <Away href="https://www.citylab-berlin.org/events/mobilitysymposium_en/">
         Urban Mobility Symposium
@@ -181,7 +181,7 @@ const NEWS_ITEMS = [
   <NewsItem>
     <NewsDate>{`Mar 03, 2019`}</NewsDate>
     <NewsText>
-      <Away href="https://ilya.boyandin.me/talks/2019-03-03-clisel/">Talk about Flowmap.blue</Away>{' '}
+      <Away href="https://ilya.boyandin.me/talks/2019-03-03-clisel/">Talk about FlowmapBlue</Away>{' '}
       at the workshop on{' '}
       <Away href="https://clisel.eu/Ascona">Environmental Changes and Human Mobility</Away> in
       Ascona

@@ -8,8 +8,8 @@ const manifest = require('../public/manifest.json');
 
 const CONFIG = {
   path: '/', // Path for overriding default icons path. `string`
-  appName: 'Flowmap.blue', // Your application's name. `string`
-  appShortName: 'Flowmap.blue', // Your application's short_name. `string`. Optional. If not set, appName will be used
+  appName: 'FlowmapBlue', // Your application's name. `string`
+  appShortName: 'FlowmapBlue', // Your application's short_name. `string`. Optional. If not set, appName will be used
   appDescription: manifest.description,
   developerName: 'Ilya Boyandin', // Your (or your developer's) name. `string`
   developerURL: 'http://ilya.boyandin.me', // Your (or your developer's) URL. `string`

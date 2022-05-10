@@ -49,7 +49,7 @@ function App({Component, pageProps}: AppProps) {
       <Head>
         <link href="https://flowmap.blue/" rel="canonical" />
         <link rel="manifest" href="/manifest.json" />
-        <title>Flowmap.blue – Flow map visualization tool</title>
+        <title>FlowmapBlue – Flow map visualization tool</title>
         <meta charSet="utf-8" />
         <link rel="shortcut icon" href="/favicon-32x32.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -67,10 +67,10 @@ function App({Component, pageProps}: AppProps) {
         <link rel="manifest" href="/manifest.json" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="theme-color" content="#137CBD" />
-        <meta name="application-name" content="Flowmap.blue" />
+        <meta name="application-name" content="FlowmapBlue" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Flowmap.blue" />
+        <meta name="apple-mobile-web-app-title" content="FlowmapBlue" />
       </Head>
       <Component {...pageProps} />
     </>
@@ -100,7 +100,7 @@ try {
           >
             <div style={{fontSize: 14}}>
               We use cookies to collect usage statistics. This helps us to improve the app. If you
-              use Flowmap.blue, we assume that you agree with our very short{' '}
+              use FlowmapBlue, we assume that you agree with our very short{' '}
               <Link href="/privacy">privacy policy</Link>.
             </div>
             <ButtonArea>

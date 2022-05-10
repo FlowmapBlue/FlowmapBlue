@@ -43,7 +43,7 @@ const HowToPage: React.FC<Props> = (props) => {
   return (
     <Layout>
       <Head>
-        <title>How to make a flow map – Flowmap.blue</title>
+        <title>How to make a flow map – FlowmapBlue</title>
       </Head>
       <section>
         <h1>How to make a flow map</h1>
@@ -85,7 +85,7 @@ const HowToPage: React.FC<Props> = (props) => {
             Click the “Share” button, then change the selection from “Restricted” to “Anyone with
             the link” in the drop-down under “Get link”.{' '}
             <ReadMore>
-              This step is required so that Flowmap.blue can access the data in your spreadsheet.
+              This step is required so that FlowmapBlue can access the data in your spreadsheet.
               The spreadsheet and the flow map will be effectively private as long as you do not
               send their URLs to anyone and do not publish them online. We will treat your data as
               private by default and will not disclose the URLs without getting an explicit consent
@@ -142,7 +142,7 @@ const HowToPage: React.FC<Props> = (props) => {
           ,{` `}
           <Away href="https://github.com/FlowmapBlue/flowmap.blue/issues">submit an issue</Away>
           {` or `}
-          <a href="mailto:ilya@boyandin.me?subject=Flowmap.blue">write me an email</a>.
+          <a href="mailto:ilya@boyandin.me?subject=FlowmapBlue">write me an email</a>.
         </p>
       </section>
     </Layout>
