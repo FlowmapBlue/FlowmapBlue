@@ -348,6 +348,11 @@
       "name": "Commuters in Bremen"
     },
     {
+      "key": "1AqAwC0O4f61xqSZsDrzwQYRHJg-BOyTlINWJlfHgQjQ",
+      "query": "v=49.869985%2C15.621952%2C7.16%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Default&f=43",
+      "name": "Migration in Czech Republic from 2005 to 2017"
+    },
+    {
       "key": "1ND0cLhnGYNdlloWArsVw_LSlj1eOablas_COwLsNjC0",
       "name": "Global coffee exports in 2017",
       "query": "v=7.318013,10.942728,1.08,0,0&a=0&b=1&bo=76&c=1&d=0&lt=1&lfm=ALL&col=Oranges&f=36"
