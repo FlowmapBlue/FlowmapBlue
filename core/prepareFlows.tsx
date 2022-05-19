@@ -64,7 +64,7 @@ export function prepareFlows(rows: any[]) {
               ? dupes.slice(0, MAX_NUM_OF_IDS_IN_ERROR)
               : dupes
             )
-              .map(({origin, dest}) => `${origin} → ${dest}`)
+              .map(({origin, dest, time}) => `${origin} → ${dest}${time ? ` ${time}` : ''}`)
               .join(', ')}
             {dupes.length > MAX_NUM_OF_IDS_IN_ERROR &&
               ` … and ${dupes.length - MAX_NUM_OF_IDS_IN_ERROR} others`}

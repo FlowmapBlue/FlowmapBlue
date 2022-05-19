@@ -19,8 +19,10 @@ import {Router} from 'next/router';
 FocusStyleManager.onlyShowFocusOnTabs();
 AppToaster.init();
 Router.events.on('beforeHistoryChange', (route: string) => {
-  // Close any open popovers on route change
-  AppToaster.clear();
+  if (!route.startsWith(globalThis.location.pathname)) {
+    // Close any open popovers on route change
+    AppToaster.clear();
+  }
 });
 
 const ButtonArea = styled.div({
@@ -57,7 +59,7 @@ try {
       {
         intent: Intent.PRIMARY,
         icon: IconNames.INFO_SIGN,
-        timeout: 0,
+        timeout: 5000,
         message: (
           <div
             style={{
