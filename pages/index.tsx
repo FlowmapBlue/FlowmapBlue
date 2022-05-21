@@ -254,26 +254,7 @@ const Index = () => (
       <News maxCount={5} />
     </section>
 
-    <section>
-      <h2 id="open-source">Open source</h2>
-      <p>
-        {`The source code of FlowmapBlue `}
-        <Away href="https://github.com/FlowmapBlue/flowmap.blue">is freely available</Away>
-        {` under the  `}
-        <Away href="https://github.com/FlowmapBlue/flowmap.blue/blob/master/LICENSE">
-          MIT license
-        </Away>
-        .
-      </p>
-      <p>
-        Make sure to include a proper attribution (URL of FlowmapBlue, the original author) if you
-        use it in a different project.
-      </p>
-    </section>
-    <section>
-      <h2>Credits</h2>
-      <Credits />
-    </section>
+    <Credits showTitle={true} />
   </Layout>
 );
 

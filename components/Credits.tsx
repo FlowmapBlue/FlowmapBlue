@@ -6,8 +6,13 @@ import LinuxFoundation from '../public/images/linux-foundation-hztl-white.svg';
 import * as React from 'react';
 import styled from '@emotion/styled';
 import Image from 'next/image';
+import Link from 'next/link';
+import PoweredByImg from '../public/images/powered-by-FlowmapBlue-flat.svg';
+import PoweredByMonoImg from '../public/images/powered-by-FlowmapBlue-mono-flat.svg';
 
-export interface Props {}
+export interface Props {
+  showTitle?: boolean;
+}
 
 const Support = styled.p`
   margin-top: 1.5em;
@@ -52,10 +57,12 @@ const SupportLogo = ({name, src, href}: {name: string; src: string; href: string
   </SupportLogoLink>
 );
 const Credits: React.FC<Props> = (props) => {
-  const {} = props;
+  const {showTitle} = props;
   return (
     <>
       <section>
+        {showTitle ? <h2>Credits</h2> : null}
+
         <p>
           Developed by <Away href="https://ilya.boyandin.me">Ilya Boyandin</Away> using {` `}
           <Away href="https://github.com/teralytics/flowmap.gl">flowmap.gl</Away>,{` `}
@@ -102,6 +109,34 @@ const Credits: React.FC<Props> = (props) => {
       {/*    </Away>*/}
       {/*  </span>*/}
       {/*</section>*/}
+
+      <section>
+        <h2>Open Source</h2>
+        <p>
+          The <Away href="https://github.com/FlowmapBlue/FlowmapBlue">source code</Away>
+          {` of FlowmapBlue is available under the  `}
+          <Away href="https://github.com/FlowmapBlue/FlowmapBlue/blob/master/LICENSE">
+            MIT license
+          </Away>
+          .
+        </p>
+        <p>
+          If you use FlowmapBlue in your own project please make sure to include proper attribution.
+          Use one of these images and link them to the FlowmapBlue website:
+        </p>
+        <p>
+          <Link href={PoweredByImg.src}>
+            <a target="_blank">
+              <Image title="Powered by FlowmapBlue" src={PoweredByImg} />
+            </a>
+          </Link>
+          <Link href={PoweredByMonoImg.src}>
+            <a target="_blank">
+              <Image title="Powered by FlowmapBlue" src={PoweredByMonoImg} />
+            </a>
+          </Link>
+        </p>
+      </section>
 
       <section>
         <h2 id="awards">Awards</h2>

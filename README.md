@@ -10,15 +10,7 @@
 
 
 
-## Running locally
-
-Install dependencies:
-
-    yarn install
-or     
-
-    npm install
-    
+## Developing
 
 Add `.env` file to the project root with a [Mapbox access token](https://www.mapbox.com/help/define-access-token/):
 
@@ -26,19 +18,13 @@ Add `.env` file to the project root with a [Mapbox access token](https://www.map
 
 Then run:
 
+    yarn 
     yarn dev
-or     
-
-    npm run dev
 
 
-<a href="https://www.netlify.com">
-    <img src="https://www.netlify.com/img/global/badges/netlify-dark.svg" alt="Deploys by Netlify" />
-</a>
+## Attribution
+If you use FlowmapBlue in your own project, please make sure to include proper attribution. Use one of these images and link them to the [FlowmapBlue website](https://flowmap.blue/):
 
+<img src="./public/images/powered-by-FlowmapBlue-flat.svg" width="100">
 
-## Open source
-The source code of FlowmapBlue is available under the MIT license.
-
-Make sure to include a proper attribution (URL of FlowmapBlue, the original author) if you use it in your own project.
-
+<img src="./public/images/powered-by-FlowmapBlue-mono-flat.svg" width="100">
