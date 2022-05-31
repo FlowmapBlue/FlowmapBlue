@@ -1,5 +1,6 @@
 import MTALogo from './public/images/mta-logo.svg';
 import TflLogo from './public/images/Tfl-logo.svg';
+import NSWLogo from './public/images/nsw-logo-white.svg';
 import AecomLogo from './public/images/aecom-logo-light.svg';
 import EurocontrolLogo from './public/images/eurocontrol-logo.svg';
 import ElPasoLogo from './public/images/city-of-el-paso-eptx.png';
@@ -14,6 +15,12 @@ import GreaterAucklandLogo from './public/images/greater-auckland-logo.svg';
 
 export const USED_BY_LOGOS = [
   {name: 'MTA', img: MTALogo, url: 'https://new.mta.info', width: 50},
+  {
+    name: 'NSW',
+    img: NSWLogo,
+    url: 'https://www.planning.nsw.gov.au/Research-and-Demography/Population-Projections/A-changing-population',
+    width: 50,
+  },
   {name: 'Tfl', img: TflLogo, url: 'https://tfl.gov.uk'},
   {name: 'Aecom', img: AecomLogo, url: 'https://aecom.com'},
   {
