@@ -11,7 +11,8 @@ import NZMinistryOfTransportLogo from './public/images/nz-minstry-of-transport-l
 import KingCountyLogo from './public/images/KingCounty-logo.png';
 import HorrocksLogo from './public/images/horrocks-logo.svg';
 import GreaterAucklandLogo from './public/images/greater-auckland-logo.svg';
-// import MoeLogo from '../public/images/moe-logo.svg';
+// import MoeLogo from './public/images/moe-logo.svg';
+import AltaLogo from './public/images/alta-logo.svg';
 
 export const USED_BY_LOGOS = [
   {name: 'MTA', img: MTALogo, url: 'https://new.mta.info', width: 50},
@@ -22,7 +23,7 @@ export const USED_BY_LOGOS = [
     width: 50,
   },
   {name: 'Tfl', img: TflLogo, url: 'https://tfl.gov.uk'},
-  {name: 'Aecom', img: AecomLogo, url: 'https://aecom.com'},
+  {name: 'Aecom', img: AecomLogo, url: 'https://aecom.com', width: 80},
   {
     name: 'Eurocontrol',
     img: EurocontrolLogo,
@@ -41,6 +42,7 @@ export const USED_BY_LOGOS = [
     url: 'https://www.horrocksengineers.com/',
     width: 30,
   },
+  {name: 'Alta', img: AltaLogo, url: 'https://altago.com', width: 60},
   {
     name: 'OpenDataZuerich',
     img: OpenDataZuerichLogo,
