@@ -1,4 +1,5 @@
 import {Away} from '../core';
+import UnfoldedLogo from '../public/images/unfolded-logo.svg';
 import TLLogo from '../public/images/TL-Horizontal-Black.svg';
 import MapboxLogo from '../public/images/mapbox-logo-black.svg';
 import UcfLogo from '../public/images/ucf-logo.svg';
@@ -74,6 +75,7 @@ const Credits: React.FC<Props> = (props) => {
         </p>
         <p>With kind support from</p>
         <Support>
+          <SupportLogo name="Unfolded" href="https://www.unfolded.ai" src={UnfoldedLogo} />
           <SupportLogo name="Teralytics" href="https://www.teralytics.net" src={TLLogo} />
           <SupportLogo name="Mapbox" href="https://www.mapbox.com" src={MapboxLogo} />
           <SupportLogo
