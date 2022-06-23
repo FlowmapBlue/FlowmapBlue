@@ -25,6 +25,6 @@ Then run:
 ## Attribution
 If you use FlowmapBlue in your own project, please make sure to include proper attribution. Use one of these images and link them to the [FlowmapBlue website](https://flowmap.blue/):
 
-<img src="./public/images/powered-by-FlowmapBlue-flat.svg" width="100">
+<img src="./public/images/powered-by-FlowmapBlue-flat.svg" width="150">
 
-<img src="./public/images/powered-by-FlowmapBlue-mono-flat.svg" width="100">
+<img src="./public/images/powered-by-FlowmapBlue-mono-flat.svg" width="150">
