@@ -4,6 +4,7 @@ import TLLogo from '../public/images/TL-Horizontal-Black.svg';
 import MapboxLogo from '../public/images/mapbox-logo-black.svg';
 import UcfLogo from '../public/images/ucf-logo.svg';
 import LinuxFoundation from '../public/images/linux-foundation-hztl-white.svg';
+import Netlify from '../public/images/netlify-dark.svg';
 import * as React from 'react';
 import styled from '@emotion/styled';
 import Image from 'next/image';
@@ -21,6 +22,7 @@ const Support = styled.p`
   justify-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  align-items: center;
 `;
 
 const AwardImage = styled.img`
@@ -45,13 +47,25 @@ const SupportLogoLink = styled.a`
   }
 `;
 
-const SupportLogo = ({name, src, href}: {name: string; src: string; href: string}) => (
+const SupportLogo = ({
+  name,
+  src,
+  href,
+  width = 200,
+  height = 25,
+}: {
+  name: string;
+  src: string;
+  href: string;
+  width?: number;
+  height?: number;
+}) => (
   <SupportLogoLink href={href} target="_blank" rel="noopener noreferrer">
     <Image
       alt={`Supported by ${name}`}
       src={src}
-      height={25}
-      width={200}
+      height={height}
+      width={width}
       placeholder="blur"
       blurDataURL={src}
     />
@@ -78,6 +92,13 @@ const Credits: React.FC<Props> = (props) => {
           <SupportLogo name="Unfolded" href="https://www.unfolded.ai" src={UnfoldedLogo} />
           <SupportLogo name="Teralytics" href="https://www.teralytics.net" src={TLLogo} />
           <SupportLogo name="Mapbox" href="https://www.mapbox.com" src={MapboxLogo} />
+          <SupportLogo
+            width={100}
+            height={55}
+            name="Deploys by Netlify"
+            href="https://www.netlify.com"
+            src={Netlify}
+          />
           <SupportLogo
             name="Urban Computing Foundation"
             href="https://uc.foundation"
