@@ -35,6 +35,12 @@ type Props = {
 /* eslint-disable react/jsx-key */
 const NEWS_ITEMS = [
   <NewsItem>
+    <NewsDate>{`Jun 28, 2022`}</NewsDate>
+    <NewsText>
+      <Away href="https://vis.gl/frameworks">FlowmapBlue is now part of the Vis.gl family</Away>
+    </NewsText>
+  </NewsItem>,
+  <NewsItem>
     <NewsDate>{`Sep 01, 2021`}</NewsDate>
     <NewsText>
       <Away href="https://www.mapbox.com/showcase/flowmap-blue">Featured in Mapbox showcase</Away>
@@ -51,9 +57,7 @@ const NEWS_ITEMS = [
   <NewsItem>
     <NewsDate>{`Jul 01, 2020`}</NewsDate>
     <NewsText>
-      <Away href="https://github.com/FlowmapBlue/flowmapblue.R">
-        FlowmapBlue R widget released
-      </Away>
+      <Away href="https://github.com/FlowmapBlue/flowmapblue.R">FlowmapBlue R widget released</Away>
     </NewsText>
   </NewsItem>,
   <NewsItem>

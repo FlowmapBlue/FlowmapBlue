@@ -136,26 +136,35 @@ const Credits: React.FC<Props> = (props) => {
       <section>
         <h2>Open Source</h2>
         <p>
-          The <Away href="https://github.com/FlowmapBlue/FlowmapBlue">source code</Away>
-          {` of FlowmapBlue is available under the  `}
+          FlowmapBlue is part of the{' '}
+          <Away href="https://vis.gl/frameworks">
+            geospatial visualization projects family Vis.gl
+          </Away>
+          . The <Away href="https://github.com/FlowmapBlue/FlowmapBlue">source code</Away>
+          {` of the project is available under the  `}
           <Away href="https://github.com/FlowmapBlue/FlowmapBlue/blob/master/LICENSE">
             MIT license
           </Away>
           .
         </p>
         <p>
-          If you use FlowmapBlue in your own project please make sure to include proper attribution.
-          Use one of these images and link them to the FlowmapBlue website:
+          If you want to use FlowmapBlue in your own project, please make sure to include proper
+          attribution. Use one of these images and link them to the FlowmapBlue website:
         </p>
         <p>
           <Link href={PoweredByImg.src}>
             <a target="_blank">
-              <Image title="Powered by FlowmapBlue" src={PoweredByImg} />
+              <Image width={150} height={50} title="Powered by FlowmapBlue" src={PoweredByImg} />
             </a>
           </Link>
           <Link href={PoweredByMonoImg.src}>
             <a target="_blank">
-              <Image title="Powered by FlowmapBlue" src={PoweredByMonoImg} />
+              <Image
+                width={150}
+                height={50}
+                title="Powered by FlowmapBlue"
+                src={PoweredByMonoImg}
+              />
             </a>
           </Link>
         </p>
