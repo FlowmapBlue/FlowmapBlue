@@ -121,7 +121,7 @@ const Gallery = (props: Props) => {
                     height={Math.floor(screenshotSizes[0] / aspectRatio)}
                     alt={name}
                     src={src}
-                    blurDataURL={src}
+                    blurDataURL={'/screenshots/placeholder-50x50.jpg'}
                     placeholder="blur"
                     // srcSet={screenshotSizes.map(w => `/screenshots/${key}__${w}px.jpg ${w}w`).join(',')}
                     // sizes={screenshotSizes.map((w, i) =>
