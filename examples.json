@@ -142,6 +142,11 @@
       "query": "v=52.098668,4.658308,8.60&a=0&d=1&c=1&lt=1&col=Default&f=45"
     },
     {
+      "key": "1FFgn71GnyjP8E4jHB9vVsRYsxEIkg3k0g3G-z_eUwwk",
+      "name": "Croatian Inter-Settlement Migration 2018",
+      "query": "v=44.533407%2C16.478756%2C6.21%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Sunset&f=50"
+    },
+    {
       "key": "1SCmQHSfvgYhPz5VFzg5LBtqY3OSfHzTutKkpneWVL4Q",
       "query": "v=30.263617,-97.753185,12.79,0,0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20200101T000000,20210101T000000&col=Default&f=50",
       "name": "Austin MetroBike by day 2020"
