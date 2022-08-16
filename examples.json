@@ -123,8 +123,13 @@
     },
     {
       "key": "1hNZzuEleugaHs8aLuHPHuTwnQFhFTFURpmOX6NdufcA",
-      "name": " Provincia di Lecce 2019",
+      "name": "Provincia di Lecce 2019",
       "query": "v=40.135390%2C18.192176%2C9.17%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Default&f=50"
+    },
+    {
+      "key": "1hSZXtEOHsS8p9k2gfLgsL9vADBBFzIMse4yRhgT4Atw",
+      "name": "Rotterdam shared bicycles and scooters (2021)",
+      "query": "v=51.918861%2C4.493428%2C11.33%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Default&f=50"
     },
     {
       "key": "1ywFcYdbvtdN4gFhoTs2A8Bn7HE4530k05P4NNjqedHg",
