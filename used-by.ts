@@ -42,7 +42,12 @@ export const USED_BY_LOGOS = [
     url: 'https://www.horrocksengineers.com/',
     width: 30,
   },
-  {name: 'Alta', img: AltaLogo, url: 'https://altago.com', width: 60},
+  {
+    name: 'Alta',
+    img: AltaLogo,
+    url: 'https://blog.altaplanning.com/tools-for-understanding-active-transportation-potential-9284419c7ad5',
+    width: 60,
+  },
   {
     name: 'OpenDataZuerich',
     img: OpenDataZuerichLogo,
