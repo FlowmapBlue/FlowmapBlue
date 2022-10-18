@@ -28,3 +28,10 @@ If you use FlowmapBlue in your own project, please make sure to include proper a
 <img src="./public/images/powered-by-FlowmapBlue-flat.svg" width="150">
 
 <img src="./public/images/powered-by-FlowmapBlue-mono-flat.svg" width="150">
+
+
+## License
+
+FlowmapBlue source code is free non-commercial usage. If you want to use it in a commercial project, please reach out to us.
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.

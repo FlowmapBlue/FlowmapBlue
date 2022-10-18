@@ -114,7 +114,7 @@ import getBbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import Timeline from './Timeline';
 import {TimeGranularity} from './time';
-import {findAppropriateZoomLevel} from '@flowmap.gl/cluster/dist-esm';
+import {findAppropriateZoomLevel} from '@flowmap.gl/cluster';
 import {useRouter} from 'next/router';
 import {getFlowsSheetKey, makeGSheetsMapUrl} from '../components/constants';
 
