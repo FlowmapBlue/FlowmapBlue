@@ -32,6 +32,6 @@ If you use FlowmapBlue in your own project, please make sure to include proper a
 
 ## License
 
-FlowmapBlue source code is free non-commercial usage. If you want to use it in a commercial project, please reach out to us.
+FlowmapBlue source code is free non-commercial usage. If you want to use it in a commercial project, please <a href="mailto:ilya@boyandin.me?subject=FlowmapBlue">reach out to us</a>.
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.
