@@ -81,6 +81,7 @@ const Credits: React.FC<Props> = (props) => {
         <p>
           Developed by <Away href="https://ilya.boyandin.me">Ilya Boyandin</Away> using {` `}
           <Away href="http://deck.gl">deck.gl</Away>,{` `}
+          <Away href="https://github.com/FlowmapBlue/flowmap.gl">flowmap.gl</Away>,{` `}
           <Away href="https://github.com/mapbox/mapbox-gl-js">mapbox</Away>,{` `}
           <Away href="https://d3js.org/">d3</Away>,{` `}
           <Away href="https://blueprintjs.com/">blueprint</Away>,{` `}
@@ -150,8 +151,8 @@ const Credits: React.FC<Props> = (props) => {
           <Image width={88} height={31} alt="Creative Commons License" src="/images/cc-88x31.png" />
         </Away>
         <p>
-          If you want to use FlowmapBlue in your own project, please make sure to include proper
-          attribution. Use one of these images and link them to the FlowmapBlue website:
+          Please make sure to include proper attribution. Use one of these images and link them to
+          the FlowmapBlue website:
           <br />
           <Link href={PoweredByImg.src}>
             <a target="_blank">
