@@ -81,7 +81,7 @@ const Credits: React.FC<Props> = (props) => {
         <p>
           Developed by <Away href="https://ilya.boyandin.me">Ilya Boyandin</Away> using {` `}
           <Away href="http://deck.gl">deck.gl</Away>,{` `}
-          <Away href="https://github.com/FlowmapBlue/flowmap.gl">flowmap.gl</Away>,{` `}
+          <Away href="https://github.com/teralytics/flowmap.gl">flowmap.gl</Away>,{` `}
           <Away href="https://github.com/mapbox/mapbox-gl-js">mapbox</Away>,{` `}
           <Away href="https://d3js.org/">d3</Away>,{` `}
           <Away href="https://blueprintjs.com/">blueprint</Away>,{` `}
