@@ -243,6 +243,11 @@
       "name": "Bus travels in São Paulo, Brazil"
     },
     {
+      "key": "1p6XNvTGSKj3oONHiS9KZekIB82YrtC3kp7BT5OS4qoI",
+      "name": "Internal migration in Slovakia 2010-2014",
+      "query": "v=48.720253%2C19.555396%2C6.77%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20100101T000000%2C20150101T000000&col=Default&f=50"
+    },
+    {
       "key": "1qPnZV0wYv9SKh1HInREh_KwuRRgV496nnoKEu6BT8ug",
       "name": "Commuters in Switzerland 2014"
     },
