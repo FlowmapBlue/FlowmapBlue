@@ -27,7 +27,7 @@ import {descending, min} from 'd3-array';
 import {csvParseRows} from 'd3-dsv';
 import {getTimeGranularityByOrder, getTimeGranularityForDate, TimeGranularity} from './time';
 
-export const NUMBER_OF_FLOWS_TO_DISPLAY = 5000;
+export const NUMBER_OF_FLOWS_TO_DISPLAY = 500000;
 
 export type Selector<T> = ParametricSelector<State, Props, T>;
 
