@@ -3,7 +3,7 @@ import {Column} from './Boxes';
 import * as React from 'react';
 import styled from '@emotion/styled';
 import {IconNames} from '@blueprintjs/icons';
-import {FC, useState} from 'react';
+import {FC, ReactNode, useState} from 'react';
 import {useRouter} from 'next/router';
 
 const Outer = styled(Column)`
@@ -62,7 +62,7 @@ const CopyInput: FC<{text: string; embed?: boolean}> = ({text, embed}) => {
   );
 };
 
-const SharePopover: React.FC<{}> = ({children}) => {
+const SharePopover: React.FC<{children: ReactNode}> = ({children}) => {
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState('url');
   const [withState, setWithState] = useState(false);

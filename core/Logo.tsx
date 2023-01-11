@@ -73,7 +73,7 @@ const Logo = ({fontSize = 25, collapseWidth = 525, embed, showText = true}: Prop
     );
   }
   return (
-    <Link href="/">
+    <Link legacyBehavior href="/">
       <div style={{textDecoration: 'none', cursor: 'pointer'}}>{content}</div>
     </Link>
   );

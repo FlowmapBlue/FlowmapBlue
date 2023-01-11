@@ -1,8 +1,9 @@
 import * as React from 'react';
 import ErrorFallback from './ErrorFallback';
 import {captureException, withScope} from '@sentry/core';
+import {ReactNode} from 'react';
 
-class ErrorBoundary extends React.Component<{}, {}> {
+class ErrorBoundary extends React.Component<{children: ReactNode}> {
   state = {hasError: false, error: null};
 
   static getDerivedStateFromError(error: any) {

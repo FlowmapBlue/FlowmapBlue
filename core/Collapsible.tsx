@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
 import {Colors} from '@blueprintjs/core';
+import {ReactNode} from 'react';
 
 export enum Direction {
   LEFT,
@@ -8,6 +9,7 @@ export enum Direction {
 }
 
 export interface Props {
+  children: ReactNode;
   width: number;
   initialCollapsed?: boolean;
   direction: Direction;

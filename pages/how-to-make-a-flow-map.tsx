@@ -73,11 +73,18 @@ const HowToPage: React.FC<Props> = (props) => {
                 <b>dest</b> columns must be the respective locations&apos; <b>id</b>s.
               </p>
               <p>
-                Use the <Link href="/od-matrix-converter">OD-matrix converter</Link> if your
-                movement counts are represented as an OD-matrix.
+                Use the{' '}
+                <Link legacyBehavior href="/od-matrix-converter">
+                  OD-matrix converter
+                </Link>{' '}
+                if your movement counts are represented as an OD-matrix.
               </p>
-              Our <Link href="/geocoding">Geocoding tool</Link> can help you finding the geographic
-              coordinates for locations if you only have their names in your dataset.
+              Our{' '}
+              <Link legacyBehavior href="/geocoding">
+                Geocoding tool
+              </Link>{' '}
+              can help you finding the geographic coordinates for locations if you only have their
+              names in your dataset.
             </ReadMore>
           </li>
           {/*<li>Publish your spreadsheet by going to "File" / "Publish to the web…"</li>*/}
@@ -85,9 +92,9 @@ const HowToPage: React.FC<Props> = (props) => {
             Click the “Share” button, then change the selection from “Restricted” to “Anyone with
             the link” in the drop-down under “Get link”.{' '}
             <ReadMore>
-              This step is required so that FlowmapBlue can access the data in your spreadsheet.
-              The spreadsheet and the flow map will be effectively private as long as you do not
-              send their URLs to anyone and do not publish them online. We will treat your data as
+              This step is required so that FlowmapBlue can access the data in your spreadsheet. The
+              spreadsheet and the flow map will be effectively private as long as you do not send
+              their URLs to anyone and do not publish them online. We will treat your data as
               private by default and will not disclose the URLs without getting an explicit consent
               from you (unless you disclose them yourself first by linking from a publicly
               accessible website).
@@ -96,8 +103,10 @@ const HowToPage: React.FC<Props> = (props) => {
           <SpreadsheetKeyExtractor />
         </ListOfSteps>
         If you are not comfortable uploading your data to Google Sheets, consider using our{' '}
-        <Link href="/in-browser">In-browser flow map</Link> or load CSV files from any specific URLs
-        as{' '}
+        <Link legacyBehavior href="/in-browser">
+          In-browser flow map
+        </Link>{' '}
+        or load CSV files from any specific URLs as{' '}
         <Away href="https://github.com/FlowmapBlue/flowmap.blue/issues/18#issuecomment-610063627">
           described here
         </Away>
@@ -111,7 +120,9 @@ const HowToPage: React.FC<Props> = (props) => {
         <ListOfTools>
           <li>
             <h3>
-              <Link href="/geocoding">Geocoding tool</Link>
+              <Link legacyBehavior href="/geocoding">
+                Geocoding tool
+              </Link>
             </h3>
             <p>
               Can help you finding the geographic coordinates for locations if you only have their
@@ -120,13 +131,17 @@ const HowToPage: React.FC<Props> = (props) => {
           </li>
           <li>
             <h3>
-              <Link href="/od-matrix-converter">OD-matrix converter</Link>
+              <Link legacyBehavior href="/od-matrix-converter">
+                OD-matrix converter
+              </Link>
             </h3>
             <p>Use it when your movement counts are represented as an OD-matrix.</p>
           </li>
           <li>
             <h3>
-              <Link href="/in-browser">In-browser flow map</Link>
+              <Link legacyBehavior href="/in-browser">
+                In-browser flow map
+              </Link>
             </h3>
             <p>
               With this tool you can visualize OD-data directly in your browser without having to

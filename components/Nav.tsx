@@ -123,6 +123,7 @@ const NavItem = ({to, children}: {to: string; children: ReactNode}) => (
     //   return true;
     // }}
     href={to}
+    legacyBehavior
   >
     <a
       className={[Classes.INTENT_PRIMARY, Classes.BUTTON, Classes.MINIMAL, Classes.LARGE].join(' ')}

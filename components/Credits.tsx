@@ -2,8 +2,6 @@ import {Away} from '../core';
 import UnfoldedLogo from '../public/images/unfolded-logo.svg';
 import TLLogo from '../public/images/TL-Horizontal-Black.svg';
 import MapboxLogo from '../public/images/mapbox-logo-black.svg';
-import UcfLogo from '../public/images/ucf-logo.svg';
-import LinuxFoundation from '../public/images/linux-foundation-hztl-white.svg';
 import Netlify from '../public/images/netlify-dark.svg';
 import * as React from 'react';
 import styled from '@emotion/styled';
@@ -66,8 +64,8 @@ const SupportLogo = ({
       src={src}
       height={height}
       width={width}
-      placeholder="blur"
-      blurDataURL={src}
+      // placeholder="blur"
+      // blurDataURL={src}
     />
   </SupportLogoLink>
 );
@@ -80,8 +78,8 @@ const Credits: React.FC<Props> = (props) => {
 
         <p>
           Developed by <Away href="https://ilya.boyandin.me">Ilya Boyandin</Away> using {` `}
-          <Away href="https://github.com/teralytics/flowmap.gl">flowmap.gl</Away>,{` `}
           <Away href="http://deck.gl">deck.gl</Away>,{` `}
+          <Away href="https://github.com/teralytics/flowmap.gl">flowmap.gl</Away>,{` `}
           <Away href="https://github.com/mapbox/mapbox-gl-js">mapbox</Away>,{` `}
           <Away href="https://d3js.org/">d3</Away>,{` `}
           <Away href="https://blueprintjs.com/">blueprint</Away>,{` `}
@@ -98,16 +96,6 @@ const Credits: React.FC<Props> = (props) => {
             name="Deploys by Netlify"
             href="https://www.netlify.com"
             src={Netlify}
-          />
-          <SupportLogo
-            name="Urban Computing Foundation"
-            href="https://uc.foundation"
-            src={UcfLogo}
-          />
-          <SupportLogo
-            name="Linux Foundation"
-            href="https://www.linuxfoundation.org"
-            src={LinuxFoundation}
           />
         </Support>
       </section>
@@ -136,28 +124,30 @@ const Credits: React.FC<Props> = (props) => {
       <section>
         <h2>Open Source</h2>
         <p>
-          FlowmapBlue is part of the{' '}
-          <Away href="https://vis.gl/frameworks">
-            geospatial visualization projects family Vis.gl
-          </Away>
-          . The <Away href="https://github.com/FlowmapBlue/FlowmapBlue">source code</Away>
-          {` of the project is available under the  `}
-          <Away href="https://github.com/FlowmapBlue/FlowmapBlue/blob/master/LICENSE">
-            MIT license
+          FlowmapBlue source code is free non-commercial usage. If you want to use it in a
+          commercial project, please{' '}
+          <a href="mailto:ilya@boyandin.me?subject=FlowmapBlue">reach out to us</a>.
+        </p>
+        <p>
+          This work is licensed under a{' '}
+          <Away href="http://creativecommons.org/licenses/by-nc/4.0/">
+            Creative Commons Attribution-NonCommercial 4.0 International License
           </Away>
           .
         </p>
+        <Away href="http://creativecommons.org/licenses/by-nc/4.0/">
+          <Image width={88} height={31} alt="Creative Commons License" src="/images/cc-88x31.png" />
+        </Away>
         <p>
-          If you want to use FlowmapBlue in your own project, please make sure to include proper
-          attribution. Use one of these images and link them to the FlowmapBlue website:
-        </p>
-        <p>
-          <Link href={PoweredByImg.src}>
+          Please make sure to include proper attribution. Use one of these images and link them to
+          the FlowmapBlue website:
+          <br />
+          <Link legacyBehavior href={PoweredByImg.src}>
             <a target="_blank">
               <Image width={150} height={50} title="Powered by FlowmapBlue" src={PoweredByImg} />
             </a>
           </Link>
-          <Link href={PoweredByMonoImg.src}>
+          <Link legacyBehavior href={PoweredByMonoImg.src}>
             <a target="_blank">
               <Image
                 width={150}

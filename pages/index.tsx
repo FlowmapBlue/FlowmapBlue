@@ -222,7 +222,7 @@ const Index = () => (
         <Gallery maxCount={6} />
       </GalleryPreviewOuter>
       {/*<p>*/}
-      {/*  <Link href="/gallery">Visit our gallery</Link> to see more real world examples.*/}
+      {/*  <Link legacyBehavior href="/gallery">Visit our gallery</Link> to see more real world examples.*/}
       {/*</p>*/}
     </section>
 
@@ -236,8 +236,8 @@ const Index = () => (
               width={width}
               height="50"
               src={img}
-              placeholder="blur"
-              blurDataURL={img}
+              // placeholder="blur"
+              // blurDataURL={img}
               objectFit="contain"
             />
           </Away>
@@ -249,7 +249,11 @@ const Index = () => (
       {/*How to make a flow map*/}
       <h2 id="how-to">How to make a flow map?</h2>
       <p>
-        Follow the steps <Link href="/how-to-make-a-flow-map">described on this page</Link>.
+        Follow the steps{' '}
+        <Link legacyBehavior href="/how-to-make-a-flow-map">
+          described on this page
+        </Link>
+        .
       </p>
     </section>
 

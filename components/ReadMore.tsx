@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import * as React from 'react';
 import {Card, Colors} from '@blueprintjs/core';
 import {Elevation} from '@blueprintjs/core';
+import {ReactNode} from 'react';
 
 const MoreContent = styled(Card)`
   margin-top: 1em;
@@ -14,7 +15,7 @@ const MoreLink = styled.a`
   cursor: pointer;
 `;
 
-export default class ReadMore extends React.Component {
+export default class ReadMore extends React.Component<{children: ReactNode}> {
   state = {
     isOpen: false,
   };

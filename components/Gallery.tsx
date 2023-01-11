@@ -111,7 +111,11 @@ const Gallery = (props: Props) => {
       {examplesToShow.map(({key, sheet, name, query}) => {
         const src = `/screenshots/${key}${sheet ? `_${sheet}` : ''}__${screenshotSizes[0]}px.jpg`;
         return (
-          <Link key={key} href={`/${key}${sheet ? `/${sheet}` : ''}${query ? `?${query}` : ''}`}>
+          <Link
+            legacyBehavior
+            key={key}
+            href={`/${key}${sheet ? `/${sheet}` : ''}${query ? `?${query}` : ''}`}
+          >
             <a>
               <LinkItem>
                 <ItemImage>
@@ -136,7 +140,7 @@ const Gallery = (props: Props) => {
         );
       })}
       {maxCount && maxCount < examples.length ? (
-        <Link href="/gallery">
+        <Link legacyBehavior href="/gallery">
           <a>
             <MoreBox>
               <Icon icon={IconNames.ARROW_RIGHT} /> &nbsp; More examples

@@ -609,12 +609,9 @@ const _getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelec
   },
 );
 
-const getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelectorCreator<
-  Set<string> | undefined
->(
-  // @ts-ignore
+const getLocationIdsInViewport: Selector<Set<string> | undefined> = createSelectorCreator(
   defaultMemoize,
-  (s1: Set<string> | undefined, s2: Set<string> | undefined, index: number) => {
+  (s1: Set<string> | undefined, s2: Set<string> | undefined) => {
     if (s1 === s2) return true;
     if (s1 == null || s2 == null) return false;
     if (s1.size !== s2.size) return false;

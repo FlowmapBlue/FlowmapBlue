@@ -37,7 +37,7 @@ const NEWS_ITEMS = [
   <NewsItem>
     <NewsDate>{`Jun 28, 2022`}</NewsDate>
     <NewsText>
-      <Away href="https://vis.gl/frameworks">FlowmapBlue is now part of the Vis.gl family</Away>
+      <Away href="https://deck.gl/showcase">FlowmapBlue featured in Deck.gl showcase</Away>
     </NewsText>
   </NewsItem>,
   <NewsItem>
@@ -89,7 +89,11 @@ const NEWS_ITEMS = [
   <NewsItem>
     <NewsDate>{`Dec 25, 2019`}</NewsDate>
     <NewsText>
-      Added support for <Link href="/videos/sharing.mp4">sharing and embedding</Link>.
+      Added support for{' '}
+      <Link legacyBehavior href="/videos/sharing.mp4">
+        sharing and embedding
+      </Link>
+      .
     </NewsText>
   </NewsItem>,
   <NewsItem>
@@ -104,20 +108,30 @@ const NEWS_ITEMS = [
   <NewsItem>
     <NewsDate>{`Nov 11, 2019`}</NewsDate>
     <NewsText>
-      Added the <Link href="/in-browser">In-browser flow map</Link>
+      Added the{' '}
+      <Link legacyBehavior href="/in-browser">
+        In-browser flow map
+      </Link>
     </NewsText>
   </NewsItem>,
   <NewsItem>
     <NewsDate>{`Nov 10, 2019`}</NewsDate>
     <NewsText>
-      Added the <Link href="/geocoding">Geocoding</Link> data preparation helper tool
+      Added the{' '}
+      <Link legacyBehavior href="/geocoding">
+        Geocoding
+      </Link>{' '}
+      data preparation helper tool
     </NewsText>
   </NewsItem>,
   <NewsItem>
     <NewsDate>{`Nov 08, 2019`}</NewsDate>
     <NewsText>
-      Added the <Link href="/od-matrix-converter">OD-matrix converter</Link> data preparation helper
-      tool
+      Added the{' '}
+      <Link legacyBehavior href="/od-matrix-converter">
+        OD-matrix converter
+      </Link>{' '}
+      data preparation helper tool
     </NewsText>
   </NewsItem>,
   <NewsItem>
@@ -211,7 +225,7 @@ const News = ({maxCount}: Props) => {
       ))}
       {news.length < NEWS_ITEMS.length ? (
         <NewsItem>
-          <Link href="/news">
+          <Link legacyBehavior href="/news">
             <a>
               <Icon icon={IconNames.ARROW_RIGHT} /> &nbsp; Older news
             </a>
