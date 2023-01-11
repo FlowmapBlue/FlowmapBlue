@@ -44,7 +44,6 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
 }
 
 function App({Component, pageProps}: AppProps) {
-  // @ts-ignore
   return <Component {...pageProps} />;
 }
 
@@ -72,7 +71,10 @@ try {
             <div style={{fontSize: 14}}>
               We use cookies to collect usage statistics. This helps us to improve the app. If you
               use FlowmapBlue, we assume that you agree with our very short{' '}
-              <Link href="/privacy">privacy policy</Link>.
+              <Link legacyBehavior href="/privacy">
+                privacy policy
+              </Link>
+              .
             </div>
             <ButtonArea>
               <Button

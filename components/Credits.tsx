@@ -66,8 +66,8 @@ const SupportLogo = ({
       src={src}
       height={height}
       width={width}
-      placeholder="blur"
-      blurDataURL={src}
+      // placeholder="blur"
+      // blurDataURL={src}
     />
   </SupportLogoLink>
 );
@@ -154,12 +154,12 @@ const Credits: React.FC<Props> = (props) => {
           Please make sure to include proper attribution. Use one of these images and link them to
           the FlowmapBlue website:
           <br />
-          <Link href={PoweredByImg.src}>
+          <Link legacyBehavior href={PoweredByImg.src}>
             <a target="_blank">
               <Image width={150} height={50} title="Powered by FlowmapBlue" src={PoweredByImg} />
             </a>
           </Link>
-          <Link href={PoweredByMonoImg.src}>
+          <Link legacyBehavior href={PoweredByMonoImg.src}>
             <a target="_blank">
               <Image
                 width={150}

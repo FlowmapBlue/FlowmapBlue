@@ -2,8 +2,9 @@ import Nav from '../components/Nav';
 import {Classes} from '@blueprintjs/core';
 import * as React from 'react';
 import styled from '@emotion/styled';
+import {ReactNode} from 'react';
 
-export interface Props {}
+export type Props = {children?: ReactNode};
 const ContentBody = styled.div`
   padding: 10px 20px;
   @media (min-width: 500px) {

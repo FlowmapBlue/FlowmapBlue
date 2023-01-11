@@ -1066,7 +1066,11 @@ const FlowMap: React.FC<Props> = (props) => {
                     </Away>
                     .{' '}
                     <>
-                      You can <Link href="/">publish your own map</Link> too.
+                      You can{' '}
+                      <Link legacyBehavior href="/">
+                        publish your own map
+                      </Link>{' '}
+                      too.
                     </>
                   </>
                 ) : null}
