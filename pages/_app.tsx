@@ -44,6 +44,7 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
 }
 
 function App({Component, pageProps}: AppProps) {
+  // @ts-ignore
   return <Component {...pageProps} />;
 }
 
