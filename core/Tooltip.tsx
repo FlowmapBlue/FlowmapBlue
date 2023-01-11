@@ -49,6 +49,7 @@ const ContentWrapper = styled.div`
 `;
 
 const Tooltip = ({target, content, placement}: Props) => (
+  // @ts-ignore
   <Popper
     placement={placement}
     // @ts-ignore
