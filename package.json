@@ -32,7 +32,7 @@
     "@turf/boolean-point-in-polygon": "^6.0.1",
     "blueimp-md5": "^2.13.0",
     "d3-collection": "^1.0.7",
-    "d3-color": "^2.0.0",
+    "d3-color": "^3.1.0",
     "d3-dsv": "^2.0.0",
     "d3-ease": "^2.0.0",
     "d3-format": "^2.0.0",
