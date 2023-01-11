@@ -37,7 +37,7 @@ const NEWS_ITEMS = [
   <NewsItem>
     <NewsDate>{`Jun 28, 2022`}</NewsDate>
     <NewsText>
-      <Away href="https://vis.gl/frameworks">FlowmapBlue is now part of the Vis.gl family</Away>
+      <Away href="https://deck.gl/showcase">FlowmapBlue featured in Deck.gl showcase</Away>
     </NewsText>
   </NewsItem>,
   <NewsItem>
