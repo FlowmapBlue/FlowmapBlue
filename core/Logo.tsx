@@ -1,8 +1,10 @@
-import {ColorScheme} from './colors';
+import {ColorScheme, opacifyHex} from './colors';
 import Link from 'next/link';
 import * as React from 'react';
 import styled from '@emotion/styled';
 import {Row} from './Boxes';
+import Image from 'next/image';
+import Away from './Away';
 
 type Props = {
   embed?: boolean;
@@ -12,15 +14,21 @@ type Props = {
 };
 
 const SHADOW_COLOR = ColorScheme.primary;
+
+function makeTextShadow(color: string) {
+  return `1px -1px 1px ${color}, 
+    1px 1px 1px ${color}, 
+    -1px -1px 1px ${color}, 
+    -1px 1px 1px ${color}`;
+}
+
 const LogoText = styled.div<Props>(({fontSize, collapseWidth}: Props) => ({
   // fontFamily: "'Titillium Web', sans-serif",
   fontSize,
   color: '#fff',
   fontWeight: 'bold',
-  textShadow: `1px -1px 1px ${SHADOW_COLOR}, 
-    1px 1px 1px ${SHADOW_COLOR}, 
-    -1px -1px 1px ${SHADOW_COLOR}, 
-    -1px 1px 1px ${SHADOW_COLOR}`,
+
+  textShadow: makeTextShadow(SHADOW_COLOR),
   [`@media (max-width: ${collapseWidth}px)`]: {
     display: 'none',
   },
@@ -44,7 +52,10 @@ const Logo = ({fontSize = 25, collapseWidth = 525, embed, showText = true}: Prop
       </svg>
       {showText ? (
         <LogoText collapseWidth={collapseWidth} fontSize={fontSize}>
-          FlowmapBlue
+          <div style={{display: 'flex'}}>
+            <span>Flowmap</span>
+            <span>Blue</span>
+          </div>
         </LogoText>
       ) : null}
     </Row>

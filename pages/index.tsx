@@ -120,7 +120,18 @@ const Index = () => (
   <Layout>
     <TitleRow>
       <LogoTitle>
-        <Logo fontSize={35} collapseWidth={300} />
+        <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
+          <Logo fontSize={35} collapseWidth={300} />
+          <Away href="https://stand-with-ukraine.pp.ua">
+            <Image
+              alt={'Stand with Ukraine'}
+              title={'Stand with Ukraine'}
+              width={30 * 0.8}
+              height={20 * 0.8}
+              src={'/images/StandWithUkraine.svg'}
+            />
+          </Away>
+        </div>
       </LogoTitle>
       <NewsletterOuter>
         <form action="https://tinyletter.com/flowmap-blue" method="post" target="_blank">

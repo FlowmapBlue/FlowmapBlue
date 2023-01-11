@@ -3,8 +3,9 @@ import checkWebglSupport from './checkWebglSupport';
 import NoScrollContainer from './NoScrollContainer';
 import {Absolute} from './Boxes';
 import Logo from './Logo';
-import {ColorScheme, Fallback} from './index';
+import {Away, ColorScheme, Fallback} from './index';
 import styled from '@emotion/styled';
+import Image from 'next/image';
 
 interface Props {
   embed?: boolean;
@@ -14,17 +15,19 @@ interface Props {
 const supportsWebGl = checkWebglSupport();
 
 const LogoOuter = styled(Absolute)`
-  filter: grayscale(1);
-  svg {
-    circle {
-      fill: #fff;
-      stroke: ${ColorScheme.primary};
-      stroke-width: 10px;
-    }
-    path {
-      fill: #000;
-      stroke-width: 10px;
-      stroke: ${ColorScheme.primary};
+  .logo {
+    filter: grayscale(1);
+    svg {
+      circle {
+        fill: #fff;
+        stroke: ${ColorScheme.primary};
+        stroke-width: 10px;
+      }
+      path {
+        fill: #000;
+        stroke-width: 10px;
+        stroke: ${ColorScheme.primary};
+      }
     }
   }
 `;
@@ -35,7 +38,20 @@ const MapContainer: React.FC<Props> = ({embed, children}) => (
       <>
         {children}
         <LogoOuter top={10} left={10}>
-          <Logo embed={embed} fontSize={20} />
+          <div style={{display: 'flex', alignItems: 'flex-end', gap: 10}}>
+            <div className={'logo'}>
+              <Logo embed={embed} fontSize={20} />
+            </div>
+            <Away href="https://stand-with-ukraine.pp.ua">
+              <Image
+                alt={'Stand with Ukraine'}
+                title={'Stand with Ukraine'}
+                width={30 * 0.8}
+                height={20 * 0.8}
+                src={'/images/StandWithUkraine.svg'}
+              />
+            </Away>
+          </div>
         </LogoOuter>
       </>
     ) : (
