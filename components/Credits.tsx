@@ -2,8 +2,6 @@ import {Away} from '../core';
 import UnfoldedLogo from '../public/images/unfolded-logo.svg';
 import TLLogo from '../public/images/TL-Horizontal-Black.svg';
 import MapboxLogo from '../public/images/mapbox-logo-black.svg';
-import UcfLogo from '../public/images/ucf-logo.svg';
-import LinuxFoundation from '../public/images/linux-foundation-hztl-white.svg';
 import Netlify from '../public/images/netlify-dark.svg';
 import * as React from 'react';
 import styled from '@emotion/styled';
@@ -98,16 +96,6 @@ const Credits: React.FC<Props> = (props) => {
             name="Deploys by Netlify"
             href="https://www.netlify.com"
             src={Netlify}
-          />
-          <SupportLogo
-            name="Urban Computing Foundation"
-            href="https://uc.foundation"
-            src={UcfLogo}
-          />
-          <SupportLogo
-            name="Linux Foundation"
-            href="https://www.linuxfoundation.org"
-            src={LinuxFoundation}
           />
         </Support>
       </section>
