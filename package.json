@@ -22,7 +22,6 @@
     "@flowmap.gl/cluster": "^7.3.0",
     "@flowmap.gl/core": "^7.3.0",
     "@flowmap.gl/react": "^7.3.0",
-    "@google-cloud/logging": "^10.4.0",
     "@luma.gl/constants": "^8.1.0",
     "@luma.gl/core": "^8.1.0",
     "@mapbox/geo-viewport": "^0.4.0",
