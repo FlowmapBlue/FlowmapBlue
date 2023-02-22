@@ -11,6 +11,7 @@ import Layout from '../core/Layout';
 import {USED_BY_LOGOS} from '../used-by';
 import Gallery from '../components/Gallery';
 import Credits from '../components/Credits';
+import Head from 'next/head';
 
 const LogoTitle = styled.h1`
   margin-bottom: 1em;
@@ -118,6 +119,9 @@ const TitleRow = styled.div`
 
 const Index = () => (
   <Layout>
+    <Head>
+      <title>FlowmapBlue – Flow map visualization tool</title>
+    </Head>
     <TitleRow>
       <LogoTitle>
         <div style={{display: 'flex', alignItems: 'center', gap: 10}}>

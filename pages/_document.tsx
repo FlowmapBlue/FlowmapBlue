@@ -11,7 +11,6 @@ export default function Document() {
         <link rel="manifest" href="/manifest.json" />
         <link rel="preload" href={fontUrl} as="style" crossOrigin="crossorigin" />
         <link rel="stylesheet" href={fontUrl} crossOrigin="crossorigin" />
-        <title>FlowmapBlue – Flow map visualization tool</title>
         <meta charSet="utf-8" />
         <link rel="shortcut icon" href="/favicon-32x32.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
