@@ -3,7 +3,8 @@ import checkWebglSupport from './checkWebglSupport';
 import NoScrollContainer from './NoScrollContainer';
 import {Absolute} from './Boxes';
 import Logo from './Logo';
-import {Away, ColorScheme, Fallback} from './index';
+import {ColorScheme} from './colors';
+import {Away, Fallback} from './index';
 import styled from '@emotion/styled';
 import Image from 'next/image';
 
