@@ -14,7 +14,7 @@ import FlowMap, {
   Props as FlowMapProps,
 } from '../core';
 import Head from 'next/head';
-import sendEvent from './ga';
+import sendEvent from './sendEvent';
 import {useAsync} from 'react-use';
 import {csvParse} from 'd3-dsv';
 import {Intent} from '@blueprintjs/core';
@@ -93,11 +93,7 @@ const GSheetsFlowMap: React.FC<Props> = ({spreadSheetKey, flowsSheetKey, embed})
         configProps[prop.property] = prop.value;
       }
     }
-    sendEvent(
-      `${spreadSheetKey} "${configProps[ConfigPropName.TITLE] || 'Untitled'}"`,
-      `Load config`,
-      `Load config "${configProps[ConfigPropName.TITLE] || 'Untitled'}"`,
-    );
+    sendEvent(spreadSheetKey, configProps[ConfigPropName.TITLE] || 'Untitled');
 
     const flowsSheets = getFlowsSheets(configProps);
     if (flowsSheets && flowsSheets.length > 0) {

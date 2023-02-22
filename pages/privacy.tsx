@@ -16,27 +16,30 @@ const PrivacyPage: React.FC<Props> = (props) => {
         </Head>
         <p>
           FlowmapBlue does not store any of the data the users upload to Google Sheets. The data
-          from the spreadsheets is loaded directly into the clients&apos; browsers. We are using{' '}
+          from the spreadsheets is loaded directly into the clients&apos; browsers (using the{' '}
           <Away href="https://developers.google.com/chart/interactive/docs/querylanguage">
             Google Visualization API
-          </Away>{' '}
-          for that.
+          </Away>
+          ). Refer to the{' '}
+          <Away href="https://policies.google.com/privacy">Google Privacy Policy</Away> for details.
         </p>
         <p>
-          We treat the data as private, including the URLs of the spreadsheets and flow maps
-          published by the users. We do not disclose the URLs without getting an explicit consent
-          from the authors (unless the authors have already disclosed them by linking from a
-          publicly accessible website).
+          We collect statistics on when the published maps are loaded. We treat the data as private,
+          including the URLs of the spreadsheets and flow maps published by the users. We do not
+          disclose the URLs without getting an explicit consent from the authors (unless the authors
+          have already disclosed them by linking from a publicly accessible website). We may try to
+          contact you asking for a permission to add your flow map to the list of examples on the
+          homepage of FlowmapBlue.
         </p>
         <p>
-          We collect usage statistics via Google Analytics and track errors via Sentry. We want to
-          know how FlowmapBlue is used and when it fails so that we can improve it. The use of
-          Google Analytics involves setting cookies in the users&apos; browsers for detecting
-          recurring visits and working sessions.
+          We track errors on the website via{' '}
+          <Away href="https://sentry.io/trust/privacy/">Sentry</Away>. That is to know when
+          FlowmapBlue fails, so that we can improve it.
         </p>
         <p>
-          We may try to contact you asking for a permission to add your flow map to the list of
-          examples on the homepage of FlowmapBlue.
+          We use Mapbox for the background map. They are collecting some usage stats too. Please
+          refer to <Away href="https://www.mapbox.com/legal/legal-faq">Mapbox Legal FAQ</Away> for
+          details.
         </p>
       </section>
     </Layout>
