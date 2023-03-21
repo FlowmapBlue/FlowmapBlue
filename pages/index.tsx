@@ -128,8 +128,8 @@ const Index = () => (
           <Logo fontSize={35} collapseWidth={300} />
           <Away href="https://stand-with-ukraine.pp.ua">
             <Image
-              alt={'Stand with Ukraine'}
-              title={'Stand with Ukraine'}
+              alt={'Support Ukraine'}
+              title={'Support Ukraine'}
               width={30 * 0.8}
               height={20 * 0.8}
               src={'/images/StandWithUkraine.svg'}
