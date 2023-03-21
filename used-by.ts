@@ -61,7 +61,7 @@ export const USED_BY_LOGOS = [
   {
     name: 'Udd',
     img: UddLogo,
-    url: 'http://datagramas.cl/2015/03/run-run-inferencia-y-visualizaci%C3%B3n-de-uso-de-modos-de-transporte-en-la-ciudad-2015-presente/',
+    url: 'http://datagramas.cl/proyectos/runrun/',
   },
   // {
   //   name: 'NZMinistryOfTransport',
