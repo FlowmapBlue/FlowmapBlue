@@ -11,7 +11,7 @@ import {AppToaster} from '../core';
 import Layout from '../core/Layout';
 import Head from 'next/head';
 
-const MAX_GEOCODING_ROWS = 1000;
+const MAX_GEOCODING_ROWS = 500;
 const countries = COUNTRIES as {[key: string]: string};
 
 const SearchOptions = styled.div`
@@ -168,10 +168,13 @@ const Geocoding = () => {
         <title>Geocoding – FlowmapBlue</title>
       </Head>
       <section>
-        <p>Find geographic coordinates of locations by their names.</p>
+        <p>
+          Find geographic coordinates of locations by their names. Please, use sparingly. We have a
+          limit on the total number of requests.
+        </p>
       </section>
       <Container>
-        <H5>Location names (one per line)</H5>
+        <H5>{`Location names (one per line, ${MAX_GEOCODING_ROWS} max)`}</H5>
         <span />
         <div>
           <SearchOptions>
