@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import styled from '@emotion/styled';
 import {Button, H5, HTMLSelect, Intent, TextArea} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
@@ -10,8 +10,9 @@ import COUNTRIES from '../countries.json';
 import {AppToaster} from '../core';
 import Layout from '../core/Layout';
 import Head from 'next/head';
+import {timeDay} from 'd3-time';
 
-const MAX_GEOCODING_ROWS = 500;
+const MAX_GEOCODING_REQUESTS_PER_DAY = 1000;
 const countries = COUNTRIES as {[key: string]: string};
 
 const SearchOptions = styled.div`
@@ -62,11 +63,14 @@ function prepareOutput(
   delimiter: string,
 ) {
   const outputRows = [['id', 'name', 'lat', 'lon']];
+
   for (const {name, fetchState} of fetchStates) {
     if (!fetchState || fetchState.pending) {
-      outputRows.push([name, 'Pending…']);
+      if (!/^\s*$/.test(name)) {
+        outputRows.push([name, 'Pending…']);
+      }
     } else if (fetchState.rejected) {
-      outputRows.push([name, 'Failed']);
+      outputRows.push([name, fetchState.meta?.response?.statusText ?? 'Failed']);
     } else if (fetchState.fulfilled) {
       const value = fetchState.value;
       if (value && value.features && value.features.length > 0) {
@@ -82,6 +86,7 @@ function prepareOutput(
       }
     }
   }
+
   return dsvFormat(delimiter).formatRows(outputRows);
 }
 
@@ -94,9 +99,45 @@ interface GeoCoderProps {
   locationType: string;
   delimiter: string;
 }
-const GeoCoder = connect(({names, country, locationType}: GeoCoderProps) => {
+
+const cache = new Map();
+function cachingFetch(input: any, init: any) {
+  const req = new Request(input, init);
+  const cached = cache.get(req.url);
+
+  if (cached) {
+    console.log('Cache hit');
+    return new Promise((resolve) => resolve(cached.response.clone()));
+  }
+
+  const numRequests = Number.parseInt(localStorage.getItem('gcn') ?? '0', 32);
+  const lastGeocodingDay = Number.parseInt(localStorage.getItem('gcd') ?? '0', 32);
+  const today = timeDay.floor(new Date()).getTime();
+  if (isFinite(Number(lastGeocodingDay)) && lastGeocodingDay >= today) {
+    if (numRequests > MAX_GEOCODING_REQUESTS_PER_DAY) {
+      showTooManyRequestsToast();
+      return new Promise((resolve) =>
+        resolve(new Response('{}', {status: 429, statusText: 'Too many requests'})),
+      );
+    }
+  }
+  localStorage.setItem('gcd', Number(today).toString(32));
+  localStorage.setItem('gcn', Number(numRequests + 1).toString(32));
+
+  return fetch(req).then((response) => {
+    cache.set(req.url, {response: response.clone()});
+
+    return response;
+  });
+}
+
+const GeoCoder = connect.defaults({
+  // @ts-ignore
+  fetch: cachingFetch,
+})(({names, country, locationType}: GeoCoderProps) => {
   const fetches: {[key: string]: string} = {};
   for (const name of names) {
+    if (/^\s*$/.test(name)) continue;
     fetches[md5(name)] =
       `${baseURL}${encodeURIComponent(name)}.json?` +
       (country.length > 0 ? `country=${country}&` : '') +
@@ -112,6 +153,7 @@ const GeoCoder = connect(({names, country, locationType}: GeoCoderProps) => {
     })),
     props.delimiter,
   );
+
   return (
     <TextArea
       growVertically={false}
@@ -138,20 +180,11 @@ const Geocoding = () => {
     locationType: '',
     delimiter: '\t',
   });
+
   const handleStart = useCallback(() => {
     const names = input.split('\n');
-    if (names.length > MAX_GEOCODING_ROWS) {
-      AppToaster.show({
-        intent: Intent.DANGER,
-        icon: IconNames.WARNING_SIGN,
-        timeout: 7000,
-        message: (
-          <ToastContent>
-            {`Sorry, the geocoding requests are not free for us, hence, we
-           have to limit them to ${MAX_GEOCODING_ROWS} max.`}
-          </ToastContent>
-        ),
-      });
+    if (names.length > MAX_GEOCODING_REQUESTS_PER_DAY) {
+      showTooManyRequestsToast();
       return null;
     }
     setGeoCoderParams({
@@ -168,13 +201,13 @@ const Geocoding = () => {
         <title>Geocoding – FlowmapBlue</title>
       </Head>
       <section>
-        <p>
-          Find geographic coordinates of locations by their names. Please, use sparingly. We have a
-          limit on the total number of requests.
-        </p>
+        <p>Find geographic coordinates of locations by their names.</p>
+        <p>{`We limit the number of user requests to max ${MAX_GEOCODING_REQUESTS_PER_DAY} per day. 
+        Please use sparingly, we have a limit on the total number of requests we can make.
+        `}</p>
       </section>
       <Container>
-        <H5>{`Location names (one per line, ${MAX_GEOCODING_ROWS} max)`}</H5>
+        <H5>{`Location names (one per line)`}</H5>
         <span />
         <div>
           <SearchOptions>
@@ -265,3 +298,24 @@ const Geocoding = () => {
 };
 
 export default Geocoding;
+
+function showTooManyRequestsToast() {
+  if (AppToaster.getToasts().some((toast) => toast.key === 'too-many-requests')) {
+    return;
+  }
+
+  AppToaster.show(
+    {
+      intent: Intent.DANGER,
+      icon: IconNames.WARNING_SIGN,
+      timeout: 0,
+      message: (
+        <ToastContent>
+          {`Sorry, the geocoding requests are not free for us, hence, we
+            have to limit them to ${MAX_GEOCODING_REQUESTS_PER_DAY} max per day.`}
+        </ToastContent>
+      ),
+    },
+    'too-many-requests',
+  );
+}
