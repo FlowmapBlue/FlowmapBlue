@@ -21,10 +21,10 @@ async function mkdirp(dirPath) {
   const browser = await puppeteer.launch();
   await mkdirp(OUTPUT_PATH);
   const page = await browser.newPage();
-  await page.goto(APP_URL, {waitUntil: 'networkidle2'});
-  await page.waitForSelector('.bp4-toast-message');
-  await page.click('.bp4-toast-message button.bp4-intent-primary');
-  page.on('pageerror', console.error);
+  // await page.goto(APP_URL, {waitUntil: 'networkidle2'});
+  // await page.waitForSelector('.bp4-toast-message');
+  // await page.click('.bp4-toast-message button.bp4-intent-primary');
+  // page.on('pageerror', console.error);
 
   function getOutFileName(key, sheet, width) {
     return path.resolve(OUTPUT_PATH, `${key}${sheet ? `_${sheet}` : ''}__${width}px.jpg`);
@@ -41,7 +41,7 @@ async function mkdirp(dirPath) {
     process.stdout.write('Making screenshot of ' + url + '\n');
     await page.goto(url, {waitUntil: 'networkidle0', timeout});
     await page.waitForSelector('.bp4-multi-select', {timeout});
-    await page.waitFor(3000);
+    await page.waitForTimeout(3000);
     const fname = getOutFileName(key, sheet, width);
     process.stdout.write('Writing to ' + fname + '\n');
     await page.screenshot({

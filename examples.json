@@ -102,6 +102,11 @@
       "query": "v=38.075220,13.339093,10.03,0,0&a=1&b=1&bo=50&c=1&d=1&lt=1&lfm=ALL&col=YlOrRd&f=17"
     },
     {
+      "key": "1okIEQrprIg4v0tszr95mgCfulwoXCHYrVT-Sompi9DU",
+      "name": "Capital Bikeshare Washington 2018",
+      "query": "v=38.904350%2C-77.037376%2C12.5%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&f=50"
+    },
+    {
       "key": "1eZsRuRnUvJ8zU5VARuO5f5joQODvC-Fc8923GQRBrVI",
       "name": "Mobility in Catalonia during COVID-19",
       "query": "v=41.430779%2C2.073365%2C9.90%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&t=20201101T000000%2C20201201T000000&col=Default&f=50"
