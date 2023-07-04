@@ -10,7 +10,7 @@ import {ErrorsLocationsBlock, MAX_NUM_OF_IDS_IN_ERROR} from './FlowMap';
 import * as d3color from 'd3-color';
 
 export function prepareFlows(rows: any[]) {
-  let dupes: Flow[] = [];
+  // let dupes: Flow[] = [];
   // Will sum up duplicate flows (with same origin, dest and time)
   const byOriginDestTime = nest<any, Flow>()
     .key((d: any) => d.origin)
@@ -18,9 +18,9 @@ export function prepareFlows(rows: any[]) {
     .key((d: any) => parseTime(d.time)?.toISOString() || 'unknown')
     .rollup((dd) => {
       const {origin, dest, time, color} = dd[0];
-      if (dd.length > 1) {
-        dupes.push(dd[0]);
-      }
+      // if (dd.length > 1) {
+      //   dupes.push(dd[0]);
+      // }
 
       const rv: Flow = {
         origin,
@@ -51,28 +51,28 @@ export function prepareFlows(rows: any[]) {
       }
     }
   }
-  if (dupes.length > 0) {
-    AppToaster.show({
-      intent: Intent.WARNING,
-      icon: IconNames.WARNING_SIGN,
-      timeout: 0,
-      message: (
-        <ToastContent>
-          The following flows (origin → dest pairs) were encountered more than once in the dataset:
-          <ErrorsLocationsBlock>
-            {(dupes.length > MAX_NUM_OF_IDS_IN_ERROR
-              ? dupes.slice(0, MAX_NUM_OF_IDS_IN_ERROR)
-              : dupes
-            )
-              .map(({origin, dest, time}) => `${origin} → ${dest}${time ? ` ${time}` : ''}`)
-              .join(', ')}
-            {dupes.length > MAX_NUM_OF_IDS_IN_ERROR &&
-              ` … and ${dupes.length - MAX_NUM_OF_IDS_IN_ERROR} others`}
-          </ErrorsLocationsBlock>
-          Their counts were summed up.
-        </ToastContent>
-      ),
-    });
-  }
+  // if (dupes.length > 0) {
+  //   AppToaster.show({
+  //     intent: Intent.WARNING,
+  //     icon: IconNames.WARNING_SIGN,
+  //     timeout: 0,
+  //     message: (
+  //       <ToastContent>
+  //         The following flows (origin → dest pairs) were encountered more than once in the dataset:
+  //         <ErrorsLocationsBlock>
+  //           {(dupes.length > MAX_NUM_OF_IDS_IN_ERROR
+  //             ? dupes.slice(0, MAX_NUM_OF_IDS_IN_ERROR)
+  //             : dupes
+  //           )
+  //             .map(({origin, dest, time}) => `${origin} → ${dest}${time ? ` ${time}` : ''}`)
+  //             .join(', ')}
+  //           {dupes.length > MAX_NUM_OF_IDS_IN_ERROR &&
+  //             ` … and ${dupes.length - MAX_NUM_OF_IDS_IN_ERROR} others`}
+  //         </ErrorsLocationsBlock>
+  //         Their counts were summed up.
+  //       </ToastContent>
+  //     ),
+  //   });
+  // }
   return rv;
 }
