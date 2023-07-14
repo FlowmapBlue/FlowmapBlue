@@ -1160,7 +1160,7 @@ const FlowMap: React.FC<Props> = (props) => {
                         </li>
                         <li>
                           <a href="https://flowmap.city" target="_blank" rel="noopener noreferrer">
-                            → Visit www.flowmap.city
+                            → Visit www.flowmap.city to learn more
                           </a>
                         </li>
                       </ul>
