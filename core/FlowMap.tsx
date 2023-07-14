@@ -19,7 +19,16 @@ import FlowMapLayer, {
   LocationPickingInfo,
   PickingType,
 } from '@flowmap.gl/core';
-import {Button, ButtonGroup, Classes, Colors, HTMLSelect, Intent} from '@blueprintjs/core';
+import {
+  Tooltip as TooltipBp,
+  Button,
+  ButtonGroup,
+  Classes,
+  Colors,
+  HTMLSelect,
+  Intent,
+  Icon,
+} from '@blueprintjs/core';
 import {getViewStateForLocations, LocationTotalsLegend} from '@flowmap.gl/react';
 import WebMercatorViewport from '@math.gl/web-mercator';
 import {
@@ -29,6 +38,7 @@ import {
   Column,
   Description,
   LegendTitle,
+  Row,
   Title,
   TitleBox,
   ToastContent,
@@ -186,6 +196,10 @@ const TotalCount = styled.div<{darkMode: boolean}>((props) => ({
   textAlign: 'center',
 }));
 
+const FlowmapCityLinkArea = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 export const MAX_NUM_OF_IDS_IN_ERROR = 100;
 
 const FlowMap: React.FC<Props> = (props) => {
@@ -1088,6 +1102,57 @@ const FlowMap: React.FC<Props> = (props) => {
                         .replace('{1}', formatCount(totalUnfilteredCount))}
                 </TotalCount>
               )}
+              <FlowmapCityLinkArea>
+                <TooltipBp
+                  position="bottom"
+                  intent={Intent.PRIMARY}
+                  content={
+                    <div
+                      style={{fontSize: '12px', maxWidth: '250px'}}
+                    >{`Flowmap City is the new tool and product we are building. It offers secure storage,
+                    improved scalability and analytics capabilities, 
+                    an SQL query editor, and more coming.`}</div>
+                  }
+                >
+                  <Row spacing={10}>
+                    <a
+                      className={[Classes.MINIMAL, Classes.SMALL, Classes.INTENT_PRIMARY].join(' ')}
+                      style={{fontSize: '12px', color: Colors.BLUE5}}
+                      href={`https://app.flowmap.city/import/FlowmapBlue/${location.pathname}?${location.search}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Row spacing={5}>
+                        <Icon icon={IconNames.SHARE} size={12} />
+                        <span>Open in Flowmap City</span>
+                      </Row>
+                    </a>
+
+                    {/* <Column style={{position: 'relative', width: 16, height: 18}}>
+                    <Absolute>
+                      <TooltipBp
+                        position="bottom"
+                        intent={Intent.PRIMARY}
+                        content={
+                          <div
+                            style={{fontSize: '12px', maxWidth: '200px'}}
+                          >{`Flowmap City is our new product. It offers secure storage,
+                    improved scalability and analytics capabilities, 
+                    an SQL query editor, and more coming.`}</div>
+                        }
+                      >
+                        <Icon
+                          icon={IconNames.INFO_SIGN}
+                          size={14}
+                          intent={Intent.PRIMARY}
+                          style={{cursor: 'pointer'}}
+                        />
+                      </TooltipBp>
+                    </Absolute>
+                  </Column> */}
+                  </Row>
+                </TooltipBp>
+              </FlowmapCityLinkArea>
             </Column>
           </Collapsible>
         </TitleBox>
