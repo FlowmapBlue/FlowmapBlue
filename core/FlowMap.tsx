@@ -1150,7 +1150,7 @@ const FlowMap: React.FC<Props> = (props) => {
                   content={
                     <FlowmapCityPopoverContent>
                       {`Flowmap City is the new product we are building. It offers 
-                      a secure data storage, more analytics capabilities,
+                      secure data storage, more analytics capabilities,
                       improved scalability, an SQL query editor, and more coming. `}
                       <br />
                       <br />
