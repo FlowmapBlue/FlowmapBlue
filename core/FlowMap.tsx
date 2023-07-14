@@ -20,7 +20,7 @@ import FlowMapLayer, {
   PickingType,
 } from '@flowmap.gl/core';
 import {
-  Tooltip as TooltipBp,
+  Popover,
   Button,
   ButtonGroup,
   Classes,
@@ -28,6 +28,7 @@ import {
   HTMLSelect,
   Intent,
   Icon,
+  Position,
 } from '@blueprintjs/core';
 import {getViewStateForLocations, LocationTotalsLegend} from '@flowmap.gl/react';
 import WebMercatorViewport from '@math.gl/web-mercator';
@@ -200,7 +201,44 @@ const FlowmapCityLinkArea = styled.div`
   display: flex;
   justify-content: center;
 `;
+
+const FlowmapCityPopoverContent = styled.div`
+  font-size: 12px;
+  max-width: 260px;
+  padding: 10px;
+  ul > li {
+    margin-bottom: 5px;
+  }
+  background: ${Colors.BLUE1};
+  border-radius: 5px;
+`;
 export const MAX_NUM_OF_IDS_IN_ERROR = 100;
+
+const StyledFlowmapCityLink = styled.a`
+  color: ${Colors.BLUE5};
+  font-size: 12px;
+
+  div > span {
+    color: ${Colors.BLUE5};
+  }
+
+  &:hover {
+    div > span {
+      text-decoration: underline;
+    }
+  }
+`;
+
+const FlowmapCityLink: React.FC<{children: ReactNode}> = ({children}) => (
+  <StyledFlowmapCityLink
+    className={[Classes.MINIMAL, Classes.SMALL, Classes.INTENT_PRIMARY].join(' ')}
+    href={`https://app.flowmap.city/import/FlowmapBlue/${location.pathname}?${location.search}`}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    {children}
+  </StyledFlowmapCityLink>
+);
 
 const FlowMap: React.FC<Props> = (props) => {
   const {inBrowser, embed, config, spreadSheetKey, flowsSheet, locationsFetch, flowsFetch} = props;
@@ -1103,30 +1141,44 @@ const FlowMap: React.FC<Props> = (props) => {
                 </TotalCount>
               )}
               <FlowmapCityLinkArea>
-                <TooltipBp
-                  position="bottom"
-                  intent={Intent.PRIMARY}
+                <Popover
+                  hoverOpenDelay={500}
+                  interactionKind="hover"
+                  position={Position.BOTTOM}
+                  minimal
+                  modifiers={{offset: {offset: '0, 8'}}}
                   content={
-                    <div
-                      style={{fontSize: '12px', maxWidth: '250px'}}
-                    >{`Flowmap City is the new tool and product we are building. It offers secure storage,
-                    improved scalability and analytics capabilities, 
-                    an SQL query editor, and more coming.`}</div>
+                    <FlowmapCityPopoverContent>
+                      {`Flowmap City is the new product we are building. It offers 
+                      a secure data storage, more analytics capabilities,
+                      improved scalability, an SQL query editor, and more coming. `}
+                      <br />
+                      <br />
+                      <ul className="bp4-list-unstyled">
+                        <li>
+                          <FlowmapCityLink>→ Open this map in Flowmap City</FlowmapCityLink>
+                        </li>
+                        <li>
+                          <a href="https://flowmap.city" target="_blank" rel="noopener noreferrer">
+                            → Visit www.flowmap.city
+                          </a>
+                        </li>
+                      </ul>
+                    </FlowmapCityPopoverContent>
                   }
                 >
                   <Row spacing={10}>
-                    <a
-                      className={[Classes.MINIMAL, Classes.SMALL, Classes.INTENT_PRIMARY].join(' ')}
-                      style={{fontSize: '12px', color: Colors.BLUE5}}
-                      href={`https://app.flowmap.city/import/FlowmapBlue/${location.pathname}?${location.search}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Row spacing={5}>
-                        <Icon icon={IconNames.SHARE} size={12} />
+                    <FlowmapCityLink>
+                      <Row spacing={5} style={{display: 'inline-block'}}>
+                        <Icon
+                          color={Colors.BLUE5}
+                          icon={IconNames.SHARE}
+                          size={12}
+                          style={{height: 14}}
+                        />
                         <span>Open in Flowmap City</span>
                       </Row>
-                    </a>
+                    </FlowmapCityLink>
 
                     {/* <Column style={{position: 'relative', width: 16, height: 18}}>
                     <Absolute>
@@ -1151,7 +1203,7 @@ const FlowMap: React.FC<Props> = (props) => {
                     </Absolute>
                   </Column> */}
                   </Row>
-                </TooltipBp>
+                </Popover>
               </FlowmapCityLinkArea>
             </Column>
           </Collapsible>
