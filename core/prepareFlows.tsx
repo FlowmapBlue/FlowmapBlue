@@ -1,12 +1,6 @@
-import React from 'react';
 import {Flow} from './types';
 import {nest} from 'd3-collection';
 import {parseTime} from './time';
-import AppToaster from './AppToaster';
-import {Intent} from '@blueprintjs/core';
-import {IconNames} from '@blueprintjs/icons';
-import {ToastContent} from './Boxes';
-import {ErrorsLocationsBlock, MAX_NUM_OF_IDS_IN_ERROR} from './FlowMap';
 import * as d3color from 'd3-color';
 
 export function prepareFlows(rows: any[]) {
