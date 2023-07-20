@@ -197,29 +197,36 @@ const TotalCount = styled.div<{darkMode: boolean}>((props) => ({
   textAlign: 'center',
 }));
 
-const FlowmapCityLinkArea = styled.div`
+const FlowmapCityLinkArea = styled.div<{darkMode: boolean}>(
+  (props) => `
   display: flex;
   justify-content: center;
-`;
+  
+`,
+);
 
-const FlowmapCityPopoverContent = styled.div`
+const FlowmapCityPopoverContent = styled.div<{darkMode: boolean}>(
+  (props) => `
   font-size: 12px;
   max-width: 260px;
   padding: 10px;
   ul > li {
     margin-bottom: 5px;
   }
-  background: ${Colors.BLUE1};
+  background: ${props.darkMode ? Colors.BLUE1 : Colors.WHITE};
+  a { color: ${props.darkMode ? Colors.BLUE5 : Colors.BLUE3}; }
   border-radius: 5px;
-`;
+`,
+);
 export const MAX_NUM_OF_IDS_IN_ERROR = 100;
 
-const StyledFlowmapCityLink = styled.a`
-  color: ${Colors.BLUE5};
+const StyledFlowmapCityLink = styled.a<{darkMode: boolean}>(
+  (props) => `
+  color: ${props.darkMode ? Colors.BLUE5 : Colors.BLUE3};
   font-size: 12px;
 
   div > span {
-    color: ${Colors.BLUE5};
+    color: ${props.darkMode ? Colors.BLUE5 : Colors.BLUE3};
   }
 
   &:hover {
@@ -227,10 +234,15 @@ const StyledFlowmapCityLink = styled.a`
       text-decoration: underline;
     }
   }
-`;
+`,
+);
 
-const FlowmapCityLink: React.FC<{children: ReactNode}> = ({children}) => (
+const FlowmapCityLink: React.FC<{darkMode: boolean; children: ReactNode}> = ({
+  darkMode,
+  children,
+}) => (
   <StyledFlowmapCityLink
+    darkMode={darkMode}
     className={[Classes.MINIMAL, Classes.SMALL, Classes.INTENT_PRIMARY].join(' ')}
     href={`https://app.flowmap.city/import/FlowmapBlue/${location.pathname}?${location.search}`}
     target="_blank"
@@ -1140,15 +1152,15 @@ const FlowMap: React.FC<Props> = (props) => {
                         .replace('{1}', formatCount(totalUnfilteredCount))}
                 </TotalCount>
               )}
-              <FlowmapCityLinkArea>
+              <FlowmapCityLinkArea darkMode={darkMode}>
                 <Popover
-                  hoverOpenDelay={500}
+                  hoverOpenDelay={300}
                   interactionKind="hover"
                   position={Position.BOTTOM}
                   minimal
                   modifiers={{offset: {offset: '0, 8'}}}
                   content={
-                    <FlowmapCityPopoverContent>
+                    <FlowmapCityPopoverContent darkMode={darkMode}>
                       {`Flowmap City is the new product we are building. It offers 
                       secure data storage, more analytics capabilities,
                       improved scalability, an SQL query editor, and more coming. `}
@@ -1156,7 +1168,9 @@ const FlowMap: React.FC<Props> = (props) => {
                       <br />
                       <ul className="bp4-list-unstyled">
                         <li>
-                          <FlowmapCityLink>→ Open this map in Flowmap City</FlowmapCityLink>
+                          <FlowmapCityLink darkMode={darkMode}>
+                            → Open this map in Flowmap City
+                          </FlowmapCityLink>
                         </li>
                         <li>
                           <a href="https://flowmap.city" target="_blank" rel="noopener noreferrer">
@@ -1168,7 +1182,7 @@ const FlowMap: React.FC<Props> = (props) => {
                   }
                 >
                   <Row spacing={10}>
-                    <FlowmapCityLink>
+                    <FlowmapCityLink darkMode={darkMode}>
                       <Row spacing={5} style={{display: 'inline-block'}}>
                         <Icon
                           color={Colors.BLUE5}
