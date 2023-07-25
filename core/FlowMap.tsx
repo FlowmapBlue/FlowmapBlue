@@ -127,7 +127,7 @@ import Timeline from './Timeline';
 import {TimeGranularity} from './time';
 import {findAppropriateZoomLevel} from '@flowmap.gl/cluster';
 import {useRouter} from 'next/router';
-import {getFlowsSheetKey, makeGSheetsMapUrl} from '../components/constants';
+import {SPREADSHEET_KEY_RE, getFlowsSheetKey, makeGSheetsMapUrl} from '../components/constants';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -237,6 +237,13 @@ const StyledFlowmapCityLink = styled.a<{darkMode: boolean}>(
 `,
 );
 
+function getFlowmapCityUrl() {
+  const m = new RegExp(`^\/(${SPREADSHEET_KEY_RE})`).exec(location.pathname);
+  if (m && m.length > 0) {
+    return `https://app.flowmap.city/import/FlowmapBlue/${m[1]}?${location.search}`;
+  }
+}
+
 const FlowmapCityLink: React.FC<{darkMode: boolean; children: ReactNode}> = ({
   darkMode,
   children,
@@ -244,7 +251,7 @@ const FlowmapCityLink: React.FC<{darkMode: boolean; children: ReactNode}> = ({
   <StyledFlowmapCityLink
     darkMode={darkMode}
     className={[Classes.MINIMAL, Classes.SMALL, Classes.INTENT_PRIMARY].join(' ')}
-    href={`https://app.flowmap.city/import/FlowmapBlue/${location.pathname}?${location.search}`}
+    href={getFlowmapCityUrl()}
     target="_blank"
     rel="noopener noreferrer"
   >
