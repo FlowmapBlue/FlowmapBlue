@@ -12,7 +12,7 @@ import {
   useState,
 } from 'react';
 import {alea} from 'seedrandom';
-import {_MapContext as MapContext, StaticMap} from 'react-map-gl';
+import {Map as ReactMapGl} from 'react-map-gl';
 import FlowMapLayer, {
   FlowLayerPickingInfo,
   FlowPickingInfo,
@@ -120,7 +120,7 @@ import AppToaster from './AppToaster';
 import useDebounced from './hooks';
 import SharePopover from './SharePopover';
 import SettingsPopover from './SettingsPopover';
-import MapDrawingEditor, {MapDrawingFeature, MapDrawingMode} from './MapDrawingEditor';
+// import MapDrawingEditor, {MapDrawingFeature, MapDrawingMode} from './MapDrawingEditor';
 import getBbox from '@turf/bbox';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import Timeline from './Timeline';
@@ -806,40 +806,40 @@ const FlowMap: React.FC<Props> = (props) => {
     });
   };
 
-  const handleMapFeatureDrawn = (feature: MapDrawingFeature | undefined) => {
-    if (feature != null) {
-      const bbox = getBbox(feature) as [number, number, number, number];
-      const candidates = getLocationsInBbox(locationsTree, bbox);
-      if (candidates) {
-        const inPolygon = candidates.filter((loc) =>
-          booleanPointInPolygon(getLocationCentroid(loc), feature),
-        );
-        if (inPolygon.length > 0) {
-          handleChangeSelectLocations(inPolygon.map(getLocationId));
-          // TODO: support incremental
-        } else {
-          handleChangeSelectLocations(undefined);
-        }
-      }
-    }
-    setMapDrawingEnabled(false);
-    if (deckRef.current && deckRef.current.deck) {
-      // This is a workaround for a deck.gl issue.
-      // Without it the following happens:
-      // 1. When finishing a map drawing and releasing the mouse over a deck.gl layer
-      //    an onClick event is generated.
-      // 2. Deck.gl sets the info of this event to _lastPointerDownInfo
-      //    which holds the last object that was clicked any time before
-      //    starting the map drawing.
-      // 3. The object info is passed to the onClick handler of the corresponding
-      //    layer which leads to selecting the object and altering the map drawing selection.
-      deckRef.current.deck._lastPointerDownInfo = null;
-    }
-  };
+  // const handleMapFeatureDrawn = (feature: MapDrawingFeature | undefined) => {
+  //   if (feature != null) {
+  //     const bbox = getBbox(feature) as [number, number, number, number];
+  //     const candidates = getLocationsInBbox(locationsTree, bbox);
+  //     if (candidates) {
+  //       const inPolygon = candidates.filter((loc) =>
+  //         booleanPointInPolygon(getLocationCentroid(loc), feature),
+  //       );
+  //       if (inPolygon.length > 0) {
+  //         handleChangeSelectLocations(inPolygon.map(getLocationId));
+  //         // TODO: support incremental
+  //       } else {
+  //         handleChangeSelectLocations(undefined);
+  //       }
+  //     }
+  //   }
+  //   setMapDrawingEnabled(false);
+  //   if (deckRef.current && deckRef.current.deck) {
+  //     // This is a workaround for a deck.gl issue.
+  //     // Without it the following happens:
+  //     // 1. When finishing a map drawing and releasing the mouse over a deck.gl layer
+  //     //    an onClick event is generated.
+  //     // 2. Deck.gl sets the info of this event to _lastPointerDownInfo
+  //     //    which holds the last object that was clicked any time before
+  //     //    starting the map drawing.
+  //     // 3. The object info is passed to the onClick handler of the corresponding
+  //     //    layer which leads to selecting the object and altering the map drawing selection.
+  //     deckRef.current.deck._lastPointerDownInfo = null;
+  //   }
+  // };
 
-  const handleToggleMapDrawing = () => {
-    setMapDrawingEnabled(!mapDrawingEnabled);
-  };
+  // const handleToggleMapDrawing = () => {
+  //   setMapDrawingEnabled(!mapDrawingEnabled);
+  // };
 
   const handleZoomIn = () => {
     dispatch({type: ActionType.ZOOM_IN});
@@ -968,29 +968,25 @@ const FlowMap: React.FC<Props> = (props) => {
         <DeckGL
           ref={deckRef}
           controller={CONTROLLER_OPTIONS}
-          viewState={viewport}
+          initialViewState={viewport}
           views={[new MapView({id: 'map', repeat: true})]}
           onViewStateChange={handleViewStateChange}
           layers={getLayers()}
-          ContextProvider={MapContext.Provider}
-          parameters={{
-            clearColor: darkMode ? [0, 0, 0, 1] : [255, 255, 255, 1],
-          }}
+          parameters={{clearColor: darkMode ? [0, 0, 0, 1] : [255, 255, 255, 1]}}
         >
           {mapboxAccessToken && baseMapEnabled && (
-            <StaticMap
-              mapboxApiAccessToken={mapboxAccessToken}
+            <ReactMapGl
+              mapboxAccessToken={mapboxAccessToken}
               mapStyle={mapboxMapStyle}
-              width="100%"
-              height="100%"
+              style={{width: '100%', height: '100%'}}
             />
           )}
-          {mapDrawingEnabled && (
+          {/* {mapDrawingEnabled && (
             <MapDrawingEditor
               mapDrawingMode={MapDrawingMode.POLYGON}
               onFeatureDrawn={handleMapFeatureDrawn}
             />
-          )}
+          )} */}
         </DeckGL>
       </DeckGLOuter>
       {timeExtent && timeGranularity && totalCountsByTime && selectedTimeRange && (
@@ -1038,14 +1034,14 @@ const FlowMap: React.FC<Props> = (props) => {
                   onClick={handleResetBearingPitch}
                 />
               </ButtonGroup>
-              <ButtonGroup vertical={true}>
+              {/* <ButtonGroup vertical={true}>
                 <Button
                   title="Filter by drawing a polygon"
                   icon={IconNames.POLYGON_FILTER}
                   active={mapDrawingEnabled}
                   onClick={handleToggleMapDrawing}
                 />
-              </ButtonGroup>
+              </ButtonGroup> */}
               {!inBrowser && !embed && (
                 <ButtonGroup vertical={true}>
                   <SharePopover>

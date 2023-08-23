@@ -1,4 +1,3 @@
-import {FlyToInterpolator} from 'react-map-gl';
 import {Config, ConfigPropName, Flow, ViewportProps} from './types';
 import {Props as TooltipProps} from './Tooltip';
 import * as queryString from 'query-string';
@@ -10,6 +9,7 @@ import {Reducer} from 'react';
 import {easeCubic} from 'd3-ease';
 import {timeFormat, timeParse} from 'd3-time-format';
 import {ParsedUrlQuery} from 'querystring';
+import {FlyToInterpolator} from '@deck.gl/core';
 
 export const MIN_ZOOM_LEVEL = 0;
 export const MAX_ZOOM_LEVEL = 20;
