@@ -128,6 +128,7 @@ import {TimeGranularity} from './time';
 import {findAppropriateZoomLevel} from '@flowmap.gl/cluster';
 import {useRouter} from 'next/router';
 import {SPREADSHEET_KEY_RE, getFlowsSheetKey, makeGSheetsMapUrl} from '../components/constants';
+import {useMeasure} from 'react-use';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -951,6 +952,7 @@ const FlowMap: React.FC<Props> = (props) => {
     return layers;
   };
 
+  const {width, height} = getContainerClientRect() ?? {};
   return (
     <NoScrollContainer
       ref={outerRef}
@@ -968,7 +970,11 @@ const FlowMap: React.FC<Props> = (props) => {
         <DeckGL
           ref={deckRef}
           controller={CONTROLLER_OPTIONS}
-          initialViewState={viewport}
+          initialViewState={{
+            ...viewport,
+            width, // passing dimensions prevents half blank map on resize
+            height,
+          }}
           views={[new MapView({id: 'map', repeat: true})]}
           onViewStateChange={handleViewStateChange}
           layers={getLayers()}
