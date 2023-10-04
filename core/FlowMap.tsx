@@ -241,7 +241,7 @@ const StyledFlowmapCityLink = styled.a<{darkMode: boolean}>(
 function getFlowmapCityUrl() {
   const m = new RegExp(`^\/(${SPREADSHEET_KEY_RE})`).exec(location.pathname);
   if (m && m.length > 0) {
-    return `https://app.flowmap.city/import/FlowmapBlue/${m[1]}?${location.search}`;
+    return `https://app.flowmap.city/import/FlowmapBlue/${m[1]}${location.search}`;
   }
 }
 
