@@ -35,6 +35,14 @@ type Props = {
 /* eslint-disable react/jsx-key */
 const NEWS_ITEMS = [
   <NewsItem>
+    <NewsDate>{`Sept 1, 2023`}</NewsDate>
+    <NewsText>
+      <Away href="https://flowmap.city">Flowmap City</Away> is the new product we are building. It
+      offers secure data storage, more analytics capabilities, improved scalability, an SQL query
+      editor, and more coming.
+    </NewsText>
+  </NewsItem>,
+  <NewsItem>
     <NewsDate>{`Jun 28, 2022`}</NewsDate>
     <NewsText>
       <Away href="https://deck.gl/showcase">FlowmapBlue featured in Deck.gl showcase</Away>
