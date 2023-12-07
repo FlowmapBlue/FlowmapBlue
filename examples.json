@@ -38,6 +38,11 @@
       "name": "Yearly migration in Gothenburg, SWE"
     },
     {
+      "key": "1LdI8f92UFFpANt8dlJ_GGxjq9gdZ1YzXL2Z13FFpkqo",
+      "query": "v=46.882300%2C8.093152%2C7.57%2C0%2C0&a=0&as=1&b=1&bo=75&c=1&ca=1&d=1&fe=1&lt=1&lfm=ALL&col=Default&f=50",
+      "name": "Trains on the Swiss rail network in 2022"
+    },
+    {
       "key": "13PZndO5uCtm88VBzdHcKX37NrGIrs8iWwXaSrtnJf-U",
       "name": "1 billion U.S. air passengers in 2018",
       "query": "v=36.849073,-100.022031,3.68&a=0&b=1&c=1&d=1&lt=1&col=BuPu&f=47"

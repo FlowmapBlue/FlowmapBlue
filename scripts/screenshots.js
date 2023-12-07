@@ -40,7 +40,7 @@ async function mkdirp(dirPath) {
     const url = `${APP_URL}/${key}${sheet ? `/${sheet}` : ''}/embed${query ? `?${query}` : ''}`;
     process.stdout.write('Making screenshot of ' + url + '\n');
     await page.goto(url, {waitUntil: 'networkidle0', timeout});
-    await page.waitForSelector('.bp4-multi-select', {timeout});
+    // await page.waitForSelector('.bp4-multi-select', {timeout});
     await page.waitForTimeout(3000);
     const fname = getOutFileName(key, sheet, width);
     process.stdout.write('Writing to ' + fname + '\n');
