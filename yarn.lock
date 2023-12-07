@@ -627,11 +627,13 @@
     "@babel/runtime" "^7.12.0"
     gl-matrix "^3.4.0"
 
-"@nebula.gl/edit-modes@0.20.1":
-  version "0.20.1"
-  resolved "https://registry.yarnpkg.com/@nebula.gl/edit-modes/-/edit-modes-0.20.1.tgz#fc18fad69b59271d04d95de375f9a82e941b5512"
-  integrity sha512-gqaN0bzG7HAI8ycGw2bmADdrvh9g6Haz9DPdLB/NmvDF0ETVxpaa7pIVkbzbCC7Cnd8vsT9dZAe0wB4sUSunjg==
+"@nebula.gl/edit-modes@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@nebula.gl/edit-modes/-/edit-modes-1.0.4.tgz#df37751768239fb37dfcb697b0b90e11371a47a3"
+  integrity sha512-x0t73q2wmiVLK15+0DnkpsO7e7L69dZ/3xISEZlo/2pEJc0op2UCJ7BynRyuZq6Bb8ZvwJCVjyspaUGYQqabNg==
   dependencies:
+    "@turf/along" ">=6.3.0"
+    "@turf/area" ">=4.0.0"
     "@turf/bbox" ">=4.0.0"
     "@turf/bbox-polygon" ">=4.0.0"
     "@turf/bearing" ">=4.0.0"
@@ -647,6 +649,7 @@
     "@turf/helpers" ">=4.0.0"
     "@turf/intersect" ">=4.0.0"
     "@turf/line-intersect" ">=4.0.0"
+    "@turf/midpoint" ">=4.0.0"
     "@turf/nearest-point-on-line" ">=4.0.0"
     "@turf/point-to-line-distance" ">=4.0.0"
     "@turf/polygon-to-line" ">=4.0.0"
@@ -870,7 +873,18 @@
   dependencies:
     tslib "^2.4.0"
 
-"@turf/area@^6.3.0":
+"@turf/along@>=6.3.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/along/-/along-6.5.0.tgz#ab12eec58a14de60fe243a62d31a474f415c8fef"
+  integrity sha512-LLyWQ0AARqJCmMcIEAXF4GEu8usmd4Kbz3qk1Oy5HoRNpZX47+i5exQtmIWKdqJ1MMhW26fCTXgpsEs5zgJ5gw==
+  dependencies:
+    "@turf/bearing" "^6.5.0"
+    "@turf/destination" "^6.5.0"
+    "@turf/distance" "^6.5.0"
+    "@turf/helpers" "^6.5.0"
+    "@turf/invariant" "^6.5.0"
+
+"@turf/area@>=4.0.0", "@turf/area@^6.3.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@turf/area/-/area-6.5.0.tgz#1d0d7aee01d8a4a3d4c91663ed35cc615f36ad56"
   integrity sha512-xCZdiuojokLbQ+29qR6qoMD89hv+JAgWjLrwSEWL+3JV8IXKeNFl6XkEJz9HGkVpnXvQKJoRz4/liT+8ZZ5Jyg==
@@ -908,6 +922,14 @@
   dependencies:
     "@turf/helpers" "^6.3.0"
     "@turf/invariant" "^6.3.0"
+
+"@turf/bearing@^6.5.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/bearing/-/bearing-6.5.0.tgz#462a053c6c644434bdb636b39f8f43fb0cd857b0"
+  integrity sha512-dxINYhIEMzgDOztyMZc20I7ssYVNEpSv04VbMo5YPQsqa80KO3TFvbuCahMsCAW5z8Tncc8dwBlEFrmRjJG33A==
+  dependencies:
+    "@turf/helpers" "^6.5.0"
+    "@turf/invariant" "^6.5.0"
 
 "@turf/boolean-clockwise@^6.3.0":
   version "6.3.0"
@@ -985,6 +1007,14 @@
     "@turf/helpers" "^6.3.0"
     "@turf/invariant" "^6.3.0"
 
+"@turf/destination@^6.5.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/destination/-/destination-6.5.0.tgz#30a84702f9677d076130e0440d3223ae503fdae1"
+  integrity sha512-4cnWQlNC8d1tItOz9B4pmJdWpXqS0vEvv65bI/Pj/genJnsL7evI0/Xw42RvEGROS481MPiU80xzvwxEvhQiMQ==
+  dependencies:
+    "@turf/helpers" "^6.5.0"
+    "@turf/invariant" "^6.5.0"
+
 "@turf/difference@>=4.0.0":
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/@turf/difference/-/difference-6.3.0.tgz#dee2bb10fb80896ba3a7c8fe30be3e9f9d604c1e"
@@ -1001,6 +1031,14 @@
   dependencies:
     "@turf/helpers" "^6.3.0"
     "@turf/invariant" "^6.3.0"
+
+"@turf/distance@^6.5.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-6.5.0.tgz#21f04d5f86e864d54e2abde16f35c15b4f36149a"
+  integrity sha512-xzykSLfoURec5qvQJcfifw/1mJa+5UwByZZ5TZ8iaqjGYN0vomhV9aiSLeYdUGtYRESZ+DYC/OzY+4RclZYgMg==
+  dependencies:
+    "@turf/helpers" "^6.5.0"
+    "@turf/invariant" "^6.5.0"
 
 "@turf/ellipse@>=4.0.0":
   version "6.3.0"
@@ -1070,6 +1108,16 @@
   resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-6.5.0.tgz#b725c3653c9f432133eaa04d3421f7e51e0418ca"
   integrity sha512-RrArvtsV0vdsCBegoBtOalgdSOfkBrTJ07VkpiCnq/491W67hnMWmDu7e6Ztw0C3WldRYTXkg3SumfdzZxLBHA==
   dependencies:
+    "@turf/helpers" "^6.5.0"
+
+"@turf/midpoint@>=4.0.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/midpoint/-/midpoint-6.5.0.tgz#5f9428959309feccaf3f55873a8de70d4121bdce"
+  integrity sha512-MyTzV44IwmVI6ec9fB2OgZ53JGNlgOpaYl9ArKoF49rXpL84F9rNATndbe0+MQIhdkw8IlzA6xVP4lZzfMNVCw==
+  dependencies:
+    "@turf/bearing" "^6.5.0"
+    "@turf/destination" "^6.5.0"
+    "@turf/distance" "^6.5.0"
     "@turf/helpers" "^6.5.0"
 
 "@turf/nearest-point-on-line@>=4.0.0":
@@ -3769,13 +3817,13 @@ react-lifecycles-compat@^3.0.2:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-map-gl-draw@0.20.1:
-  version "0.20.1"
-  resolved "https://registry.yarnpkg.com/react-map-gl-draw/-/react-map-gl-draw-0.20.1.tgz#96dd1e17d07548b3e95e475932fa5fd90f111427"
-  integrity sha512-GXJS7Y4EK5wy/T+2lTg0fxpofDfP/dV57q1dSYzuQDlpZ5YvoridMo92ZpeshJ1UyFRllqOYh6h1o0QMNq+2/Q==
+react-map-gl-draw@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/react-map-gl-draw/-/react-map-gl-draw-1.0.4.tgz#09986b69e7c025d944d75e0ecd440ae81ed6f8ea"
+  integrity sha512-IEO/oe5rFPhYObcyX6X4MVb64S3OkUgiJU17msqMttRmIl8vBlrRtW+M8XFumRjH3Tn+2Lwydj94PM09HvbA+w==
   dependencies:
     "@math.gl/web-mercator" "^3.1.3"
-    "@nebula.gl/edit-modes" "0.20.1"
+    "@nebula.gl/edit-modes" "1.0.4"
     "@turf/helpers" "^6.1.4"
     "@types/react-map-gl" "5.2.2"
     mjolnir.js "^2.4.0"

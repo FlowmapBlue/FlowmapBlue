@@ -95,6 +95,6 @@
   },
   "license": "CC BY-NC 4.0",
   "volta": {
-    "node": "16.9.0"
+    "node": "20.10.0"
   }
 }
