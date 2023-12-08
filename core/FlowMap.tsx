@@ -129,6 +129,7 @@ import {findAppropriateZoomLevel} from '@flowmap.gl/cluster';
 import {useRouter} from 'next/router';
 import {SPREADSHEET_KEY_RE, getFlowsSheetKey, makeGSheetsMapUrl} from '../components/constants';
 import {useMeasure} from 'react-use';
+import {DEFAULT_MAPBOX_ACCESS_TOKEN} from './config';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -980,13 +981,15 @@ const FlowMap: React.FC<Props> = (props) => {
           layers={getLayers()}
           parameters={{clearColor: darkMode ? [0, 0, 0, 1] : [255, 255, 255, 1]}}
         >
-          {mapboxAccessToken && baseMapEnabled && authorName !== 'ESTA' && (
-            <ReactMapGl
-              mapboxAccessToken={mapboxAccessToken}
-              mapStyle={mapboxMapStyle}
-              style={{width: '100%', height: '100%'}}
-            />
-          )}
+          {mapboxAccessToken &&
+            baseMapEnabled &&
+            (authorName !== 'ESTA' || mapboxAccessToken !== DEFAULT_MAPBOX_ACCESS_TOKEN) && (
+              <ReactMapGl
+                mapboxAccessToken={mapboxAccessToken}
+                mapStyle={mapboxMapStyle}
+                style={{width: '100%', height: '100%'}}
+              />
+            )}
           {/* {mapDrawingEnabled && (
             <MapDrawingEditor
               mapDrawingMode={MapDrawingMode.POLYGON}
