@@ -980,13 +980,13 @@ const FlowMap: React.FC<Props> = (props) => {
           layers={getLayers()}
           parameters={{clearColor: darkMode ? [0, 0, 0, 1] : [255, 255, 255, 1]}}
         >
-          {/* {mapboxAccessToken && baseMapEnabled && (
+          {mapboxAccessToken && baseMapEnabled && authorName !== 'ESTA' && (
             <ReactMapGl
               mapboxAccessToken={mapboxAccessToken}
               mapStyle={mapboxMapStyle}
               style={{width: '100%', height: '100%'}}
             />
-          )} */}
+          )}
           {/* {mapDrawingEnabled && (
             <MapDrawingEditor
               mapDrawingMode={MapDrawingMode.POLYGON}
