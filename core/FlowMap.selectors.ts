@@ -18,7 +18,12 @@ import {
 import * as Cluster from '@flowmap.gl/cluster';
 import {ClusterNode, findAppropriateZoomLevel, isCluster} from '@flowmap.gl/cluster';
 import getColors from './colors';
-import {DEFAULT_MAP_STYLE_DARK, DEFAULT_MAP_STYLE_LIGHT, parseBoolConfigProp} from './config';
+import {
+  DEFAULT_MAP_STYLE_DARK,
+  DEFAULT_MAP_STYLE_LIGHT,
+  DEFAULT_MAPBOX_ACCESS_TOKEN,
+  parseBoolConfigProp,
+} from './config';
 import {nest} from 'd3-collection';
 import {Props} from './FlowMap';
 import {bounds} from '@mapbox/geo-viewport';
@@ -343,7 +348,12 @@ export const getMapboxMapStyle = createSelector(getConfig, getDarkMode, (config,
   if (configMapStyle) {
     return configMapStyle;
   }
-  return darkMode ? DEFAULT_MAP_STYLE_DARK : DEFAULT_MAP_STYLE_LIGHT;
+  const accessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN];
+  if (accessToken !== DEFAULT_MAPBOX_ACCESS_TOKEN) {
+    return darkMode ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11';
+  } else {
+    return darkMode ? DEFAULT_MAP_STYLE_DARK : DEFAULT_MAP_STYLE_LIGHT;
+  }
 });
 
 export const getUnknownLocations: Selector<Set<string> | undefined> = createSelector(
