@@ -15,9 +15,9 @@ const MoreLink = styled.a`
   cursor: pointer;
 `;
 
-export default class ReadMore extends React.Component<{children: ReactNode}> {
+export default class ReadMore extends React.Component<{isOpen?: boolean; children: ReactNode}> {
   state = {
-    isOpen: false,
+    isOpen: this.props.isOpen ?? false,
   };
   handleClick = () => this.setState({isOpen: true});
   render() {

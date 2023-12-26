@@ -47,6 +47,11 @@ const HowToPage: React.FC<Props> = (props) => {
       </Head>
       <section>
         <h1>How to make a flow map</h1>
+        <ReadMore isOpen>
+          Consider using <Away href={'http://flowmap.city'}>Flowmap City</Away>, the new product we
+          are building. It supports data uploads to a secure data storage, offers more analytics
+          capabilities, improved scalability, an SQL query editor, and more coming.
+        </ReadMore>
         <p>
           To visualize and publish a data set as a flow map you need to have a Google account.{' '}
           <Away href="https://accounts.google.com/signup">Sign up here</Away> if you don&apos;t.
