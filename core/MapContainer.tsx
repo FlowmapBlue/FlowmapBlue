@@ -43,7 +43,7 @@ const MapContainer: React.FC<Props> = ({embed, children}) => (
             <div className={'logo'}>
               <Logo embed={embed} fontSize={20} />
             </div>
-            <Away href="https://stand-with-ukraine.pp.ua">
+            <Away href="https://supportukrainenow.org/">
               <Image
                 alt={'Support Ukraine'}
                 title={'Support Ukraine'}

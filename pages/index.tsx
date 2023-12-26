@@ -126,7 +126,7 @@ const Index = () => (
       <LogoTitle>
         <div style={{display: 'flex', alignItems: 'center', gap: 10}}>
           <Logo fontSize={35} collapseWidth={300} />
-          <Away href="https://stand-with-ukraine.pp.ua">
+          <Away href="https://supportukrainenow.org/">
             <Image
               alt={'Support Ukraine'}
               title={'Support Ukraine'}
