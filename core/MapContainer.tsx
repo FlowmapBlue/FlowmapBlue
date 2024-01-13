@@ -15,20 +15,18 @@ interface Props {
 
 const supportsWebGl = checkWebglSupport();
 
-const LogoOuter = styled(Absolute)`
-  .logo {
-    filter: grayscale(1);
-    svg {
-      circle {
-        fill: #fff;
-        stroke: ${ColorScheme.primary};
-        stroke-width: 10px;
-      }
-      path {
-        fill: #000;
-        stroke-width: 10px;
-        stroke: ${ColorScheme.primary};
-      }
+const LogoOuter = styled.div`
+  filter: grayscale(1);
+  svg {
+    circle {
+      fill: #fff;
+      stroke: ${ColorScheme.primary};
+      stroke-width: 10px;
+    }
+    path {
+      fill: #000;
+      stroke-width: 10px;
+      stroke: ${ColorScheme.primary};
     }
   }
 `;
@@ -38,11 +36,11 @@ const MapContainer: React.FC<Props> = ({embed, children}) => (
     {supportsWebGl ? (
       <>
         {children}
-        <LogoOuter top={10} left={10}>
+        <Absolute top={10} left={10}>
           <div style={{display: 'flex', alignItems: 'flex-end', gap: 10}}>
-            <div className={'logo'}>
+            <LogoOuter>
               <Logo embed={embed} fontSize={20} />
-            </div>
+            </LogoOuter>
             <Away href="https://supportukrainenow.org/">
               <Image
                 alt={'Support Ukraine'}
@@ -53,7 +51,7 @@ const MapContainer: React.FC<Props> = ({embed, children}) => (
               />
             </Away>
           </div>
-        </LogoOuter>
+        </Absolute>
       </>
     ) : (
       <Fallback>

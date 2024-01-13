@@ -31,22 +31,6 @@ const Outer = styled.div`
     flex-direction: row;
   }
 
-  .logo {
-    //display: flex;
-    //align-items: center;
-    ////border: 1px solid red;
-    //margin-right: 20px;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-  }
-
-  &.hide-logo {
-    .logo {
-      display: none;
-    }
-  }
-
   .right-links {
     flex-grow: 1;
     display: flex;
@@ -59,10 +43,8 @@ const Outer = styled.div`
   }
 
   @media screen and (min-width: ${BREAKPOINT_WIDTH}px) {
-    &:not(.hide-logo) {
-      .nav-links {
-        margin-left: 50px;
-      }
+    .nav-links {
+      margin-left: 50px;
     }
   }
   @media screen and (max-width: ${BREAKPOINT_WIDTH}px) {
@@ -92,6 +74,12 @@ const Outer = styled.div`
       justify-content: center;
     }
   }
+`;
+
+const LogoOuter = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 10px;
 `;
 
 const LinkItem = styled.div`
@@ -170,16 +158,10 @@ const Nav = () => {
   );
 
   return (
-    <Outer
-      className={[
-        Classes.DARK,
-        hamburgerOpen ? 'responsive' : '',
-        // route === '/' ? 'hide-logo' : '',
-      ].join(' ')}
-    >
-      <div className="logo">
+    <Outer className={[Classes.DARK, hamburgerOpen ? 'responsive' : ''].join(' ')}>
+      <LogoOuter>
         <Logo fontSize={20} showText={false} />
-      </div>
+      </LogoOuter>
       <div
         className={[
           'menu-button',
