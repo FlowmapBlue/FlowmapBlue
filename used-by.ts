@@ -1,16 +1,16 @@
 import MTALogo from './public/images/mta-logo.svg';
-import TflLogo from './public/images/Tfl-logo.svg';
-import NSWLogo from './public/images/nsw-logo-white.svg';
+// import TflLogo from './public/images/Tfl-logo.svg';
 import AecomLogo from './public/images/aecom-logo-light.svg';
-import EurocontrolLogo from './public/images/eurocontrol-logo.svg';
 import ElPasoLogo from './public/images/city-of-el-paso-eptx.png';
+import EurocontrolLogo from './public/images/eurocontrol-logo.svg';
+import NSWLogo from './public/images/nsw-logo-white.svg';
 import OpenDataZuerichLogo from './public/images/stadtzurich-opendata-logo.svg';
-import TrondheimLogo from './public/images/trondheim-logo.svg';
+// import TrondheimLogo from './public/images/trondheim-logo.svg';
 import UddLogo from './public/images/logo-udd-blanco.svg';
-import NZMinistryOfTransportLogo from './public/images/nz-minstry-of-transport-logo.svg';
-import KingCountyLogo from './public/images/KingCounty-logo.png';
-import HorrocksLogo from './public/images/horrocks-logo.svg';
+// import NZMinistryOfTransportLogo from './public/images/nz-minstry-of-transport-logo.svg';
+// import KingCountyLogo from './public/images/KingCounty-logo.png';
 import GreaterAucklandLogo from './public/images/greater-auckland-logo.svg';
+import HorrocksLogo from './public/images/horrocks-logo.svg';
 // import MoeLogo from './public/images/moe-logo.svg';
 import AltaLogo from './public/images/alta-logo.svg';
 
@@ -22,7 +22,7 @@ export const USED_BY_LOGOS = [
     url: 'https://www.planning.nsw.gov.au/Research-and-Demography/Population-Projections/A-changing-population',
     width: 50,
   },
-  {name: 'Tfl', img: TflLogo, url: 'https://tfl.gov.uk'},
+  // {name: 'Tfl', img: TflLogo, url: 'https://tfl.gov.uk'},
   {name: 'Aecom', img: AecomLogo, url: 'https://aecom.com', width: 80},
   {
     name: 'Eurocontrol',
