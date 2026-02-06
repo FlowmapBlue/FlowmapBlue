@@ -890,6 +890,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@netlify/plugin-nextjs@npm:^5.15.8":
+  version: 5.15.8
+  resolution: "@netlify/plugin-nextjs@npm:5.15.8"
+  checksum: 10c0/7bfff74ab246dceb9112e66c465d47c17f4e1fbaf26ca449e33adc8828f915dc5cb6f4d2f0a585cae5a25ba292289757c73f173b8e54fbea101923797b91ee15
+  languageName: node
+  linkType: hard
+
 "@next/env@npm:12.3.4":
   version: 12.3.4
   resolution: "@next/env@npm:12.3.4"
@@ -3388,6 +3395,7 @@ __metadata:
     "@luma.gl/core": "npm:8.5.20"
     "@mapbox/geo-viewport": "npm:^0.4.0"
     "@math.gl/web-mercator": "npm:^3.2.1"
+    "@netlify/plugin-nextjs": "npm:^5.15.8"
     "@sentry/browser": "npm:^5.15.4"
     "@turf/area": "npm:^6.3.0"
     "@turf/bbox": "npm:^6.0.1"
