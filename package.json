@@ -64,6 +64,7 @@
     "seedrandom": "^3.0.5"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^4",
     "@types/blueimp-md5": "^2.18.0",
     "@types/d3-array": "^2.0.0",
     "@types/d3-collection": "^1.0.7",
@@ -100,6 +101,6 @@
   },
   "license": "CC BY-NC 4.0",
   "volta": {
-    "node": "22.22.0"
+    "node": "18.20.8"
   }
 }

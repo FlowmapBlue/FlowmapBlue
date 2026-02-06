@@ -10,6 +10,7 @@ const withTM = require('next-transpile-modules')([
 
 module.exports = withTM({
   reactStrictMode: true,
+  trailingSlash: true,
   async headers() {
     return [
       {
