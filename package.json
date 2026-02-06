@@ -1,6 +1,7 @@
 {
   "name": "flowmap.blue",
   "private": true,
+  "packageManager": "yarn@4.x",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -80,8 +81,8 @@
     "@types/lodash.debounce": "^4.0.4",
     "@types/mapbox__geo-viewport": "^0.4.0",
     "@types/node": "^16.18.11",
-    "@types/react": "^18.0.26",
-    "@types/react-dom": "^18.0.10",
+    "@types/react": "^17.0.67",
+    "@types/react-dom": "^17.0.20",
     "@types/react-helmet": "^6.1.0",
     "@types/recompose": "^0.30.7",
     "@types/seedrandom": "^2.4.28",

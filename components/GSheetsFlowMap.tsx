@@ -34,7 +34,7 @@ const ToastContent = styled.div`
   font-size: 12px;
 `;
 
-const FlowMapWithData = compose<any, any>(
+const FlowMapWithData: React.ComponentType<any> = compose<any, any>(
   sheetFetcher('json')<any>(
     ({spreadSheetKey, config, flowsSheet = DEFAULT_FLOWS_SHEET}: FlowMapProps) => ({
       locationsFetch: {
