@@ -1,6 +1,5 @@
-import {Html, Head, Main, NextScript} from 'next/document';
+import {Head, Html, Main, NextScript} from 'next/document';
 import manifest from '../public/manifest.json';
-import * as React from 'react';
 const fontUrl = 'https://fonts.googleapis.com/css?family=Sarabun:200,400,700&display=swap';
 
 export default function Document() {
@@ -20,8 +19,7 @@ export default function Document() {
           name="keywords"
           content="flow map, flowmap, flow mapping, visualization, mobility, urban mobility, human mobility, mobility data, origin-destination data, OD-data, geographic visualization, maps, movement, geographic movement, transport, migration, traffic, transportation, data visualization, relocation, commuters, journeys, trips, movement routes, interactive map, thematic map"
         />
-        <meta name="referrer" content="never" />
-        <meta name="referrer" content="no-referrer" />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />

@@ -10,4 +10,17 @@ const withTM = require('next-transpile-modules')([
 
 module.exports = withTM({
   reactStrictMode: true,
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin', // Allows origin for Mapbox
+          },
+        ],
+      },
+    ];
+  },
 });
