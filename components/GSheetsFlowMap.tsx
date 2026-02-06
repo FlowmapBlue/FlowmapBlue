@@ -1,28 +1,28 @@
+import {Intent} from '@blueprintjs/core';
+import {IconNames} from '@blueprintjs/icons';
+import styled from '@emotion/styled';
+import {csvParse} from 'd3-dsv';
+import Head from 'next/head';
+import {useRouter} from 'next/router';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import sheetFetcher, {makeSheetQueryUrl} from './sheetFetcher';
+import {useAsync} from 'react-use';
+import {compose, withProps} from 'recompose';
 import FlowMap, {
   AppToaster,
   ConfigProp,
   ConfigPropName,
   DEFAULT_CONFIG,
+  Props as FlowMapProps,
   getFlowsSheets,
   LoadingSpinner,
   Location,
   MapContainer,
   prepareFlows,
-  Props as FlowMapProps,
 } from '../core';
-import Head from 'next/head';
-import sendEvent from './sendEvent';
-import {useAsync} from 'react-use';
-import {csvParse} from 'd3-dsv';
-import {Intent} from '@blueprintjs/core';
-import {IconNames} from '@blueprintjs/icons';
-import {compose, withProps} from 'recompose';
-import styled from '@emotion/styled';
-import {useRouter} from 'next/router';
 import {DEFAULT_FLOWS_SHEET, getFlowsSheetKey, makeGSheetsMapUrl} from './constants';
+import sendEvent from './sendEvent';
+import sheetFetcher, {makeSheetQueryUrl} from './sheetFetcher';
 
 interface Props {
   spreadSheetKey: string;
@@ -34,7 +34,7 @@ const ToastContent = styled.div`
   font-size: 12px;
 `;
 
-const FlowMapWithData: React.ComponentType<any> = compose<any, any>(
+const FlowMapWithData = compose<any, any>(
   sheetFetcher('json')<any>(
     ({spreadSheetKey, config, flowsSheet = DEFAULT_FLOWS_SHEET}: FlowMapProps) => ({
       locationsFetch: {
