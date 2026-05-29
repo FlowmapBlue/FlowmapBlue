@@ -1,8 +1,8 @@
 import {Away} from '../core';
 import * as React from 'react';
 import Layout from '../core/Layout';
-import Head from 'next/head';
 import Credits from '../components/Credits';
+import Seo from '../components/Seo';
 
 export interface Props {}
 
@@ -12,9 +12,7 @@ const CreditsPage: React.FC<Props> = (props) => {
     <Layout>
       <section>
         <h1>Credits</h1>
-        <Head>
-          <title>Credits – FlowmapBlue</title>
-        </Head>
+        <Seo title="Credits – FlowmapBlue" path="/credits" />
         <Credits />
       </section>
     </Layout>

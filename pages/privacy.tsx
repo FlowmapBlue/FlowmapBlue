@@ -1,7 +1,7 @@
 import {Away} from '../core';
 import * as React from 'react';
 import Layout from '../core/Layout';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 
 export interface Props {}
 
@@ -11,9 +11,7 @@ const PrivacyPage: React.FC<Props> = (props) => {
     <Layout>
       <section>
         <h1>Privacy policy</h1>
-        <Head>
-          <title>Privacy – FlowmapBlue</title>
-        </Head>
+        <Seo title="Privacy – FlowmapBlue" path="/privacy" />
         <p>
           FlowmapBlue does not store any of the data the users upload to Google Sheets. The data
           from the spreadsheets is loaded directly into the clients&apos; browsers (using the{' '}

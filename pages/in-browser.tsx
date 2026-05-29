@@ -8,6 +8,7 @@ import {PromiseState} from 'react-refetch';
 import Layout from '../core/Layout';
 import {useRouter} from 'next/router';
 import md5 from 'blueimp-md5';
+import Seo from '../components/Seo';
 
 interface DataProps {
   locations: Location[];
@@ -90,6 +91,7 @@ const InBrowserFlowMap = () => {
     <FlowMapContainer {...data} />
   ) : (
     <Layout>
+      <Seo title="In-browser flow map – FlowmapBlue" path="/in-browser" />
       <h1>In-browser flow map</h1>
       <section>
         <p>

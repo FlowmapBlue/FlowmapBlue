@@ -9,8 +9,8 @@ import md5 from 'blueimp-md5';
 import COUNTRIES from '../countries.json';
 import {AppToaster} from '../core';
 import Layout from '../core/Layout';
-import Head from 'next/head';
 import {timeDay} from 'd3-time';
+import Seo from '../components/Seo';
 
 const MAX_GEOCODING_REQUESTS_PER_DAY = 1000;
 const countries = COUNTRIES as {[key: string]: string};
@@ -197,9 +197,7 @@ const Geocoding = () => {
   return (
     <Layout>
       <h1>Geocoding</h1>
-      <Head>
-        <title>Geocoding – FlowmapBlue</title>
-      </Head>
+      <Seo title="Geocoding – FlowmapBlue" path="/geocoding" />
       <section>
         <p>Find geographic coordinates of locations by their names.</p>
         <p>{`We limit the number of user requests to max ${MAX_GEOCODING_REQUESTS_PER_DAY} per day. 

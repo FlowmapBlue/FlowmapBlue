@@ -2,12 +2,12 @@ import {Intent} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 import styled from '@emotion/styled';
 import {csvParse} from 'd3-dsv';
-import Head from 'next/head';
 import {useRouter} from 'next/router';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {useAsync} from 'react-use';
 import {compose, withProps} from 'recompose';
+import Seo from './Seo';
 import FlowMap, {
   AppToaster,
   ConfigProp,
@@ -28,6 +28,7 @@ interface Props {
   spreadSheetKey: string;
   flowsSheetKey?: string;
   embed: boolean;
+  initialTitle?: string;
 }
 
 const ToastContent = styled.div`
@@ -72,7 +73,7 @@ const FlowMapWithData = compose<any, any>(
   })),
 )(FlowMap as any);
 
-const GSheetsFlowMap: React.FC<Props> = ({spreadSheetKey, flowsSheetKey, embed}) => {
+const GSheetsFlowMap: React.FC<Props> = ({spreadSheetKey, flowsSheetKey, embed, initialTitle}) => {
   const url = makeSheetQueryUrl(spreadSheetKey, 'properties', 'SELECT A,B', 'csv');
   const [flowsSheet, setFlowsSheet] = useState<string>();
   const router = useRouter();
@@ -129,28 +130,29 @@ const GSheetsFlowMap: React.FC<Props> = ({spreadSheetKey, flowsSheetKey, embed})
   }, [configFetch.error]);
 
   return (
-    <MapContainer embed={embed}>
-      {configFetch.loading ? (
-        <LoadingSpinner />
-      ) : (
-        <FlowMapWithData
-          spreadSheetKey={spreadSheetKey}
-          embed={embed}
-          config={configFetch.value ? configFetch.value : DEFAULT_CONFIG}
-          flowsSheet={flowsSheet}
-          onSetFlowsSheet={(name: string) => handleChangeFlowsSheet(name, true)}
-        />
-      )}
-      {configFetch.value && configFetch.value[ConfigPropName.TITLE] && (
-        <Head>
-          <title>{`${configFetch.value[ConfigPropName.TITLE]} - FlowmapBlue`}</title>
-          {configFetch.value[ConfigPropName.DESCRIPTION]?.trim() && (
-            <meta name="description" content={configFetch.value[ConfigPropName.DESCRIPTION]} />
-          )}
-          <link href={`https://flowmap.blue/${spreadSheetKey}`} rel="canonical" />
-        </Head>
-      )}
-    </MapContainer>
+    <>
+      <Seo
+        title={`${
+          configFetch.value?.[ConfigPropName.TITLE] || initialTitle || 'Flow map'
+        } - FlowmapBlue`}
+        description={configFetch.value?.[ConfigPropName.DESCRIPTION]?.trim() || undefined}
+        path={`/${spreadSheetKey}${flowsSheetKey ? `/${flowsSheetKey}` : ''}`}
+        noindex={embed}
+      />
+      <MapContainer embed={embed}>
+        {configFetch.loading ? (
+          <LoadingSpinner />
+        ) : (
+          <FlowMapWithData
+            spreadSheetKey={spreadSheetKey}
+            embed={embed}
+            config={configFetch.value ? configFetch.value : DEFAULT_CONFIG}
+            flowsSheet={flowsSheet}
+            onSetFlowsSheet={(name: string) => handleChangeFlowsSheet(name, true)}
+          />
+        )}
+      </MapContainer>
+    </>
   );
 };
 

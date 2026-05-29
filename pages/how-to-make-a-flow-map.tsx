@@ -2,7 +2,7 @@ import Layout from '../core/Layout';
 import {Away} from '../core';
 import ReadMore from '../components/ReadMore';
 import Link from 'next/link';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 
 import SpreadsheetKeyExtractor from '../components/SpreadsheetKeyExtractor';
 import * as React from 'react';
@@ -42,9 +42,7 @@ const HowToPage: React.FC<Props> = (props) => {
   const {} = props;
   return (
     <Layout>
-      <Head>
-        <title>How to make a flow map – FlowmapBlue</title>
-      </Head>
+      <Seo title="How to make a flow map – FlowmapBlue" path="/how-to-make-a-flow-map" />
       <section>
         <h1>How to make a flow map</h1>
         <ReadMore isOpen>

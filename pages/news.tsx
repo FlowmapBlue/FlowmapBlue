@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '../core/Layout';
 import News from '../components/News';
-import Head from 'next/head';
+import Seo from '../components/Seo';
 
 export interface Props {}
 
@@ -11,9 +11,7 @@ const NewsPage: React.FC<Props> = (props) => {
     <Layout>
       <section>
         <h1>News</h1>
-        <Head>
-          <title>News – FlowmapBlue</title>
-        </Head>
+        <Seo title="News – FlowmapBlue" path="/news" />
         <News />
       </section>
     </Layout>

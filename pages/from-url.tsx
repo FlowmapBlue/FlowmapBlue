@@ -13,6 +13,7 @@ import ErrorFallback from '../components/ErrorFallback';
 import {useMemo} from 'react';
 import {useRouter} from 'next/router';
 import sendEvent from 'components/sendEvent';
+import Seo from '../components/Seo';
 
 type Props = {
   locationsUrl: string;
@@ -87,7 +88,12 @@ const FromUrlFlowMap: FC<Props> = (props) => {
 export default function FromUrlFlowMapPage() {
   const router = useRouter();
   const {locations, flows, ...params} = router.query;
-  return typeof locations === 'string' && typeof flows === 'string' ? (
-    <FromUrlFlowMap locationsUrl={locations} flowsUrl={flows} params={params} />
-  ) : null;
+  return (
+    <>
+      <Seo title="Flow map from URLs - FlowmapBlue" path="/from-url" noindex />
+      {typeof locations === 'string' && typeof flows === 'string' ? (
+        <FromUrlFlowMap locationsUrl={locations} flowsUrl={flows} params={params} />
+      ) : null}
+    </>
+  );
 }

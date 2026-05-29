@@ -1,4 +1,4 @@
-import FlowMapPage from '../[id]';
+import FlowMapPage, {getFlowMapServerSideProps} from '../[id]';
 
 export interface Props {}
 
@@ -8,3 +8,5 @@ const FlowMapEmbedPage: React.FC<Props> = (props) => {
 };
 
 export default FlowMapEmbedPage;
+
+export const getServerSideProps = getFlowMapServerSideProps(true);
