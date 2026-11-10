@@ -1,9 +1,7 @@
 [build]
-  command = "yarn build"
+  command = "pnpm build"
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "18"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+  NODE_VERSION = "22"
+  PNPM_FLAGS = "--shamefully-hoist"

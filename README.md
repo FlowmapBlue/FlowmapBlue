@@ -13,10 +13,16 @@ Add `.env` file to the project root with a [Mapbox access token](https://www.map
 
     NEXT_PUBLIC_MapboxAccessToken=Your_Own_Mapbox_Access_Token_Goes_Here
 
-Then run:
+Use Node.js 22.12 or newer within the 22.x line. Enable Corepack to use the pnpm version pinned in `package.json`, then run:
 
-    yarn
-    yarn dev
+    corepack enable
+    pnpm install
+    pnpm dev
+
+To regenerate example screenshots, leave the development server running and run:
+
+    pnpm --dir scripts exec puppeteer browsers install chrome
+    pnpm shots
 
 ## Attribution
 

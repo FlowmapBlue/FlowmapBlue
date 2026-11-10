@@ -1,0 +1,21 @@
+packages:
+  - scripts
+
+ignoredBuiltDependencies:
+  - core-js
+  # Download Chrome on demand for screenshots.
+  - puppeteer
+
+onlyBuiltDependencies:
+  - sharp
+
+overrides:
+  '@typescript-eslint/typescript-estree>minimatch': ^11.0.1
+  'd3-color@<3.1.0': ^3.1.0
+  'fbjs>isomorphic-fetch': ^3.0.0
+  'next>postcss': ^8.5.23
+  'react-map-gl-draw>uuid': ^11.1.1
+  'texture-compressor>image-size': ^2.0.3
+
+patchedDependencies:
+  texture-compressor@1.0.2: patches/texture-compressor@1.0.2.patch

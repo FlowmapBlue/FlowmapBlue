@@ -1,6 +1,5 @@
 import {Config, ConfigPropName, Flow, ViewportProps} from './types';
 import {Props as TooltipProps} from './Tooltip';
-import * as queryString from 'query-string';
 import {viewport} from '@mapbox/geo-viewport';
 import {parseBoolConfigProp, parseNumberConfigProp} from './config';
 import {COLOR_SCHEME_KEYS} from './colors';
