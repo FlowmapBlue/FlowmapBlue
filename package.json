@@ -65,6 +65,7 @@
     "seedrandom": "^3.0.5"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "5.16.6",
     "@types/blueimp-md5": "^2.18.0",
     "@types/d3-array": "^2.0.0",
     "@types/d3-collection": "^1.0.7",

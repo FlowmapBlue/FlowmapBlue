@@ -5,3 +5,7 @@
 [build.environment]
   NODE_VERSION = "22"
   PNPM_FLAGS = "--shamefully-hoist"
+
+# Override the legacy Next.js runtime installed in the Netlify dashboard.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
