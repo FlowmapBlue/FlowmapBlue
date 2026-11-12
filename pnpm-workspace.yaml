@@ -15,7 +15,3 @@ overrides:
   'fbjs>isomorphic-fetch': ^3.0.0
   'next>postcss': ^8.5.23
   'react-map-gl-draw>uuid': ^11.1.1
-  'texture-compressor>image-size': ^2.0.3
-
-patchedDependencies:
-  texture-compressor@1.0.2: patches/texture-compressor@1.0.2.patch
