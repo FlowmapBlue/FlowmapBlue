@@ -1,15 +1,13 @@
 /** @type {import('next').NextConfig} */
 
-// module.exports = {
-//   reactStrictMode: true,
-// };
-const withTM = require('next-transpile-modules')([
-  // '@blueprintjs/core'
-  '@deck.gl/core',
-]);
-
-module.exports = withTM({
+module.exports = {
   reactStrictMode: true,
+  // Bundle CommonJS consumers of the patched ESM-only d3-color release.
+  bundlePagesRouterDependencies: true,
+  experimental: {
+    esmExternals: 'loose',
+  },
+  transpilePackages: ['@deck.gl/core'],
   async headers() {
     return [
       {
@@ -23,4 +21,4 @@ module.exports = withTM({
       },
     ];
   },
-});
+};

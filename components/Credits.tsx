@@ -144,7 +144,7 @@ const Credits: React.FC<Props> = (props) => {
           <br />
           <Link legacyBehavior href={PoweredByImg.src}>
             <a target="_blank">
-              <Image width={150} height={50} title="Powered by FlowmapBlue" src={PoweredByImg} />
+              <Image width={150} height={50} alt="Powered by FlowmapBlue" src={PoweredByImg} />
             </a>
           </Link>
           <Link legacyBehavior href={PoweredByMonoImg.src}>
@@ -152,7 +152,7 @@ const Credits: React.FC<Props> = (props) => {
               <Image
                 width={150}
                 height={50}
-                title="Powered by FlowmapBlue"
+                alt="Powered by FlowmapBlue"
                 src={PoweredByMonoImg}
               />
             </a>

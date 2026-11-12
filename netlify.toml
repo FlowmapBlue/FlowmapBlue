@@ -1,9 +1,11 @@
 [build]
-  command = "yarn build"
+  command = "pnpm build"
   publish = ".next"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "22"
+  PNPM_FLAGS = "--shamefully-hoist"
 
+# Override the legacy Next.js runtime installed in the Netlify dashboard.
 [[plugins]]
   package = "@netlify/plugin-nextjs"

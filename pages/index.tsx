@@ -164,8 +164,8 @@ const Index = () => (
     <DemoVideo>
       <ResponsivePlayer>
         <ResponsiveReactPlayer
-          // url={['/videos/demo_500.webm', '/videos/demo_500.mp4']}
-          url="https://vimeo.com/378757494"
+          wrapper="div"
+          src="https://vimeo.com/378757494"
           light={VideoPlaceholderImg.src}
           width="100%"
           height="100%"
@@ -240,7 +240,7 @@ const Index = () => (
               src={img}
               // placeholder="blur"
               // blurDataURL={img}
-              objectFit="contain"
+              style={{objectFit: 'contain'}}
             />
           </Away>
         ))}
