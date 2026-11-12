@@ -164,6 +164,7 @@ const Index = () => (
     <DemoVideo>
       <ResponsivePlayer>
         <ResponsiveReactPlayer
+          wrapper="div"
           src="https://vimeo.com/378757494"
           light={VideoPlaceholderImg.src}
           width="100%"

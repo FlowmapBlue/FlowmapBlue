@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
 import checkWebglSupport from './checkWebglSupport';
 import NoScrollContainer from './NoScrollContainer';
 import {Absolute} from './Boxes';
@@ -12,8 +12,6 @@ interface Props {
   embed?: boolean;
   children: ReactNode;
 }
-
-const supportsWebGl = checkWebglSupport();
 
 const LogoOuter = styled.div`
   filter: grayscale(1);
@@ -31,34 +29,42 @@ const LogoOuter = styled.div`
   }
 `;
 
-const MapContainer: React.FC<Props> = ({embed, children}) => (
-  <NoScrollContainer>
-    {supportsWebGl ? (
-      <>
-        {children}
-        <Absolute top={10} left={10}>
-          <div style={{display: 'flex', alignItems: 'flex-end', gap: 10}}>
-            <LogoOuter>
-              <Logo embed={embed} fontSize={20} />
-            </LogoOuter>
-            <Away href="https://supportukrainenow.org/">
-              <Image
-                alt={'Support Ukraine'}
-                title={'Support Ukraine'}
-                width={30 * 0.8}
-                height={20 * 0.8}
-                src={'/images/StandWithUkraine.svg'}
-              />
-            </Away>
-          </div>
-        </Absolute>
-      </>
-    ) : (
-      <Fallback>
-        Sorry, but your browser does not seem to support WebGL which is required for this app.
-      </Fallback>
-    )}
-  </NoScrollContainer>
-);
+const MapContainer: React.FC<Props> = ({embed, children}) => {
+  const [supportsWebGl, setSupportsWebGl] = useState(false);
+
+  useEffect(() => {
+    setSupportsWebGl(checkWebglSupport());
+  }, []);
+
+  return (
+    <NoScrollContainer>
+      {supportsWebGl ? (
+        <>
+          {children}
+          <Absolute top={10} left={10}>
+            <div style={{display: 'flex', alignItems: 'flex-end', gap: 10}}>
+              <LogoOuter>
+                <Logo embed={embed} fontSize={20} />
+              </LogoOuter>
+              <Away href="https://supportukrainenow.org/">
+                <Image
+                  alt={'Support Ukraine'}
+                  title={'Support Ukraine'}
+                  width={30 * 0.8}
+                  height={20 * 0.8}
+                  src={'/images/StandWithUkraine.svg'}
+                />
+              </Away>
+            </div>
+          </Absolute>
+        </>
+      ) : (
+        <Fallback>
+          Sorry, but your browser does not seem to support WebGL which is required for this app.
+        </Fallback>
+      )}
+    </NoScrollContainer>
+  );
+};
 
 export default MapContainer;
