@@ -28,6 +28,7 @@
     "@mapbox/geo-viewport": "^0.4.0",
     "@math.gl/web-mercator": "^3.2.1",
     "@sentry/browser": "^7.120.4",
+    "@sentry/core": "^7.120.4",
     "@turf/area": "^6.3.0",
     "@turf/bbox": "^6.0.1",
     "@turf/boolean-point-in-polygon": "^6.0.1",
@@ -49,6 +50,7 @@
     "mapbox-gl": "2",
     "mjolnir.js": "^2.4.0",
     "next": "^15.5.29",
+    "popper.js": "^1.16.1",
     "react": "^18.3.1",
     "react-app-polyfill": "^1.0.6",
     "react-dom": "^18.3.1",
@@ -61,6 +63,7 @@
     "react-refetch": "^3.0.0",
     "react-use": "^17.6.1",
     "recompose": "^0.30.0",
+    "reselect": "^4.1.8",
     "seedrandom": "^3.0.5"
   },
   "devDependencies": {
