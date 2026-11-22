@@ -680,7 +680,6 @@ const FlowMap: React.FC<Props> = (props) => {
           fadeAmount: state.fadeAmount,
           flowLinesRenderingMode,
           flowLineCurviness,
-          flowLineThicknessScale: 0.75,
           wrapLongitude: !state.globe,
           // Globe routes use 96 segments each. Bound geometry on dense datasets.
           maxTopFlowsDisplayNum: state.globe ? 5000 : NUMBER_OF_FLOWS_TO_DISPLAY,
