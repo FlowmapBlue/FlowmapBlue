@@ -1,4 +1,8 @@
-import {LocationFilterMode, type FlowLinesRenderingMode} from '@flowmap.gl/data';
+import {
+  LocationFilterMode,
+  type FlowLinesRenderingMode,
+  type ScaleLockDomains,
+} from '@flowmap.gl/data';
 import {Config, ConfigPropName, ViewportProps} from './types';
 import {Props as TooltipProps} from './Tooltip';
 import {viewport} from '@mapbox/geo-viewport';
@@ -50,6 +54,7 @@ export interface State {
   fadeEnabled: boolean;
   locationTotalsEnabled: boolean;
   adaptiveScalesEnabled: boolean;
+  lockedScaleDomains?: ScaleLockDomains;
   clusteringEnabled: boolean;
   clusteringAuto: boolean;
   manualClusterZoom?: number;
@@ -80,6 +85,7 @@ export enum ActionType {
   SET_FLOW_LINE_CURVINESS = 'SET_FLOW_LINE_CURVINESS',
   SET_LOCATION_TOTALS_ENABLED = 'SET_LOCATION_TOTALS_ENABLED',
   SET_ADAPTIVE_SCALES_ENABLED = 'SET_ADAPTIVE_SCALES_ENABLED',
+  SET_SCALE_LOCK = 'SET_SCALE_LOCK',
   SET_DARK_MODE = 'SET_DARK_MODE',
   SET_FADE_ENABLED = 'SET_FADE_ENABLED',
   SET_BASE_MAP_ENABLED = 'SET_BASE_MAP_ENABLED',
@@ -155,6 +161,10 @@ export type Action =
   | {
       type: ActionType.SET_ADAPTIVE_SCALES_ENABLED;
       adaptiveScalesEnabled: boolean;
+    }
+  | {
+      type: ActionType.SET_SCALE_LOCK;
+      domains?: ScaleLockDomains;
     }
   | {
       type: ActionType.SET_DARK_MODE;
@@ -358,6 +368,8 @@ function mainReducer(state: State, action: Action): State {
         adaptiveScalesEnabled,
       };
     }
+    case ActionType.SET_SCALE_LOCK:
+      return {...state, lockedScaleDomains: action.domains};
     case ActionType.SET_DARK_MODE: {
       const {darkMode} = action;
       return {
@@ -432,6 +444,14 @@ export function asBoolean(v: string | string[] | null | undefined): boolean | un
   return undefined;
 }
 
+function parseScaleDomain(value: string | string[] | undefined): [number, number] | undefined {
+  if (typeof value !== 'string') return undefined;
+  const parts = value.split(',');
+  if (parts.length !== 2 || parts.some((part) => !part.trim())) return undefined;
+  const [min, max] = parts.map(asNumber);
+  return min != null && max != null && min <= max ? [min, max] : undefined;
+}
+
 export function applyStateFromQueryString(draft: State, params: ParsedUrlQuery) {
   if (typeof params.s === 'string') {
     const rows = csvParseRows(params.s);
@@ -473,6 +493,9 @@ export function applyStateFromQueryString(draft: State, params: ParsedUrlQuery) 
   const curviness = asNumber(params.fc);
   if (curviness != null) draft.flowLineCurviness = normalizeCurviness(curviness);
   draft.adaptiveScalesEnabled = asBoolean(params.as) ?? draft.adaptiveScalesEnabled;
+  const flowMagnitude = parseScaleDomain(params.fs);
+  const locationTotals = parseScaleDomain(params.ls);
+  if (flowMagnitude || locationTotals) draft.lockedScaleDomains = {flowMagnitude, locationTotals};
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
   draft.clusteringAuto = asBoolean(params.ca) ?? draft.clusteringAuto;
   draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled;
@@ -515,6 +538,9 @@ export function stateToQueryParams(state: State) {
   if (state.flowLineCurviness !== DEFAULT_FLOW_LINE_CURVINESS)
     parts.fc = `${state.flowLineCurviness}`;
   parts.as = `${state.adaptiveScalesEnabled ? 1 : 0}`;
+  const {flowMagnitude, locationTotals} = state.lockedScaleDomains ?? {};
+  if (flowMagnitude) parts.fs = flowMagnitude.join(',');
+  if (locationTotals) parts.ls = locationTotals.join(',');
   parts.b = `${state.baseMapEnabled ? 1 : 0}`;
   parts.bo = `${state.baseMapOpacity}`;
   parts.c = `${state.clusteringEnabled ? 1 : 0}`;

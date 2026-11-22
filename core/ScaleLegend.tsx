@@ -1,13 +1,35 @@
 import {Button} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
+import styled from '@emotion/styled';
 import type {FlowScaleSample, RGBA, ScaleState} from '@flowmap.gl/data';
 import {Column, LegendTitle} from './Boxes';
 
 const cssColor = ([r, g, b, a]: RGBA) => `rgba(${r}, ${g}, ${b}, ${a / 255})`;
 const formatValue = new Intl.NumberFormat(undefined, {maximumSignificantDigits: 4}).format;
 
-const rowStyle = {display: 'flex', alignItems: 'center', gap: 6, minHeight: 18};
-const circleStyle = {flex: '0 0 16px', height: 16, borderRadius: '50%'};
+const SampleRow = styled.div`
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  min-height: 17px;
+`;
+const WidthRow = styled(SampleRow)`
+  grid-template-columns: 30px minmax(0, 1fr);
+  font-variant-numeric: tabular-nums;
+`;
+const SectionTitle = styled(LegendTitle)`
+  margin-bottom: 3px;
+`;
+const Range = styled.div`
+  margin-top: 3px;
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+`;
+const LockButton = styled(Button)`
+  font-size: 11px;
+`;
+const circleStyle = {width: 14, height: 14, borderRadius: '50%'};
 const circleEntries = [
   {label: 'Outgoing ≅ incoming', ring: null},
   {label: 'More outgoing', ring: 'outgoing'},
@@ -16,18 +38,17 @@ const circleEntries = [
 
 function WidthSample({sample, label}: {sample: FlowScaleSample; label: string}) {
   return (
-    <div style={rowStyle}>
+    <WidthRow>
       <span
         aria-hidden="true"
         style={{
-          flex: '0 0 36px',
           height: Math.max(1, sample.thickness),
           background: cssColor(sample.color),
           borderRadius: 1,
         }}
       />
       {label}
-    </div>
+    </WidthRow>
   );
 }
 
@@ -41,10 +62,10 @@ export default function ScaleLegend({scale, locked, onToggleLock}: Props) {
   const {flowThickness, locationCircles} = scale ?? {};
   const locationRange = locationCircles?.domain.map(formatValue).join(' to ');
   return (
-    <Column spacing={8} padding="12px">
+    <Column spacing={7} padding="8px 10px">
       {flowThickness && (
         <div>
-          <LegendTitle>Flow width</LegendTitle>
+          <SectionTitle>Flow width</SectionTitle>
           {flowThickness.samples
             .filter(
               (sample, index, samples) =>
@@ -67,9 +88,9 @@ export default function ScaleLegend({scale, locked, onToggleLock}: Props) {
       )}
       {locationCircles && (
         <div>
-          <LegendTitle>Location totals</LegendTitle>
+          <SectionTitle>Location totals</SectionTitle>
           {circleEntries.map(({label, ring}) => (
-            <div key={label} style={rowStyle}>
+            <SampleRow key={label}>
               <span
                 aria-hidden="true"
                 style={{
@@ -93,11 +114,11 @@ export default function ScaleLegend({scale, locked, onToggleLock}: Props) {
                 )}
               </span>
               {label}
-            </div>
+            </SampleRow>
           ))}
-          <div>{locationRange}</div>
+          <Range>{locationRange}</Range>
           {locationCircles.outOfScale && (
-            <div style={rowStyle}>
+            <SampleRow>
               <span
                 aria-hidden="true"
                 style={{
@@ -105,12 +126,12 @@ export default function ScaleLegend({scale, locked, onToggleLock}: Props) {
                   background: cssColor(locationCircles.outOfScale.color),
                 }}
               />
-              Above {formatValue(locationCircles.outOfScale.magnitude)}
-            </div>
+              <span>Above {formatValue(locationCircles.outOfScale.magnitude)}</span>
+            </SampleRow>
           )}
         </div>
       )}
-      <Button
+      <LockButton
         small
         fill
         icon={locked ? IconNames.LOCK : IconNames.UNLOCK}

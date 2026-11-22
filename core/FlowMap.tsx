@@ -13,7 +13,7 @@ import {
 } from 'react';
 import {Map as ReactMapGl} from 'react-map-gl/mapbox-legacy';
 import {FlowmapLayer, FlowmapLayerPickingInfo, PickingType} from '@flowmap.gl/layers';
-import {getViewStateForLocations, type ScaleLockDomains, type ScaleState} from '@flowmap.gl/data';
+import {getViewStateForLocations, type ScaleState} from '@flowmap.gl/data';
 import FlowMapDataProvider, {flowmapAccessors} from './FlowMapDataProvider';
 import ScaleLegend from './ScaleLegend';
 import dynamic from 'next/dynamic';
@@ -268,9 +268,18 @@ const FlowMap: React.FC<Props> = (props) => {
 
   const [updateQuerySearch] = useDebounced(
     () => {
-      if (inBrowser || !spreadSheetKey) return;
-      // const locationSearch = `?${stateToQueryString(state)}`;
+      if (!spreadSheetKey && router.pathname !== '/from-url') return;
       const queryParams = stateToQueryParams(state);
+      if (router.pathname === '/from-url') {
+        const {fs, ls, ...query} = router.query;
+        if (fs !== queryParams.fs || ls !== queryParams.ls) {
+          if (queryParams.fs != null) query.fs = queryParams.fs;
+          if (queryParams.ls != null) query.ls = queryParams.ls;
+          router.replace({pathname: router.pathname, query}, undefined, {shallow: true});
+        }
+        return;
+      }
+      if (!spreadSheetKey) return;
       const query = {
         ...queryParams,
         ...(spreadSheetKey ? {id: spreadSheetKey} : {}),
@@ -299,8 +308,7 @@ const FlowMap: React.FC<Props> = (props) => {
     [layerData],
   );
   const [scaleState, setScaleState] = useState<ScaleState>();
-  // Keep the captured domains across Deck remounts when switching projections.
-  const [lockedDomains, setLockedDomains] = useState<ScaleLockDomains>();
+  const {lockedScaleDomains: lockedDomains} = state;
   const handleScaleChange = useCallback((scale: ScaleState | undefined) => {
     setScaleState((previous) => (isDeepEqual(previous, scale) ? previous : scale));
   }, []);
@@ -773,7 +781,10 @@ const FlowMap: React.FC<Props> = (props) => {
               </ButtonGroup>
               {!inBrowser && !embed && (
                 <ButtonGroup vertical={true}>
-                  <SharePopover>
+                  <SharePopover
+                    queryParams={stateToQueryParams(state)}
+                    scaleLocked={lockedDomains != null}
+                  >
                     <Button title="Share…" icon={IconNames.SHARE} />
                   </SharePopover>
                 </ButtonGroup>
@@ -781,13 +792,16 @@ const FlowMap: React.FC<Props> = (props) => {
             </Column>
           </Absolute>
           {!embed && ((dataProvider && scaleState) || lockedDomains) && (
-            <Box bottom={28} right={0} darkMode={darkMode}>
-              <Collapsible darkMode={darkMode} width={160} direction={Direction.RIGHT}>
+            <Box bottom={38} right={8} darkMode={darkMode}>
+              <Collapsible darkMode={darkMode} width={148} direction={Direction.RIGHT}>
                 <ScaleLegend
                   scale={dataProvider ? scaleState : undefined}
                   locked={lockedDomains != null}
                   onToggleLock={() =>
-                    setLockedDomains(lockedDomains ? undefined : scaleState?.domains)
+                    dispatch({
+                      type: ActionType.SET_SCALE_LOCK,
+                      domains: lockedDomains ? undefined : scaleState?.domains,
+                    })
                   }
                 />
               </Collapsible>
