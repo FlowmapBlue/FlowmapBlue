@@ -1,4 +1,4 @@
-import {LocationFilterMode} from '@flowmap.gl/data';
+import {LocationFilterMode, type FlowLinesRenderingMode} from '@flowmap.gl/data';
 import {Config, ConfigPropName, ViewportProps} from './types';
 import {Props as TooltipProps} from './Tooltip';
 import {viewport} from '@mapbox/geo-viewport';
@@ -17,10 +17,16 @@ export const MAX_ZOOM_LEVEL = 20;
 export const MAX_GLOBE_ZOOM = 12;
 export const MIN_PITCH = 0;
 export const MAX_PITCH = +60;
+export const MAX_FLOW_LINE_CURVINESS = 3;
+const DEFAULT_FLOW_LINE_CURVINESS = 1;
 
 const TIME_QUERY_FORMAT = '%Y%m%dT%H%M%S';
 const timeToQuery = timeFormat(TIME_QUERY_FORMAT);
 const timeFromQuery = timeParse(TIME_QUERY_FORMAT);
+
+function normalizeCurviness(value: number) {
+  return Math.min(MAX_FLOW_LINE_CURVINESS, Math.max(0, Number(value.toFixed(1))));
+}
 
 export function mapTransition(duration: number = 500) {
   return {
@@ -39,7 +45,8 @@ export interface State {
   selectedLocations: string[] | undefined;
   selectedTimeRange: [Date, Date] | undefined;
   locationFilterMode: LocationFilterMode;
-  animationEnabled: boolean;
+  flowLinesRenderingMode: FlowLinesRenderingMode;
+  flowLineCurviness: number;
   fadeEnabled: boolean;
   locationTotalsEnabled: boolean;
   adaptiveScalesEnabled: boolean;
@@ -69,7 +76,8 @@ export enum ActionType {
   SET_CLUSTERING_ENABLED = 'SET_CLUSTERING_ENABLED',
   SET_CLUSTERING_AUTO = 'SET_CLUSTERING_AUTO',
   SET_MANUAL_CLUSTER_ZOOM = 'SET_MANUAL_CLUSTER_ZOOM',
-  SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED',
+  SET_FLOW_LINES_RENDERING_MODE = 'SET_FLOW_LINES_RENDERING_MODE',
+  SET_FLOW_LINE_CURVINESS = 'SET_FLOW_LINE_CURVINESS',
   SET_LOCATION_TOTALS_ENABLED = 'SET_LOCATION_TOTALS_ENABLED',
   SET_ADAPTIVE_SCALES_ENABLED = 'SET_ADAPTIVE_SCALES_ENABLED',
   SET_DARK_MODE = 'SET_DARK_MODE',
@@ -133,8 +141,12 @@ export type Action =
       clusteringAuto: boolean;
     }
   | {
-      type: ActionType.SET_ANIMATION_ENABLED;
-      animationEnabled: boolean;
+      type: ActionType.SET_FLOW_LINES_RENDERING_MODE;
+      mode: FlowLinesRenderingMode;
+    }
+  | {
+      type: ActionType.SET_FLOW_LINE_CURVINESS;
+      curviness: number;
     }
   | {
       type: ActionType.SET_LOCATION_TOTALS_ENABLED;
@@ -328,13 +340,10 @@ function mainReducer(state: State, action: Action): State {
         clusteringAuto,
       };
     }
-    case ActionType.SET_ANIMATION_ENABLED: {
-      const {animationEnabled} = action;
-      return {
-        ...state,
-        animationEnabled,
-      };
-    }
+    case ActionType.SET_FLOW_LINES_RENDERING_MODE:
+      return {...state, flowLinesRenderingMode: action.mode, tooltip: undefined};
+    case ActionType.SET_FLOW_LINE_CURVINESS:
+      return {...state, flowLineCurviness: normalizeCurviness(action.curviness)};
     case ActionType.SET_LOCATION_TOTALS_ENABLED: {
       const {locationTotalsEnabled} = action;
       return {
@@ -454,7 +463,15 @@ export function applyStateFromQueryString(draft: State, params: ParsedUrlQuery) 
   draft.darkMode = asBoolean(params.d) ?? draft.darkMode;
   draft.fadeEnabled = asBoolean(params.fe) ?? draft.fadeEnabled;
   draft.fadeAmount = asNumber(params.f) ?? draft.fadeAmount;
-  draft.animationEnabled = asBoolean(params.a) ?? draft.animationEnabled;
+  const flowLines = params.fl;
+  if (flowLines === 'straight' || flowLines === 'curved' || flowLines === 'animated-straight') {
+    draft.flowLinesRenderingMode = flowLines;
+  } else {
+    const animate = asBoolean(params.a);
+    if (animate != null) draft.flowLinesRenderingMode = animate ? 'animated-straight' : 'straight';
+  }
+  const curviness = asNumber(params.fc);
+  if (curviness != null) draft.flowLineCurviness = normalizeCurviness(curviness);
   draft.adaptiveScalesEnabled = asBoolean(params.as) ?? draft.adaptiveScalesEnabled;
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
   draft.clusteringAuto = asBoolean(params.ca) ?? draft.clusteringAuto;
@@ -492,7 +509,11 @@ export function stateToQueryParams(state: State) {
   ]);
 
   if (state.globe) parts.g = '1';
-  parts.a = `${state.animationEnabled ? 1 : 0}`;
+  // Flowmap City imports read the legacy animation flag.
+  parts.a = state.flowLinesRenderingMode === 'animated-straight' ? '1' : '0';
+  if (state.flowLinesRenderingMode === 'curved') parts.fl = 'curved';
+  if (state.flowLineCurviness !== DEFAULT_FLOW_LINE_CURVINESS)
+    parts.fc = `${state.flowLineCurviness}`;
   parts.as = `${state.adaptiveScalesEnabled ? 1 : 0}`;
   parts.b = `${state.baseMapEnabled ? 1 : 0}`;
   parts.bo = `${state.baseMapOpacity}`;
@@ -542,7 +563,7 @@ export function getInitialViewport(bbox: [number, number, number, number]) {
 export const DEFAULT_VIEWPORT = getInitialViewport([-180, -70, 180, 70]);
 
 export function getInitialState(config: Config, query: ParsedUrlQuery) {
-  const draft = {
+  const draft: State = {
     viewport: DEFAULT_VIEWPORT,
     globe: false,
     adjustViewportToLocations: true,
@@ -551,7 +572,10 @@ export function getInitialState(config: Config, query: ParsedUrlQuery) {
     locationFilterMode: LocationFilterMode.ALL,
     baseMapEnabled: true,
     adaptiveScalesEnabled: true,
-    animationEnabled: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS]),
+    flowLinesRenderingMode: parseBoolConfigProp(config[ConfigPropName.ANIMATE_FLOWS])
+      ? 'animated-straight'
+      : 'straight',
+    flowLineCurviness: DEFAULT_FLOW_LINE_CURVINESS,
     clusteringEnabled: parseBoolConfigProp(config[ConfigPropName.CLUSTER_ON_ZOOM] || 'true'),
     manualClusterZoom: undefined,
     fadeEnabled: true,

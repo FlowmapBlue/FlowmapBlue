@@ -1,10 +1,10 @@
 import {Column, LegendTitle, Row} from './Boxes';
-import {Button, Popover, Slider, Switch} from '@blueprintjs/core';
+import {Button, ButtonGroup, Popover, Slider, Switch} from '@blueprintjs/core';
 import {IconNames} from '@blueprintjs/icons';
 import * as React from 'react';
 import {Dispatch, SyntheticEvent} from 'react';
 import styled from '@emotion/styled';
-import {Action, ActionType, State} from './FlowMap.state';
+import {Action, ActionType, MAX_FLOW_LINE_CURVINESS, State} from './FlowMap.state';
 import ColorSchemeSelector from './ColorSchemeSelector';
 
 const SettingsOuter = styled.div`
@@ -17,6 +17,12 @@ const StyledSwitch = styled(Switch)`
   align-self: flex-start;
   white-space: nowrap;
 `;
+
+const flowLineOptions = [
+  {mode: 'straight', label: 'Straight'},
+  {mode: 'curved', label: 'Curved'},
+  {mode: 'animated-straight', label: 'Animated'},
+] as const;
 
 interface Props {
   state: State;
@@ -102,14 +108,6 @@ const SettingsPopover: React.FC<Props> = ({
     });
   };
 
-  const handleToggleAnimation = (evt: SyntheticEvent) => {
-    const value = (evt.target as HTMLInputElement).checked;
-    dispatch({
-      type: ActionType.SET_ANIMATION_ENABLED,
-      animationEnabled: value,
-    });
-  };
-
   const handleToggleLocationTotals = (evt: SyntheticEvent) => {
     const value = (evt.target as HTMLInputElement).checked;
     dispatch({
@@ -185,11 +183,40 @@ const SettingsPopover: React.FC<Props> = ({
                   />
                 )}
               </Row>
-              <StyledSwitch
-                checked={state.animationEnabled}
-                label="Animate flows"
-                onChange={handleToggleAnimation}
-              />
+              <Column spacing={5}>
+                <div>Flow lines</div>
+                <ButtonGroup fill role="group" aria-label="Flow lines">
+                  {flowLineOptions.map(({mode, label}) => (
+                    <Button
+                      key={mode}
+                      small
+                      text={label}
+                      active={state.flowLinesRenderingMode === mode}
+                      aria-pressed={state.flowLinesRenderingMode === mode}
+                      onClick={() =>
+                        dispatch({type: ActionType.SET_FLOW_LINES_RENDERING_MODE, mode})
+                      }
+                    />
+                  ))}
+                </ButtonGroup>
+              </Column>
+              {state.flowLinesRenderingMode === 'curved' && (
+                <Row spacing={15}>
+                  <div>Curviness</div>
+                  <Slider
+                    value={state.flowLineCurviness}
+                    min={0}
+                    max={MAX_FLOW_LINE_CURVINESS}
+                    stepSize={0.1}
+                    labelRenderer={false}
+                    showTrackFill={false}
+                    handleHtmlProps={{'aria-label': 'Curviness'}}
+                    onChange={(curviness) =>
+                      dispatch({type: ActionType.SET_FLOW_LINE_CURVINESS, curviness})
+                    }
+                  />
+                </Row>
+              )}
               <StyledSwitch
                 checked={state.adaptiveScalesEnabled}
                 label="Dynamic range adjustment"
