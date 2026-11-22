@@ -129,6 +129,12 @@ const DeckGLOuter = styled.div<{
   ({baseMapOpacity, darkMode}) => `
   position: absolute;
   inset: 0;
+  isolation: isolate;
+  background: ${darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5};
+  /* MapLibre mounts the deck canvas in this control corner. Let it blend with the basemap. */
+  & .maplibregl-ctrl-top-left {
+    z-index: auto;
+  }
   & #deckgl-overlay {
     mix-blend-mode: ${darkMode ? 'screen' : 'multiply'};
   }
@@ -671,9 +677,6 @@ const FlowMap: React.FC<Props> = (props) => {
       ref={outerRef}
       onMouseLeave={hideTooltip}
       className={darkMode ? Classes.DARK : undefined}
-      style={{
-        background: darkMode ? Colors.DARK_GRAY1 : Colors.LIGHT_GRAY5,
-      }}
     >
       <DeckGLOuter darkMode={darkMode} baseMapOpacity={state.baseMapOpacity / 100}>
         {state.globe ? (
