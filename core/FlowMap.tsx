@@ -295,7 +295,6 @@ const FlowMap: React.FC<Props> = (props) => {
   useEffect(updateQuerySearch, [router.asPath, state]);
 
   const {viewport, tooltip, flowLinesRenderingMode, flowLineCurviness, baseMapEnabled} = state;
-  const isAnimated = flowLinesRenderingMode === 'animated-straight';
   const allFlows = getFetchedFlows(state, props);
   const allLocations = getLocations(state, props);
   const locationsHavingFlows = getLocationsHavingFlows(state, props);
@@ -679,7 +678,7 @@ const FlowMap: React.FC<Props> = (props) => {
           fadeAmount: state.fadeAmount,
           flowLinesRenderingMode,
           flowLineCurviness,
-          flowLineThicknessScale: isAnimated ? 0.75 : 0.5,
+          flowLineThicknessScale: 0.75,
           wrapLongitude: !state.globe,
           // Globe routes use 96 segments each. Bound geometry on dense datasets.
           maxTopFlowsDisplayNum: state.globe ? 5000 : NUMBER_OF_FLOWS_TO_DISPLAY,
