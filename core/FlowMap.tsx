@@ -13,7 +13,7 @@ import {
 } from 'react';
 import {Map as ReactMapGl} from 'react-map-gl/mapbox-legacy';
 import {FlowmapLayer, FlowmapLayerPickingInfo, PickingType} from '@flowmap.gl/layers';
-import {getViewStateForLocations, type ScaleState} from '@flowmap.gl/data';
+import {getViewStateForLocations, type RGBA, type ScaleState} from '@flowmap.gl/data';
 import FlowMapDataProvider, {flowmapAccessors} from './FlowMapDataProvider';
 import ScaleLegend from './ScaleLegend';
 import dynamic from 'next/dynamic';
@@ -324,6 +324,8 @@ const FlowMap: React.FC<Props> = (props) => {
     [clusterZoom, expandedSelection, state.selectedLocations, state.locationFilterMode],
   );
   const darkMode = getDarkMode(state, props);
+  // Match the outline colors used by FlowmapLayer.
+  const flowOutlineColor: RGBA = darkMode ? [0, 0, 0, 255] : [255, 255, 255, 128];
   const colorScheme = useMemo(() => {
     const scheme =
       (state.colorSchemeKey && COLOR_SCHEMES[state.colorSchemeKey]) || DEFAULT_COLOR_SCHEME;
@@ -795,6 +797,9 @@ const FlowMap: React.FC<Props> = (props) => {
               <Collapsible darkMode={darkMode} width={148} direction={Direction.RIGHT}>
                 <ScaleLegend
                   scale={dataProvider ? scaleState : undefined}
+                  flowOutlineColor={
+                    flowLinesRenderingMode === 'animated-straight' ? undefined : flowOutlineColor
+                  }
                   locked={lockedDomains != null}
                   onToggleLock={() =>
                     dispatch({
