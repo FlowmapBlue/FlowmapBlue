@@ -35,6 +35,14 @@ type Props = {
 /* eslint-disable react/jsx-key */
 const NEWS_ITEMS = [
   <NewsItem>
+    <NewsDate>{`Nov 22, 2026`}</NewsDate>
+    <NewsText>
+      Added globe mode, longitude wrapping for flows that cross the antimeridian on flat maps, and a
+      curved flow line mode with adjustable curvature. The new flow width legend shows the values
+      represented by line widths, and the scale lock keeps scales fixed as you pan or zoom.
+    </NewsText>
+  </NewsItem>,
+  <NewsItem>
     <NewsDate>{`Sept 1, 2023`}</NewsDate>
     <NewsText>
       Releasing <Away href="https://flowmap.city">Flowmap City</Away>, the new product we are
