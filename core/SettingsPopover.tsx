@@ -200,7 +200,7 @@ const SettingsPopover: React.FC<Props> = ({
                 label="Location totals"
                 onChange={handleToggleLocationTotals}
               />
-              {availableClusterZoomLevels && (
+              {availableClusterZoomLevels && availableClusterZoomLevels.length > 0 && (
                 <>
                   <Row spacing={15}>
                     <StyledSwitch
@@ -224,9 +224,7 @@ const SettingsPopover: React.FC<Props> = ({
                           availableClusterZoomLevels.length -
                           1 -
                           availableClusterZoomLevels.indexOf(
-                            state.manualClusterZoom != null
-                              ? state.manualClusterZoom
-                              : clusterZoom || 0,
+                            clusterZoom ?? availableClusterZoomLevels[0],
                           )
                         }
                         min={0}

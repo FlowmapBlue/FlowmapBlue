@@ -1,9 +1,8 @@
 import * as React from 'react';
-import {Config, getFlowMagnitude} from './types';
-import {Location} from './types';
+import {Config, Flow, Location} from './types';
 import styled from '@emotion/styled';
 import * as d3Format from 'd3-format';
-import {Flow, LocationPickingInfo} from '@flowmap.gl/core';
+import {FlowPickingInfoObject, LocationPickingInfoObject} from '@flowmap.gl/layers';
 
 type OuterProps = {width: number};
 const Outer = styled.div<OuterProps>(
@@ -52,7 +51,7 @@ const Value = styled.div`
 export const formatCount = d3Format.format(',.0f');
 
 interface Props {
-  locationInfo: LocationPickingInfo;
+  locationInfo: LocationPickingInfoObject<Location>;
   isSelected: boolean;
   isSelectionEmpty: boolean;
   config: Config;
@@ -64,22 +63,25 @@ export const LocationTooltipContent = ({
   isSelectionEmpty,
   config,
 }: Props) => {
-  const {object: location, totalIn, totalOut, totalWithin} = locationInfo;
+  const {
+    name,
+    totals: {incomingCount, outgoingCount, internalCount},
+  } = locationInfo;
 
   return (
     <Outer width={150}>
-      <Title>{location.name || location.id}</Title>
+      <Title>{name}</Title>
       <Row>
         <Label>{config['msg.locationTooltip.incoming']}</Label>
-        <Value>{formatCount(totalIn)}</Value>
+        <Value>{formatCount(incomingCount)}</Value>
       </Row>
       <Row>
         <Label>{config['msg.locationTooltip.outgoing']}</Label>
-        <Value>{formatCount(totalOut)}</Value>
+        <Value>{formatCount(outgoingCount)}</Value>
       </Row>
       <Row>
         <Label>{config['msg.locationTooltip.internal']}</Label>
-        <Value>{formatCount(totalWithin)}</Value>
+        <Value>{formatCount(internalCount)}</Value>
       </Row>
       <Comment>
         {isSelected
@@ -93,24 +95,20 @@ export const LocationTooltipContent = ({
 };
 
 export const FlowTooltipContent = ({
-  flow,
+  count,
   origin,
   dest,
   config,
-}: {
-  flow: Flow;
-  origin: Location;
-  dest: Location;
-  config: Config;
-}) => {
+}: Pick<FlowPickingInfoObject<Location, Flow>, 'count' | 'origin' | 'dest'> & {config: Config}) => {
   return (
     <Outer width={150}>
       <Title>
-        {origin.name || origin.id} → {dest.name || dest.id}
+        {('name' in origin && origin.name) || origin.id} →{' '}
+        {('name' in dest && dest.name) || dest.id}
       </Title>
       <Row>
         <Label>{config['msg.flowTooltip.numOfTrips']}</Label>
-        <Value>{formatCount(getFlowMagnitude(flow))}</Value>
+        <Value>{formatCount(count)}</Value>
       </Row>
     </Outer>
   );
