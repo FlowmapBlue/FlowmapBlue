@@ -4,7 +4,8 @@ import styled from '@emotion/styled';
 import type {FlowScaleSample, RGBA, ScaleState} from '@flowmap.gl/data';
 import {Column, LegendTitle} from './Boxes';
 
-const cssColor = ([r, g, b, a]: RGBA) => `rgba(${r}, ${g}, ${b}, ${a / 255})`;
+const cssColor = ([r, g, b, a]: RGBA, opacity = 1) =>
+  `rgba(${r}, ${g}, ${b}, ${(a / 255) * opacity})`;
 const formatValue = new Intl.NumberFormat(undefined, {maximumSignificantDigits: 4}).format;
 
 const SampleRow = styled.div`
@@ -36,7 +37,15 @@ const circleEntries = [
   {label: 'More incoming', ring: 'incoming'},
 ] as const;
 
-function WidthSample({sample, label}: {sample: FlowScaleSample; label: string}) {
+function WidthSample({
+  sample,
+  label,
+  outlineColor,
+}: {
+  sample: FlowScaleSample;
+  label: string;
+  outlineColor?: RGBA;
+}) {
   return (
     <WidthRow>
       <span
@@ -45,6 +54,7 @@ function WidthSample({sample, label}: {sample: FlowScaleSample; label: string}) 
           height: Math.max(1, sample.thickness),
           background: cssColor(sample.color),
           borderRadius: 1,
+          boxShadow: outlineColor && `0 0 0 1px ${cssColor(outlineColor, sample.color[3] / 255)}`,
         }}
       />
       {label}
@@ -54,11 +64,12 @@ function WidthSample({sample, label}: {sample: FlowScaleSample; label: string}) 
 
 interface Props {
   scale?: ScaleState;
+  flowOutlineColor?: RGBA;
   locked: boolean;
   onToggleLock: () => void;
 }
 
-export default function ScaleLegend({scale, locked, onToggleLock}: Props) {
+export default function ScaleLegend({scale, flowOutlineColor, locked, onToggleLock}: Props) {
   const {flowThickness, locationCircles} = scale ?? {};
   const locationRange = locationCircles?.domain.map(formatValue).join(' to ');
   return (
@@ -76,12 +87,14 @@ export default function ScaleLegend({scale, locked, onToggleLock}: Props) {
                 key={sample.magnitude}
                 sample={sample}
                 label={formatValue(sample.magnitude)}
+                outlineColor={flowOutlineColor}
               />
             ))}
           {flowThickness.outOfScale && (
             <WidthSample
               sample={flowThickness.outOfScale}
               label={`Above ${formatValue(flowThickness.outOfScale.magnitude)}`}
+              outlineColor={flowOutlineColor}
             />
           )}
         </div>
