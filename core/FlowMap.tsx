@@ -13,9 +13,9 @@ import {
 } from 'react';
 import {Map as ReactMapGl} from 'react-map-gl/mapbox-legacy';
 import {FlowmapLayer, FlowmapLayerPickingInfo, PickingType} from '@flowmap.gl/layers';
-import {getColors, getViewStateForLocations} from '@flowmap.gl/data';
+import {getViewStateForLocations, type ScaleLockDomains, type ScaleState} from '@flowmap.gl/data';
 import FlowMapDataProvider, {flowmapAccessors} from './FlowMapDataProvider';
-import LocationTotalsLegend from './LocationTotalsLegend';
+import ScaleLegend from './ScaleLegend';
 import dynamic from 'next/dynamic';
 import {
   Popover,
@@ -34,7 +34,6 @@ import {
   BoxStyle,
   Column,
   Description,
-  LegendTitle,
   Row,
   Title,
   TitleBox,
@@ -72,7 +71,6 @@ import {
   getAvailableClusterZoomLevels,
   getClusterZoom,
   getDarkMode,
-  getDiffMode,
   getExpandedSelectedLocationsSet,
   getFetchedFlows,
   getFlowsSheets,
@@ -300,6 +298,12 @@ const FlowMap: React.FC<Props> = (props) => {
         : undefined,
     [layerData],
   );
+  const [scaleState, setScaleState] = useState<ScaleState>();
+  // Keep the captured domains across Deck remounts when switching projections.
+  const [lockedDomains, setLockedDomains] = useState<ScaleLockDomains>();
+  const handleScaleChange = useCallback((scale: ScaleState | undefined) => {
+    setScaleState((previous) => (isDeepEqual(previous, scale) ? previous : scale));
+  }, []);
   const clusterZoom = getClusterZoom(state, props);
   const expandedSelection = getExpandedSelectedLocationsSet(state, props);
   const layerFilter = useMemo(
@@ -563,7 +567,6 @@ const FlowMap: React.FC<Props> = (props) => {
   const authorUrl = config[ConfigPropName.AUTHOR_URL];
   const authorName = config[ConfigPropName.AUTHOR_NAME];
   const mapboxAccessToken = config[ConfigPropName.MAPBOX_ACCESS_TOKEN];
-  const diffMode = getDiffMode(state, props);
   const mapboxMapStyle = getMapboxMapStyle(state, props);
 
   const handleClick = (
@@ -659,6 +662,8 @@ const FlowMap: React.FC<Props> = (props) => {
           clusteringAuto: false,
           clusteringLevel: clusterZoom,
           adaptiveScalesEnabled: state.adaptiveScalesEnabled,
+          scaleLock: lockedDomains && {enabled: true, domains: lockedDomains},
+          onScaleChange: embed ? undefined : handleScaleChange,
           locationTotalsEnabled: state.locationTotalsEnabled,
           darkMode,
           colorScheme,
@@ -775,23 +780,16 @@ const FlowMap: React.FC<Props> = (props) => {
               )}
             </Column>
           </Absolute>
-          {state.locationTotalsEnabled && !embed && (
+          {!embed && ((dataProvider && scaleState) || lockedDomains) && (
             <Box bottom={28} right={0} darkMode={darkMode}>
               <Collapsible darkMode={darkMode} width={160} direction={Direction.RIGHT}>
-                <Column spacing={10} padding={12}>
-                  <LegendTitle>Location totals</LegendTitle>
-                  <LocationTotalsLegend
-                    colors={getColors(
-                      diffMode,
-                      colorScheme,
-                      darkMode,
-                      state.fadeEnabled,
-                      false,
-                      state.fadeAmount,
-                      isAnimated,
-                    )}
-                  />
-                </Column>
+                <ScaleLegend
+                  scale={dataProvider ? scaleState : undefined}
+                  locked={lockedDomains != null}
+                  onToggleLock={() =>
+                    setLockedDomains(lockedDomains ? undefined : scaleState?.domains)
+                  }
+                />
               </Collapsible>
             </Box>
           )}

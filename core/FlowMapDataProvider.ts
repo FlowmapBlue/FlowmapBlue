@@ -1,4 +1,10 @@
-import {colorAsRgba, FlowmapData, LocalFlowmapDataProvider, RGBA} from '@flowmap.gl/data';
+import {
+  colorAsRgba,
+  FlowmapData,
+  isMagnitudeOutsideScaleDomain,
+  LocalFlowmapDataProvider,
+  RGBA,
+} from '@flowmap.gl/data';
 import {
   Flow,
   getFlowDestId,
@@ -41,12 +47,14 @@ export default class FlowMapDataProvider extends LocalFlowmapDataProvider<Locati
     const data = await dataPromise;
     if (!data || !flows) return data;
 
-    const {lineAttributes} = data;
+    const {lineAttributes, scaleState} = data;
     const {getColor} = lineAttributes.attributes;
+    const flowScale = scaleState?.flowThickness;
+    const outOfScaleDomain = flowScale?.outOfScale ? flowScale.domain : undefined;
     let colors: Uint8Array | undefined;
-    flows.forEach(({origin, dest}, index) => {
+    flows.forEach(({origin, dest, count}, index) => {
       const color = this.routeColors.get(origin)?.get(dest);
-      if (color) {
+      if (color && !isMagnitudeOutsideScaleDomain(count, outOfScaleDomain)) {
         colors ??= getColor.value.slice();
         colors.set(color, index * getColor.size);
       }

@@ -370,13 +370,6 @@ export const getLayerData = createSelector(
   }),
 );
 
-export const getDiffMode = createSelector(getLayerData, ({flows}) => {
-  for (const flow of flows ?? []) {
-    if (getFlowMagnitude(flow) < 0) return true;
-  }
-  return false;
-});
-
 export const getExpandedSelectedLocationsSet: Selector<Set<string> | undefined> = createSelector(
   getSelectedLocationsSet,
   getClusterIndex,
