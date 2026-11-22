@@ -4,7 +4,6 @@ import {
   getColorsRGBA,
   getDiffColorsRGBA,
   isDiffColors,
-  isDiffColorsRGBA,
   RGBA,
 } from '@flowmap.gl/data';
 import React from 'react';
@@ -17,27 +16,23 @@ const entries = [
 ] as const;
 
 export default function LocationTotalsLegend({colors}: {colors: Colors | DiffColors}) {
-  const rgba = isDiffColors(colors) ? getDiffColorsRGBA(colors) : getColorsRGBA(colors);
-  const circles = isDiffColorsRGBA(rgba)
-    ? [rgba.positive.locationCircles, rgba.negative.locationCircles]
-    : [rgba.locationCircles];
+  const circles = isDiffColors(colors)
+    ? getDiffColorsRGBA(colors).positive.locationCircles
+    : getColorsRGBA(colors).locationCircles;
   return (
     <div>
       {entries.map(({label, outer}) => (
         <div key={label} style={{display: 'flex', alignItems: 'center', gap: 3, padding: '3px 0'}}>
-          {circles.map(({inner, ...ring}, index) => (
-            <span
-              key={index}
-              aria-hidden="true"
-              style={{
-                flex: '0 0 16px',
-                height: 16,
-                borderRadius: '50%',
-                border: `4px solid ${cssColor(outer === 'inner' ? inner : ring[outer])}`,
-                background: cssColor(inner),
-              }}
-            />
-          ))}
+          <span
+            aria-hidden="true"
+            style={{
+              flex: '0 0 16px',
+              height: 16,
+              borderRadius: '50%',
+              border: `4px solid ${cssColor(circles[outer])}`,
+              background: cssColor(circles.inner),
+            }}
+          />
           {label}
         </div>
       ))}

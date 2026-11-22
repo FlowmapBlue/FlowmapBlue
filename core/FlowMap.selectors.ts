@@ -21,7 +21,6 @@ import {
   isCluster,
   makeLocationWeightGetter,
   type Cluster,
-  type FlowmapData,
 } from '@flowmap.gl/data';
 import {
   DEFAULT_MAP_STYLE_DARK,
@@ -191,7 +190,7 @@ const getClusterLevels = createSelector(
   getLocationWeightGetter,
   getGlobe,
   (locations, getLocationWeight, globe) => {
-    if (!locations || !getLocationWeight) return undefined;
+    if (!locations?.length || !getLocationWeight) return undefined;
     return clusterLocations(locations, flowmapAccessors, getLocationWeight, {
       maxZoom: MAX_ZOOM_LEVEL,
       projection: globe ? 'globe' : 'mercator',
@@ -359,7 +358,7 @@ function aggregateFlows(flows: Flow[]) {
 }
 
 // Pre-aggregate dated flows with the app's existing time range and color rules.
-export const getLayerData: Selector<FlowmapData<Location, Flow>> = createSelector(
+export const getLayerData = createSelector(
   getLocationsHavingFlows,
   getSortedFlowsForKnownLocationsFilteredByTime,
   getClusterLevels,

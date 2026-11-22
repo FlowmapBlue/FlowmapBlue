@@ -293,7 +293,13 @@ const FlowMap: React.FC<Props> = (props) => {
   const allLocations = getLocations(state, props);
   const locationsHavingFlows = getLocationsHavingFlows(state, props);
   const layerData = getLayerData(state, props);
-  const dataProvider = useMemo(() => new FlowMapDataProvider(layerData), [layerData]);
+  const dataProvider = useMemo(
+    () =>
+      layerData.locations?.length && layerData.flows?.length
+        ? new FlowMapDataProvider(layerData)
+        : undefined,
+    [layerData],
+  );
   const clusterZoom = getClusterZoom(state, props);
   const expandedSelection = getExpandedSelectedLocationsSet(state, props);
   const layerFilter = useMemo(
@@ -640,37 +646,36 @@ const FlowMap: React.FC<Props> = (props) => {
     }
   };
 
-  const layers =
-    layerData.locations && layerData.flows
-      ? [
-          new FlowmapLayer<Location, Flow>({
-            ...flowmapAccessors,
-            id: 'flow-map',
-            data: layerData,
-            dataProvider,
-            filter: layerFilter,
-            // The same cluster level drives the search box, timeline and layer.
-            clusteringEnabled: state.clusteringEnabled && clusterZoom != null,
-            clusteringAuto: false,
-            clusteringLevel: clusterZoom,
-            adaptiveScalesEnabled: state.adaptiveScalesEnabled,
-            locationTotalsEnabled: state.locationTotalsEnabled,
-            darkMode,
-            colorScheme,
-            fadeEnabled: state.fadeEnabled,
-            fadeAmount: state.fadeAmount,
-            flowLinesRenderingMode,
-            flowLineCurviness,
-            flowLineThicknessScale: isAnimated ? 0.75 : 0.5,
-            wrapLongitude: !state.globe,
-            // Globe routes use 96 segments each. Bound geometry on dense datasets.
-            maxTopFlowsDisplayNum: state.globe ? 5000 : NUMBER_OF_FLOWS_TO_DISPLAY,
-            pickable: true,
-            onHover: handleHover,
-            onClick: handleClick,
-          }),
-        ]
-      : [];
+  const layers = dataProvider
+    ? [
+        new FlowmapLayer<Location, Flow>({
+          ...flowmapAccessors,
+          id: 'flow-map',
+          data: layerData,
+          dataProvider,
+          filter: layerFilter,
+          // The same cluster level drives the search box, timeline and layer.
+          clusteringEnabled: state.clusteringEnabled && clusterZoom != null,
+          clusteringAuto: false,
+          clusteringLevel: clusterZoom,
+          adaptiveScalesEnabled: state.adaptiveScalesEnabled,
+          locationTotalsEnabled: state.locationTotalsEnabled,
+          darkMode,
+          colorScheme,
+          fadeEnabled: state.fadeEnabled,
+          fadeAmount: state.fadeAmount,
+          flowLinesRenderingMode,
+          flowLineCurviness,
+          flowLineThicknessScale: isAnimated ? 0.75 : 0.5,
+          wrapLongitude: !state.globe,
+          // Globe routes use 96 segments each. Bound geometry on dense datasets.
+          maxTopFlowsDisplayNum: state.globe ? 5000 : NUMBER_OF_FLOWS_TO_DISPLAY,
+          pickable: true,
+          onHover: handleHover,
+          onClick: handleClick,
+        }),
+      ]
+    : [];
 
   return (
     <NoScrollContainer
