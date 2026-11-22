@@ -4,7 +4,6 @@ import * as React from 'react';
 import styled from '@emotion/styled';
 import {IconNames} from '@blueprintjs/icons';
 import {FC, ReactNode, useState} from 'react';
-import {useRouter} from 'next/router';
 
 const Outer = styled(Column)`
   padding: 10px 20px 10px 20px;
@@ -62,10 +61,18 @@ const CopyInput: FC<{text: string; embed?: boolean}> = ({text, embed}) => {
   );
 };
 
-const SharePopover: React.FC<{children: ReactNode}> = ({children}) => {
-  const router = useRouter();
+interface Props {
+  children: ReactNode;
+  queryParams: Record<string, string>;
+  scaleLocked: boolean;
+}
+
+const SharePopover: FC<Props> = ({children, queryParams, scaleLocked}) => {
   const [selectedTab, setSelectedTab] = useState('url');
-  const [withState, setWithState] = useState(false);
+  const [withState, setWithState] = useState<boolean>();
+  const includeCurrentView = withState ?? scaleLocked;
+  const query = includeCurrentView ? `?${new URLSearchParams(queryParams)}` : '';
+  const mapUrl = `${location.origin}${location.pathname}`;
   return (
     <Popover
       hoverOpenDelay={0}
@@ -74,18 +81,7 @@ const SharePopover: React.FC<{children: ReactNode}> = ({children}) => {
       content={
         <Outer spacing={15}>
           <Tabs selectedTabId={selectedTab} onChange={(newTabId) => setSelectedTab(`${newTabId}`)}>
-            <Tab
-              id="url"
-              title="Share URL"
-              panel={
-                <CopyInput
-                  text={
-                    `${document.location.protocol}//${document.location.host}` +
-                    `${withState ? router.asPath : `${location.pathname}`}`
-                  }
-                />
-              }
-            />
+            <Tab id="url" title="Share URL" panel={<CopyInput text={`${mapUrl}${query}`} />} />
             <Tab
               id="embed"
               title="Embed code"
@@ -94,8 +90,7 @@ const SharePopover: React.FC<{children: ReactNode}> = ({children}) => {
                   embed={true}
                   text={
                     `<iframe width="800" height="600" ` +
-                    `src="${document.location.protocol}//${document.location.host}${location.pathname}/embed` +
-                    `${withState ? location.search : ''}" ` +
+                    `src="${mapUrl}/embed${query}" ` +
                     `frameborder="0" allowfullscreen></iframe>`
                   }
                 />
@@ -103,8 +98,8 @@ const SharePopover: React.FC<{children: ReactNode}> = ({children}) => {
             />
           </Tabs>
           <Switch
-            checked={withState}
-            onChange={() => setWithState(!withState)}
+            checked={includeCurrentView}
+            onChange={() => setWithState(!includeCurrentView)}
             label="Current view of the map"
           />
         </Outer>

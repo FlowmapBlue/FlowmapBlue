@@ -8,6 +8,7 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import '@blueprintjs/select/lib/css/blueprint-select.css';
 import styled from '@emotion/styled';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import {Router} from 'next/router';
 import AppToaster from '../core/AppToaster';
 import '../css/blueprint.css';

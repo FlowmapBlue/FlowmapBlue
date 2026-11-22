@@ -60,7 +60,7 @@ const MapContainer: React.FC<Props> = ({embed, children}) => {
         </>
       ) : (
         <Fallback>
-          Sorry, but your browser does not seem to support WebGL which is required for this app.
+          Sorry, but your browser does not seem to support WebGL2, which is required for this app.
         </Fallback>
       )}
     </NoScrollContainer>

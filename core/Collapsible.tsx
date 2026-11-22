@@ -32,7 +32,8 @@ const Body = styled.div<BodyProps>(
   order: ${direction === Direction.LEFT ? 2 : 1};
   overflow: hidden;
   max-width: ${collapsed ? 0 : `${width}px`};
-  transition: max-width 0.15s ease-out;  
+  visibility: ${collapsed ? 'hidden' : 'visible'};
+  transition: max-width 0.15s ease-out, visibility 0s ${collapsed ? '0.15s' : '0s'};
 `,
 );
 
@@ -123,6 +124,8 @@ export default class Collapsible extends React.Component<Props, State> {
           collapsed={collapsed}
           direction={direction}
           onClick={this.handleClick}
+          aria-label={collapsed ? 'Expand panel' : 'Collapse panel'}
+          aria-expanded={!collapsed}
         >
           {' '}
           {this.getArrow()}

@@ -1,4 +1,3 @@
-import type {Colors, DiffColors} from '@flowmap.gl/core';
 import {
   interpolateCool,
   interpolateInferno,
@@ -26,10 +25,7 @@ import {
   schemeYlOrRd,
 } from 'd3-scale-chromatic';
 import {range} from 'd3-array';
-import {scalePow, scaleSequential} from 'd3-scale';
-import {interpolateRgbBasis} from 'd3-interpolate';
-import {Config} from './types';
-import {color as d3color, hcl} from 'd3-color';
+import {color as d3color} from 'd3-color';
 
 const asScheme = (scheme: ReadonlyArray<ReadonlyArray<string>>) =>
   scheme[scheme.length - 1] as string[];
@@ -96,96 +92,6 @@ export const COLOR_SCHEMES: {[key: string]: string[]} = {
 };
 
 export const COLOR_SCHEME_KEYS = Object.keys(COLOR_SCHEMES);
-
-const complementary = '#f52020';
-const baseDiffColor = '#17a5be';
-
-const diffColors: DiffColors = {
-  negative: {
-    flows: {
-      scheme: [FLOW_MIN_COLOR, baseDiffColor],
-    },
-  },
-  positive: {
-    flows: {
-      scheme: [FLOW_MIN_COLOR, complementary],
-    },
-  },
-  locationAreas: {
-    outline: 'rgba(92,112,128,0.5)',
-    normal: 'rgba(220,220,220,0.5)',
-  },
-  outlineColor: 'rgb(230,233,237)',
-};
-
-export default function getColors(
-  config: Config,
-  diffMode: boolean,
-  schemeKey: string | undefined,
-  darkMode: boolean,
-  fadeEnabled: boolean,
-  fadeAmount: number,
-  animate: boolean,
-): Colors | DiffColors {
-  if (diffMode) {
-    return diffColors;
-  }
-
-  let scheme = (schemeKey && COLOR_SCHEMES[schemeKey]) || DEFAULT_COLOR_SCHEME;
-
-  if (darkMode) {
-    scheme = scheme.slice().reverse();
-  }
-  // if (animate)
-  // if (fadeAmount > 0)
-  {
-    const indices = range(0, Math.max(10, scheme.length));
-    const N = indices.length - 1;
-    const colorScale = scaleSequential(interpolateRgbBasis(scheme)).domain([0, N]);
-
-    if (!fadeEnabled || fadeAmount === 0) {
-      scheme = indices.map((c, i) => colorScale(i)!);
-    } else {
-      const amount = scalePow()
-        // .exponent(animate ? 1 : 1/2.5)
-        // .exponent(animate ? 100 : 50)
-        // .exponent(animate ? 20 : 5)
-        // .exponent(1/2.5)
-        .exponent(1.5)
-        .domain([N, 0])
-        // .range([fadeAmount/100*(animate?2:1), 0])
-        // .range([0, fadeAmount/100*(animate?2:1)])
-        // .range(darkMode ? [1-fadeAmount/100, 1] : [1, 1 - fadeAmount/100])
-        // .range(darkMode ? [1 - fadeAmount/100, 1] : [fadeAmount/100, 0])
-        // .range([1 - fadeAmount/100, 1])
-        .range([0, ((animate ? 2.5 : 2) * fadeAmount) / 100]);
-
-      scheme = indices.map(
-        (c, i) => {
-          const color = colorScale(i);
-          const alpha = amount(i);
-          if (color == null || alpha == null) return '#000';
-          const col = hcl(color);
-          col.l = darkMode ? col.l - col.l * alpha : col.l + (100 - col.l) * alpha;
-          col.c = col.c - col.c * (alpha / 4);
-          return col.toString();
-        },
-        // interpolateRgbBasis([colorScale(i), darkMode ? '#000' : '#fff'])(amount(i))
-        // interpolateHsl(colorScale(i), darkMode ? '#000' : '#fff')(amount(i)).toString()
-      );
-    }
-  }
-
-  return {
-    flows: {
-      scheme,
-    },
-    locationCircles: {
-      outgoing: darkMode ? '#000' : '#fff',
-    },
-    outlineColor: darkMode ? '#000' : 'rgba(255, 255, 255, 0.5)',
-  };
-}
 
 // TODO: export the same function from flowmap.gl?
 export function opacifyHex(hexCode: string, opacity: number): string {
