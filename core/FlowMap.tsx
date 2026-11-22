@@ -656,6 +656,7 @@ const FlowMap: React.FC<Props> = (props) => {
             flowLinesRenderingMode,
             flowLineCurviness,
             flowLineThicknessScale: isAnimated ? 0.75 : 0.5,
+            wrapLongitude: !state.globe,
             // Globe routes use 96 segments each. Bound geometry on dense datasets.
             maxTopFlowsDisplayNum: state.globe ? 5000 : NUMBER_OF_FLOWS_TO_DISPLAY,
             pickable: true,
@@ -695,6 +696,7 @@ const FlowMap: React.FC<Props> = (props) => {
               <ReactMapGl
                 mapboxAccessToken={mapboxAccessToken}
                 mapStyle={mapboxMapStyle}
+                renderWorldCopies
                 style={{width: '100%', height: '100%'}}
               />
             )}
