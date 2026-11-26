@@ -43,6 +43,11 @@ export {LocationFilterMode};
 
 export interface State {
   viewport: ViewportProps;
+  // View state passed to deck.gl as `initialViewState` (flat map). It only changes when the app
+  // moves the view programmatically (fit to locations, zoom buttons, etc.). Feeding every
+  // controller update back into `initialViewState` resets deck's view state on each frame,
+  // which cancels running transitions (e.g. the initial fit-to-locations fly-to).
+  viewportTarget: ViewportProps;
   adjustViewportToLocations: boolean;
   tooltip?: TooltipProps;
   globe: boolean;
@@ -99,6 +104,8 @@ export type Action =
       type: ActionType.SET_VIEWPORT;
       viewport: ViewportProps;
       adjustViewportToLocations?: boolean;
+      // true when the change comes from the map controller (user interaction or a transition)
+      fromController?: boolean;
     }
   | {
       type: ActionType.ZOOM_IN;
@@ -426,6 +433,12 @@ function mainReducer(state: State, action: Action): State {
 export const reducer: Reducer<State, Action> = (state: State, action: Action) => {
   const nextState = mainReducer(state, action);
   // console.log(action.type, action);
+  if (
+    nextState.viewport !== state.viewport &&
+    !(action.type === ActionType.SET_VIEWPORT && action.fromController)
+  ) {
+    return {...nextState, viewportTarget: nextState.viewport};
+  }
   return nextState;
 };
 
@@ -591,6 +604,7 @@ export const DEFAULT_VIEWPORT = getInitialViewport([-180, -70, 180, 70]);
 export function getInitialState(config: Config, query: ParsedUrlQuery) {
   const draft: State = {
     viewport: DEFAULT_VIEWPORT,
+    viewportTarget: DEFAULT_VIEWPORT,
     globe: false,
     adjustViewportToLocations: true,
     selectedLocations: undefined,
@@ -635,5 +649,6 @@ export function getInitialState(config: Config, query: ParsedUrlQuery) {
       pitch: 0,
     };
   }
+  draft.viewportTarget = draft.viewport;
   return draft;
 }
