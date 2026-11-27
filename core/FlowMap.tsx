@@ -610,6 +610,7 @@ const FlowMap: React.FC<Props> = (props) => {
     dispatch({
       type: ActionType.SET_VIEWPORT,
       viewport: {...viewport, ...viewState, transitionDuration: 0},
+      fromController: true,
     });
   };
 
@@ -708,7 +709,7 @@ const FlowMap: React.FC<Props> = (props) => {
         ) : (
           <DeckGL
             controller={CONTROLLER_OPTIONS}
-            initialViewState={viewport}
+            initialViewState={state.viewportTarget}
             views={FLAT_VIEW}
             onViewStateChange={handleViewStateChange}
             layers={layers}
